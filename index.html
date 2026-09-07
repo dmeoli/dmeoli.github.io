@@ -277,28 +277,32 @@ footer {
     <h2>Software</h2>
     <div class="body">
       <p>
-        Research code is a deliverable, not a by-product. Inside SMS++ my contributions are
-        whole modules rather than patches, each one a <span class="k">Block</span> that
-        states a problem or a <span class="k">Solver</span> that attacks a structure:
+        Research code is a deliverable, not a by-product. I am, with Antonio Frangioni,
+        one of the two main maintainers of SMS++, so the work runs across the whole tree
+        &mdash; core, solvers, modules &mdash; rather than sitting in one corner of it.
+        Some of it is mine end to end:
       </p>
-      <pre class="tree"><i>model side</i>
-  <b>SVMBlock</b>              support vector machines, primal and dual, as a Block
-  <b>MultiStageStochasticBlock</b>  scenario trees over two-stage stages
-  <b>ScenarioReductionBlock</b>     scenario trees, reduced
+      <pre class="tree"><i>written end to end</i>
+  <b>SVMBlock</b>                   support vector machines, primal and dual, as a Block
+  <b>TwoStageStochasticBlock</b>    here-and-now design over wait-and-see recourse
+  <b>MultiStageStochasticBlock</b>  scenario trees built out of two-stage stages
+  <b>BendersDecompositionSolver</b> generic Benders over any partition of a Block
 
-<i>algorithm side</i>
-  <b>ThermalUnitDPSolver</b>        exact DP for the single-unit commitment problem,
-  <b>ThermalUnitExtDPSolver</b>     run-length state space, reserves, reactive power
+<i>major contributions</i>
+  <b>UCBlock</b>                    unit commitment, large parts of it, including the two
+                             exact DP solvers for the single-unit problem with
+                             reserves and reactive power
   <b>BranchAndXSolver</b>           relaxation-agnostic branch-and-X
-  <b>BendersDecompositionSolver</b> generic Benders over any Block partition
   <b>ScenarioReductionSolver</b>    scenario reduction as a Solver
-  <b>BundleSolver</b>               <i>(contributions)</i> master problems and cuts
-  <b>MILPSolver</b>                 <i>(contributions)</i> CPLEX, Gurobi, SCIP, HiGHS, PIPS</pre>
+  <b>BundleSolver</b>               master problems, cuts, vertical linearizations
+  <b>MILPSolver</b>                 CPLEX, Gurobi, SCIP, HiGHS, PIPS-IPM++
+  <b>core</b>                       Block, Solver, Function, Configuration, netCDF
+                             serialization, and the module template every new
+                             component is generated from</pre>
       <p class="gist">
-        Plus the surrounding infrastructure: the module template every new SMS++ component
-        is generated from, the Python bindings
-        (<a href="https://github.com/SPSUnipi/pySMSpp">pySMSpp</a>) and the
-        PyPSA&nbsp;&rarr;&nbsp;SMS++ converter
+        And the way in and out of it: the Python bindings
+        (<a href="https://github.com/SPSUnipi/pySMSpp">pySMSpp</a>) and the converter that
+        brings models written elsewhere into the framework
         (<a href="https://github.com/SPSUnipi/pypsa2smspp">pypsa2smspp</a>).
       </p>
 
