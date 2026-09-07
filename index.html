@@ -223,40 +223,46 @@ footer {
     <h2>Research</h2>
     <div class="body">
       <p>
-        I work in mathematical optimization, along two lines that share one idea: the
-        difficulty of a problem lies in how it is written, so the useful move is to rewrite
-        it &mdash; as a set of smaller problems, or in a different formalism altogether.
+        I came to optimization from symbolic AI, and I work between the two. What holds
+        them together is a single idea: the difficulty of a problem lies in how it is
+        written, so the useful move is to rewrite it &mdash; as a set of smaller problems,
+        or in a different formalism altogether.
       </p>
       <p>
-        <b>Decomposition.</b> Lagrangian relaxation and Benders decomposition, the bundle
-        methods that solve the nondifferentiable duals they give rise to, and the parallel
-        solution of the subproblems, which a decomposition produces by the hundred and
-        which are independent by construction. This is the premise of
+        <b>Symbolic AI.</b> Knowledge representation and reasoning, which is where I
+        started: rule-based expert systems for domains whose knowledge is codified and
+        whose reasoning has to stay inspectable, from the diagnostic criteria of the
+        DSM-5-TR encoded in Prolog to fuzzy rules in CLIPS, and lexical semantics over
+        WordNet. Above all, translation between formalisms: a planning problem can be
+        stated as a constraint satisfaction problem and, from there, as a propositional
+        formula, at which point a CDCL solver applies to it. I implemented that chain of
+        translators, and the CDCL solver itself, in
+        <a href="https://github.com/aimacode/aima-python">aima-python</a>.
+      </p>
+      <p>
+        <b>Numerical optimization.</b> The same move with a different alphabet. Lagrangian
+        relaxation and Benders decomposition, the bundle methods that solve the
+        nondifferentiable duals they give rise to, and the parallel solution of the
+        subproblems, which a decomposition produces by the hundred and which are
+        independent by construction. This is the premise of
         <a href="https://gitlab.com/smspp">SMS++</a>, where a model is declared as a tree
         of <span class="k">Block</span>s: the same instance can then be solved
         monolithically, dualized along its coupling constraints, or split by scenario, and
         which of the three happens is a matter of configuration rather than of rewriting
-        the model.
+        the model. Reformulation returns here as recognising, inside a subproblem, a
+        structure that already has an efficient algorithm: the subproblems of a capacitated
+        facility location are binary knapsacks, a single-unit commitment is a shortest path
+        on a run-length graph, a dispatch is a min-cost flow.
       </p>
       <p>
-        <b>Reformulation.</b> The same move across formalisms. A planning problem can be
-        stated as a constraint satisfaction problem and, from there, as a propositional
-        formula, at which point a CDCL solver applies to it; I implemented that chain of
-        translators in <a href="https://github.com/aimacode/aima-python">aima-python</a>.
-        On the numerical side the move is to recognise, inside a subproblem, a structure
-        that already has an efficient algorithm: the subproblems of a capacitated facility
-        location are binary knapsacks, a single-unit commitment is a shortest path on a
-        run-length graph, a dispatch is a min-cost flow. Nothing about the problem changes,
-        only the class of algorithms that can be brought to bear on it, and what that costs.
-      </p>
-      <p>
-        <b>Learning inside exact methods.</b> The direction that runs the other way:
-        heuristics learned from data, placed exactly where an exact method makes a choice
-        &mdash; branching in a SAT solver, step sizes in a bundle method &mdash; with the
-        guarantees of the exact method left intact. And symmetrically, learning problems
-        stated as structured optimization models: a support vector machine is a
-        <span class="k">Block</span> like any other, and the same decomposition machinery
-        applies to it.
+        <b>Connecting the two.</b> The reason I keep a foot on each side. Heuristics learned
+        from data, placed exactly where an exact method makes a choice &mdash; the branching
+        of a SAT solver in
+        <a href="https://github.com/dmeoli/NeuroSAT">NeuroSAT</a>, the step size of a bundle
+        method &mdash; so that the learned part chooses and the exact part still guarantees.
+        And symmetrically, learning problems written as structured optimization models: a
+        support vector machine is a <span class="k">Block</span> like any other, and the
+        same decomposition machinery applies to it.
       </p>
     </div>
   </div>
