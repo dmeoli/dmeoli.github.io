@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Donato Meoli - structured optimization and decomposition methods, Dipartimento di Informatica, Universita di Pisa.">
+<meta name="author" content="Donato Meoli">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%224%22 fill=%22%236a37a8%22/><text x=%2216%22 y=%2223%22 font-family=%22Georgia,serif%22 font-size=%2219%22 fill=%22white%22 text-anchor=%22middle%22>M</text></svg>">
+<style>*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}</style>
+<title>Donato Meoli</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --ground:      #faf8fd;
+  --surface:     #ffffff;
+  --ink:         #1b1526;
+  --ink-soft:    #564c66;
+  --ink-faint:   #837994;
+  --rule:        #e3dcec;
+  --accent:      #6a37a8;
+  --accent-wash: #f0e8fa;
+  --serif: "Spectral", "Iowan Old Style", Palatino, Georgia, serif;
+  --mono:  "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground:      #0f0b16;
+    --surface:     #191322;
+    --ink:         #ece6f4;
+    --ink-soft:    #b0a5c0;
+    --ink-faint:   #8e83a0;
+    --rule:        #2d2340;
+    --accent:      #b892f2;
+    --accent-wash: #251a38;
+  }
+}
+:root[data-theme="dark"] {
+  --ground:      #0f0b16;
+  --surface:     #191322;
+  --ink:         #ece6f4;
+  --ink-soft:    #b0a5c0;
+  --ink-faint:   #8e83a0;
+  --rule:        #2d2340;
+  --accent:      #b892f2;
+  --accent-wash: #251a38;
+}
+
+body {
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+.page { max-width: 60rem; margin: 0 auto; padding: 4.5rem 1.6rem 6rem; }
+
+/* ---- masthead ---------------------------------------------------------- */
+.masthead { display: flex; flex-direction: column; gap: .9rem; padding-bottom: 2.2rem; }
+.eyebrow {
+  font-family: var(--mono); font-size: .69rem; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--accent); margin: 0;
+}
+h1 {
+  font-family: var(--serif); font-weight: 600; font-size: clamp(2.5rem, 6vw, 3.6rem);
+  line-height: 1.04; letter-spacing: -.018em; margin: 0; text-wrap: balance;
+}
+.standfirst {
+  margin: 0; max-width: 34em; font-size: 1.12rem; color: var(--ink-soft);
+  font-weight: 300;
+}
+.standfirst em { font-style: italic; color: var(--ink); }
+.links { display: flex; flex-wrap: wrap; gap: .35rem 1.4rem; margin-top: .5rem; }
+.links a {
+  font-family: var(--mono); font-size: .78rem; color: var(--ink-soft);
+  text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 2px;
+}
+.links a:hover, .links a:focus-visible { color: var(--accent); border-color: var(--accent); }
+
+/* ---- section grid ------------------------------------------------------ */
+section { border-top: 1px solid var(--rule); padding: 2.4rem 0 .6rem; }
+.grid { display: grid; grid-template-columns: 9.5rem 1fr; gap: 2.4rem; align-items: start; }
+h2 {
+  font-family: var(--mono); font-size: .7rem; font-weight: 500; letter-spacing: .15em;
+  text-transform: uppercase; color: var(--ink-faint); margin: .35rem 0 0;
+  position: sticky; top: 1.4rem;
+}
+.body > * + * { margin-top: 1.15rem; }
+.body p { margin: 0; max-width: 40em; }
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+/* ---- publications ------------------------------------------------------ */
+.pub { display: grid; grid-template-columns: 2.6rem 1fr; gap: 1rem; }
+.pub + .pub { margin-top: 1.9rem; }
+.tag {
+  font-family: var(--mono); font-size: .72rem; color: var(--accent);
+  background: var(--accent-wash); border-radius: 2px; padding: .12rem .3rem;
+  height: fit-content; text-align: center;
+}
+.pub h3 { margin: 0 0 .25rem; font-size: 1.06rem; font-weight: 500; line-height: 1.35; }
+.authors { margin: 0; color: var(--ink-soft); font-size: .95rem; }
+.authors b { font-weight: 500; color: var(--ink); }
+.venue { margin: .25rem 0 0; font-size: .95rem; color: var(--ink-soft); font-style: italic; }
+.meta { margin: .45rem 0 0; font-family: var(--mono); font-size: .74rem; }
+.meta a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--rule); }
+.meta a:hover { color: var(--accent); border-color: var(--accent); }
+.meta .sep { color: var(--rule); padding: 0 .55rem; }
+.gist { margin: .55rem 0 0; font-size: .95rem; color: var(--ink-soft); max-width: 42em; }
+
+/* ---- block tree -------------------------------------------------------- */
+.tree {
+  font-family: var(--mono); font-size: .76rem; line-height: 1.85; color: var(--ink-soft);
+  background: var(--surface); border: 1px solid var(--rule); border-left: 2px solid var(--accent);
+  padding: 1rem 1.1rem; margin: 0; overflow-x: auto; white-space: pre;
+}
+.tree b { color: var(--ink); font-weight: 500; }
+.k { font-family: var(--mono); font-size: .86em; color: var(--ink); }
+.tree i { color: var(--ink-faint); font-style: normal; }
+
+/* ---- repo list --------------------------------------------------------- */
+.repos { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.1rem; }
+.repos li { display: grid; grid-template-columns: minmax(0, 11rem) 1fr; gap: .3rem 1.2rem; }
+.repos .name { font-family: var(--mono); font-size: .82rem; }
+.repos .name a { text-decoration: none; border-bottom: 1px solid var(--rule); }
+.repos .name a:hover { border-color: var(--accent); }
+.repos .what { margin: 0; font-size: .95rem; color: var(--ink-soft); }
+.stars { font-family: var(--mono); font-size: .72rem; color: var(--ink-faint); }
+
+/* ---- CV entries -------------------------------------------------------- */
+.entry { display: grid; grid-template-columns: 8.5rem 1fr; gap: .2rem 1.2rem; }
+.entry + .entry { margin-top: 1.6rem; }
+.when {
+  font-family: var(--mono); font-size: .74rem; color: var(--ink-faint);
+  padding-top: .3rem; font-variant-numeric: tabular-nums;
+}
+.entry h3 { margin: 0; font-size: 1.02rem; font-weight: 500; }
+.where { margin: 0; color: var(--ink-soft); font-size: .95rem; }
+.entry p.note { margin: .35rem 0 0; font-size: .95rem; color: var(--ink-soft); max-width: 38em; }
+
+/* ---- contact ----------------------------------------------------------- */
+dl { margin: 0; }
+.contact dd { margin: 0; }
+.contact { display: grid; grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr)); gap: 1.1rem; }
+.contact div { display: grid; gap: .15rem; }
+.contact dt, .label {
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--ink-faint);
+}
+.contact a { font-size: .95rem; text-decoration: none; border-bottom: 1px solid var(--rule); width: fit-content; }
+.contact a:hover { border-color: var(--accent); }
+
+footer {
+  border-top: 1px solid var(--rule); margin-top: 3rem; padding-top: 1.2rem;
+  font-family: var(--mono); font-size: .7rem; color: var(--ink-faint);
+  display: flex; flex-wrap: wrap; gap: .4rem 1.5rem; justify-content: space-between;
+}
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 1px; }
+
+@media (max-width: 46rem) {
+  .grid, .pub, .repos li, .entry { grid-template-columns: 1fr; gap: .6rem; }
+  h2 { position: static; }
+  .tag { width: fit-content; }
+  .page { padding-top: 3rem; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="masthead">
+  <p class="eyebrow">Universit&agrave; di Pisa &middot; Dipartimento di Informatica</p>
+  <h1>Donato Meoli</h1>
+  <p class="standfirst">
+    I work on <em>structured optimization</em>: exploiting the block structure a large
+    mathematical model already has, so that a decomposition method can solve what a
+    monolithic solver cannot. Energy systems are where I put it to the test.
+  </p>
+  <nav class="links" aria-label="Elsewhere">
+    <a href="mailto:donato.meoli@outlook.com">Email</a>
+    <a href="https://github.com/dmeoli">GitHub</a>
+    <a href="https://gitlab.com/dmeoli">GitLab</a>
+    <a href="https://www.linkedin.com/in/donato-meoli/">LinkedIn</a>
+    <a href="cv.pdf">CV (PDF)</a>
+  </nav>
+</header>
+
+<section id="research">
+  <div class="grid">
+    <h2>Research</h2>
+    <div class="body">
+      <p>
+        A hard optimization model is rarely a shapeless pile of variables. It is a power
+        system made of units, a portfolio made of scenarios, a network made of commodities.
+        My work is on algorithms that read that structure instead of flattening it:
+        Lagrangian and Benders decomposition, bundle methods for the nondifferentiable
+        duals they produce, and exact combinatorial solvers for the small subproblems the
+        decomposition leaves behind.
+      </p>
+      <p>
+        Most of it lands in <a href="https://smspp.gitlab.io/">SMS++</a>, a C++ framework
+        where a model is a tree of <span class="k">Block</span>s and every algorithm is a
+        <span class="k">Solver</span> that attaches to one, so the same instance can be
+        solved monolithically, dualized, or split by scenario without rewriting the model.
+        The current application is capacity expansion and unit commitment under
+        uncertainty, where SMS++ is being coupled to
+        <a href="https://pypsa.org/">PyPSA</a> to bring decomposition to models that a
+        MILP solver alone cannot close.
+      </p>
+      <p>
+        Before optimization I spent several years in symbolic AI and machine learning,
+        which is still where my second interest sits: learned heuristics inside exact
+        solvers, and the reverse direction, optimization methods written to train models
+        rather than the other way around.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="publications">
+  <div class="grid">
+    <h2>Publications</h2>
+    <div class="body">
+
+      <article class="pub">
+        <span class="tag">P1</span>
+        <div>
+          <h3>Dynamic programming for the single-unit commitment problem with spinning
+              reserves and reactive power</h3>
+          <p class="authors">A. Frangioni, C. Gentile, <b>D. Meoli</b></p>
+          <p class="venue">Submitted, 2026</p>
+          <p class="gist">
+            Spinning reserves and reactive power are shown to be absorbable into the
+            polynomial dynamic programming algorithms for 1UC at essentially no
+            algorithmic cost, by a per-period partial minimisation that folds them into an
+            effective convex piecewise-quadratic production cost. The two resulting SMS++
+            solvers beat a state-of-the-art MILP solver by roughly two orders of magnitude.
+          </p>
+        </div>
+      </article>
+
+      <article class="pub">
+        <span class="tag">C1</span>
+        <div>
+          <h3>Enhancing energy system modelling with advanced mathematical decomposition
+              techniques: feasibility of coupling SMS++ and PyPSA</h3>
+          <p class="authors">D. Fioriti, A. Pampado, C. Scarpelli, G. Pasini,
+            G. Lutzemberger, S. Barsali, D. Poli, <b>D. Meoli</b>, L. Mencarelli,
+            A. Frangioni</p>
+          <p class="venue">2025 IEEE International Conference on Environment and Electrical
+            Engineering / Industrial and Commercial Power Systems Europe
+            (EEEIC / I&amp;CPS Europe), pp. 1&ndash;6, 2025</p>
+          <p class="meta">
+            <a href="https://doi.org/10.1109/EEEIC/ICPSEurope64998.2025.11169291">doi:10.1109/EEEIC/ICPSEurope64998.2025.11169291</a>
+            <span class="sep">&middot;</span>
+            <a href="https://pages.di.unipi.it/frangio/papers/IECE25.pdf">preprint</a>
+          </p>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section id="software">
+  <div class="grid">
+    <h2>Software</h2>
+    <div class="body">
+      <p>
+        Research code is a deliverable, not a by-product. Inside SMS++ my contributions are
+        whole modules rather than patches, each one a <span class="k">Block</span> that
+        states a problem or a <span class="k">Solver</span> that attacks a structure:
+      </p>
+      <pre class="tree"><i>model side</i>
+  <b>SVMBlock</b>              support vector machines, primal and dual, as a Block
+  <b>MultiStageStochasticBlock</b>  scenario trees over two-stage stages
+  <b>ScenarioReductionBlock</b>     scenario trees, reduced
+
+<i>algorithm side</i>
+  <b>ThermalUnitDPSolver</b>        exact DP for the single-unit commitment problem,
+  <b>ThermalUnitExtDPSolver</b>     run-length state space, reserves, reactive power
+  <b>BranchAndXSolver</b>           relaxation-agnostic branch-and-X
+  <b>BendersDecompositionSolver</b> generic Benders over any Block partition
+  <b>ScenarioReductionSolver</b>    scenario reduction as a Solver
+  <b>BundleSolver</b>               <i>(contributions)</i> master problems and cuts
+  <b>MILPSolver</b>                 <i>(contributions)</i> CPLEX, Gurobi, SCIP, HiGHS, PIPS</pre>
+      <p class="gist">
+        Plus the surrounding infrastructure: the module template every new SMS++ component
+        is generated from, the Python bindings
+        (<a href="https://github.com/SPSUnipi/pySMSpp">pySMSpp</a>) and the
+        PyPSA&nbsp;&rarr;&nbsp;SMS++ converter
+        (<a href="https://github.com/SPSUnipi/pypsa2smspp">pypsa2smspp</a>).
+      </p>
+
+      <p class="label" style="margin-top:2rem">Open source, elsewhere</p>
+      <ul class="repos">
+        <li>
+          <span class="name"><a href="https://github.com/aimacode/aima-python">aima-python</a>
+            <span class="stars">&#9733;8.8k</span></span>
+          <p class="what">Reference code for Russell &amp; Norvig&rsquo;s
+            <i>Artificial Intelligence: A Modern Approach</i>. Fourth-most-active
+            contributor: the CDCL SAT solver and its heuristics, AC3b/AC4/GAC constraint
+            propagation, the planning-as-search translators (CSPlan, SATPlan, ForwardPlan,
+            BackwardPlan), SVMs and the linear learners, the missing fourth-edition
+            algorithms (game theory, EM, Kalman, DBN, DDN, SARSA), a GraphPlan mutex fix,
+            and the restructuring of the repository into a proper package.</p>
+        </li>
+        <li>
+          <span class="name"><a href="https://github.com/dmeoli/optiml">optiml</a>
+            <span class="stars">&#9733;11</span></span>
+          <p class="what">Optimizers, from line search and Newton-type methods to
+            proximal bundle and interior point, wired to scikit-learn-compatible models
+            that are trained with them.</p>
+        </li>
+        <li>
+          <span class="name"><a href="https://github.com/dmeoli/NeuroSAT">NeuroSAT</a>
+            <span class="stars">&#9733;8</span></span>
+          <p class="what">Neuro-symbolic approaches to SAT: graph networks and
+            reinforcement learning driving the branching heuristic of a real solver.</p>
+        </li>
+        <li>
+          <span class="name"><a href="https://github.com/dmeoli/WS4J">WS4J</a>
+            <span class="stars">&#9733;24</span></span>
+          <p class="what">WordNet-based semantic relatedness and similarity measures,
+            as a Java API.</p>
+        </li>
+        <li>
+          <span class="name"><a href="https://github.com/dmeoli/PESAD">PESAD</a>
+            <span class="stars">&#9733;8</span></span>
+          <p class="what">A Prolog expert system for anxiety, obsessive-compulsive and
+            trauma-related disorders, following DSM-5-TR criteria.</p>
+        </li>
+        <li>
+          <span class="name">upstream patches</span>
+          <p class="what">Bound-constraint support in
+            <a href="https://github.com/qpsolvers/qpsolvers">qpsolvers</a>, fixes in
+            <a href="https://github.com/scipy/scipy">SciPy</a>,
+            <a href="https://github.com/ERGO-Code/HiGHS">HiGHS</a>,
+            <a href="https://github.com/frangio68/Min-Cost-Flow-Class">MCFClass</a> and
+            <a href="https://github.com/fastflow/fastflow">FastFlow</a>, and the Windows
+            MKL linkage of the COIN-OR conda-forge feedstocks (CoinUtils, Osi, Clp, Cgl,
+            Cbc).</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="grid">
+    <h2>Experience</h2>
+    <div class="body">
+      <div class="entry">
+        <span class="when">2021&ndash;</span>
+        <div>
+          <h3>Research fellow</h3>
+          <p class="where">Dipartimento di Informatica, Universit&agrave; di Pisa</p>
+          <p class="note">Optimization models and solvers for energy systems, from the
+            AUTENS project on energy-community autarchy to decomposition methods for
+            capacity expansion under uncertainty. Core development on SMS++.</p>
+        </div>
+      </div>
+      <div class="entry">
+        <span class="when">2018&ndash;2019</span>
+        <div>
+          <h3>Data scientist</h3>
+          <p class="where">Exprivia S.p.A., Molfetta (BA)</p>
+          <p class="note">Predictive maintenance on multivariate time series, a waste
+            classifier for smart bins, and a real-time people-counting model shipped for
+            Mobile World Congress 2019, all served from containers.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="grid">
+    <h2>Education</h2>
+    <div class="body">
+      <div class="entry">
+        <span class="when">2020&ndash;</span>
+        <div>
+          <h3>MSc in Computer Science, Artificial Intelligence</h3>
+          <p class="where">Universit&agrave; di Pisa</p>
+        </div>
+      </div>
+      <div class="entry">
+        <span class="when">2014&ndash;2018</span>
+        <div>
+          <h3>BSc in Computer Science</h3>
+          <p class="where">Universit&agrave; degli Studi di Bari &ldquo;Aldo Moro&rdquo;
+            &mdash; 110/110 <i>cum laude</i></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="grid">
+    <h2>Contact</h2>
+    <div class="body">
+      <dl class="contact">
+        <div><dt>Email</dt><dd><a href="mailto:donato.meoli@outlook.com">donato.meoli@outlook.com</a></dd></div>
+        <div><dt>University</dt><dd><a href="mailto:d.meoli@studenti.unipi.it">d.meoli@studenti.unipi.it</a></dd></div>
+        <div><dt>Code</dt><dd><a href="https://github.com/dmeoli">github.com/dmeoli</a></dd></div>
+        <div><dt>SMS++</dt><dd><a href="https://gitlab.com/dmeoli">gitlab.com/dmeoli</a></dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>Donato Meoli &middot; Pisa, Italy</span>
+  <span>Last updated September 2026</span>
+</footer>
+
+</div>
+</body>
+</html>
