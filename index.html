@@ -108,7 +108,9 @@ h2 {
   position: sticky; top: 1.4rem;
 }
 .body > * + * { margin-top: 1.15rem; }
+.body > p + p { margin-top: 1.5rem; }
 .body p { margin: 0; max-width: 40em; }
+.body p b { font-weight: 500; color: var(--ink); }
 a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
 
 /* ---- publications ------------------------------------------------------ */
@@ -221,34 +223,40 @@ footer {
     <h2>Research</h2>
     <div class="body">
       <p>
-        A model is never only its solution set: it is a formulation, and the formulation
-        decides which algorithms are applicable to it at all. A constraint satisfaction
-        problem rewritten as a satisfiability instance inherits everything a CDCL solver
-        knows how to do with clauses. A monolithic program split along structure it
-        already has inherits duality, and with it methods that never look at the whole
-        problem at once. Nothing about the problem changes; what changes is what can be
-        brought to bear on it, and how expensive the answer is to obtain.
+        I work in mathematical optimization, along two lines that share one idea: the
+        difficulty of a problem lies in how it is written, so the useful move is to rewrite
+        it &mdash; as a set of smaller problems, or in a different formalism altogether.
       </p>
       <p>
-        Most of my work is on the second of those: decomposing a model, solving the
-        pieces, and putting the answers back together. It lands in
-        <a href="https://gitlab.com/smspp">SMS++</a>, a C++ framework where a model is a
-        tree of <span class="k">Block</span>s and every algorithm is a
-        <span class="k">Solver</span> that attaches to one, so a single instance can be
-        solved monolithically, dualized, or split by scenario without rewriting a line of
-        the model. Around it: Lagrangian and Benders decomposition, bundle methods for the
-        nondifferentiable duals they produce, and exact combinatorial algorithms &mdash;
-        dynamic programming above all &mdash; for the small subproblems a decomposition
-        leaves behind, where a general-purpose solver is the wrong instrument by orders of
-        magnitude.
+        <b>Decomposition.</b> Lagrangian relaxation and Benders decomposition, the bundle
+        methods that solve the nondifferentiable duals they give rise to, and the parallel
+        solution of the subproblems, which a decomposition produces by the hundred and
+        which are independent by construction. This is the premise of
+        <a href="https://gitlab.com/smspp">SMS++</a>, where a model is declared as a tree
+        of <span class="k">Block</span>s: the same instance can then be solved
+        monolithically, dualized along its coupling constraints, or split by scenario, and
+        which of the three happens is a matter of configuration rather than of rewriting
+        the model.
       </p>
       <p>
-        The other half is where I started, and the reason the first one interests me: the
-        bridge between symbolic and numerical AI. Search, constraint satisfaction, SAT and
-        planning on one side, continuous optimization and learning on the other, with
-        translation running both ways &mdash; planning encoded as satisfiability, learned
-        heuristics steering the search of an exact solver, optimization methods written to
-        train models rather than models written to imitate optimization.
+        <b>Reformulation.</b> The same move across formalisms. A planning problem can be
+        stated as a constraint satisfaction problem and, from there, as a propositional
+        formula, at which point a CDCL solver applies to it; I implemented that chain of
+        translators in <a href="https://github.com/aimacode/aima-python">aima-python</a>.
+        On the numerical side the move is to recognise, inside a subproblem, a structure
+        that already has an efficient algorithm: the subproblems of a capacitated facility
+        location are binary knapsacks, a single-unit commitment is a shortest path on a
+        run-length graph, a dispatch is a min-cost flow. Nothing about the problem changes,
+        only the class of algorithms that can be brought to bear on it, and what that costs.
+      </p>
+      <p>
+        <b>Learning inside exact methods.</b> The direction that runs the other way:
+        heuristics learned from data, placed exactly where an exact method makes a choice
+        &mdash; branching in a SAT solver, step sizes in a bundle method &mdash; with the
+        guarantees of the exact method left intact. And symmetrically, learning problems
+        stated as structured optimization models: a support vector machine is a
+        <span class="k">Block</span> like any other, and the same decomposition machinery
+        applies to it.
       </p>
     </div>
   </div>
@@ -304,9 +312,9 @@ footer {
     <h2>Software</h2>
     <div class="body">
       <p>
-        Research code is a deliverable, not a by-product. I am, with Antonio Frangioni,
-        one of the two main maintainers of SMS++, so the work runs across the whole tree
-        &mdash; core, solvers, modules &mdash; rather than sitting in one corner of it.
+        Most of the above exists as code, and most of that code is in SMS++, of which I
+        am one of the two main maintainers with Antonio Frangioni; the work runs across the
+        whole tree, core, solvers and modules, rather than sitting in one corner of it.
         Some of it is mine end to end:
       </p>
       <pre class="tree"><i>written end to end</i>
