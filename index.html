@@ -72,6 +72,11 @@ h1 {
   font-weight: 300;
 }
 .standfirst em { font-style: italic; color: var(--ink); }
+.creed {
+  font-family: var(--mono); font-size: .76rem; color: var(--ink-soft);
+  margin: -.15rem 0 0; letter-spacing: .01em;
+}
+.creed span { color: var(--accent); padding: 0 .18rem; }
 .links { display: flex; flex-wrap: wrap; gap: .35rem 1.4rem; margin-top: .5rem; }
 .links a {
   font-family: var(--mono); font-size: .78rem; color: var(--ink-soft);
@@ -180,6 +185,8 @@ footer {
     thing no method could touch. That translation, symbolic and numerical alike,
     is my subject.
   </p>
+  <p class="creed">polymath <span>&middot;</span> neuroqueer <span>&middot;</span>
+    2e ADHDer <span>&middot;</span> optimization to make the most of my OCD</p>
   <nav class="links" aria-label="Elsewhere">
     <a href="mailto:donato.meoli@outlook.com">Email</a>
     <a href="https://github.com/dmeoli">GitHub</a>
@@ -287,12 +294,12 @@ footer {
   <b>TwoStageStochasticBlock</b>    here-and-now design over wait-and-see recourse
   <b>MultiStageStochasticBlock</b>  scenario trees built out of two-stage stages
   <b>BendersDecompositionSolver</b> generic Benders over any partition of a Block
+  <b>BranchAndXSolver</b>           relaxation-agnostic branch-and-X
 
 <i>major contributions</i>
   <b>UCBlock</b>                    unit commitment, large parts of it, including the two
                              exact DP solvers for the single-unit problem with
                              reserves and reactive power
-  <b>BranchAndXSolver</b>           relaxation-agnostic branch-and-X
   <b>ScenarioReductionSolver</b>    scenario reduction as a Solver
   <b>BundleSolver</b>               master problems, cuts, vertical linearizations
   <b>MILPSolver</b>                 CPLEX, Gurobi, SCIP, HiGHS, PIPS-IPM++
