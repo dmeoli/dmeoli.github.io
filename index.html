@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Donato Meoli - structured optimization and decomposition methods, Dipartimento di Informatica, Universita di Pisa.">
 <meta name="author" content="Donato Meoli">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%224%22 fill=%22%236a37a8%22/><text x=%2216%22 y=%2223%22 font-family=%22Georgia,serif%22 font-size=%2219%22 fill=%22white%22 text-anchor=%22middle%22>M</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%224%22 fill=%22%237a52c0%22/><text x=%2216%22 y=%2223%22 font-family=%22Georgia,serif%22 font-size=%2219%22 fill=%22white%22 text-anchor=%22middle%22>M</text></svg>">
 <style>*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}</style>
 <title>Donato Meoli</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,38 +13,38 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 :root {
-  --ground:      #faf8fd;
-  --surface:     #ffffff;
-  --ink:         #1b1526;
-  --ink-soft:    #564c66;
-  --ink-faint:   #837994;
-  --rule:        #e3dcec;
-  --accent:      #6a37a8;
-  --accent-wash: #f0e8fa;
+  --ground:      #f6f3fb;
+  --surface:     #fdfcfe;
+  --ink:         #2a2338;
+  --ink-soft:    #5f5478;
+  --ink-faint:   #8b81a4;
+  --rule:        #e5deef;
+  --accent:      #7a52c0;
+  --accent-wash: #efe9fa;
   --serif: "Spectral", "Iowan Old Style", Palatino, Georgia, serif;
   --mono:  "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --ground:      #0f0b16;
-    --surface:     #191322;
-    --ink:         #ece6f4;
-    --ink-soft:    #b0a5c0;
-    --ink-faint:   #8e83a0;
-    --rule:        #2d2340;
-    --accent:      #b892f2;
-    --accent-wash: #251a38;
+    --ground:      #14101d;
+    --surface:     #1c1729;
+    --ink:         #e7e1f2;
+    --ink-soft:    #b3a8c9;
+    --ink-faint:   #8e84a5;
+    --rule:        #2f2842;
+    --accent:      #c1a6f5;
+    --accent-wash: #261e3a;
   }
 }
 :root[data-theme="dark"] {
-  --ground:      #0f0b16;
-  --surface:     #191322;
-  --ink:         #ece6f4;
-  --ink-soft:    #b0a5c0;
-  --ink-faint:   #8e83a0;
-  --rule:        #2d2340;
-  --accent:      #b892f2;
-  --accent-wash: #251a38;
+  --ground:      #14101d;
+  --surface:     #1c1729;
+  --ink:         #e7e1f2;
+  --ink-soft:    #b3a8c9;
+  --ink-faint:   #8e84a5;
+  --rule:        #2f2842;
+  --accent:      #c1a6f5;
+  --accent-wash: #261e3a;
 }
 
 body {
@@ -175,9 +175,10 @@ footer {
   <p class="eyebrow">Universit&agrave; di Pisa &middot; Dipartimento di Informatica</p>
   <h1>Donato Meoli</h1>
   <p class="standfirst">
-    I work on <em>structured optimization</em>: exploiting the block structure a large
-    mathematical model already has, so that a decomposition method can solve what a
-    monolithic solver cannot. Energy systems are where I put it to the test.
+    I work on <em>how a problem is written down</em>. Restate a model in another
+    formalism, or split it along structure it already has, and it stops being the
+    thing no method could touch. That translation, symbolic and numerical alike,
+    is my subject.
   </p>
   <nav class="links" aria-label="Elsewhere">
     <a href="mailto:donato.meoli@outlook.com">Email</a>
@@ -193,28 +194,34 @@ footer {
     <h2>Research</h2>
     <div class="body">
       <p>
-        A hard optimization model is rarely a shapeless pile of variables. It is a power
-        system made of units, a portfolio made of scenarios, a network made of commodities.
-        My work is on algorithms that read that structure instead of flattening it:
-        Lagrangian and Benders decomposition, bundle methods for the nondifferentiable
-        duals they produce, and exact combinatorial solvers for the small subproblems the
-        decomposition leaves behind.
+        A model is never only its solution set: it is a formulation, and the formulation
+        decides which algorithms are applicable to it at all. A constraint satisfaction
+        problem rewritten as a satisfiability instance inherits everything a CDCL solver
+        knows how to do with clauses. A monolithic program split along structure it
+        already has inherits duality, and with it methods that never look at the whole
+        problem at once. Nothing about the problem changes; what changes is what can be
+        brought to bear on it, and how expensive the answer is to obtain.
       </p>
       <p>
-        Most of it lands in <a href="https://smspp.gitlab.io/">SMS++</a>, a C++ framework
-        where a model is a tree of <span class="k">Block</span>s and every algorithm is a
-        <span class="k">Solver</span> that attaches to one, so the same instance can be
-        solved monolithically, dualized, or split by scenario without rewriting the model.
-        The current application is capacity expansion and unit commitment under
-        uncertainty, where SMS++ is being coupled to
-        <a href="https://pypsa.org/">PyPSA</a> to bring decomposition to models that a
-        MILP solver alone cannot close.
+        Most of my work is on the second of those: decomposing a model, solving the
+        pieces, and putting the answers back together. It lands in
+        <a href="https://smspp.gitlab.io/">SMS++</a>, a C++ framework where a model is a
+        tree of <span class="k">Block</span>s and every algorithm is a
+        <span class="k">Solver</span> that attaches to one, so a single instance can be
+        solved monolithically, dualized, or split by scenario without rewriting a line of
+        the model. Around it: Lagrangian and Benders decomposition, bundle methods for the
+        nondifferentiable duals they produce, and exact combinatorial algorithms &mdash;
+        dynamic programming above all &mdash; for the small subproblems a decomposition
+        leaves behind, where a general-purpose solver is the wrong instrument by orders of
+        magnitude.
       </p>
       <p>
-        Before optimization I spent several years in symbolic AI and machine learning,
-        which is still where my second interest sits: learned heuristics inside exact
-        solvers, and the reverse direction, optimization methods written to train models
-        rather than the other way around.
+        The other half is where I started, and the reason the first one interests me: the
+        bridge between symbolic and numerical AI. Search, constraint satisfaction, SAT and
+        planning on one side, continuous optimization and learning on the other, with
+        translation running both ways &mdash; planning encoded as satisfiability, learned
+        heuristics steering the search of an exact solver, optimization methods written to
+        train models rather than models written to imitate optimization.
       </p>
     </div>
   </div>
@@ -358,9 +365,10 @@ footer {
         <div>
           <h3>Research fellow</h3>
           <p class="where">Dipartimento di Informatica, Universit&agrave; di Pisa</p>
-          <p class="note">Optimization models and solvers for energy systems, from the
-            AUTENS project on energy-community autarchy to decomposition methods for
-            capacity expansion under uncertainty. Core development on SMS++.</p>
+          <p class="note">Decomposition methods and solvers for large-scale
+            optimization, and core development on SMS++. Applied so far to planning and
+            scheduling under uncertainty, on models with tens of thousands of variables
+            per scenario.</p>
         </div>
       </div>
       <div class="entry">
