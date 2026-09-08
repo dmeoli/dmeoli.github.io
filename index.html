@@ -153,6 +153,7 @@ a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset:
 /* ---- CV entries -------------------------------------------------------- */
 .entry { display: grid; grid-template-columns: 8.5rem 1fr; gap: .2rem 1.2rem; }
 .entry + .entry { margin-top: 1.6rem; }
+.entry.plain { grid-template-columns: 1fr; }
 .when {
   font-family: var(--mono); font-size: .74rem; color: var(--ink-faint);
   padding-top: .3rem; font-variant-numeric: tabular-nums;
@@ -435,15 +436,13 @@ footer {
   <div class="grid">
     <h2>Education</h2>
     <div class="body">
-      <div class="entry">
-        <span class="when">2020&ndash;</span>
+      <div class="entry plain">
         <div>
           <h3>MSc in Computer Science, Artificial Intelligence</h3>
           <p class="where">Universit&agrave; di Pisa</p>
         </div>
       </div>
-      <div class="entry">
-        <span class="when">2014&ndash;2018</span>
+      <div class="entry plain">
         <div>
           <h3>BSc in Computer Science</h3>
           <p class="where">Universit&agrave; degli Studi di Bari &ldquo;Aldo Moro&rdquo;
