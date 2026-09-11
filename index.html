@@ -122,6 +122,8 @@ a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset:
   height: fit-content; text-align: center;
 }
 .pub h3 { margin: 0 0 .25rem; font-size: 1.06rem; font-weight: 500; line-height: 1.35; }
+.pub h3 a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--rule); }
+.pub h3 a:hover, .pub h3 a:focus-visible { color: var(--accent); border-color: var(--accent); }
 .authors { margin: 0; color: var(--ink-soft); font-size: .95rem; }
 .authors b { font-weight: 500; color: var(--ink); }
 .venue { margin: .25rem 0 0; font-size: .95rem; color: var(--ink-soft); font-style: italic; }
@@ -256,13 +258,13 @@ footer {
         on a run-length graph, a dispatch is a min-cost flow.
       </p>
       <p>
-        <b>Connecting the two.</b> Heuristics learned from data can be placed exactly where
-        an exact method makes a choice, e.g., the branching of a SAT solver in
+        <b>Connecting the two.</b> Heuristics learned from data can be placed exactly
+        where an exact method makes a choice, e.g., the branching of a SAT solver in
         <a href="https://github.com/dmeoli/NeuroSAT">NeuroSAT</a> or the step size of a
         bundle method, so that the learned part chooses while the exact part still
-        guarantees; conversely, learning problems can be written as structured optimization
-        models, a support vector machine being a <span class="k">Block</span> like any
-        other, to which the same decomposition machinery applies.
+        guarantees. Conversely, learning problems can be written as structured optimization
+        models: a support vector machine is a <span class="k">Block</span> like any other,
+        to which the same decomposition machinery applies.
       </p>
     </div>
   </div>
@@ -293,8 +295,9 @@ footer {
       <article class="pub">
         <span class="tag">C1</span>
         <div>
-          <h3>Enhancing energy system modelling with advanced mathematical decomposition
-              techniques: feasibility of coupling SMS++ and PyPSA</h3>
+          <h3><a href="https://pages.di.unipi.it/frangio/papers/IECE25.pdf">Enhancing
+              energy system modelling with advanced mathematical decomposition
+              techniques: feasibility of coupling SMS++ and PyPSA</a></h3>
           <p class="authors">D. Fioriti, A. Pampado, C. Scarpelli, G. Pasini,
             G. Lutzemberger, S. Barsali, D. Poli, <b>D. Meoli</b>, L. Mencarelli,
             A. Frangioni</p>
