@@ -246,10 +246,10 @@ footer {
         rise to, and the parallel solution of the subproblems, which a decomposition
         produces by the hundred and which are independent by construction. This is the
         premise of <a href="https://gitlab.com/smspp">SMS++</a>, where a model is declared
-        as a tree of <span class="k">Block</span>s, so that the same instance can be solved
-        monolithically, dualized along its coupling constraints, or split by scenario, the
-        choice being a matter of configuration (i.e., of which
-        <span class="k">Solver</span> is attached where) rather than of rewriting the
+        as a tree of <span class="k">Block</span>s: the same instance can then be solved
+        monolithically, dualized along its coupling constraints, or split by scenario.
+        Which of the three happens is a matter of configuration, i.e., of which
+        <span class="k">Solver</span> is attached where, rather than of rewriting the
         model. Reformulation returns here as the recognition, inside a subproblem, of a
         structure that already has an efficient algorithm: the subproblems of a capacitated
         facility location are binary knapsacks, a single-unit commitment is a shortest path
