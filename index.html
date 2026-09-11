@@ -201,10 +201,9 @@ footer {
   <p class="eyebrow">Universit&agrave; di Pisa &middot; Dipartimento di Informatica</p>
   <h1>Donato Meoli</h1>
   <p class="standfirst">
-    I work on <em>how a problem is written down</em>. Restate a model in another
-    formalism, or split it along structure it already has, and it stops being the
-    thing no method could touch. That translation, symbolic and numerical alike,
-    is my subject.
+    I am concerned with <em>how a problem is written down</em>: a model restated in
+    another formalism, or split along the structure it already has, becomes the
+    business of algorithms that could not touch it before.
   </p>
   <p class="creed">polymath <span>&middot;</span> neuroqueer <span>&middot;</span>
     <abbr title="twice-exceptional">2e</abbr> ADHDer</p>
@@ -224,46 +223,46 @@ footer {
     <h2>Research</h2>
     <div class="body">
       <p>
-        I came to optimization from symbolic AI, and I work between the two. What holds
-        them together is a single idea: the difficulty of a problem lies in how it is
-        written, so the useful move is to rewrite it &mdash; as a set of smaller problems,
-        or in a different formalism altogether.
+        I came to optimization from symbolic AI, and I work between the two; what holds
+        them together is that the difficulty of a problem lies in how it is written, so
+        that the useful move is to rewrite it, either as a set of smaller problems or in a
+        different formalism altogether.
       </p>
       <p>
-        <b>Symbolic AI.</b> Knowledge representation and reasoning, which is where I
-        started: rule-based expert systems for domains whose knowledge is codified and
-        whose reasoning has to stay inspectable, from the diagnostic criteria of the
-        DSM-5-TR encoded in Prolog to fuzzy rules in CLIPS, and lexical semantics over
-        WordNet. Above all, translation between formalisms: a planning problem can be
+        <b>Symbolic AI.</b> Knowledge representation and reasoning is where I started:
+        rule-based expert systems for domains whose knowledge is codified and whose
+        reasoning has to remain inspectable (the diagnostic criteria of the DSM-5-TR
+        encoded in Prolog, fuzzy rules in CLIPS), and lexical semantics over WordNet. What
+        interests me there is the translation between formalisms: a planning problem can be
         stated as a constraint satisfaction problem and, from there, as a propositional
-        formula, at which point a CDCL solver applies to it. I implemented that chain of
+        formula, at which point a CDCL solver applies to it; I implemented that chain of
         translators, and the CDCL solver itself, in
         <a href="https://github.com/aimacode/aima-python">aima-python</a>.
       </p>
       <p>
-        <b>Numerical optimization.</b> The same move with a different alphabet. Lagrangian
-        relaxation and Benders decomposition, the bundle methods that solve the
-        nondifferentiable duals they give rise to, and the parallel solution of the
-        subproblems, which a decomposition produces by the hundred and which are
-        independent by construction. This is the premise of
-        <a href="https://gitlab.com/smspp">SMS++</a>, where a model is declared as a tree
-        of <span class="k">Block</span>s: the same instance can then be solved
-        monolithically, dualized along its coupling constraints, or split by scenario, and
-        which of the three happens is a matter of configuration rather than of rewriting
-        the model. Reformulation returns here as recognising, inside a subproblem, a
+        <b>Numerical optimization.</b> Decomposition performs the same operation on
+        structure rather than on formalism: Lagrangian relaxation and Benders
+        decomposition, the bundle methods that solve the nondifferentiable duals they give
+        rise to, and the parallel solution of the subproblems, which a decomposition
+        produces by the hundred and which are independent by construction. This is the
+        premise of <a href="https://gitlab.com/smspp">SMS++</a>, where a model is declared
+        as a tree of <span class="k">Block</span>s, so that the same instance can be solved
+        monolithically, dualized along its coupling constraints, or split by scenario, the
+        choice being a matter of configuration (i.e., of which
+        <span class="k">Solver</span> is attached where) rather than of rewriting the
+        model. Reformulation returns here as the recognition, inside a subproblem, of a
         structure that already has an efficient algorithm: the subproblems of a capacitated
         facility location are binary knapsacks, a single-unit commitment is a shortest path
         on a run-length graph, a dispatch is a min-cost flow.
       </p>
       <p>
-        <b>Connecting the two.</b> The reason I keep a foot on each side. Heuristics learned
-        from data, placed exactly where an exact method makes a choice &mdash; the branching
-        of a SAT solver in
-        <a href="https://github.com/dmeoli/NeuroSAT">NeuroSAT</a>, the step size of a bundle
-        method &mdash; so that the learned part chooses and the exact part still guarantees.
-        And symmetrically, learning problems written as structured optimization models: a
-        support vector machine is a <span class="k">Block</span> like any other, and the
-        same decomposition machinery applies to it.
+        <b>Connecting the two.</b> Heuristics learned from data can be placed exactly where
+        an exact method makes a choice, e.g., the branching of a SAT solver in
+        <a href="https://github.com/dmeoli/NeuroSAT">NeuroSAT</a> or the step size of a
+        bundle method, so that the learned part chooses while the exact part still
+        guarantees; conversely, learning problems can be written as structured optimization
+        models, a support vector machine being a <span class="k">Block</span> like any
+        other, to which the same decomposition machinery applies.
       </p>
     </div>
   </div>
@@ -320,9 +319,9 @@ footer {
     <div class="body">
       <p>
         Most of the above exists as code, and most of that code is in SMS++, of which I
-        am one of the two main maintainers with Antonio Frangioni; the work runs across the
-        whole tree, core, solvers and modules, rather than sitting in one corner of it.
-        Some of it is mine end to end:
+        am one of the two main maintainers together with Antonio Frangioni; the work runs
+        across the whole tree (core, solvers and modules) rather than sitting in one corner
+        of it. Some of it is mine end to end:
       </p>
       <pre class="tree"><i>written end to end</i>
   <b>SVMBlock</b>                   support vector machines, primal and dual, as a Block
@@ -414,8 +413,10 @@ footer {
             Universit&agrave; di Pisa</p>
           <p class="note">Decomposition methods and solvers for large-scale
             optimization, and core development on SMS++, within the AUTENS, RESILIENT and
-            PowerMax research projects. Applied so far to planning and scheduling under
-            uncertainty, on models with tens of thousands of variables per scenario.</p>
+            PowerMax research projects; the applications so far are planning and scheduling
+            under uncertainty, i.e., models with tens of thousands of variables per
+            scenario, on which a general-purpose solver alone does not close the
+            instance.</p>
         </div>
       </div>
       <div class="entry">
