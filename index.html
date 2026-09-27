@@ -19,38 +19,50 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 :root {
-  --ground:      #f8f6fb;
-  --surface:     #fefdff;
-  --ink:         #302a3d;
-  --ink-soft:    #675e79;
-  --ink-faint:   #948caa;
-  --rule:        #e7e2ee;
-  --accent:      #8265bd;
-  --accent-wash: #f2edf9;
+  --ground:      #faf7fc;
+  --surface:     #fefcff;
+  --ink:         #2e2040;
+  --title:       #3a1d5e;
+  --ink-soft:    #5f4b76;
+  --ink-faint:   #836e9e;
+  --heading:     #7a569f;
+  --rule:        #e8def2;
+  --accent:      #7b3db2;
+  --link:        #6a35a0;
+  --accent-wash: #f1e7f9;
+  --code:        #552a86;
   --serif: "Spectral", "Iowan Old Style", Palatino, Georgia, serif;
   --mono:  "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --ground:      #16131d;
-    --surface:     #1e1a27;
-    --ink:         #e3dfeb;
-    --ink-soft:    #aea6bd;
-    --ink-faint:   #8a8299;
-    --rule:        #302a3d;
-    --accent:      #b7a2e0;
-    --accent-wash: #262034;
+    --ground:      #231436;
+    --surface:     #2c1a42;
+    --ink:         #ece2f6;
+    --title:       #f7effd;
+    --ink-soft:    #c1aed7;
+    --ink-faint:   #9a86b6;
+    --heading:     #b594da;
+    --rule:        #422d63;
+    --accent:      #d0a6f3;
+    --link:        #dcbbf8;
+    --accent-wash: #362255;
+    --code:        #e2cff8;
   }
 }
 :root[data-theme="dark"] {
-  --ground:      #16131d;
-  --surface:     #1e1a27;
-  --ink:         #e3dfeb;
-  --ink-soft:    #aea6bd;
-  --ink-faint:   #8a8299;
-  --rule:        #302a3d;
-  --accent:      #b7a2e0;
-  --accent-wash: #262034;
+  --ground:      #231436;
+  --surface:     #2c1a42;
+  --ink:         #ece2f6;
+  --title:       #f7effd;
+  --ink-soft:    #c1aed7;
+  --ink-faint:   #9a86b6;
+  --heading:     #b594da;
+  --rule:        #422d63;
+  --accent:      #d0a6f3;
+  --link:        #dcbbf8;
+  --accent-wash: #362255;
+  --code:        #e2cff8;
 }
 
 body {
@@ -70,8 +82,8 @@ body {
 }
 .intro { display: flex; flex-direction: column; gap: .9rem; min-width: 0; }
 .portrait {
-  width: 136px; height: 136px; border-radius: 50%; object-fit: cover;
-  border: 1px solid var(--rule); margin-top: .4rem;
+  width: 260px; height: 260px; border-radius: 50%; object-fit: cover;
+  border: 2px solid var(--rule); align-self: center;
 }
 .eyebrow {
   font-family: var(--mono); font-size: .69rem; letter-spacing: .16em;
@@ -80,6 +92,7 @@ body {
 h1 {
   font-family: var(--serif); font-weight: 600; font-size: clamp(2.5rem, 6vw, 3.6rem);
   line-height: 1.04; letter-spacing: -.018em; margin: 0; text-wrap: balance;
+  color: var(--title);
 }
 .standfirst {
   margin: 0; max-width: 34em; font-size: 1.12rem; color: var(--ink-soft);
@@ -104,14 +117,14 @@ section { border-top: 1px solid var(--rule); padding: 2.4rem 0 .6rem; }
 .grid { display: grid; grid-template-columns: 9.5rem 1fr; gap: 2.4rem; align-items: start; }
 h2 {
   font-family: var(--mono); font-size: .7rem; font-weight: 500; letter-spacing: .15em;
-  text-transform: uppercase; color: var(--ink-faint); margin: .35rem 0 0;
+  text-transform: uppercase; color: var(--heading); margin: .35rem 0 0;
   position: sticky; top: 1.4rem;
 }
 .body > * + * { margin-top: 1.15rem; }
 .body > p + p { margin-top: 1.5rem; }
 .body p { margin: 0; max-width: 40em; }
-.body p b { font-weight: 500; color: var(--ink); }
-a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+.body p b { font-weight: 500; color: var(--title); }
+a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 2px; }
 
 /* ---- publications ------------------------------------------------------ */
 .pub { display: grid; grid-template-columns: 2.6rem 1fr; gap: 1rem; }
@@ -121,7 +134,7 @@ a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset:
   background: var(--accent-wash); border-radius: 2px; padding: .12rem .3rem;
   height: fit-content; text-align: center;
 }
-.pub h3 { margin: 0 0 .25rem; font-size: 1.06rem; font-weight: 500; line-height: 1.35; }
+.pub h3 { margin: 0 0 .25rem; font-size: 1.06rem; font-weight: 500; line-height: 1.35; color: var(--title); }
 .pub h3 a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--rule); }
 .pub h3 a:hover, .pub h3 a:focus-visible { color: var(--accent); border-color: var(--accent); }
 .authors { margin: 0; color: var(--ink-soft); font-size: .95rem; }
@@ -139,8 +152,8 @@ a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset:
   background: var(--surface); border: 1px solid var(--rule); border-left: 2px solid var(--accent);
   padding: 1rem 1.1rem; margin: 0; overflow-x: auto; white-space: pre;
 }
-.tree b { color: var(--ink); font-weight: 500; }
-.k { font-family: var(--mono); font-size: .86em; color: var(--ink); }
+.tree b { color: var(--code); font-weight: 500; }
+.k { font-family: var(--mono); font-size: .86em; color: var(--code); }
 .tree i { color: var(--ink-faint); font-style: normal; }
 
 /* ---- repo list --------------------------------------------------------- */
@@ -157,10 +170,10 @@ a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset:
 .entry + .entry { margin-top: 1.6rem; }
 .entry.plain { grid-template-columns: 1fr; }
 .when {
-  font-family: var(--mono); font-size: .74rem; color: var(--ink-faint);
+  font-family: var(--mono); font-size: .74rem; color: var(--heading);
   padding-top: .3rem; font-variant-numeric: tabular-nums;
 }
-.entry h3 { margin: 0; font-size: 1.02rem; font-weight: 500; }
+.entry h3 { margin: 0; font-size: 1.02rem; font-weight: 500; color: var(--title); }
 .where { margin: 0; color: var(--ink-soft); font-size: .95rem; }
 .entry p.note { margin: .35rem 0 0; font-size: .95rem; color: var(--ink-soft); max-width: 38em; }
 
@@ -171,7 +184,7 @@ dl { margin: 0; }
 .contact div { display: grid; gap: .15rem; }
 .contact dt, .label {
   font-family: var(--mono); font-size: .68rem; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--ink-faint);
+  text-transform: uppercase; color: var(--heading);
 }
 .contact a { font-size: .95rem; text-decoration: none; border-bottom: 1px solid var(--rule); width: fit-content; }
 .contact a:hover { border-color: var(--accent); }
@@ -187,7 +200,7 @@ footer {
 @media (max-width: 46rem) {
   .grid, .pub, .repos li, .entry { grid-template-columns: 1fr; gap: .6rem; }
   .masthead { grid-template-columns: 1fr; gap: 1.4rem; }
-  .portrait { width: 92px; height: 92px; order: -1; margin-top: 0; }
+  .portrait { width: 170px; height: 170px; order: -1; align-self: start; }
   h2 { position: static; }
   .tag { width: fit-content; }
   .page { padding-top: 3rem; }
