@@ -203,9 +203,9 @@ footer {
   <p class="eyebrow">Universit&agrave; di Pisa &middot; Dipartimento di Informatica</p>
   <h1>Donato Meoli</h1>
   <p class="standfirst">
-    I am concerned with <em>how a problem is written down</em>: a model restated in
-    another formalism, or split along the structure it already has, becomes the
-    business of algorithms that could not touch it before.
+    I am concerned with <em>how a problem is written down</em>, since a model restated
+    in another formalism, or split along the structure it already has, often becomes
+    tractable for algorithms that did not apply to it as first written.
   </p>
   <p class="creed">polymath <span>&middot;</span> neuroqueer <span>&middot;</span>
     <abbr title="twice-exceptional">2e</abbr> ADHDer</p>
@@ -225,47 +225,51 @@ footer {
     <h2>Research</h2>
     <div class="body">
       <p>
-        I came to optimization from symbolic AI, and I work between the two; what holds
-        them together is that the difficulty of a problem lies in how it is written, so
-        that the useful move is to rewrite it, either as a set of smaller problems or in a
-        different formalism altogether.
-      </p>
+        I came to optimization from symbolic AI, and I work between the two fields, which
+        in my view share one premise, i.e., that the difficulty of a problem depends to a
+        large extent on how it is written. Hence, the useful move is often to rewrite it, either as
+        a set of smaller problems or in a different formalism.
+  </p>
       <p>
-        <b>Symbolic AI.</b> Knowledge representation and reasoning is where I started:
+        <b>Symbolic AI.</b> Knowledge representation and reasoning is where I started, with
         rule-based expert systems for domains whose knowledge is codified and whose
-        reasoning has to remain inspectable (the diagnostic criteria of the DSM-5-TR
-        encoded in Prolog, fuzzy rules in CLIPS), and lexical semantics over WordNet. What
-        interests me there is the translation between formalisms: a planning problem can be
-        stated as a constraint satisfaction problem and, from there, as a propositional
-        formula, at which point a CDCL solver applies to it; I implemented that chain of
-        translators, and the CDCL solver itself, in
-        <a href="https://github.com/aimacode/aima-python">aima-python</a>.
-      </p>
+        reasoning has to remain inspectable (e.g., the diagnostic criteria of the DSM-5-TR
+        encoded in Prolog, and fuzzy rules in CLIPS) and with lexical semantics over
+        WordNet. The part I have pursued further is the translation between formalisms: a
+        planning problem can be stated as a Constraint Satisfaction Problem and, from
+        there, as a propositional formula, at which point a CDCL solver applies to it. I
+        implemented that chain of translators in
+        <a href="https://github.com/aimacode/aima-python">aima-python</a>, together with
+        the CDCL solver.
+  </p>
       <p>
-        <b>Numerical optimization.</b> Decomposition performs the same operation on
-        structure rather than on formalism: Lagrangian relaxation and Benders
-        decomposition, the bundle methods that solve the nondifferentiable duals they give
-        rise to, and the parallel solution of the subproblems, which a decomposition
-        produces by the hundred and which are independent by construction. This is the
-        premise of <a href="https://gitlab.com/smspp">SMS++</a>, where a model is declared
-        as a tree of <span class="k">Block</span>s: the same instance can then be solved
-        monolithically, dualized along its coupling constraints, or split by scenario.
-        Which of the three happens is a matter of configuration, i.e., of which
-        <span class="k">Solver</span> is attached where, rather than of rewriting the
-        model. Reformulation returns here as the recognition, inside a subproblem, of a
-        structure that already has an efficient algorithm: the subproblems of a capacitated
-        facility location are binary knapsacks, a single-unit commitment is a shortest path
-        on a run-length graph, a dispatch is a min-cost flow.
-      </p>
+        <b>Numerical optimization.</b> Decomposition performs the same operation on the
+        structure of a model instead of on its formalism. This covers Lagrangian relaxation
+        and Benders decomposition, the bundle methods that solve the nondifferentiable
+        duals they give rise to, and the parallel solution of the subproblems, which a
+        decomposition typically produces by the hundred and which are independent by
+        construction. This is the premise of <a href="https://gitlab.com/smspp">SMS++</a>,
+        where a model is declared as a tree of <span class="k">Block</span>s, and therefore
+        the same instance can be solved monolithically, dualized along its coupling
+        constraints, or split by scenario. The choice among these is a matter of
+        configuration (i.e., of which <span class="k">Solver</span> is attached where), and
+        the model is not rewritten. Reformulation comes back inside the subproblems, as the
+        recognition of a structure that already has an efficient algorithm: for instance,
+        the subproblems of a Capacitated Facility Location are binary knapsacks, a
+        single-unit commitment is a shortest path on a run-length graph, and an economic
+        dispatch is (in its simplest form) a min-cost flow.
+  </p>
       <p>
-        <b>Connecting the two.</b> Heuristics learned from data can be placed exactly
-        where an exact method makes a choice, e.g., the branching of a SAT solver in
-        <a href="https://github.com/dmeoli/NeuroSAT">NeuroSAT</a> or the step size of a
-        bundle method, so that the learned part chooses while the exact part still
-        guarantees. Conversely, learning problems can be written as structured optimization
-        models: a support vector machine is a <span class="k">Block</span> like any other,
-        to which the same decomposition machinery applies.
-      </p>
+        <b>Connecting the two.</b> Heuristics learned from data can be placed at the points
+        where an exact method makes a choice (e.g., the branching of a SAT solver in
+        <a href="https://github.com/dmeoli/NeuroSAT">NeuroSAT</a>, or the step size of a
+        bundle method). The learned part then makes the choice, while the guarantees still
+        come from the exact method (at least as long as the learned choice is one that the
+        method may take anyway). Conversely, learning problems can be written as structured
+        optimization models; a Support Vector Machine, for instance, is a
+        <span class="k">Block</span> like any other, and hence the same decomposition
+        machinery applies to it.
+  </p>
     </div>
   </div>
 </section>
@@ -284,11 +288,12 @@ footer {
           <p class="venue">Submitted, 2026</p>
           <p class="gist">
             Spinning reserves and reactive power are shown to be absorbable into the
-            polynomial dynamic programming algorithms for 1UC at essentially no
-            algorithmic cost, by a per-period partial minimisation that folds them into an
-            effective convex piecewise-quadratic production cost. The two resulting SMS++
-            solvers beat a state-of-the-art MILP solver by roughly two orders of magnitude.
-          </p>
+            polynomial dynamic programming algorithms for the single-unit commitment (1UC)
+            at essentially no algorithmic cost, by a per-period partial minimization that
+            folds them into an effective convex piecewise-quadratic production cost. On the
+            instances tested, the two resulting SMS++ solvers are about two orders of
+            magnitude faster than a general-purpose MILP solver.
+  </p>
         </div>
       </article>
 
@@ -322,10 +327,10 @@ footer {
     <div class="body">
       <p>
         Most of the above exists as code, and most of that code is in SMS++, of which I
-        am one of the two main maintainers together with Antonio Frangioni; the work runs
-        across the whole tree (core, solvers and modules) rather than sitting in one corner
-        of it. Some of it is mine end to end:
-      </p>
+        am one of the two main maintainers together with Antonio Frangioni; my work there
+        runs across the core, the solvers and the modules, and some of it is mine end to
+        end:
+  </p>
       <pre class="tree"><i>written end to end</i>
   <b>SVMBlock</b>                   support vector machines, primal and dual, as a Block
   <b>TwoStageStochasticBlock</b>    here-and-now design over wait-and-see recourse
@@ -414,12 +419,14 @@ footer {
           <h3>Research fellow</h3>
           <p class="where">Dipartimento di Informatica &middot; DESTeC,
             Universit&agrave; di Pisa</p>
-          <p class="note">Decomposition methods and solvers for large-scale
+          <p class="note">
+Decomposition methods and solvers for large-scale
             optimization, and core development on SMS++, within the AUTENS, RESILIENT and
-            PowerMax research projects; the applications so far are planning and scheduling
-            under uncertainty, i.e., models with tens of thousands of variables per
-            scenario, on which a general-purpose solver alone does not close the
-            instance.</p>
+            PowerMax research projects. The applications so far are planning and
+            scheduling under uncertainty, i.e., models with tens of thousands of variables
+            per scenario, on which a general-purpose MILP solver typically does not close
+            the instance in reasonable time.
+  </p>
         </div>
       </div>
       <div class="entry">
@@ -472,7 +479,7 @@ footer {
 </section>
 
 <footer>
-  <span>Donato Meoli &middot; Pisa, Italy</span>
+  <span>Donato Meoli &middot; Italy</span>
   <span>Last updated September 2026</span>
 </footer>
 
