@@ -286,9 +286,10 @@ footer {
         the subproblems, which are typically many (hundreds, say) and independent by
         construction. This
         is the premise of <a href="https://github.com/SMSpp-Project/smspp-project">SMS++</a>, where a model is
-        declared as a tree of <span class="k">Block</span>s; hence, the same instance can
+        declared as a tree of nested blocks; hence, the same instance can
         be solved monolithically, dualized along its linking constraints or split by scenario. The choice among these is a matter of
-        configuration (i.e., of which <span class="k">Solver</span> is attached where),
+        configuration (i.e., of which algorithm is attached to which
+        block),
         and the model need not be rewritten. Reformulation comes back inside the subproblems, as the
         recognition of a structure for which a specialized algorithm exists. For instance, the subproblems of a Capacitated Facility Location are binary
         knapsacks, a single-unit commitment is a shortest path on a graph whose nodes
@@ -313,7 +314,7 @@ footer {
         anyway). Thus, a poor prediction may somewhat slow the method down without
         affecting the correctness of its result.
         Conversely, learning problems can be written as structured optimization models: a
-        Support Vector Machine, for instance, is a <span class="k">Block</span> like any
+        Support Vector Machine, for instance, is a block like any
         other, and hence the decomposition and re-optimization machinery described above
         applies to it.
       </p>
@@ -375,12 +376,7 @@ footer {
       <p>
         Most of the above exists as code, and most of that code is in
         <a href="https://github.com/SMSpp-Project/smspp-project">SMS++</a>, of which I am
-        co-lead maintainer together with Antonio Frangioni. Around the framework, I also
-        work on the Python bindings (<a href="https://github.com/SPSUnipi/pySMSpp">pySMSpp</a>),
-        on the converter that brings models written elsewhere into it
-        (<a href="https://github.com/SPSUnipi/pypsa2smspp">pypsa2smspp</a>), and on its
-        distribution as <a href="https://github.com/conda-forge/smspp-project-feedstock">conda-forge</a>
-        and <a href="https://github.com/SMSpp-Project/homebrew-smspp">Homebrew</a> packages.
+        co-lead maintainer together with Antonio Frangioni.
       </p>
 
       <p class="label" style="margin-top:2rem">Open source, elsewhere</p>
@@ -392,16 +388,15 @@ footer {
             <i>Artificial Intelligence: A Modern Approach</i>. Fourth-most-active
             contributor: SAT solving, constraint propagation, the translation of planning
             problems into search, constraint satisfaction and SAT, linear learners and
-            support vector machines, the algorithms of the fourth edition that were still
-            missing, and the restructuring of the repository into an installable Python
-            package.</p>
+            support vector machines, and the algorithms of the fourth edition that were
+            still missing.</p>
         </li>
         <li>
           <span class="name"><a href="https://github.com/dmeoli/optiml">optiml</a>
             <span class="stars">&#9733;11</span></span>
           <p class="what">Optimizers, from line search and Newton-type methods to
-            proximal bundle and interior point, wired to scikit-learn-compatible models
-            that are trained with them.</p>
+            proximal bundle and interior point, coupled with the learning models that are trained
+            with them.</p>
         </li>
         <li>
           <span class="name"><a href="https://github.com/dmeoli/NeuroSAT">NeuroSAT</a>
@@ -422,18 +417,7 @@ footer {
             <a href="https://github.com/dmeoli/WNAffect">WNAffect</a>
             <span class="stars">&#9733;29</span></span>
           <p class="what">Measures of semantic relatedness and similarity, and of the
-            affective content of words, over a lexical ontology, as Java APIs.</p>
-        </li>
-        <li>
-          <span class="name">upstream patches</span>
-          <p class="what">Bound-constraint support in
-            <a href="https://github.com/qpsolvers/qpsolvers">qpsolvers</a>, fixes in
-            <a href="https://github.com/scipy/scipy">SciPy</a>,
-            <a href="https://github.com/ERGO-Code/HiGHS">HiGHS</a>,
-            <a href="https://github.com/frangio68/Min-Cost-Flow-Class">MCFClass</a> and
-            <a href="https://github.com/fastflow/fastflow">FastFlow</a>, and the Windows
-            MKL linkage of the COIN-OR conda-forge feedstocks (CoinUtils, Osi, Clp, Cgl,
-            Cbc).</p>
+            affective content of words, over a lexical ontology.</p>
         </li>
       </ul>
     </div>
@@ -465,9 +449,8 @@ Decomposition methods and solvers for large-scale
         <div>
           <h3>Data Scientist</h3>
           <p class="where">Exprivia S.p.A., Molfetta (BA)</p>
-          <p class="note">Predictive maintenance on multivariate time series, a waste
-            classifier for smart bins, and a real-time people-counting model deployed at
-            Mobile World Congress 2019, all served from containers.</p>
+          <p class="note">Learning models for predictive maintenance on multivariate time series, for
+            image classification, and for real-time detection and counting.</p>
         </div>
       </div>
     </div>
