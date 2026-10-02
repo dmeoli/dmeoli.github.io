@@ -94,9 +94,29 @@ body::before {
 }
 .intro { display: flex; flex-direction: column; gap: .9rem; min-width: 0; }
 .portrait {
-  width: 260px; height: 260px; border-radius: 50%; object-fit: cover;
-  border: 2px solid var(--rule); align-self: center;
+  display: block; width: 260px; height: 260px; border-radius: 50%; overflow: hidden;
+  border: 2px solid var(--rule); align-self: center; cursor: zoom-in;
 }
+.portrait img {
+  display: block; width: 100%; height: 100%; object-fit: cover;
+  transition: transform .4s ease;
+}
+.portrait:hover img { transform: scale(1.04); }
+.portrait:focus-visible { border-radius: 50%; }
+
+/* ---- the portrait, opened ----------------------------------------------- */
+.lightbox {
+  padding: 0; border: 0; background: none; max-width: 92vw; max-height: 90vh;
+  overflow: visible; cursor: zoom-out;
+}
+.lightbox img {
+  display: block; max-width: 92vw; max-height: 90vh; width: auto; height: auto;
+  border-radius: 4px; box-shadow: 0 24px 80px rgb(0 0 0 / .45);
+}
+.lightbox:focus, .lightbox:focus-visible { outline: none; }
+.lightbox::backdrop { background: rgb(20 14 30 / .78); backdrop-filter: blur(4px); }
+.lightbox[open] { animation: lb-in .25s ease; }
+@keyframes lb-in { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
 .eyebrow {
   font-family: var(--mono); font-size: .69rem; letter-spacing: .16em;
   text-transform: uppercase; color: var(--accent); margin: 0;
@@ -107,11 +127,11 @@ h1 {
   color: var(--title);
 }
 .role {
-  font-family: var(--serif); font-size: 1.18rem; font-weight: 400; margin: -.35rem 0 0;
-  color: var(--heading); letter-spacing: .005em;
+  font-family: var(--serif); font-size: .98rem; font-weight: 400; margin: -.35rem 0 0;
+  color: var(--heading); letter-spacing: 0;
 }
 .role i { font-style: normal; white-space: nowrap; }
-.role span { color: var(--accent); opacity: .6; padding: 0 .3rem; }
+.role span { color: var(--accent); opacity: .6; padding: 0 .22rem; }
 .standfirst {
   margin: 0; max-width: 34em; font-size: 1.12rem; color: var(--ink-soft);
   font-weight: 300;
@@ -234,7 +254,7 @@ footer {
   <p class="eyebrow">Universit&agrave; di Pisa &middot; Dipartimento di Informatica</p>
   <h1>Donato Meoli</h1>
   <p class="role"><i>Research Fellow</i> <span>|</span> <i>Mathematical Optimization</i>
-    <span>|</span> <i>Machine Learning</i></p>
+    <span>|</span> <i>Symbolic AI</i> <span>|</span> <i>Machine Learning</i></p>
   <p class="standfirst">
     I am concerned with <em>how a problem is written down</em>, since the same model,
     restated in another formalism or split along the structure it already has, may
@@ -250,7 +270,9 @@ footer {
     <a href="cv.pdf">CV (PDF)</a>
   </nav>
   </div>
-  <img class="portrait" src="photo.jpg" width="512" height="512" alt="Donato Meoli">
+  <a class="portrait" href="photo-large.jpg" aria-label="Open the photo">
+    <img src="photo.jpg" width="512" height="512" alt="Donato Meoli">
+  </a>
 </header>
 
 <section id="research">
@@ -261,62 +283,57 @@ footer {
         I came to optimization from symbolic AI, and more precisely from Knowledge
         Representation and Reasoning (KR&amp;R), i.e., expert systems, logic programming,
         constraint satisfaction and SAT. In my view, the two fields share one premise:
-        the difficulty of a problem depends (often to a large extent) on how it is written. Hence, the useful move is frequently to rewrite it, either as a
-        set of smaller problems coordinated by a master or in a different formalism for
-        which an efficient algorithm is available.
+        the difficulty of a problem depends (often to a large extent) on how it is
+        written. Hence, the useful move is frequently to rewrite it, either as a set of
+        smaller problems coordinated by a master or in a different formalism for which an
+        efficient algorithm is available.
       </p>
       <p>
         <b>Symbolic AI.</b> I started with expert systems and logic programming, for
         domains whose knowledge is codified and whose reasoning has to remain
-        inspectable, and with ontologies as a representation of lexical knowledge. Of these, I have pursued further the translation between formalisms: a planning
+        inspectable, and with ontologies as a representation of lexical knowledge. Of
+        these, I have pursued further the translation between formalisms: a planning
         problem can be stated as a Constraint Satisfaction Problem and, from there, as a
         propositional formula, at which point the machinery of logical reasoning applies
         to it. I implemented that chain of translators in
         <a href="https://github.com/aimacode/aima-python">aima-python</a>, together with
-        the SAT solver at its end. The same question now comes back in the opposite direction:
-        whether a (weighted) MaxSAT instance can be decomposed along its
-        structure in the way one would decompose a mixed-integer program.
+        the SAT solver at its end. The same question now comes back in the opposite
+        direction: whether a satisfiability problem can be decomposed along its structure
+        in the way one would decompose a mixed-integer program.
       </p>
       <p>
         <b>Numerical optimization.</b> Decomposition performs the same operation on the
         structure of a model instead of on its formalism. This covers Lagrangian
-        relaxation and Benders decomposition (possibly applied recursively, to the subproblems that a
-        previous decomposition has produced), the bundle methods that
-        solve the nondifferentiable duals they give rise to, and the parallel solution of
-        the subproblems, which are typically many (hundreds, say) and independent by
-        construction. This
-        is the premise of <a href="https://github.com/SMSpp-Project/smspp-project">SMS++</a>, where a model is
-        declared as a tree of nested blocks; hence, the same instance can
-        be solved monolithically, dualized along its linking constraints or split by scenario. The choice among these is a matter of
-        configuration (i.e., of which algorithm is attached to which
-        block),
-        and the model need not be rewritten. Reformulation comes back inside the subproblems, as the
-        recognition of a structure for which a specialized algorithm exists. For instance, the subproblems of a Capacitated Facility Location are binary
-        knapsacks, a single-unit commitment is a shortest path on a graph whose nodes
-        record how long the unit has been on or off, and an economic dispatch is (in its
-        simplest form) a min-cost flow. In fact, a decomposition method solves each of these
-        subproblems many times, with data that change (usually rather little) from one
-        call to the next. Much of my current work is therefore on re-optimization, that
-        is, on reusing what has been computed for one instance in the solution of the
-        next one (e.g., for the min-cost flow, the binary knapsack and the training of a
-        Support Vector Machine along its regularization path). Also, I am interested in
-        enlarging the class of subproblems that dynamic programming can solve
-        efficiently, as for a single-unit commitment with further operating
-        constraints.
+        relaxation and Benders decomposition, the bundle methods that solve the
+        nondifferentiable duals they give rise to, and the parallel solution of the
+        subproblems, which are typically many and independent by construction. This is
+        the premise of <a href="https://github.com/SMSpp-Project/smspp-project">SMS++</a>,
+        where a model is declared as a tree of nested blocks; hence, the same instance can
+        be solved monolithically, dualized along its linking constraints or split by
+        scenario, and the choice among these is a matter of configuration that does not
+        require the model to be rewritten. Reformulation comes back inside the
+        subproblems, as the recognition of a structure for which a specialized (often
+        combinatorial) algorithm exists. In fact, a decomposition method solves each
+        subproblem many times, with data that change (usually rather little) from one
+        call to the next. Much of my current work is therefore on re-optimization, i.e.,
+        on reusing what has been computed for one instance in the solution of the next
+        one, and on enlarging the class of subproblems that dynamic programming can solve
+        efficiently.
       </p>
       <p>
-        <b>Connecting the two.</b> Heuristics learned from data can be placed at the points
-        where an exact method makes a choice, e.g., the branching of a SAT solver (as in
-        <a href="https://github.com/dmeoli/NeuroSAT">NeuroSAT</a>) or of a branch-and-bound,
-        and the starting multipliers of a Lagrangian dual, which a graph network may
-        predict from the instance. In this way the learned part makes the choice, while the
-        guarantees still come from the exact method (at least as long as the learned choice is one that the method may take
-        anyway). Thus, a poor prediction may somewhat slow the method down without
-        affecting the correctness of its result.
-        Conversely, learning problems can be written as structured optimization models: a
-        Support Vector Machine, for instance, is a block like any
-        other, and hence the decomposition and re-optimization machinery described above
-        applies to it.
+        <b>Machine learning, connecting the two.</b> I see machine learning mainly as
+        a way of learning heuristics, to be placed at the points where an exact algorithm
+        makes a choice, and hence of making that algorithm faster. On the symbolic side
+        this is the branching of a SAT solver (as in
+        <a href="https://github.com/dmeoli/NeuroSAT">NeuroSAT</a>); on the numerical side
+        it is the branching of a branch-and-bound whose bounds come from a specialized
+        relaxation, e.g., a Lagrangian one. In both cases the learned part makes the
+        choice, while the guarantees still come from the exact method (at least as long
+        as the learned choice is one that the method may take anyway); thus, a poor
+        prediction may somewhat slow the method down without affecting the correctness
+        of its result. Conversely, learning problems can be written as structured
+        optimization models, to which the same decomposition and re-optimization
+        machinery applies.
       </p>
     </div>
   </div>
@@ -376,7 +393,8 @@ footer {
       <p>
         Most of the above exists as code, and most of that code is in
         <a href="https://github.com/SMSpp-Project/smspp-project">SMS++</a>, of which I am
-        co-lead maintainer together with Antonio Frangioni.
+        co-lead maintainer together with
+        <a href="https://pages.di.unipi.it/frangio/">Antonio Frangioni</a>.
       </p>
 
       <p class="label" style="margin-top:2rem">Open source, elsewhere</p>
@@ -498,5 +516,16 @@ Decomposition methods and solvers for large-scale
 </footer>
 
 </div>
+<dialog class="lightbox" id="photo" aria-label="Donato Meoli">
+  <img src="photo-large.jpg" width="1600" height="1109" alt="Donato Meoli" loading="lazy">
+</dialog>
+<script>
+  (function () {
+    var link = document.querySelector('.portrait'), box = document.getElementById('photo');
+    if (!link || !box || !box.showModal) return;
+    link.addEventListener('click', function (e) { e.preventDefault(); box.showModal(); });
+    box.addEventListener('click', function () { box.close(); });
+  })();
+</script>
 </body>
 </html>
