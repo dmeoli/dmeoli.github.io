@@ -69,10 +69,11 @@
 
   /* the proportions of Lamalunga: sizes are the base times a power of the
      golden ratio (quarter steps for the small print), spacings are Fibonacci
-     numbers of pixels, the body leading is phi and the display one 1 + phi^-3 */
+     numbers of pixels, the body leading is 1 + phi^-2, the display one
+     1 + phi^-4 and the name 1 + phi^-6 */
   --s-075: 11.84px;  --s-05: 13.37px;  --s-025: 15.07px;  --s0: 17px;
   --s025:  19.18px;  --s05:  21.62px;  --s1:    27.51px;  --s2: 44.51px;  --s25: 56.61px;
-  --lead: 1.618;  --lead-display: 1.236;  --lead-h1: 1.09;
+  --lead: 1.382;  --lead-display: 1.146;  --lead-h1: 1.056;
   --line: calc(var(--s0) * var(--lead));
   --f3: 3px;  --f5: 5px;  --f8: 8px;  --f13: 13px;  --f21: 21px;  --f34: 34px;
   --f55: 55px;  --f89: 89px;  --f144: 144px;  --f233: 233px;
@@ -120,7 +121,7 @@ body {
   line-height: var(--lead);
   -webkit-font-smoothing: antialiased;
 }
-.page { max-width: 987px; margin: 0 auto; padding: var(--f89) var(--f21) var(--f89); position: relative; }
+.page { max-width: 987px; margin: 0 auto; padding: var(--f55) var(--f21) var(--f55); position: relative; }
 
 /* ---- languages: both versions sit side by side in the source ------------ */
 :root:not([data-lang="it"]) body [data-l="it"],
@@ -148,10 +149,10 @@ body::before {
 
 /* ---- masthead ---------------------------------------------------------- */
 .masthead {
-  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--f34);
-  align-items: start; padding-bottom: var(--f34);
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--f21);
+  align-items: start; padding-bottom: var(--f21);
 }
-.intro { display: flex; flex-direction: column; gap: var(--f13); min-width: 0; }
+.intro { display: flex; flex-direction: column; gap: var(--f8); min-width: 0; }
 .portrait {
   display: block; width: var(--f233); height: var(--f233); border-radius: 50%; overflow: hidden;
   border: 2px solid var(--rule); align-self: center; cursor: zoom-in;
@@ -217,8 +218,8 @@ h1 {
 .links a:hover, .links a:focus-visible { color: var(--accent); border-color: var(--accent); }
 
 /* ---- section grid ------------------------------------------------------ */
-section { border-top: 1px solid var(--rule); padding: var(--f34) 0 var(--f8); }
-.grid { display: grid; grid-template-columns: var(--f144) 1fr; gap: var(--f34); align-items: start; }
+section { border-top: 1px solid var(--rule); padding: var(--f21) 0 var(--f5); }
+.grid { display: grid; grid-template-columns: var(--f144) 1fr; gap: var(--f21); align-items: start; }
 h2 {
   font-family: var(--mono); font-size: var(--s-075); font-weight: 500; letter-spacing: .146em;
   text-transform: uppercase; color: var(--heading); margin: var(--f5) 0 0;
@@ -226,7 +227,7 @@ h2 {
 }
 /* paragraphs one line apart, on the rhythm of the text; measure of about
    66 characters, i.e., two and a half lowercase alphabets */
-.body > * + * { margin-top: var(--f21); }
+.body > * + * { margin-top: var(--f13); }
 .body > p + p { margin-top: var(--line); }
 .body p { margin: 0; max-width: 33em; }
 .body p b { font-weight: 500; color: var(--title); }
@@ -234,7 +235,7 @@ a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 2
 
 /* ---- publications ------------------------------------------------------ */
 .pub { display: grid; grid-template-columns: var(--f34) 1fr; gap: var(--f13); }
-.pub + .pub { margin-top: var(--f34); }
+.pub + .pub { margin-top: var(--f21); }
 .tag {
   font-family: var(--mono); font-size: var(--s-075); color: var(--accent);
   background: var(--accent-wash); border-radius: var(--f3); padding: var(--f3) var(--f5);
@@ -264,7 +265,7 @@ a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 2
 
 /* ---- repo list --------------------------------------------------------- */
 /* the name column is phi^-3 of the body, the description the rest */
-.repos { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--f21); }
+.repos { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--f13); }
 .repos li { display: grid; grid-template-columns: minmax(0, 23.6%) 1fr; gap: var(--f5) var(--f21); }
 .repos .name { font-family: var(--mono); font-size: var(--s-05); }
 .repos .name a { text-decoration: none; border-bottom: 1px solid var(--rule); }
@@ -297,7 +298,7 @@ dl { margin: 0; }
 .contact a:hover { border-color: var(--accent); }
 
 footer {
-  border-top: 1px solid var(--rule); margin-top: var(--f55); padding-top: var(--f21);
+  border-top: 1px solid var(--rule); margin-top: var(--f34); padding-top: var(--f13);
   font-family: var(--mono); font-size: var(--s-075); color: var(--ink-faint);
   display: flex; flex-wrap: wrap; gap: var(--f8) var(--f21); justify-content: space-between;
 }
@@ -310,7 +311,7 @@ footer {
   .portrait { width: var(--f144); height: var(--f144); order: -1; align-self: start; }
   h2 { position: static; }
   .tag { width: fit-content; }
-  .page { padding-top: var(--f55); }
+  .page { padding-top: var(--f34); }
 }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 </style>
@@ -560,7 +561,7 @@ footer {
         dei due maintainer principali.
       </p>
 
-      <p class="label" style="margin-top:var(--f34)"><span data-l="en">Open source, elsewhere</span><span data-l="it" lang="it">Altri progetti open source</span></p>
+      <p class="label" style="margin-top:var(--f21)"><span data-l="en">Open source, elsewhere</span><span data-l="it" lang="it">Altri progetti open source</span></p>
       <ul class="repos">
         <li>
           <span class="name"><a href="https://github.com/dmeoli/lamalunga">lamalunga</a></span>
