@@ -196,6 +196,22 @@ h1 {
 }
 .role i { font-style: normal; white-space: nowrap; }
 .role span { color: var(--gold); padding: 0 var(--f3); }
+.mottos {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--f8) var(--f21);
+  max-width: calc(33 * var(--s025)); margin: var(--f5) 0 var(--f3);
+}
+.mottos figure { margin: 0; }
+.mottos figure + figure { text-align: right; }
+.mottos blockquote {
+  margin: 0; font-family: var(--serif); font-style: italic; font-size: var(--s0);
+  color: var(--ink); line-height: 1.236;
+}
+.mottos a { color: inherit; text-decoration: none; border-bottom: 1px dotted var(--ink-faint); }
+.mottos a:hover { color: var(--link); border-bottom-color: var(--link); }
+.mottos figcaption {
+  font-family: var(--mono); font-size: var(--s-075); color: var(--ink-faint);
+  letter-spacing: .01em; margin-top: var(--f3);
+}
 .standfirst {
   margin: 0; max-width: 33em; font-size: var(--s025); color: var(--ink-soft);
   font-weight: 300;
@@ -307,6 +323,7 @@ footer {
 
 @media (max-width: 46rem) {
   .grid, .pub, .repos li, .entry { grid-template-columns: 1fr; gap: var(--f8); }
+  .mottos figure + figure { text-align: left; }
   .masthead { grid-template-columns: 1fr; gap: var(--f21); }
   .portrait { width: var(--f144); height: var(--f144); order: -1; align-self: start; }
   h2 { position: static; }
@@ -333,6 +350,16 @@ footer {
     <span>|</span> <i>Symbolic AI</i> <span>|</span> <i>Machine Learning</i></p>
   <p class="role" data-l="it" lang="it"><i>Borsista di Ricerca</i> <span>|</span> <i>Ottimizzazione Matematica</i>
     <span>|</span> <i>IA Simbolica</i> <span>|</span> <i>Machine Learning</i></p>
+  <div class="mottos">
+    <figure>
+      <blockquote lang="la"><a data-l="en" href="https://en.wiktionary.org/wiki/est_modus_in_rebus" title="Horace, Satires I.1.106">est</a><a data-l="it" href="https://it.wikipedia.org/wiki/Est_modus_in_rebus" title="Orazio, Satire I, 1, 106">est</a> <a data-l="en" href="https://en.wikipedia.org/wiki/Modus_ponens" title="modus ponens">modus ponens</a><a data-l="it" href="https://it.wikipedia.org/wiki/Modus_ponens" title="modus ponens">modus ponens</a> <a data-l="en" href="https://en.wiktionary.org/wiki/est_modus_in_rebus" title="Horace, Satires I.1.106">in rebus</a><a data-l="it" href="https://it.wikipedia.org/wiki/Est_modus_in_rebus" title="Orazio, Satire I, 1, 106">in rebus</a></blockquote>
+      <figcaption><span data-l="en">semi-quoting Horace</span><span data-l="it" lang="it">semicit. Orazio</span></figcaption>
+    </figure>
+    <figure>
+      <blockquote lang="en"><a data-l="en" href="https://en.wikipedia.org/wiki/Hai_paura_del_buio%3F" title="Afterhours, Hai paura del buio? (1997)">I need a superficial thought</a><a data-l="it" href="https://it.wikipedia.org/wiki/Voglio_una_pelle_splendida" title="Afterhours, Voglio una pelle splendida (1997)">I need a superficial thought</a>.. <a href="https://web.stanford.edu/~boyd/cvxbook/" title="Boyd and Vandenberghe, Convex Optimization">that makes my loss convex</a></blockquote>
+      <figcaption><span data-l="en">semi-quoting Afterhours</span><span data-l="it" lang="it">semicit. Afterhours</span></figcaption>
+    </figure>
+  </div>
   <p class="standfirst" data-l="en">
     I am concerned with <em>how a problem is written down</em>, since the same model,
     restated in another formalism or split along the structure it already has, may
