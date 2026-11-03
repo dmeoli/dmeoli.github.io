@@ -284,6 +284,13 @@ a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 2
 /* ---- repo list --------------------------------------------------------- */
 /* the name column is phi^-3 of the body, the description the rest */
 .repos { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--f13); }
+.cards .label { margin: var(--f21) 0 var(--f8); }
+.cards .label:first-child { margin-top: 0; }
+.cards .row { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--f8); }
+.cards .row > div { display: flex; flex-direction: column; gap: var(--f5); }
+.cards a { display: block; position: relative; background: var(--surface); border-radius: 6px; }
+.cards img { display: block; width: 100%; height: auto; }
+.cards .what { margin: 0 var(--f3); font-size: var(--s-025); color: var(--ink-soft); }
 .repos li { display: grid; grid-template-columns: minmax(0, 23.6%) 1fr; gap: var(--f5) var(--f21); }
 .repos .name { font-family: var(--mono); font-size: var(--s-05); }
 .repos .name a { text-decoration: none; border-bottom: 1px solid var(--rule); }
@@ -389,7 +396,7 @@ footer {
     <a href="https://scholar.google.com/citations?user=wubbENgAAAAJ">Google Scholar</a>
     <a href="https://www.semanticscholar.org/author/2383183128">Semantic Scholar</a>
     <a href="cv.pdf" data-l="en">CV (PDF)</a>
-    <a href="cv.pdf" data-l="it" lang="it">CV (PDF, in inglese)</a>
+    <a href="cv-it.pdf" data-l="it" lang="it">CV (PDF)</a>
   </nav>
   </div>
   <a class="portrait" href="photo-large.jpg" aria-label="Open the photo">
@@ -413,10 +420,10 @@ footer {
       <p data-l="it" lang="it">
         Sono arrivato all&rsquo;ottimizzazione numerica dall&rsquo;intelligenza
         artificiale simbolica, e più precisamente dalla rappresentazione della conoscenza e dal ragionamento
-        automatico (KR&amp;R), cioè dai sistemi esperti, dalla programmazione logica, dal
+        automatico (KR&amp;R), ossia dai sistemi esperti, dalla programmazione logica, dal
         soddisfacimento di vincoli e da SAT. A mio avviso i due campi condividono una
         premessa: la difficoltà di un problema dipende (spesso in larga misura) da come è
-        scritto. Di conseguenza, spesso conviene riscriverlo, come un insieme di problemi più piccoli coordinati da un problema master oppure in un formalismo diverso per
+        scritto. Per questo conviene, il più delle volte, riscriverlo, come un insieme di problemi più piccoli coordinati da un problema master oppure in un formalismo diverso per
         il quale sia disponibile un algoritmo efficiente.
       </p>
       <p data-l="en">
@@ -475,7 +482,7 @@ footer {
         derivano, e la risoluzione in parallelo dei sottoproblemi, che sono tipicamente
         molti e indipendenti per costruzione. È la premessa di
         <a href="https://github.com/SMSpp-Project/smspp-project">SMS++</a>, dove un
-        modello è dichiarato come un albero di blocchi annidati; di conseguenza, la stessa
+        modello è dichiarato come un albero di blocchi annidati. Per questo la stessa
         istanza può essere risolta in modo monolitico, dualizzata rispetto ai vincoli accoppianti o decomposta per scenari, e la scelta fra queste alternative è una
         questione di configurazione che non richiede di riscrivere il modello. La
         riformulazione ritorna all&rsquo;interno dei sottoproblemi, come riconoscimento di
@@ -483,7 +490,7 @@ footer {
         combinatorio). Infatti, un metodo di decomposizione risolve ciascun sottoproblema
         molte volte, con dati che cambiano (di solito piuttosto poco) da una chiamata
         all&rsquo;altra. Buona parte del mio lavoro attuale riguarda quindi la <i lang="en">re-optimization</i>,
-        cioè il riuso di quanto calcolato per un&rsquo;istanza nella
+        ossia il riuso di quanto calcolato per un&rsquo;istanza nella
         risoluzione della successiva, e l&rsquo;allargamento della classe di sottoproblemi
         che la programmazione dinamica può risolvere in modo efficiente.
       </p>
@@ -512,8 +519,8 @@ footer {
         del branching di un branch-and-bound le cui valutazioni (bound) provengono da un
         rilassamento specializzato, per esempio lagrangiano. In entrambi i casi la parte appresa compie
         la scelta, mentre le garanzie continuano a venire dal metodo esatto (almeno finché
-        la scelta appresa è una di quelle che il metodo potrebbe comunque compiere); di
-        conseguenza, una previsione sbagliata può rallentare in parte il metodo senza
+        la scelta appresa è una di quelle che il metodo potrebbe comunque compiere): una
+        previsione sbagliata, quindi, può rallentare in parte il metodo senza
         intaccare la correttezza del risultato. Viceversa, i problemi di apprendimento
         possono essere scritti come modelli di ottimizzazione strutturati, ai quali si
         applicano gli stessi strumenti di decomposizione e di <i lang="en">re-optimization</i>.
@@ -581,103 +588,8 @@ footer {
   <div class="grid">
     <h2>Software</h2>
     <div class="body">
-      <p data-l="en">
-        Most of the above exists as code, and most of that code is in
-        <a href="https://github.com/SMSpp-Project/smspp-project">SMS++</a>, of which I am
-        co-lead maintainer together with
-        <a href="https://pages.di.unipi.it/frangio/">Antonio Frangioni</a>.
-      </p>
-      <p data-l="it" lang="it">
-        Gran parte di quanto descritto sopra esiste come codice, e la maggior parte di
-        quel codice è in
-        <a href="https://github.com/SMSpp-Project/smspp-project">SMS++</a>, di cui sono,
-        insieme ad <a href="https://pages.di.unipi.it/frangio/">Antonio Frangioni</a>, uno
-        dei due maintainer principali.
-      </p>
-
-      <p class="label" style="margin-top:var(--f21)"><span data-l="en">Open source, elsewhere</span><span data-l="it" lang="it">Altri progetti open source</span></p>
-      <ul class="repos">
-        <li>
-          <span class="name"><a href="https://github.com/dmeoli/lamalunga">lamalunga</a></span>
-          <p class="what" data-l="en">A typographic theme for slides and printed pages in
-            which the proportions, from the margins to the sizes of the type, are powers of
-            the golden ratio, and the palette is computed from a single color by rotating
-            its hue, with the contrast of the text checked against accessibility
-            thresholds.</p>
-<p class="what" data-l="it" lang="it">Un tema tipografico per presentazioni e pagine
-            stampate in cui le proporzioni, dai margini alle dimensioni del testo, sono
-            potenze della sezione aurea, e la tavolozza si calcola da un solo colore
-            ruotandone la tinta, con il contrasto del testo verificato rispetto alle soglie
-            di accessibilità.</p>
-        </li>
-        <li>
-          <span class="name"><a href="https://github.com/aimacode/aima-python">aima-python</a>
-            <span class="stars">&#9733;8.8k</span></span>
-          <p class="what" data-l="en">Reference code for Russell &amp; Norvig&rsquo;s
-            <i>Artificial Intelligence: A Modern Approach</i>. Fourth-most-active
-            contributor: SAT solving, constraint propagation, the translation of planning
-            problems into search, constraint satisfaction and SAT, linear learners and
-            support vector machines, and the algorithms of the fourth edition that were
-            still missing.</p>
-<p class="what" data-l="it" lang="it">Implementazione di riferimento degli algoritmi di
-            <i lang="en">Artificial Intelligence: A Modern Approach</i> di Russell e Norvig. Ne sono il quarto contributore per
-            numero di commit: risoluzione di
-            SAT, propagazione di vincoli, traduzione dei problemi di pianificazione in
-            problemi di ricerca, di soddisfacimento di vincoli e SAT, modelli di
-            apprendimento lineari e support vector machine, e gli algoritmi della quarta
-            edizione che ancora mancavano.</p>
-        </li>
-        <li>
-          <span class="name"><a href="https://github.com/qpsolvers/qpsolvers">qpsolvers</a>
-            <span class="stars">&#9733;763</span></span>
-          <p class="what" data-l="en">A single Python interface to the Quadratic Programming
-            solvers. Contributor and co-author of its citation: the lower and upper bounds on
-            the variables, folded into the inequality constraints.</p>
-<p class="what" data-l="it" lang="it">Un&rsquo;unica interfaccia Python ai solutori di
-            programmazione quadratica. Ne sono contributore e coautore della citazione: i
-            limiti inferiori e superiori sulle variabili, ricondotti ai vincoli di
-            disuguaglianza.</p>
-        </li>
-        <li>
-          <span class="name"><a href="https://github.com/dmeoli/optiml">optiml</a>
-            <span class="stars">&#9733;11</span></span>
-          <p class="what" data-l="en">Optimizers, from line search and Newton-type methods to
-            proximal bundle and interior point, coupled with the learning models that are trained
-            with them.</p>
-<p class="what" data-l="it" lang="it">Algoritmi di ottimizzazione, dalla line search e dai
-            metodi di tipo Newton ai metodi bundle prossimali e a quelli a punti interni,
-            insieme ai modelli di apprendimento che vengono addestrati con essi.</p>
-        </li>
-        <li>
-          <span class="name"><a href="https://github.com/dmeoli/NeuroSAT">NeuroSAT</a>
-            <span class="stars">&#9733;8</span></span>
-          <p class="what" data-l="en">Neuro-symbolic approaches to SAT: graph networks and
-            reinforcement learning that learn the branching heuristic of a SAT solver.</p>
-<p class="what" data-l="it" lang="it">Approcci neuro-simbolici a SAT: reti neurali su grafi e
-            apprendimento per rinforzo che imparano l&rsquo;euristica di branching di un
-            SAT solver.</p>
-        </li>
-        <li>
-          <span class="name"><a href="https://github.com/dmeoli/PESAD">PESAD</a>,
-            <a href="https://github.com/dmeoli/BeerEX">BeerEX</a>
-            <span class="stars">&#9733;26</span></span>
-          <p class="what" data-l="en">Expert systems in logic programming and in rules with fuzzy
-            reasoning, whose conclusions can be traced back to the rules that produced
-            them.</p>
-<p class="what" data-l="it" lang="it">Sistemi esperti in programmazione logica e a
-            regole con ragionamento fuzzy, le cui conclusioni sono riconducibili alle
-            regole che le hanno prodotte.</p>
-        </li>
-        <li>
-          <span class="name"><a href="https://github.com/dmeoli/WS4J">WS4J</a>,
-            <a href="https://github.com/dmeoli/WNAffect">WNAffect</a>
-            <span class="stars">&#9733;29</span></span>
-          <p class="what" data-l="en">Measures of semantic relatedness and similarity, and of the
-            affective content of words, over a lexical ontology.</p>
-<p class="what" data-l="it" lang="it">Misure di similarità e di correlazione semantica, e del
-            contenuto affettivo delle parole, basate su un&rsquo;ontologia lessicale.</p>
-        </li>
-      </ul>
+      <div id="software-cards" class="cards"></div>
+<noscript><p><a href="https://github.com/dmeoli">github.com/dmeoli</a></p></noscript>
     </div>
   </div>
 </section>
@@ -702,7 +614,7 @@ Decomposition methods and solvers for large-scale
   </p>
           <p class="note" data-l="it" lang="it">
             Metodi di decomposizione e solver per l&rsquo;ottimizzazione a grande scala, e sviluppo del nucleo di SMS++, nell&rsquo;ambito dei progetti di ricerca AUTENS,
-            RESILIENT e PowerMax. Le applicazioni finora riguardano la pianificazione e lo scheduling sotto incertezza, cioè modelli con decine di migliaia di
+            RESILIENT e PowerMax. Le applicazioni finora riguardano la pianificazione e lo scheduling sotto incertezza, ossia modelli con decine di migliaia di
             variabili per scenario, sui quali un solver MILP generico tipicamente
             non riesce a risolvere l&rsquo;istanza all&rsquo;ottimo in tempi ragionevoli.
           </p>
@@ -737,8 +649,8 @@ Decomposition methods and solvers for large-scale
       <div class="entry plain">
         <div>
           <h3><span data-l="en">BSc in Computer Science</span><span data-l="it" lang="it">Laurea Triennale in Informatica</span></h3>
-          <p class="where">Universit&agrave; degli Studi di Bari &ldquo;Aldo Moro&rdquo;
-            &mdash; <span data-l="en">110/110 <i>cum laude</i></span><span data-l="it" lang="it">110/110 <i>e lode</i></span></p>
+          <p class="where">Universit&agrave; degli Studi di Bari &ldquo;Aldo Moro&rdquo;,
+            <span data-l="en">110/110 <i>cum laude</i></span><span data-l="it" lang="it">110/110 <i>e lode</i></span></p>
         </div>
       </div>
     </div>
@@ -797,6 +709,85 @@ Decomposition methods and solvers for large-scale
         show(l);
       });
     show(root.getAttribute('data-lang') === 'it' ? 'it' : 'en');
+  })();
+</script>
+<script>
+  /* The software: the sections and the cards of github.com/dmeoli, whose
+     profile writes them out of the one list projects.yml, with the notes in
+     the two languages; the cards follow the scheme of the system. */
+  (function () {
+    var BASE = 'https://raw.githubusercontent.com/dmeoli/dmeoli/main/',
+        host = document.getElementById('software-cards');
+    if (!host || !window.fetch) return;
+    function el(tag, cls, text) {
+      var e = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (text) e.textContent = text;
+      return e;
+    }
+    function both(tag, cls, pair) {
+      var out = [];
+      ['en', 'it'].forEach(function (l) {
+        var e = el(tag, cls, pair[l]);
+        e.setAttribute('data-l', l);
+        if (l === 'it') e.lang = 'it';
+        out.push(e);
+      });
+      return out;
+    }
+    fetch(BASE + 'assets/projects.json').then(function (r) { return r.json(); })
+      .then(function (data) {
+        data.sections.forEach(function (sec) {
+          var label = el('p', 'label');
+          both('span', '', sec.title).forEach(function (e) { label.appendChild(e); });
+          host.appendChild(label);
+          var row = el('div', 'row');
+          sec.repos.forEach(function (repo) {
+            var item = el('div'), a = el('a'), pic = el('picture'),
+                dark = el('source'), img = el('img');
+            a.href = repo.url;
+            dark.media = '(prefers-color-scheme: dark)';
+            dark.srcset = BASE + repo.card + '-dark.svg';
+            img.src = BASE + repo.card + '-light.svg';
+            img.alt = repo.name; img.width = 400; img.height = 120;
+            img.loading = 'lazy';
+            pic.appendChild(dark); pic.appendChild(img); a.appendChild(pic);
+            item.appendChild(a);
+            if (repo.note)
+              both('p', 'what', repo.note).forEach(function (e) { item.appendChild(e); });
+            row.appendChild(item);
+          });
+          host.appendChild(row);
+        });
+      }).catch(function () {
+        var p = el('p'), a = el('a', '', 'github.com/dmeoli');
+        a.href = 'https://github.com/dmeoli';
+        p.appendChild(a); host.appendChild(p);
+      });
+  })();
+</script>
+<script>
+  /* The sections have a path of their own, in English and in Italian
+     (/software, /publications, /pubblicazioni, ...): 404.html brings it here
+     as ?section=, and the page scrolls to the section, in the language of
+     the name, and shows the path again. */
+  (function () {
+    var it = { ricerca: 'research', pubblicazioni: 'publications',
+               esperienze: 'experience', formazione: 'education',
+               contatti: 'contact' },
+        name = new URLSearchParams(location.search).get('section');
+    if (!name) return;
+    var id = it[name] || name, target = document.getElementById(id);
+    if (!target || target.tagName !== 'SECTION') {
+      history.replaceState(null, '', '/' + location.hash);
+      return;
+    }
+    if (it[name]) {
+      var b = document.querySelector('.lang button[data-set="it"]');
+      if (b) b.click();
+    }
+    history.replaceState(null, '', '/' + name + location.hash);
+    target.scrollIntoView();
   })();
 </script>
 </body>

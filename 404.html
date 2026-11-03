@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Donato Meoli</title>
+<meta name="robots" content="noindex">
+<script>
+  /* A path such as /software or /pubblicazioni names a section of the one
+     page: the page is loaded with it, and it scrolls there and puts the
+     path back [see the end of index.html]. Any other path goes home. */
+  (function () {
+    var p = location.pathname.replace(/^\/+|\/+$/g, '');
+    location.replace('/' + (/^[a-z]+$/.test(p) ? '?section=' + p : '') +
+                     location.hash);
+  })();
+</script>
+</head>
+<body></body>
+</html>
