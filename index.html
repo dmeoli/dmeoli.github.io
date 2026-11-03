@@ -236,13 +236,27 @@ h1 {
 }
 .links a:hover, .links a:focus-visible { color: var(--accent); border-color: var(--accent); }
 
+/* ---- the menu of the sections, which stays on top, and whose links are
+   the paths of the sections ---------------------------------------------- */
+.sections {
+  position: sticky; top: 0; z-index: 2; margin: var(--f34) calc(-1 * var(--f21)) 0;
+  padding: var(--f8) var(--f21); display: flex; flex-wrap: wrap; gap: var(--f5) var(--f21);
+  background: color-mix(in srgb, var(--ground) 88%, transparent);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--mono); font-size: var(--s-05); letter-spacing: .12em; text-transform: uppercase;
+}
+.sections a { color: var(--ink); text-decoration: none; border-bottom: 1px solid transparent; padding-bottom: 1px; }
+.sections a:hover, .sections a:focus-visible { color: var(--accent); }
+.sections a[aria-current="true"] { color: var(--accent); border-bottom-color: var(--gold); }
+
 /* ---- section grid ------------------------------------------------------ */
-section { border-top: 1px solid var(--rule); padding: var(--f21) 0 var(--f5); }
+section { border-top: 1px solid var(--rule); padding: var(--f21) 0 var(--f5); scroll-margin-top: var(--f34); }
 .grid { display: grid; grid-template-columns: var(--f144) 1fr; gap: var(--f21); align-items: start; }
 h2 {
   font-family: var(--mono); font-size: var(--s-075); font-weight: 500; letter-spacing: .146em;
   text-transform: uppercase; color: var(--heading); margin: var(--f5) 0 0;
-  position: sticky; top: var(--f21);
+  position: sticky; top: calc(var(--f55) + var(--f5));
 }
 /* paragraphs one line apart, on the rhythm of the text; measure of about
    66 characters, i.e., two and a half lowercase alphabets */
@@ -288,7 +302,8 @@ a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 2
 .cards .label:first-child { margin-top: 0; }
 .cards .row { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--f8); }
 .cards .row > div { display: flex; flex-direction: column; gap: var(--f5); }
-.cards a { display: block; position: relative; background: var(--surface); border-radius: 6px; }
+.cards a { display: block; position: relative; border-radius: 6px; transition: transform .2s ease-out, box-shadow .2s ease-out; }
+.cards a:hover, .cards a:focus-visible { transform: translateY(-2px); box-shadow: 0 6px 18px -8px var(--accent); }
 .cards img { display: block; width: 100%; height: auto; }
 .cards .what { margin: 0 var(--f3); font-size: var(--s-025); color: var(--ink-soft); }
 .repos li { display: grid; grid-template-columns: minmax(0, 23.6%) 1fr; gap: var(--f5) var(--f21); }
@@ -403,6 +418,15 @@ footer {
     <img src="photo.jpg" width="512" height="512" alt="Donato Meoli">
   </a>
 </header>
+
+<nav class="sections" aria-label="Sections">
+  <a href="/research" data-l="en" data-section="research">Research</a><a href="/ricerca" data-l="it" lang="it" data-section="research">Ricerca</a>
+  <a href="/publications" data-l="en" data-section="publications">Publications</a><a href="/pubblicazioni" data-l="it" lang="it" data-section="publications">Pubblicazioni</a>
+  <a href="/software" data-l="en" data-section="software">Software</a><a href="/software" data-l="it" lang="it" data-section="software">Software</a>
+  <a href="/experience" data-l="en" data-section="experience">Experience</a><a href="/esperienze" data-l="it" lang="it" data-section="experience">Esperienze</a>
+  <a href="/education" data-l="en" data-section="education">Education</a><a href="/formazione" data-l="it" lang="it" data-section="education">Formazione</a>
+  <a href="/contact" data-l="en" data-section="contact">Contact</a><a href="/contatti" data-l="it" lang="it" data-section="contact">Contatti</a>
+</nav>
 
 <section id="research">
   <div class="grid">
@@ -739,6 +763,7 @@ Decomposition methods and solvers for large-scale
       .then(function (data) {
         data.sections.forEach(function (sec) {
           var label = el('p', 'label');
+          if (sec.emoji) label.appendChild(el('span', 'emoji', sec.emoji + ' '));
           both('span', '', sec.title).forEach(function (e) { label.appendChild(e); });
           host.appendChild(label);
           var row = el('div', 'row');
@@ -772,27 +797,97 @@ Decomposition methods and solvers for large-scale
 <script>
   /* The sections have a path of their own, in English and in Italian
      (/software, /publications, /pubblicazioni, ...): 404.html brings it here
-     as ?section=, and the page scrolls to the section, in the language of
-     the name, and shows the path again. */
+     as ?section=, and the page opens on the section, in the language of the
+     name. The menu goes to a section and shows its path, which then follows
+     the section being read, so that the address can always be shared. */
   (function () {
-    var it = { ricerca: 'research', pubblicazioni: 'publications',
-               esperienze: 'experience', formazione: 'education',
-               contatti: 'contact' },
-        name = new URLSearchParams(location.search).get('section');
-    if (!name) return;
-    var id = it[name] || name, target = document.getElementById(id);
-    if (!target || target.tagName !== 'SECTION') {
+    var it = { research: 'ricerca', publications: 'pubblicazioni',
+               software: 'software', experience: 'esperienze',
+               education: 'formazione', contact: 'contatti' },
+        en = {}, ids = Object.keys(it), root = document.documentElement;
+    ids.forEach(function (id) { en[it[id]] = id; en[id] = id; });
+    function path(id) {
+      if (!id) return '/';
+      return '/' + (root.getAttribute('data-lang') === 'it' ? it[id] : id);
+    }
+    function mark(id) {
+      var links = document.querySelectorAll('.sections a');
+      for (var i = 0; i < links.length; i++)
+        links[i].setAttribute('aria-current',
+                              links[i].getAttribute('data-section') === id);
+    }
+    var current = null, wanted = null;
+    function show(id) {
+      current = id;
+      mark(id);
+      var p = path(id);
+      if (location.pathname !== p || location.search)
+        history.replaceState(null, '', p + location.hash);
+    }
+    function go(id, smooth) {
+      var target = document.getElementById(id);
+      if (!target) return;
+      wanted = id;
+      target.scrollIntoView(smooth ? { behavior: 'smooth' } : undefined);
+      show(id);
+    }
+
+    // the path asked for (or an old #anchor of a section)
+    var name = new URLSearchParams(location.search).get('section') ||
+               location.hash.slice(1);
+    if (name && en[name]) {
+      if (it[en[name]] === name && name !== en[name]) {
+        var b = document.querySelector('.lang button[data-set="it"]');
+        if (b) b.click();
+      }
+      if (location.hash.slice(1) === name)
+        history.replaceState(null, '', location.pathname + location.search);
+      go(en[name]);
+      // the cards of the software, which come later, scroll here again
+      window.dmeoliSection = document.getElementById(en[name]);
+    } else if (location.search) {
       history.replaceState(null, '', '/' + location.hash);
-      return;
     }
-    if (it[name]) {
-      var b = document.querySelector('.lang button[data-set="it"]');
-      if (b) b.click();
+
+    // the menu
+    var links = document.querySelectorAll('.sections a');
+    for (var i = 0; i < links.length; i++)
+      links[i].addEventListener('click', function (e) {
+        e.preventDefault();
+        window.dmeoliSection = null;
+        go(this.getAttribute('data-section'), true);
+      });
+
+    // the section being read: the last one whose top has passed a third
+    // of the window, none above the first; at the end of the page, where
+    // the last sections cannot reach the top, the one asked for from the
+    // menu if it is in view, or else the last one in view
+    function spy() {
+      var id = null, last = null, h = window.innerHeight, line = h / 3,
+          end = window.scrollY + h >= document.documentElement.scrollHeight - 2;
+      ids.forEach(function (s) {
+        var top = document.getElementById(s).getBoundingClientRect().top;
+        if (top <= line) id = s;
+        if (top < h) last = s;
+      });
+      if (end) {
+        var w = wanted && document.getElementById(wanted)
+                                  .getBoundingClientRect().top;
+        id = wanted && w >= 0 && w < h ? wanted : last;
+      }
+      if (id !== current) show(id);
     }
-    history.replaceState(null, '', '/' + name + location.hash);
-    target.scrollIntoView();
-    // the cards of the software, which come later, scroll here again
-    window.dmeoliSection = target;
+    var queued = false;
+    window.addEventListener('scroll', function () {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(function () { queued = false; spy(); });
+    }, { passive: true });
+
+    // a change of language changes the name in the path
+    var buttons = document.querySelectorAll('.lang button');
+    for (var j = 0; j < buttons.length; j++)
+      buttons[j].addEventListener('click', function () { show(current); });
   })();
 </script>
 </body>
