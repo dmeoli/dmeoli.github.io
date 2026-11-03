@@ -759,6 +759,9 @@ Decomposition methods and solvers for large-scale
           });
           host.appendChild(row);
         });
+        // the section asked for by the path [see below], now that the cards
+        // have made the page longer
+        if (window.dmeoliSection) window.dmeoliSection.scrollIntoView();
       }).catch(function () {
         var p = el('p'), a = el('a', '', 'github.com/dmeoli');
         a.href = 'https://github.com/dmeoli';
@@ -788,6 +791,8 @@ Decomposition methods and solvers for large-scale
     }
     history.replaceState(null, '', '/' + name + location.hash);
     target.scrollIntoView();
+    // the cards of the software, which come later, scroll here again
+    window.dmeoliSection = target;
   })();
 </script>
 </body>
