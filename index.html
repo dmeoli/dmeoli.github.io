@@ -63,7 +63,11 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<!-- the fonts do not hold the first paint back: the page is drawn in the
+     fallback fonts and takes them when they arrive -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap"></noscript>
 <style>
 :root {
   --emblem:      .11;
@@ -465,6 +469,8 @@ footer {
   <a href="/contact" data-l="en" data-section="contact">Contact</a><a href="/contatti" data-l="it" lang="it" data-section="contact">Contatti</a>
 </nav>
 
+<main>
+
 <section id="research">
   <div class="grid">
     <h2><a href="/research" data-l="en" data-section="research">Research</a><a href="/ricerca" data-l="it" lang="it" data-section="research">Ricerca</a></h2>
@@ -741,9 +747,11 @@ Decomposition methods and solvers for large-scale
   </div>
 </section>
 
+</main>
+
 <footer>
   <span><a class="dm-link" data-l="en" href="https://en.wikipedia.org/wiki/Violator_(album)" title="Depeche Mode, Violator (1990)"><svg class="dm" viewBox="5 20 92 60" aria-hidden="true"><g fill="currentColor"><rect x="18.9" y="25" width="5" height="50"/><rect x="53.7" y="25" width="5" height="50"/><rect x="78.9" y="25" width="5" height="50"/></g><g fill="none" stroke="var(--accent)" stroke-width="6"><polyline points="11.5,27.5 51,50 10,72.5"/><polyline points="45.5,27 69.5,57.5 91.5,26.5"/></g></svg></a><a class="dm-link" data-l="it" href="https://it.wikipedia.org/wiki/Violator" title="Depeche Mode, Violator (1990)"><svg class="dm" viewBox="5 20 92 60" aria-hidden="true"><g fill="currentColor"><rect x="18.9" y="25" width="5" height="50"/><rect x="53.7" y="25" width="5" height="50"/><rect x="78.9" y="25" width="5" height="50"/></g><g fill="none" stroke="var(--accent)" stroke-width="6"><polyline points="11.5,27.5 51,50 10,72.5"/><polyline points="45.5,27 69.5,57.5 91.5,26.5"/></g></svg></a><span data-l="en">Donato, Maria Meoli &middot; Italy</span><span data-l="it" lang="it">Donato, Maria Meoli &middot; Italia</span></span>
-  <span><span data-l="en">Last updated October 2026</span><span data-l="it" lang="it">Ultimo aggiornamento: ottobre 2026</span></span>
+  <span><span data-l="en">Last updated November 2026</span><span data-l="it" lang="it">Ultimo aggiornamento: novembre 2026</span></span>
 </footer>
 
 </div>
