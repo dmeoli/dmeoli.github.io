@@ -11,3 +11,8 @@ Google Fonts it links. Edit the file, push to `main`, GitHub Pages serves it.
   English and in Italian, which gives the preview of a shared link and opens
   the section in `index.html`
 - `robots.txt`, `sitemap.xml` — for search engines
+- `papers/<name>/` — a page per publication, with its abstract, the
+  metadata that Google Scholar reads and its BibTeX (`cite.bib`), which the
+  BibTeX link of the home page copies
+- `og.png` — the 1200x630 preview of a shared link; `photo.webp` and
+  `photo-large.webp` are the portrait for the browsers that take WebP

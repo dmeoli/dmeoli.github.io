@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enhancing Energy System Modelling with Advanced Mathematical Decomposition Techniques: Feasibility of Coupling SMS++ and PyPSA</title>
+<meta name="description" content="Large-scale high-resolution energy system modelling is essential to support long-term decarbonization strategies. Open-source frameworks such as PyPSA-Eur…">
+<link rel="canonical" href="https://dmeoli.github.io/papers/coupling-smspp-pypsa/">
+<meta name="citation_title" content="Enhancing Energy System Modelling with Advanced Mathematical Decomposition Techniques: Feasibility of Coupling SMS++ and PyPSA">
+<meta name="citation_author" content="Davide Fioriti">
+<meta name="citation_author" content="Alessandro Pampado">
+<meta name="citation_author" content="Claudio Scarpelli">
+<meta name="citation_author" content="Gianluca Pasini">
+<meta name="citation_author" content="Giovanni Lutzemberger">
+<meta name="citation_author" content="Stefano Barsali">
+<meta name="citation_author" content="Davide Poli">
+<meta name="citation_author" content="Donato Meoli">
+<meta name="citation_author" content="Luca Mencarelli">
+<meta name="citation_author" content="Antonio Frangioni">
+<meta name="citation_publication_date" content="2025/07/15">
+<meta name="citation_conference_title" content="2025 IEEE International Conference on Environment and Electrical Engineering and 2025 IEEE Industrial and Commercial Power Systems Europe (EEEIC / I&amp;CPS Europe)">
+<meta name="citation_publisher" content="IEEE">
+<meta name="citation_firstpage" content="1">
+<meta name="citation_lastpage" content="6">
+<meta name="citation_doi" content="10.1109/EEEIC/ICPSEurope64998.2025.11169291">
+<meta name="citation_pdf_url" content="https://pages.di.unipi.it/frangio/papers/IECE25.pdf">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Enhancing Energy System Modelling with Advanced Mathematical Decomposition Techniques: Feasibility of Coupling SMS++ and PyPSA">
+<meta property="og:description" content="Large-scale high-resolution energy system modelling is essential to support long-term decarbonization strategies. Open-source frameworks such as PyPSA-Eur…">
+<meta property="og:url" content="https://dmeoli.github.io/papers/coupling-smspp-pypsa/">
+<meta property="og:image" content="https://dmeoli.github.io/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
+<link rel="icon" type="image/png" href="/favicon.png?v=2">
+<script>
+  (function () {
+    var t;
+    try { t = localStorage.getItem('theme'); } catch (e) {}
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --emblem:      .11;
+  --ground:      #e8e2f3;
+  --surface:     #f6f2fb;
+  --ink:         #2e2040;
+  --title:       #3a1d5e;
+  --ink-soft:    #5f4b76;
+  --ink-faint:   #66527f;
+  --heading:     #6a4692;
+  --rule:        #d4c9e6;
+  --accent:      #7338a8;
+  --link:        #6a35a0;
+  --accent-wash: #ddd2ef;
+  --code:        #552a86;
+  --gold:        #6c5920;
+  --serif: "Spectral", "Iowan Old Style", Palatino, Georgia, serif;
+  --mono:  "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* the proportions of Lamalunga: sizes are the base times a power of the
+     golden ratio (quarter steps for the small print), spacings are Fibonacci
+     numbers of pixels, the body leading is 1 + phi^-2, the display one
+     1 + phi^-4 and the name 1 + phi^-6 */
+  --s-075: 11.84px;  --s-05: 13.37px;  --s-025: 15.07px;  --s0: 17px;
+  --s025:  19.18px;  --s05:  21.62px;  --s1:    27.51px;  --s2: 44.51px;  --s25: 56.61px;
+  --lead: 1.382;  --lead-display: 1.146;  --lead-h1: 1.056;
+  --line: calc(var(--s0) * var(--lead));
+  --f3: 3px;  --f5: 5px;  --f8: 8px;  --f13: 13px;  --f21: 21px;  --f34: 34px;
+  --f55: 55px;  --f89: 89px;  --f144: 144px;  --f233: 233px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground:      #281e38;
+    --surface:     #342749;
+    --ink:         #f6effc;
+    --title:       #f8f3fc;
+    --ink-soft:    #c9bdd7;
+    --ink-faint:   #a397b6;
+    --heading:     #baa6d3;
+    --rule:        #51406d;
+    --accent:      #d4b9eb;
+    --link:        #e1ccf4;
+    --accent-wash: #3a2b52;
+    --code:        #eadef9;
+    --gold:        #b59a45;
+    --emblem:      .13;
+  }
+}
+:root[data-theme="dark"] {
+  --ground:      #281e38;
+  --surface:     #342749;
+  --ink:         #f6effc;
+  --title:       #f8f3fc;
+  --ink-soft:    #c9bdd7;
+  --ink-faint:   #a397b6;
+  --heading:     #baa6d3;
+  --rule:        #51406d;
+  --accent:      #d4b9eb;
+  --link:        #e1ccf4;
+  --accent-wash: #3a2b52;
+  --code:        #eadef9;
+  --gold:        #b59a45;
+  --emblem:      .13;
+}
+body { background: var(--ground); color: var(--ink); font-family: var(--serif); font-size: var(--s0);
+  line-height: var(--lead); margin: 0; }
+.page { max-width: 46rem; margin: 0 auto; padding: var(--f55) 16px var(--f89); }
+.back { font-family: var(--mono); font-size: var(--s-075); letter-spacing: .146em; text-transform: uppercase; }
+a { color: var(--link); }
+.back a { color: var(--heading); text-decoration: none; }
+.back a:hover, .back a:focus-visible { color: var(--accent); }
+h1 { font-size: var(--s1); font-weight: 500; line-height: var(--lead-display); color: var(--title); margin: var(--f34) 0 var(--f13); }
+.authors { margin: 0; }
+.venue { margin: var(--f5) 0 0; font-size: var(--s-025); color: var(--ink-soft); font-style: italic; }
+.meta { margin: var(--f13) 0 0; font-size: var(--s-025); }
+.meta .sep { color: var(--ink-faint); margin: 0 var(--f5); }
+h2 { font-family: var(--mono); font-size: var(--s-075); font-weight: 500; letter-spacing: .146em; text-transform: uppercase;
+  color: var(--heading); margin: var(--f34) 0 var(--f8); }
+.abstract { margin: 0; text-align: justify; hyphens: auto; }
+pre { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: var(--f13);
+  font-family: var(--mono); font-size: var(--s-05); color: var(--code); overflow-x: auto; margin: 0; }
+button.cite { font: inherit; font-family: var(--mono); font-size: var(--s-075); letter-spacing: .1em; text-transform: uppercase;
+  color: var(--heading); background: none; border: 1px solid var(--rule); border-radius: 3px; padding: 2px 8px; cursor: pointer;
+  margin-top: var(--f8); }
+button.cite:hover, button.cite:focus-visible { color: var(--accent); border-color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+</style>
+</head>
+<body>
+<main class="page">
+  <p class="back"><a href="/publications">&larr; Donato, Maria Meoli</a></p>
+  <h1>Enhancing Energy System Modelling with Advanced Mathematical Decomposition Techniques: Feasibility of Coupling SMS++ and PyPSA</h1>
+  <p class="authors">D. Fioriti, A. Pampado, C. Scarpelli, G. Pasini, G. Lutzemberger, S. Barsali, D. Poli, <b>D. Meoli</b>, L. Mencarelli, A. Frangioni</p>
+  <p class="venue">2025 IEEE International Conference on Environment and Electrical Engineering / Industrial and Commercial Power Systems Europe (EEEIC / I&amp;CPS Europe), pp. 1&ndash;6, 2025</p>
+  <p class="meta">
+    <a href="https://doi.org/10.1109/EEEIC/ICPSEurope64998.2025.11169291">DOI</a>
+    <span class="sep">&middot;</span>
+    <a href="https://pages.di.unipi.it/frangio/papers/IECE25.pdf">preprint</a>
+  </p>
+  <h2>Abstract</h2>
+  <p class="abstract">Large-scale high-resolution energy system modelling is essential to support long-term decarbonization strategies. Open-source frameworks such as PyPSA-Eur and PyPSA-Earth enable high-resolution techno-economic analyses but face computational bottlenecks when applied to large-scale or stochastic systems. Advanced mathematical decomposition techniques can alleviate these challenges, yet they are rigid to specific problems and difficult to scale to different applications. SMS++ is a high-performance, C++-based modelling framework designed to support flexible, nested decomposition strategies through a structured block-based approach. However, its use has so far remained isolated from mainstream energy system modelling. This paper presents a novel methodology to couple energy modelling tools with mathematical decomposition frameworks, focusing on integrating PyPSA with SMS++, to facilitate the wide adoption of advanced decompositions into energy applications. A formal interface is developed by mapping PyPSA components to SMS++ blocks. A fully reproducible prototype workflow is then implemented and validated on six case studies, demonstrating numerical equivalence within tight tolerances. The successful integration confirms the feasibility of applying advanced decomposition techniques within a user-friendly modelling environment. This approach opens new pathways for scaling energy system models to sector-coupled and uncertainty-aware applications with enhanced computational efficiency.</p>
+  <h2>Cite</h2>
+  <pre>@inproceedings{fioriti2025coupling,
+  title     = {Enhancing Energy System Modelling with Advanced Mathematical
+               Decomposition Techniques: Feasibility of Coupling {SMS++} and
+               {PyPSA}},
+  author    = {Fioriti, Davide and Pampado, Alessandro and Scarpelli, Claudio and
+               Pasini, Gianluca and Lutzemberger, Giovanni and Barsali, Stefano
+               and Poli, Davide and Meoli, Donato and Mencarelli, Luca and
+               Frangioni, Antonio},
+  booktitle = {2025 IEEE International Conference on Environment and Electrical
+               Engineering and 2025 IEEE Industrial and Commercial Power Systems
+               Europe (EEEIC / I\&amp;CPS Europe)},
+  publisher = {IEEE},
+  year      = {2025},
+  pages     = {1--6},
+  doi       = {10.1109/EEEIC/ICPSEurope64998.2025.11169291}
+}</pre>
+  <button class="cite" type="button">Copy BibTeX</button>
+</main>
+<script>
+  // copies the BibTeX entry of the paper
+  document.querySelector('button.cite').addEventListener('click', function () {
+    var b = this;
+    navigator.clipboard.writeText(document.querySelector('pre').textContent).then(function () {
+      b.textContent = 'Copied';
+      setTimeout(function () { b.textContent = 'Copy BibTeX'; }, 1500);
+    });
+  });
+</script>
+</body>
+</html>
