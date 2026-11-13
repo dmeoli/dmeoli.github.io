@@ -5,9 +5,10 @@
 <title>Donato, Maria Meoli</title>
 <meta name="robots" content="noindex">
 <script>
-  /* A path such as /software or /pubblicazioni names a section of the one
-     page: the page is loaded with it, and it scrolls there and puts the
-     path back [see the end of index.html]. Any other path goes home. */
+  /* The paths of the sections (/software, /pubblicazioni, ...) have a page
+     of their own, which gives the preview of a shared link and sends here
+     with ?section= [see the end of index.html]; this one catches what is
+     left, a section path with a trailing name, and sends any other path home. */
   (function () {
     var p = location.pathname.replace(/^\/+|\/+$/g, '');
     location.replace('/' + (/^[a-z]+$/.test(p) ? '?section=' + p : '') +

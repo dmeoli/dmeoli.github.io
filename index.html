@@ -10,6 +10,14 @@
 <meta property="og:description" content="Research Fellow at the Dipartimento di Informatica, Universit&agrave; di Pisa: mathematical optimization, symbolic AI and machine learning.">
 <meta property="og:url" content="https://dmeoli.github.io/">
 <meta property="og:image" content="https://dmeoli.github.io/photo.jpg">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:image:alt" content="Pixel-art portrait of Donato, Maria Meoli">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="it_IT">
+<link rel="canonical" href="https://dmeoli.github.io/">
+<meta name="theme-color" content="#e8e2f3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#281e38" media="(prefers-color-scheme: dark)">
 <meta name="twitter:card" content="summary">
 <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
 <link rel="icon" type="image/png" href="favicon.png?v=2">
@@ -274,6 +282,8 @@ h2 {
   text-transform: uppercase; color: var(--heading); margin: var(--f5) 0 0;
   position: sticky; top: calc(var(--f55) + var(--f5));
 }
+h2 a { color: inherit; text-decoration: none; }
+h2 a:hover, h2 a:focus-visible { color: var(--accent); }
 /* paragraphs one line apart, on the rhythm of the text; measure of about
    66 characters, i.e., two and a half lowercase alphabets */
 .body > * + * { margin-top: var(--f13); }
@@ -452,7 +462,7 @@ footer {
 
 <section id="research">
   <div class="grid">
-    <h2><span data-l="en">Research</span><span data-l="it" lang="it">Ricerca</span></h2>
+    <h2><a href="/research" data-l="en" data-section="research">Research</a><a href="/ricerca" data-l="it" lang="it" data-section="research">Ricerca</a></h2>
     <div class="body">
       <p data-l="en">
         I came to numerical optimization from symbolic AI, and more precisely from Knowledge
@@ -577,7 +587,7 @@ footer {
 
 <section id="publications">
   <div class="grid">
-    <h2><span data-l="en">Publications</span><span data-l="it" lang="it">Pubblicazioni</span></h2>
+    <h2><a href="/publications" data-l="en" data-section="publications">Publications</a><a href="/pubblicazioni" data-l="it" lang="it" data-section="publications">Pubblicazioni</a></h2>
     <div class="body">
 
       <article class="pub">
@@ -632,7 +642,7 @@ footer {
 
 <section id="software">
   <div class="grid">
-    <h2>Software</h2>
+    <h2><a href="/software" data-section="software">Software</a></h2>
     <div class="body">
       <div id="software-cards" class="cards"></div>
 <noscript><p><a href="https://github.com/dmeoli">github.com/dmeoli</a></p></noscript>
@@ -642,7 +652,7 @@ footer {
 
 <section id="experience">
   <div class="grid">
-    <h2><span data-l="en">Experience</span><span data-l="it" lang="it">Esperienze</span></h2>
+    <h2><a href="/experience" data-l="en" data-section="experience">Experience</a><a href="/esperienze" data-l="it" lang="it" data-section="experience">Esperienze</a></h2>
     <div class="body">
       <div class="entry">
         <span class="when"><span data-l="en">2021&ndash;present</span><span data-l="it" lang="it">dal 2021</span></span>
@@ -684,7 +694,7 @@ Decomposition methods and solvers for large-scale
 
 <section id="education">
   <div class="grid">
-    <h2><span data-l="en">Education</span><span data-l="it" lang="it">Formazione</span></h2>
+    <h2><a href="/education" data-l="en" data-section="education">Education</a><a href="/formazione" data-l="it" lang="it" data-section="education">Formazione</a></h2>
     <div class="body">
       <div class="entry plain">
         <div>
@@ -705,7 +715,7 @@ Decomposition methods and solvers for large-scale
 
 <section id="contact">
   <div class="grid">
-    <h2><span data-l="en">Contact</span><span data-l="it" lang="it">Contatti</span></h2>
+    <h2><a href="/contact" data-l="en" data-section="contact">Contact</a><a href="/contatti" data-l="it" lang="it" data-section="contact">Contatti</a></h2>
     <div class="body">
       <dl class="contact">
         <div><dt>Email</dt><dd><a href="mailto:donato.meoli@outlook.com">donato.meoli@outlook.com</a></dd></div>
@@ -870,6 +880,8 @@ Decomposition methods and solvers for large-scale
       var target = document.getElementById(id);
       if (!target) return;
       wanted = id;
+      if (smooth && matchMedia('(prefers-reduced-motion: reduce)').matches)
+        smooth = false;
       target.scrollIntoView(smooth ? { behavior: 'smooth' } : undefined);
       show(id);
     }
@@ -892,7 +904,9 @@ Decomposition methods and solvers for large-scale
     }
 
     // the menu
-    var links = document.querySelectorAll('.sections a');
+    // the menu, and the name of each section, which stays in view on the
+    // left while the section is read
+    var links = document.querySelectorAll('.sections a, h2 a[data-section]');
     for (var i = 0; i < links.length; i++)
       links[i].addEventListener('click', function (e) {
         e.preventDefault();
