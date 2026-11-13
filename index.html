@@ -46,6 +46,9 @@
       l = (navigator.language || '').slice(0, 2).toLowerCase() === 'it' ? 'it' : 'en';
     document.documentElement.setAttribute('data-lang', l);
     document.documentElement.lang = l;
+    var t;
+    try { t = localStorage.getItem('theme'); } catch (e) {}
+    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
   })();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -140,6 +143,18 @@ body {
 .lang button:hover { color: var(--link); }
 .lang button[aria-pressed="true"] { color: var(--accent); border-bottom-color: var(--gold); }
 .lang span { color: var(--rule); align-self: center; }
+.lang .theme { display: flex; align-items: center; }
+.lang .theme svg {
+  width: 1.15em; height: 1.15em; fill: none; stroke: currentColor;
+  stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+}
+.lang .theme .sun { display: none; }
+:root[data-theme="dark"] .lang .theme .sun { display: block; }
+:root[data-theme="dark"] .lang .theme .moon { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .lang .theme .sun { display: block; }
+  :root:not([data-theme="light"]) .lang .theme .moon { display: none; }
+}
 
 /* ---- emblem: fixed behind the page, the text scrolls over it --------- */
 body { position: relative; z-index: 0; }
@@ -366,6 +381,11 @@ footer {
   <button type="button" data-set="en" aria-pressed="false" title="English">EN</button>
   <span aria-hidden="true">&middot;</span>
   <button type="button" data-set="it" aria-pressed="false" title="Italiano">IT</button>
+  <span aria-hidden="true">&middot;</span>
+  <button type="button" class="theme" aria-label="Light or dark theme" title="Light or dark theme">
+    <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>
+    <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+  </button>
 </div>
 
 <header class="masthead">
@@ -718,20 +738,39 @@ Decomposition methods and solvers for large-scale
     var root = document.documentElement,
         buttons = document.querySelectorAll('.lang button'),
         photo = document.querySelector('.portrait'),
-        labels = { en: 'Open the photo', it: 'Apri la foto' };
+        labels = { en: 'Open the photo', it: 'Apri la foto' },
+        theme = document.querySelector('.lang .theme'),
+        themeLabels = { en: 'Light or dark theme', it: 'Tema chiaro o scuro' };
     function show(l) {
       root.setAttribute('data-lang', l);
       root.lang = l;
       for (var i = 0; i < buttons.length; i++)
-        buttons[i].setAttribute('aria-pressed', buttons[i].getAttribute('data-set') === l);
+        if (buttons[i].hasAttribute('data-set'))
+          buttons[i].setAttribute('aria-pressed', buttons[i].getAttribute('data-set') === l);
       if (photo) photo.setAttribute('aria-label', labels[l]);
+      if (theme) { theme.setAttribute('aria-label', themeLabels[l]); theme.title = themeLabels[l]; }
     }
-    for (var i = 0; i < buttons.length; i++)
+    for (var i = 0; i < buttons.length; i++) {
+      if (!buttons[i].hasAttribute('data-set')) continue;
       buttons[i].addEventListener('click', function () {
         var l = this.getAttribute('data-set');
         try { localStorage.setItem('lang', l); } catch (e) {}
         show(l);
       });
+    }
+    // the theme: the one in use is the visitor's choice or else the system's;
+    // a click switches to the other one and remembers it
+    function dark() {
+      var t = root.getAttribute('data-theme');
+      return t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    if (theme) theme.addEventListener('click', function () {
+      var t = dark() ? 'light' : 'dark';
+      root.setAttribute('data-theme', t);
+      try { localStorage.setItem('theme', t); } catch (e) {}
+      var s = document.querySelectorAll('#software-cards source');
+      for (var i = 0; i < s.length; i++) s[i].media = t === 'dark' ? 'all' : 'not all';
+    });
     show(root.getAttribute('data-lang') === 'it' ? 'it' : 'en');
   })();
 </script>
@@ -771,7 +810,8 @@ Decomposition methods and solvers for large-scale
             var item = el('div'), a = el('a'), pic = el('picture'),
                 dark = el('source'), img = el('img');
             a.href = repo.url;
-            dark.media = '(prefers-color-scheme: dark)';
+            var t = document.documentElement.getAttribute('data-theme');
+            dark.media = t ? (t === 'dark' ? 'all' : 'not all') : '(prefers-color-scheme: dark)';
             dark.srcset = BASE + repo.card + '-dark.svg';
             img.src = BASE + repo.card + '-light.svg';
             img.alt = repo.name; img.width = 400; img.height = 120;
