@@ -437,6 +437,19 @@ footer {
   .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--f13) var(--f8); }
   .gallery figcaption { font-size: var(--s-05); }
 }
+/* the second row of the menu: play, translate and art, apart from the
+   academic sections, smaller and in the lilac of the accent */
+.sections .more { flex-basis: 100%; height: 0; }
+.sections a.side { font-size: var(--s-075); color: var(--heading); letter-spacing: .146em; }
+.sections a.side:hover, .sections a.side:focus-visible, .sections a.side[aria-current="true"] { color: var(--accent); }
+/* the thumbnails of play in the theme of the page */
+.th-dark { display: none !important; }
+:root[data-theme="dark"] .th-light { display: none !important; }
+:root[data-theme="dark"] .th-dark { display: block !important; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .th-light { display: none !important; }
+  :root:not([data-theme="light"]) .th-dark { display: block !important; }
+}
 </style>
 </head>
 <body>
@@ -511,12 +524,13 @@ footer {
   <a href="/research" data-l="en" data-section="research">Research</a><a href="/ricerca" data-l="it" lang="it" data-section="research">Ricerca</a>
   <a href="/publications" data-l="en" data-section="publications">Publications</a><a href="/pubblicazioni" data-l="it" lang="it" data-section="publications">Pubblicazioni</a>
   <a href="/software" data-l="en" data-section="software">Software</a><a href="/software" data-l="it" lang="it" data-section="software">Software</a>
-  <a href="/play" data-l="en" data-section="play">Play</a><a href="/gioca" data-l="it" lang="it" data-section="play">Gioca</a>
-  <a href="/translate" data-l="en" data-section="translate">Translate</a><a href="/traduci" data-l="it" lang="it" data-section="translate">Traduci</a>
   <a href="/experience" data-l="en" data-section="experience">Experience</a><a href="/esperienze" data-l="it" lang="it" data-section="experience">Esperienze</a>
   <a href="/education" data-l="en" data-section="education">Education</a><a href="/formazione" data-l="it" lang="it" data-section="education">Formazione</a>
-  <a href="/art" data-l="en" data-section="art">Art</a><a href="/arte" data-l="it" lang="it" data-section="art">Arte</a>
   <a href="/contact" data-l="en" data-section="contact">Contact</a><a href="/contatti" data-l="it" lang="it" data-section="contact">Contatti</a>
+  <span class="more" aria-hidden="true"></span>
+  <a class="side" href="/play" data-l="en" data-section="play">Play</a><a class="side" href="/gioca" data-l="it" lang="it" data-section="play">Gioca</a>
+  <a class="side" href="/translate" data-l="en" data-section="translate">Translate</a><a class="side" href="/traduci" data-l="it" lang="it" data-section="translate">Traduci</a>
+  <a class="side" href="/art" data-l="en" data-section="art">Art</a><a class="side" href="/arte" data-l="it" lang="it" data-section="art">Arte</a>
 </nav>
 
 <main>
@@ -726,23 +740,23 @@ footer {
       <p data-l="en">Interactive pages, in the browser, on what happens inside an optimization algorithm: the primal polyhedron and the dual model side by side, the path of the iterates, and the same views for the learning models, which are trained by optimization. The source is <a href="https://github.com/dmeoli/opt-playground">opt-playground</a>.</p>
       <p data-l="it" lang="it">Pagine interattive, nel browser, su cosa succede dentro un algoritmo di ottimizzazione: il poliedro primale e il modello duale affiancati, il cammino delle iterate, e le stesse viste per i modelli di apprendimento, che si addestrano ottimizzando. Il sorgente è <a href="https://github.com/dmeoli/opt-playground">opt-playground</a>.</p>
       <div class="cards"><div class="row">
-        <div><a href="https://dmeoli.github.io/opt-playground/index.html"><img src="/assets/play/index.webp" width="640" height="477" alt="Lagrangian decomposition" loading="lazy"></a>
+        <div><a href="https://dmeoli.github.io/opt-playground/index.html"><img class="th-light" src="/assets/play/index.webp" width="640" height="477" alt="Lagrangian decomposition" loading="lazy"><img class="th-dark" src="/assets/play/index-dark.webp" width="640" height="477" alt="Lagrangian decomposition" loading="lazy"></a>
           <p class="what"><span data-l="en"><b>Lagrangian decomposition</b>: the dual and the primal side by side, with the dual solvers of SMS++</span><span data-l="it" lang="it"><b>Decomposizione lagrangiana</b>: duale e primale affiancati, con i solutori duali di SMS++</span></p></div>
-        <div><a href="https://dmeoli.github.io/opt-playground/components.html"><img src="/assets/play/components.webp" width="640" height="477" alt="A dual that is a sum" loading="lazy"></a>
+        <div><a href="https://dmeoli.github.io/opt-playground/components.html"><img class="th-light" src="/assets/play/components.webp" width="640" height="477" alt="A dual that is a sum" loading="lazy"><img class="th-dark" src="/assets/play/components-dark.webp" width="640" height="477" alt="A dual that is a sum" loading="lazy"></a>
           <p class="what"><span data-l="en"><b>A dual that is a sum</b>: aggregated and disaggregated models, incremental subgradient</span><span data-l="it" lang="it"><b>Un duale somma di componenti</b>: modelli aggregati e disaggregati, subgradiente incrementale</span></p></div>
-        <div><a href="https://dmeoli.github.io/opt-playground/benders.html"><img src="/assets/play/benders.webp" width="640" height="477" alt="Benders decomposition" loading="lazy"></a>
+        <div><a href="https://dmeoli.github.io/opt-playground/benders.html"><img class="th-light" src="/assets/play/benders.webp" width="640" height="477" alt="Benders decomposition" loading="lazy"><img class="th-dark" src="/assets/play/benders-dark.webp" width="640" height="477" alt="Benders decomposition" loading="lazy"></a>
           <p class="what"><span data-l="en"><b>Benders decomposition</b>: every cut a vertex of the dual of the recourse</span><span data-l="it" lang="it"><b>Decomposizione di Benders</b>: ogni taglio un vertice del duale del ricorso</span></p></div>
-        <div><a href="https://dmeoli.github.io/opt-playground/lp.html"><img src="/assets/play/lp.webp" width="640" height="477" alt="Linear programming" loading="lazy"></a>
+        <div><a href="https://dmeoli.github.io/opt-playground/lp.html"><img class="th-light" src="/assets/play/lp.webp" width="640" height="477" alt="Linear programming" loading="lazy"><img class="th-dark" src="/assets/play/lp-dark.webp" width="640" height="477" alt="Linear programming" loading="lazy"></a>
           <p class="what"><span data-l="en"><b>Linear programming</b>: simplex and barrier, primal and dual in the plane</span><span data-l="it" lang="it"><b>Programmazione lineare</b>: simplesso e barriera, primale e duale nel piano</span></p></div>
-        <div><a href="https://dmeoli.github.io/opt-playground/integer.html"><img src="/assets/play/integer.webp" width="640" height="477" alt="Integer programming" loading="lazy"></a>
+        <div><a href="https://dmeoli.github.io/opt-playground/integer.html"><img class="th-light" src="/assets/play/integer.webp" width="640" height="477" alt="Integer programming" loading="lazy"><img class="th-dark" src="/assets/play/integer-dark.webp" width="640" height="477" alt="Integer programming" loading="lazy"></a>
           <p class="what"><span data-l="en"><b>Integer programming</b>: branch and bound, Gomory and cover cuts</span><span data-l="it" lang="it"><b>Programmazione intera</b>: branch and bound, tagli di Gomory e di copertura</span></p></div>
-        <div><a href="https://dmeoli.github.io/opt-playground/polarity.html"><img src="/assets/play/polarity.webp" width="640" height="477" alt="Polarity" loading="lazy"></a>
+        <div><a href="https://dmeoli.github.io/opt-playground/polarity.html"><img class="th-light" src="/assets/play/polarity.webp" width="640" height="477" alt="Polarity" loading="lazy"><img class="th-dark" src="/assets/play/polarity-dark.webp" width="640" height="477" alt="Polarity" loading="lazy"></a>
           <p class="what"><span data-l="en"><b>Polarity</b>: a polytope and its polar in 3D</span><span data-l="it" lang="it"><b>Polarità</b>: un politopo e il suo polare in 3D</span></p></div>
-        <div><a href="https://dmeoli.github.io/opt-playground/learning.html"><img src="/assets/play/learning.webp" width="640" height="477" alt="Learning" loading="lazy"></a>
+        <div><a href="https://dmeoli.github.io/opt-playground/learning.html"><img class="th-light" src="/assets/play/learning.webp" width="640" height="477" alt="Learning" loading="lazy"><img class="th-dark" src="/assets/play/learning-dark.webp" width="640" height="477" alt="Learning" loading="lazy"></a>
           <p class="what"><span data-l="en"><b>Learning</b>: the optimizers of optiml on two-dimensional functions</span><span data-l="it" lang="it"><b>Apprendimento</b>: gli ottimizzatori di optiml su funzioni in due dimensioni</span></p></div>
-        <div><a href="https://dmeoli.github.io/opt-playground/svm.html"><img src="/assets/play/svm.webp" width="640" height="477" alt="Support vector machines" loading="lazy"></a>
+        <div><a href="https://dmeoli.github.io/opt-playground/svm.html"><img class="th-light" src="/assets/play/svm.webp" width="640" height="477" alt="Support vector machines" loading="lazy"><img class="th-dark" src="/assets/play/svm-dark.webp" width="640" height="477" alt="Support vector machines" loading="lazy"></a>
           <p class="what"><span data-l="en"><b>Support vector machines</b>: primal and dual, SMO</span><span data-l="it" lang="it"><b>Macchine a vettori di supporto</b>: primale e duale, SMO</span></p></div>
-        <div><a href="https://dmeoli.github.io/opt-playground/network.html"><img src="/assets/play/network.webp" width="640" height="477" alt="Neural networks" loading="lazy"></a>
+        <div><a href="https://dmeoli.github.io/opt-playground/network.html"><img class="th-light" src="/assets/play/network.webp" width="640" height="477" alt="Neural networks" loading="lazy"><img class="th-dark" src="/assets/play/network-dark.webp" width="640" height="477" alt="Neural networks" loading="lazy"></a>
           <p class="what"><span data-l="en"><b>Neural networks</b>: a small network trained in the page, the loss landscape</span><span data-l="it" lang="it"><b>Reti neurali</b>: una piccola rete addestrata nella pagina, il paesaggio della loss</span></p></div>
       </div></div>
     </div>
