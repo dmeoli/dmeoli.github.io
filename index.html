@@ -450,6 +450,18 @@ footer {
   :root:not([data-theme="light"]) .th-light { display: none !important; }
   :root:not([data-theme="light"]) .th-dark { display: block !important; }
 }
+/* the subsections of play and art: a row of tabs, one subsection shown at a time
+   (all of them without scripts) */
+.subnav { display: flex; flex-wrap: wrap; gap: var(--f8); margin: var(--f13) 0 var(--f21); }
+.subnav button {
+  font-family: var(--mono); font-size: var(--s-075); letter-spacing: .12em; text-transform: uppercase;
+  color: var(--heading); background: var(--accent-wash); border: 1px solid transparent;
+  border-radius: 999px; padding: var(--f5) var(--f13); cursor: pointer;
+}
+.subnav button:hover, .subnav button:focus-visible { color: var(--accent); border-color: var(--accent); }
+.subnav button[aria-selected="true"] { color: var(--ground); background: var(--accent); }
+.tabs > .sub:not(.on) { display: none; }
+.tabs > .sub > .eyebrow.label:first-child { display: none; }
 </style>
 </head>
 <body>
@@ -739,19 +751,28 @@ footer {
     <div class="body">
       <p data-l="en">Interactive pages, in the browser, on what happens inside an optimization algorithm: the primal polyhedron and the dual model side by side, the path of the iterates, and the same views for the learning models, which are trained by optimization. The source is <a href="https://github.com/dmeoli/opt-playground">opt-playground</a>.</p>
       <p data-l="it" lang="it">Pagine interattive, nel browser, su cosa succede dentro un algoritmo di ottimizzazione: il poliedro primale e il modello duale affiancati, il cammino delle iterate, e le stesse viste per i modelli di apprendimento, che si addestrano ottimizzando. Il sorgente è <a href="https://github.com/dmeoli/opt-playground">opt-playground</a>.</p>
-      <div class="cards"><div class="row">
+      <div class="subnav" role="tablist">
+        <button type="button" role="tab" data-sub="decomposition"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></button>
+        <button type="button" role="tab" data-sub="lp"><span data-l="en">Linear and integer</span><span data-l="it" lang="it">Lineare e intera</span></button>
+        <button type="button" role="tab" data-sub="learning"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></button>
+      </div>
+      <div class="sub cards" data-sub="decomposition" role="tabpanel"><div class="row">
         <div><a href="https://dmeoli.github.io/opt-playground/index.html"><img class="th-light" src="/assets/play/index.webp" width="640" height="477" alt="Lagrangian decomposition" loading="lazy"><img class="th-dark" src="/assets/play/index-dark.webp" width="640" height="477" alt="Lagrangian decomposition" loading="lazy"></a>
           <p class="what"><span data-l="en"><b>Lagrangian decomposition</b>: the dual and the primal side by side, with the dual solvers of SMS++</span><span data-l="it" lang="it"><b>Decomposizione lagrangiana</b>: duale e primale affiancati, con i solutori duali di SMS++</span></p></div>
         <div><a href="https://dmeoli.github.io/opt-playground/components.html"><img class="th-light" src="/assets/play/components.webp" width="640" height="477" alt="A dual that is a sum" loading="lazy"><img class="th-dark" src="/assets/play/components-dark.webp" width="640" height="477" alt="A dual that is a sum" loading="lazy"></a>
           <p class="what"><span data-l="en"><b>A dual that is a sum</b>: aggregated and disaggregated models, incremental subgradient</span><span data-l="it" lang="it"><b>Un duale somma di componenti</b>: modelli aggregati e disaggregati, subgradiente incrementale</span></p></div>
         <div><a href="https://dmeoli.github.io/opt-playground/benders.html"><img class="th-light" src="/assets/play/benders.webp" width="640" height="477" alt="Benders decomposition" loading="lazy"><img class="th-dark" src="/assets/play/benders-dark.webp" width="640" height="477" alt="Benders decomposition" loading="lazy"></a>
           <p class="what"><span data-l="en"><b>Benders decomposition</b>: every cut a vertex of the dual of the recourse</span><span data-l="it" lang="it"><b>Decomposizione di Benders</b>: ogni taglio un vertice del duale del ricorso</span></p></div>
+      </div></div>
+      <div class="sub cards" data-sub="lp" role="tabpanel"><div class="row">
         <div><a href="https://dmeoli.github.io/opt-playground/lp.html"><img class="th-light" src="/assets/play/lp.webp" width="640" height="477" alt="Linear programming" loading="lazy"><img class="th-dark" src="/assets/play/lp-dark.webp" width="640" height="477" alt="Linear programming" loading="lazy"></a>
           <p class="what"><span data-l="en"><b>Linear programming</b>: simplex and barrier, primal and dual in the plane</span><span data-l="it" lang="it"><b>Programmazione lineare</b>: simplesso e barriera, primale e duale nel piano</span></p></div>
         <div><a href="https://dmeoli.github.io/opt-playground/integer.html"><img class="th-light" src="/assets/play/integer.webp" width="640" height="477" alt="Integer programming" loading="lazy"><img class="th-dark" src="/assets/play/integer-dark.webp" width="640" height="477" alt="Integer programming" loading="lazy"></a>
           <p class="what"><span data-l="en"><b>Integer programming</b>: branch and bound, Gomory and cover cuts</span><span data-l="it" lang="it"><b>Programmazione intera</b>: branch and bound, tagli di Gomory e di copertura</span></p></div>
         <div><a href="https://dmeoli.github.io/opt-playground/polarity.html"><img class="th-light" src="/assets/play/polarity.webp" width="640" height="477" alt="Polarity" loading="lazy"><img class="th-dark" src="/assets/play/polarity-dark.webp" width="640" height="477" alt="Polarity" loading="lazy"></a>
           <p class="what"><span data-l="en"><b>Polarity</b>: a polytope and its polar in 3D</span><span data-l="it" lang="it"><b>Polarità</b>: un politopo e il suo polare in 3D</span></p></div>
+      </div></div>
+      <div class="sub cards" data-sub="learning" role="tabpanel"><div class="row">
         <div><a href="https://dmeoli.github.io/opt-playground/learning.html"><img class="th-light" src="/assets/play/learning.webp" width="640" height="477" alt="Learning" loading="lazy"><img class="th-dark" src="/assets/play/learning-dark.webp" width="640" height="477" alt="Learning" loading="lazy"></a>
           <p class="what"><span data-l="en"><b>Learning</b>: the optimizers of optiml on two-dimensional functions</span><span data-l="it" lang="it"><b>Apprendimento</b>: gli ottimizzatori di optiml su funzioni in due dimensioni</span></p></div>
         <div><a href="https://dmeoli.github.io/opt-playground/svm.html"><img class="th-light" src="/assets/play/svm.webp" width="640" height="477" alt="Support vector machines" loading="lazy"><img class="th-dark" src="/assets/play/svm-dark.webp" width="640" height="477" alt="Support vector machines" loading="lazy"></a>
@@ -855,6 +876,12 @@ Decomposition methods and solvers for large-scale
     <div class="body">
       <p data-l="en">Generative art: paintings and music made with generative models that I train and steer, starting from the felt experience of an emotion or a condition rather than from its symptoms.</p>
       <p data-l="it" lang="it">Arte generativa: quadri e musica fatti con modelli generativi che addestro e guido, partendo dal vissuto di un'emozione o di una condizione invece che dai suoi sintomi.</p>
+      <div class="subnav" role="tablist">
+        <button type="button" role="tab" data-sub="mind"><span data-l="en">Inside the mind</span><span data-l="it" lang="it">Dentro la mente</span></button>
+        <button type="button" role="tab" data-sub="table"><span data-l="en">The table</span><span data-l="it" lang="it">La tavola</span></button>
+        <button type="button" role="tab" data-sub="modigliani"><span data-l="en">After Modigliani</span><span data-l="it" lang="it">Da Modigliani</span></button>
+      </div>
+      <div class="sub" data-sub="mind" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">Inside the mind, a series</span><span data-l="it" lang="it">Dentro la mente, una serie</span></p>
       <p data-l="en">One painting and one piano piece for each mental disorder, both composed from the families of its symptoms in Wikidata and in the Disease Ontology, each rendered as it is lived.</p>
       <p data-l="it" lang="it">Un quadro e un brano per pianoforte per ogni disturbo mentale, composti entrambi dalle famiglie dei suoi sintomi in Wikidata e nella Disease Ontology, ciascuna resa come la si vive.</p>
@@ -902,12 +929,8 @@ Decomposition methods and solvers for large-scale
           <figcaption><span data-l="en">Schizophrenia</span><span data-l="it" lang="it">Schizofrenia</span></figcaption>
           <audio controls preload="none" src="/assets/art/schizofrenia.mp3"></audio></figure>
       </div>
-      <p class="eyebrow label"><span data-l="en">The table, a series on eating disorders</span><span data-l="it" lang="it">La tavola, una serie sui disturbi alimentari</span></p>
-      <p data-l="en">The same kitchen table in every painting, four chairs, a window, a plate; what changes is what each disorder does to it.</p>
-      <p data-l="it" lang="it">In ogni quadro lo stesso tavolo di cucina, quattro sedie, una finestra, un piatto; cambia quello che ogni disturbo ne fa.</p>
-      <div class="gallery">
-
       </div>
+      <div class="sub" data-sub="table" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">The table, a series on eating disorders</span><span data-l="it" lang="it">La tavola, una serie sui disturbi alimentari</span></p>
       <p data-l="en">The same kitchen table in every painting, four chairs, a window, a plate; what changes is what each disorder does to it.</p>
       <p data-l="it" lang="it">In ogni quadro lo stesso tavolo di cucina, quattro sedie, una finestra, un piatto; cambia quello che ogni disturbo ne fa.</p>
@@ -946,11 +969,14 @@ Decomposition methods and solvers for large-scale
           <figcaption><span data-l="en">Muscle dysmorphic disorder</span><span data-l="it" lang="it">Dismorfia muscolare</span></figcaption>
           <audio controls preload="none" src="/assets/art/dca_dismorfia_muscolare.mp3"></audio></figure>
       </div>
+      </div>
+      <div class="sub" data-sub="modigliani" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Modigliani</span><span data-l="it" lang="it">Da Modigliani</span></p>
       <div class="gallery">
         <figure><button type="button" data-full="/assets/art/modigliani_0_s2.webp"><img src="/assets/art/modigliani_0_s2.webp" width="864" height="1216" alt="Portrait after Modigliani" loading="lazy"></button></figure>
         <figure><button type="button" data-full="/assets/art/modigliani_1_s1.webp"><img src="/assets/art/modigliani_1_s1.webp" width="864" height="1216" alt="Portrait after Modigliani" loading="lazy"></button></figure>
         <figure><button type="button" data-full="/assets/art/modigliani_1_s2.webp"><img src="/assets/art/modigliani_1_s2.webp" width="864" height="1216" alt="Portrait after Modigliani" loading="lazy"></button></figure>
+      </div>
       </div>
     </div>
   </div>
@@ -1249,6 +1275,29 @@ Decomposition methods and solvers for large-scale
         .then(function (j) { out.textContent = j.translation; },
               function () { out.textContent = it ? 'Il servizio non risponde.' : 'The service does not answer.'; });
     });
+  })();
+</script>
+<script>
+  /* the tabs of the subsections: the one chosen goes in the hash of the
+     address (/art#table), so that it can be shared */
+  (function () {
+    var navs = document.querySelectorAll('.subnav');
+    for (var n = 0; n < navs.length; n++) (function (nav) {
+      var body = nav.parentNode, bs = nav.querySelectorAll('button'),
+          subs = body.querySelectorAll(':scope > .sub');
+      body.classList.add('tabs');
+      function pick(k, keep) {
+        for (var i = 0; i < bs.length; i++)
+          bs[i].setAttribute('aria-selected', bs[i].getAttribute('data-sub') === k);
+        for (var j = 0; j < subs.length; j++)
+          subs[j].classList.toggle('on', subs[j].getAttribute('data-sub') === k);
+        if (!keep) history.replaceState(history.state, '', location.pathname + '#' + k);
+      }
+      var h = location.hash.slice(1);
+      pick(body.querySelector(':scope > .sub[data-sub="' + h + '"]') ? h : bs[0].getAttribute('data-sub'), true);
+      for (var i = 0; i < bs.length; i++)
+        bs[i].addEventListener('click', function () { pick(this.getAttribute('data-sub')); });
+    })(navs[n]);
   })();
 </script>
 </body>
