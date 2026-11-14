@@ -288,6 +288,8 @@ h1 {
 
 /* ---- section grid ------------------------------------------------------ */
 section { border-top: 1px solid var(--rule); padding: var(--f21) 0 var(--f5); scroll-margin-top: var(--f34); }
+/* one section at a time, when the script of the sections runs */
+.paged main > section:not(.on) { display: none; }
 .grid { display: grid; grid-template-columns: var(--f144) 1fr; gap: var(--f21); align-items: start; }
 h2 {
   font-family: var(--mono); font-size: var(--s-075); font-weight: 500; letter-spacing: .146em;
@@ -891,41 +893,47 @@ Decomposition methods and solvers for large-scale
   /* The sections have a path of their own, in English and in Italian
      (/software, /publications, /pubblicazioni, ...): 404.html brings it here
      as ?section=, and the page opens on the section, in the language of the
-     name. The menu goes to a section and shows its path, which then follows
-     the section being read, so that the address can always be shared. */
+     name. The page shows one section at a time, the research when no other
+     is asked for; the menu changes it and its path, which the history
+     keeps, so that the address can always be shared and the back button
+     returns to the section read before. Without scripts every section is
+     shown, one after the other. */
   (function () {
     var it = { research: 'ricerca', publications: 'pubblicazioni',
                software: 'software', experience: 'esperienze',
                education: 'formazione', contact: 'contatti' },
-        en = {}, ids = Object.keys(it), root = document.documentElement;
+        en = {}, ids = Object.keys(it), root = document.documentElement,
+        current = 'research', home = true;
     ids.forEach(function (id) { en[it[id]] = id; en[id] = id; });
     function path(id) {
-      if (!id) return '/';
+      if (home) return '/';
       return '/' + (root.getAttribute('data-lang') === 'it' ? it[id] : id);
     }
-    function mark(id) {
+    function show(id, how) {
+      current = id;
+      ids.forEach(function (s) {
+        document.getElementById(s).classList.toggle('on', s === id);
+      });
       var links = document.querySelectorAll('.sections a');
       for (var i = 0; i < links.length; i++)
         links[i].setAttribute('aria-current',
                               links[i].getAttribute('data-section') === id);
-    }
-    var current = null, wanted = null;
-    function show(id) {
-      current = id;
-      mark(id);
       var p = path(id);
-      if (location.pathname !== p || location.search)
-        history.replaceState(null, '', p + location.hash);
+      if (how === 'push')
+        history.pushState({ section: id }, '', p);
+      else if (location.pathname !== p || location.search)
+        history.replaceState({ section: id }, '', p + location.hash);
     }
-    function go(id, smooth) {
-      var target = document.getElementById(id);
-      if (!target) return;
-      wanted = id;
-      if (smooth && matchMedia('(prefers-reduced-motion: reduce)').matches)
-        smooth = false;
-      target.scrollIntoView(smooth ? { behavior: 'smooth' } : undefined);
-      show(id);
+    // the new section starts right under the menu, if the page was
+    // scrolled past it
+    function top() {
+      var nav = document.querySelector('.sections'),
+          y = document.querySelector('main').getBoundingClientRect().top +
+              window.scrollY - nav.offsetHeight;
+      if (window.scrollY > y) window.scrollTo(0, y);
     }
+    root.classList.add('paged');
+    window.dmeoliSection = null;
 
     // the path asked for (or an old #anchor of a section)
     var name = new URLSearchParams(location.search).get('section') ||
@@ -937,49 +945,30 @@ Decomposition methods and solvers for large-scale
       }
       if (location.hash.slice(1) === name)
         history.replaceState(null, '', location.pathname + location.search);
-      go(en[name]);
-      // the cards of the software, which come later, scroll here again
-      window.dmeoliSection = document.getElementById(en[name]);
+      home = false;
+      current = en[name];
     } else if (location.search) {
       history.replaceState(null, '', '/' + location.hash);
     }
+    show(current);
 
-    // the menu
-    // the menu, and the name of each section, which stays in view on the
-    // left while the section is read
+    // the menu, and the name of each section
     var links = document.querySelectorAll('.sections a, h2 a[data-section]');
     for (var i = 0; i < links.length; i++)
       links[i].addEventListener('click', function (e) {
         e.preventDefault();
-        window.dmeoliSection = null;
-        go(this.getAttribute('data-section'), true);
+        var id = this.getAttribute('data-section');
+        if (id === current && !home) return;
+        home = false;
+        show(id, 'push');
+        top();
       });
-
-    // the section being read: the last one whose top has passed a third
-    // of the window, none above the first; at the end of the page, where
-    // the last sections cannot reach the top, the one asked for from the
-    // menu if it is in view, or else the last one in view
-    function spy() {
-      var id = null, last = null, h = window.innerHeight, line = h / 3,
-          end = window.scrollY + h >= document.documentElement.scrollHeight - 2;
-      ids.forEach(function (s) {
-        var top = document.getElementById(s).getBoundingClientRect().top;
-        if (top <= line) id = s;
-        if (top < h) last = s;
-      });
-      if (end) {
-        var w = wanted && document.getElementById(wanted)
-                                  .getBoundingClientRect().top;
-        id = wanted && w >= 0 && w < h ? wanted : last;
-      }
-      if (id !== current) show(id);
-    }
-    var queued = false;
-    window.addEventListener('scroll', function () {
-      if (queued) return;
-      queued = true;
-      requestAnimationFrame(function () { queued = false; spy(); });
-    }, { passive: true });
+    window.addEventListener('popstate', function (e) {
+      var id = e.state && e.state.section;
+      home = !id;
+      show(id || 'research');
+      top();
+    });
 
     // a change of language changes the name in the path
     var buttons = document.querySelectorAll('.lang button');
