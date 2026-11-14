@@ -38,6 +38,12 @@
     "name": "Dipartimento di Informatica, Università di Pisa",
     "url": "https://www.di.unipi.it/"
   },
+  "memberOf": [
+    {"@type": "Organization", "name": "SMS++ Project",
+     "url": "https://github.com/SMSpp-Project"},
+    {"@type": "Organization", "name": "aimacode",
+     "url": "https://github.com/aimacode"}
+  ],
   "knowsAbout": ["Mathematical Optimization", "Symbolic AI", "Machine Learning",
                  "Decomposition Methods", "Bundle Methods", "Knowledge Representation and Reasoning"],
   "sameAs": ["https://orcid.org/0009-0001-2500-2606",
@@ -336,6 +342,7 @@ a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 2
 .cards .row > div { display: flex; flex-direction: column; gap: var(--f5); }
 .cards a { display: block; position: relative; border-radius: 6px; transition: transform .2s ease-out, box-shadow .2s ease-out; }
 .cards a:hover, .cards a:focus-visible { transform: translateY(-2px); box-shadow: 0 6px 18px -8px var(--accent); }
+.cards .what a, .cards .what a:hover { display: inline; transform: none; box-shadow: none; }
 .cards img { display: block; width: 100%; height: auto; }
 .cards .what { margin: 0 var(--f3); font-size: var(--s-025); color: var(--ink-soft); }
 .repos li { display: grid; grid-template-columns: minmax(0, 23.6%) 1fr; gap: var(--f5) var(--f21); }
@@ -834,6 +841,21 @@ Decomposition methods and solvers for large-scale
       });
       return out;
     }
+    // the note of a card, in the two languages; {who} becomes a link to the
+    // page of the person named
+    function note(n) {
+      return both('p', 'what', {en: '', it: ''}).map(function (p) {
+        var parts = n[p.getAttribute('data-l')].split('{who}');
+        p.appendChild(document.createTextNode(parts[0]));
+        if (parts.length > 1) {
+          var a = el('a', '', n.who);
+          a.href = n.url;
+          p.appendChild(a);
+          p.appendChild(document.createTextNode(parts[1]));
+        }
+        return p;
+      });
+    }
     fetch(BASE + 'assets/projects.json').then(function (r) { return r.json(); })
       .then(function (data) {
         data.sections.forEach(function (sec) {
@@ -855,7 +877,7 @@ Decomposition methods and solvers for large-scale
             pic.appendChild(dark); pic.appendChild(img); a.appendChild(pic);
             item.appendChild(a);
             if (repo.note)
-              both('p', 'what', repo.note).forEach(function (e) { item.appendChild(e); });
+              note(repo.note).forEach(function (e) { item.appendChild(e); });
             row.appendChild(item);
           });
           host.appendChild(row);
