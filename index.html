@@ -36,7 +36,14 @@
   "affiliation": {
     "@type": "Organization",
     "name": "Dipartimento di Informatica, Università di Pisa",
-    "url": "https://www.di.unipi.it/"
+    "url": "https://www.di.unipi.it/",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Largo B. Pontecorvo 3",
+      "postalCode": "56127",
+      "addressLocality": "Pisa",
+      "addressCountry": "IT"
+    }
   },
   "memberOf": [
     {"@type": "Organization", "name": "SMS++ Project",
@@ -369,6 +376,7 @@ a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 2
 /* ---- contact ----------------------------------------------------------- */
 dl { margin: 0; }
 .contact dd { margin: 0; }
+.contact .addr { font-size: var(--s-025); line-height: 1.4; }
 .contact { display: grid; grid-template-columns: repeat(auto-fit, minmax(var(--f144), 1fr)); gap: var(--f21); }
 .contact div { display: grid; gap: var(--f3); align-content: start; }
 .contact dt, .label {
@@ -746,6 +754,7 @@ Decomposition methods and solvers for large-scale
     <div class="body">
       <dl class="contact">
         <div><dt>Email</dt><dd><a href="mailto:donato.meoli@outlook.com">donato.meoli@outlook.com</a></dd></div>
+        <div><dt><span data-l="en">Address</span><span data-l="it" lang="it">Indirizzo</span></dt><dd class="addr">Dipartimento di Informatica<br>Universit&agrave; di Pisa<br>Largo B. Pontecorvo 3<br>56127 Pisa, <span data-l="en">Italy</span><span data-l="it" lang="it">Italia</span></dd></div>
       </dl>
     </div>
   </div>
