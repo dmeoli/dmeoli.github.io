@@ -406,6 +406,55 @@ footer {
   .page { padding-top: var(--f34); }
 }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* ---- play, translate, art ---------------------------------------------- */
+/* the translator on a violet panel under the majolica tiles of the slides of
+   SicilianNMT (Wdowiak's NapiziaMeeting theme), drawn through a mask so that
+   they take the lilac of the site and stay transparent */
+.translate .majolica {
+  position: relative; isolation: isolate; overflow: hidden; max-width: 36em;
+  padding: var(--f34) var(--f34) var(--f21); border-radius: var(--f8);
+  background: linear-gradient(160deg, #7338a8, #4e2c72);
+}
+.translate .majolica::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; background: #d4b9eb; opacity: .3;
+  -webkit-mask: url(/assets/translate/tiles.svg) center / cover no-repeat;
+          mask: url(/assets/translate/tiles.svg) center / cover no-repeat;
+}
+.translate .majolica textarea, .translate .majolica output { background: rgb(255 255 255 / .9); color: #2e2040; border-color: transparent; }
+.translate .majolica output { color: #3a1d5e; font-style: italic; }
+.translate .majolica select, .translate .majolica button { background: rgb(255 255 255 / .92); color: #4e2c72; border-color: transparent; }
+.translate .majolica button:hover { background: #fff; }
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--f21) var(--f13); }
+.gallery figure { margin: 0; display: grid; gap: var(--f5); align-content: start; }
+/* the picture, its caption and its player in rows shared by the whole row of
+   the gallery, so that a caption on two lines does not shift the others */
+.gallery figure:has(audio) { grid-row: span 3; grid-template-rows: subgrid; }
+.gallery button { padding: 0; border: 0; background: none; cursor: zoom-in; border-radius: 4px; overflow: hidden; }
+.gallery img { display: block; width: 100%; height: auto; transition: transform .4s ease; }
+.gallery button:hover img, .gallery button:focus-visible img { transform: scale(1.03); }
+.gallery figcaption { font-size: var(--s-025); color: var(--ink-soft); line-height: var(--lead-display); }
+.gallery audio { width: 100%; height: 32px; }
+.art .label, .play .label { margin: var(--f21) 0 var(--f8); }
+.translate form { display: grid; gap: var(--f8); max-width: 33em; }
+.translate textarea, .translate output {
+  font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--rule);
+  border-radius: var(--f5); padding: var(--f8) var(--f13); min-height: 5.5em; display: block; width: 100%;
+}
+.translate output { color: var(--ink-soft); white-space: pre-wrap; }
+.translate .bar { display: flex; gap: var(--f13); align-items: center; flex-wrap: wrap; font-family: var(--mono); font-size: var(--s-05); }
+.translate select, .translate button {
+  font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--rule);
+  border-radius: var(--f5); padding: var(--f5) var(--f8);
+}
+.translate button { cursor: pointer; color: var(--accent); }
+.translate button:hover { border-color: var(--accent); }
+/* on a phone two works a row, and the panel of the translator with a smaller margin */
+@media (max-width: 600px) {
+  .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--f13) var(--f8); }
+  .gallery figcaption { font-size: var(--s-05); }
+  .translate .majolica { padding: var(--f13); }
+}
 </style>
 </head>
 <body>
@@ -480,8 +529,11 @@ footer {
   <a href="/research" data-l="en" data-section="research">Research</a><a href="/ricerca" data-l="it" lang="it" data-section="research">Ricerca</a>
   <a href="/publications" data-l="en" data-section="publications">Publications</a><a href="/pubblicazioni" data-l="it" lang="it" data-section="publications">Pubblicazioni</a>
   <a href="/software" data-l="en" data-section="software">Software</a><a href="/software" data-l="it" lang="it" data-section="software">Software</a>
+  <a href="/play" data-l="en" data-section="play">Play</a><a href="/gioca" data-l="it" lang="it" data-section="play">Gioca</a>
+  <a href="/translate" data-l="en" data-section="translate">Translate</a><a href="/traduci" data-l="it" lang="it" data-section="translate">Traduci</a>
   <a href="/experience" data-l="en" data-section="experience">Experience</a><a href="/esperienze" data-l="it" lang="it" data-section="experience">Esperienze</a>
   <a href="/education" data-l="en" data-section="education">Education</a><a href="/formazione" data-l="it" lang="it" data-section="education">Formazione</a>
+  <a href="/art" data-l="en" data-section="art">Art</a><a href="/arte" data-l="it" lang="it" data-section="art">Arte</a>
   <a href="/contact" data-l="en" data-section="contact">Contact</a><a href="/contatti" data-l="it" lang="it" data-section="contact">Contatti</a>
 </nav>
 
@@ -685,6 +737,59 @@ footer {
   </div>
 </section>
 
+<section id="play" class="play">
+  <div class="grid">
+    <h2><a href="/play" data-l="en" data-section="play">Play</a><a href="/gioca" data-l="it" lang="it" data-section="play">Gioca</a></h2>
+    <div class="body">
+      <p data-l="en">Interactive pages, in the browser, on what happens inside an optimization algorithm: the primal polyhedron and the dual model side by side, the path of the iterates, and the same views for the learning models, which are trained by optimization. The source is <a href="https://github.com/dmeoli/opt-playground">opt-playground</a>.</p>
+      <p data-l="it" lang="it">Pagine interattive, nel browser, su cosa succede dentro un algoritmo di ottimizzazione: il poliedro primale e il modello duale affiancati, il cammino delle iterate, e le stesse viste per i modelli di apprendimento, che si addestrano ottimizzando. Il sorgente è <a href="https://github.com/dmeoli/opt-playground">opt-playground</a>.</p>
+      <div class="cards"><div class="row">
+        <div><a href="https://dmeoli.github.io/opt-playground/index.html"><img src="/assets/play/index.webp" width="640" height="477" alt="Lagrangian decomposition" loading="lazy"></a>
+          <p class="what"><span data-l="en"><b>Lagrangian decomposition</b>: the dual and the primal side by side, with the dual solvers of SMS++</span><span data-l="it" lang="it"><b>Decomposizione lagrangiana</b>: duale e primale affiancati, con i solutori duali di SMS++</span></p></div>
+        <div><a href="https://dmeoli.github.io/opt-playground/components.html"><img src="/assets/play/components.webp" width="640" height="477" alt="A dual that is a sum" loading="lazy"></a>
+          <p class="what"><span data-l="en"><b>A dual that is a sum</b>: aggregated and disaggregated models, incremental subgradient</span><span data-l="it" lang="it"><b>Un duale somma di componenti</b>: modelli aggregati e disaggregati, subgradiente incrementale</span></p></div>
+        <div><a href="https://dmeoli.github.io/opt-playground/benders.html"><img src="/assets/play/benders.webp" width="640" height="477" alt="Benders decomposition" loading="lazy"></a>
+          <p class="what"><span data-l="en"><b>Benders decomposition</b>: every cut a vertex of the dual of the recourse</span><span data-l="it" lang="it"><b>Decomposizione di Benders</b>: ogni taglio un vertice del duale del ricorso</span></p></div>
+        <div><a href="https://dmeoli.github.io/opt-playground/lp.html"><img src="/assets/play/lp.webp" width="640" height="477" alt="Linear programming" loading="lazy"></a>
+          <p class="what"><span data-l="en"><b>Linear programming</b>: simplex and barrier, primal and dual in the plane</span><span data-l="it" lang="it"><b>Programmazione lineare</b>: simplesso e barriera, primale e duale nel piano</span></p></div>
+        <div><a href="https://dmeoli.github.io/opt-playground/integer.html"><img src="/assets/play/integer.webp" width="640" height="477" alt="Integer programming" loading="lazy"></a>
+          <p class="what"><span data-l="en"><b>Integer programming</b>: branch and bound, Gomory and cover cuts</span><span data-l="it" lang="it"><b>Programmazione intera</b>: branch and bound, tagli di Gomory e di copertura</span></p></div>
+        <div><a href="https://dmeoli.github.io/opt-playground/polarity.html"><img src="/assets/play/polarity.webp" width="640" height="477" alt="Polarity" loading="lazy"></a>
+          <p class="what"><span data-l="en"><b>Polarity</b>: a polytope and its polar in 3D</span><span data-l="it" lang="it"><b>Polarità</b>: un politopo e il suo polare in 3D</span></p></div>
+        <div><a href="https://dmeoli.github.io/opt-playground/learning.html"><img src="/assets/play/learning.webp" width="640" height="477" alt="Learning" loading="lazy"></a>
+          <p class="what"><span data-l="en"><b>Learning</b>: the optimizers of optiml on two-dimensional functions</span><span data-l="it" lang="it"><b>Apprendimento</b>: gli ottimizzatori di optiml su funzioni in due dimensioni</span></p></div>
+        <div><a href="https://dmeoli.github.io/opt-playground/svm.html"><img src="/assets/play/svm.webp" width="640" height="477" alt="Support vector machines" loading="lazy"></a>
+          <p class="what"><span data-l="en"><b>Support vector machines</b>: primal and dual, SMO</span><span data-l="it" lang="it"><b>Macchine a vettori di supporto</b>: primale e duale, SMO</span></p></div>
+        <div><a href="https://dmeoli.github.io/opt-playground/network.html"><img src="/assets/play/network.webp" width="640" height="477" alt="Neural networks" loading="lazy"></a>
+          <p class="what"><span data-l="en"><b>Neural networks</b>: a small network trained in the page, the loss landscape</span><span data-l="it" lang="it"><b>Reti neurali</b>: una piccola rete addestrata nella pagina, il paesaggio della loss</span></p></div>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<section id="translate" class="translate">
+  <div class="grid">
+    <h2><a href="/translate" data-l="en" data-section="translate">Translate</a><a href="/traduci" data-l="it" lang="it" data-section="translate">Traduci</a></h2>
+    <div class="body">
+      <p data-l="en">A translator between Sicilian, Italian and English, a neural model for a low-resource language built with Eryk Wdowiak and Arba Sicula on the work of <a href="https://arxiv.org/abs/2110.01938">Tradutturi Sicilianu</a>.</p>
+      <p data-l="it" lang="it">Un traduttore fra siciliano, italiano e inglese, un modello neurale per una lingua con poche risorse, costruito con Eryk Wdowiak e Arba Sicula sul lavoro di <a href="https://arxiv.org/abs/2110.01938">Tradutturi Sicilianu</a>.</p>
+      <form id="tr-form" class="majolica">
+        <div class="bar">
+          <select id="tr-dir" aria-label="Direction">
+            <option value="scn-it">Sicilianu &rarr; Italiano</option>
+            <option value="it-scn">Italiano &rarr; Sicilianu</option>
+            <option value="scn-en">Sicilianu &rarr; English</option>
+            <option value="en-scn">English &rarr; Sicilianu</option>
+          </select>
+          <button type="submit"><span data-l="en">Translate</span><span data-l="it" lang="it">Traduci</span></button>
+        </div>
+        <textarea id="tr-in" rows="4" aria-label="Text">Unni c&#39;è cori, c&#39;è spiranza.</textarea>
+        <output id="tr-out" for="tr-in"></output>
+      </form>
+    </div>
+  </div>
+</section>
+
 <section id="experience">
   <div class="grid">
     <h2><a href="/experience" data-l="en" data-section="experience">Experience</a><a href="/esperienze" data-l="it" lang="it" data-section="experience">Esperienze</a></h2>
@@ -748,6 +853,113 @@ Decomposition methods and solvers for large-scale
   </div>
 </section>
 
+<section id="art" class="art">
+  <div class="grid">
+    <h2><a href="/art" data-l="en" data-section="art">Art</a><a href="/arte" data-l="it" lang="it" data-section="art">Arte</a></h2>
+    <div class="body">
+      <p data-l="en">Generative art: paintings and music made with generative models that I train and steer, starting from the felt experience of an emotion or a condition rather than from its symptoms.</p>
+      <p data-l="it" lang="it">Arte generativa: quadri e musica fatti con modelli generativi che addestro e guido, partendo dal vissuto di un'emozione o di una condizione invece che dai suoi sintomi.</p>
+      <p class="eyebrow label"><span data-l="en">Inside the mind, a series</span><span data-l="it" lang="it">Dentro la mente, una serie</span></p>
+      <p data-l="en">One painting and one piano piece for each mental disorder, both composed from the families of its symptoms in Wikidata and in the Disease Ontology, each rendered as it is lived.</p>
+      <p data-l="it" lang="it">Un quadro e un brano per pianoforte per ogni disturbo mentale, composti entrambi dalle famiglie dei suoi sintomi in Wikidata e nella Disease Ontology, ciascuna resa come la si vive.</p>
+      <div class="gallery">
+        <figure><button type="button" data-full="/assets/art/adhd.webp"><img src="/assets/art/adhd.webp" width="900" height="1286" alt="Attention deficit hyperactivity disorder (ADHD)" loading="lazy"></button>
+          <figcaption><span data-l="en">Attention deficit hyperactivity disorder (ADHD)</span><span data-l="it" lang="it">Disturbo da deficit di attenzione e iperattività (ADHD)</span></figcaption>
+          <audio controls preload="none" src="/assets/art/adhd.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/anoressia.webp"><img src="/assets/art/anoressia.webp" width="900" height="1286" alt="Anorexia nervosa" loading="lazy"></button>
+          <figcaption><span data-l="en">Anorexia nervosa</span><span data-l="it" lang="it">Anoressia nervosa</span></figcaption>
+          <audio controls preload="none" src="/assets/art/anoressia.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/ansia.webp"><img src="/assets/art/ansia.webp" width="900" height="1286" alt="Generalized anxiety disorder (GAD)" loading="lazy"></button>
+          <figcaption><span data-l="en">Generalized anxiety disorder (GAD)</span><span data-l="it" lang="it">Disturbo d'ansia generalizzato (DAG)</span></figcaption>
+          <audio controls preload="none" src="/assets/art/ansia.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/bipolare.webp"><img src="/assets/art/bipolare.webp" width="900" height="1286" alt="Bipolar disorder" loading="lazy"></button>
+          <figcaption><span data-l="en">Bipolar disorder</span><span data-l="it" lang="it">Disturbo bipolare</span></figcaption>
+          <audio controls preload="none" src="/assets/art/bipolare.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/borderline.webp"><img src="/assets/art/borderline.webp" width="900" height="1286" alt="Borderline personality disorder (BPD)" loading="lazy"></button>
+          <figcaption><span data-l="en">Borderline personality disorder (BPD)</span><span data-l="it" lang="it">Disturbo borderline di personalità (DBP)</span></figcaption>
+          <audio controls preload="none" src="/assets/art/borderline.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/bulimia.webp"><img src="/assets/art/bulimia.webp" width="900" height="1286" alt="Bulimia nervosa" loading="lazy"></button>
+          <figcaption><span data-l="en">Bulimia nervosa</span><span data-l="it" lang="it">Bulimia nervosa</span></figcaption>
+          <audio controls preload="none" src="/assets/art/bulimia.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/depressione.webp"><img src="/assets/art/depressione.webp" width="900" height="1286" alt="Major depressive disorder (MDD)" loading="lazy"></button>
+          <figcaption><span data-l="en">Major depressive disorder (MDD)</span><span data-l="it" lang="it">Disturbo depressivo maggiore (DDM)</span></figcaption>
+          <audio controls preload="none" src="/assets/art/depressione.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/dipendenza.webp"><img src="/assets/art/dipendenza.webp" width="900" height="1286" alt="Substance dependence" loading="lazy"></button>
+          <figcaption><span data-l="en">Substance dependence</span><span data-l="it" lang="it">Dipendenza da sostanze</span></figcaption>
+          <audio controls preload="none" src="/assets/art/dipendenza.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/dissociativo.webp"><img src="/assets/art/dissociativo.webp" width="900" height="1286" alt="Dissociative identity disorder (DID)" loading="lazy"></button>
+          <figcaption><span data-l="en">Dissociative identity disorder (DID)</span><span data-l="it" lang="it">Disturbo dissociativo dell'identità (DDI)</span></figcaption>
+          <audio controls preload="none" src="/assets/art/dissociativo.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/doc.webp"><img src="/assets/art/doc.webp" width="900" height="1286" alt="Obsessive-compulsive disorder (OCD)" loading="lazy"></button>
+          <figcaption><span data-l="en">Obsessive-compulsive disorder (OCD)</span><span data-l="it" lang="it">Disturbo ossessivo-compulsivo (DOC)</span></figcaption>
+          <audio controls preload="none" src="/assets/art/doc.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/fobia_sociale.webp"><img src="/assets/art/fobia_sociale.webp" width="900" height="1286" alt="Social phobia" loading="lazy"></button>
+          <figcaption><span data-l="en">Social phobia</span><span data-l="it" lang="it">Fobia sociale</span></figcaption>
+          <audio controls preload="none" src="/assets/art/fobia_sociale.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/panico.webp"><img src="/assets/art/panico.webp" width="900" height="1286" alt="Panic disorder" loading="lazy"></button>
+          <figcaption><span data-l="en">Panic disorder</span><span data-l="it" lang="it">Disturbo di panico</span></figcaption>
+          <audio controls preload="none" src="/assets/art/panico.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/ptsd.webp"><img src="/assets/art/ptsd.webp" width="900" height="1286" alt="Post-traumatic stress disorder (PTSD)" loading="lazy"></button>
+          <figcaption><span data-l="en">Post-traumatic stress disorder (PTSD)</span><span data-l="it" lang="it">Disturbo da stress post-traumatico (PTSD)</span></figcaption>
+          <audio controls preload="none" src="/assets/art/ptsd.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/schizofrenia.webp"><img src="/assets/art/schizofrenia.webp" width="900" height="1286" alt="Schizophrenia" loading="lazy"></button>
+          <figcaption><span data-l="en">Schizophrenia</span><span data-l="it" lang="it">Schizofrenia</span></figcaption>
+          <audio controls preload="none" src="/assets/art/schizofrenia.mp3"></audio></figure>
+      </div>
+      <p class="eyebrow label"><span data-l="en">The table, a series on eating disorders</span><span data-l="it" lang="it">La tavola, una serie sui disturbi alimentari</span></p>
+      <p data-l="en">The same kitchen table in every painting, four chairs, a window, a plate; what changes is what each disorder does to it.</p>
+      <p data-l="it" lang="it">In ogni quadro lo stesso tavolo di cucina, quattro sedie, una finestra, un piatto; cambia quello che ogni disturbo ne fa.</p>
+      <div class="gallery">
+
+      </div>
+      <p class="eyebrow label"><span data-l="en">The table, a series on eating disorders</span><span data-l="it" lang="it">La tavola, una serie sui disturbi alimentari</span></p>
+      <p data-l="en">The same kitchen table in every painting, four chairs, a window, a plate; what changes is what each disorder does to it.</p>
+      <p data-l="it" lang="it">In ogni quadro lo stesso tavolo di cucina, quattro sedie, una finestra, un piatto; cambia quello che ogni disturbo ne fa.</p>
+      <div class="gallery">
+        <figure><button type="button" data-full="/assets/art/dca_anoressia.webp"><img src="/assets/art/dca_anoressia.webp" width="900" height="1286" alt="Anorexia nervosa" loading="lazy"></button>
+          <figcaption><span data-l="en">Anorexia nervosa</span><span data-l="it" lang="it">Anoressia nervosa</span></figcaption>
+          <audio controls preload="none" src="/assets/art/dca_anoressia.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/dca_bulimia.webp"><img src="/assets/art/dca_bulimia.webp" width="900" height="1286" alt="Bulimia nervosa" loading="lazy"></button>
+          <figcaption><span data-l="en">Bulimia nervosa</span><span data-l="it" lang="it">Bulimia nervosa</span></figcaption>
+          <audio controls preload="none" src="/assets/art/dca_bulimia.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/dca_binge.webp"><img src="/assets/art/dca_binge.webp" width="900" height="1286" alt="Binge eating disorder (BED)" loading="lazy"></button>
+          <figcaption><span data-l="en">Binge eating disorder (BED)</span><span data-l="it" lang="it">Disturbo da alimentazione incontrollata (BED)</span></figcaption>
+          <audio controls preload="none" src="/assets/art/dca_binge.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/dca_arfid.webp"><img src="/assets/art/dca_arfid.webp" width="900" height="1286" alt="Avoidant/restrictive food intake disorder (ARFID)" loading="lazy"></button>
+          <figcaption><span data-l="en">Avoidant/restrictive food intake disorder (ARFID)</span><span data-l="it" lang="it">Disturbo evitante/restrittivo dell'assunzione di cibo (ARFID)</span></figcaption>
+          <audio controls preload="none" src="/assets/art/dca_arfid.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/dca_pica.webp"><img src="/assets/art/dca_pica.webp" width="900" height="1286" alt="Pica" loading="lazy"></button>
+          <figcaption><span data-l="en">Pica</span><span data-l="it" lang="it">Pica</span></figcaption>
+          <audio controls preload="none" src="/assets/art/dca_pica.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/dca_ruminazione.webp"><img src="/assets/art/dca_ruminazione.webp" width="900" height="1286" alt="Rumination disorder" loading="lazy"></button>
+          <figcaption><span data-l="en">Rumination disorder</span><span data-l="it" lang="it">Disturbo da ruminazione</span></figcaption>
+          <audio controls preload="none" src="/assets/art/dca_ruminazione.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/dca_eliminazione.webp"><img src="/assets/art/dca_eliminazione.webp" width="900" height="1286" alt="Purging disorder" loading="lazy"></button>
+          <figcaption><span data-l="en">Purging disorder</span><span data-l="it" lang="it">Disturbo da condotta di eliminazione (purging)</span></figcaption>
+          <audio controls preload="none" src="/assets/art/dca_eliminazione.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/dca_notturna.webp"><img src="/assets/art/dca_notturna.webp" width="900" height="1286" alt="Night eating syndrome (NES)" loading="lazy"></button>
+          <figcaption><span data-l="en">Night eating syndrome (NES)</span><span data-l="it" lang="it">Sindrome da alimentazione notturna (NES)</span></figcaption>
+          <audio controls preload="none" src="/assets/art/dca_notturna.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/dca_ortoressia.webp"><img src="/assets/art/dca_ortoressia.webp" width="900" height="1286" alt="Orthorexia nervosa" loading="lazy"></button>
+          <figcaption><span data-l="en">Orthorexia nervosa</span><span data-l="it" lang="it">Ortoressia</span></figcaption>
+          <audio controls preload="none" src="/assets/art/dca_ortoressia.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/dca_diabulimia.webp"><img src="/assets/art/dca_diabulimia.webp" width="900" height="1286" alt="Diabulimia" loading="lazy"></button>
+          <figcaption><span data-l="en">Diabulimia</span><span data-l="it" lang="it">Diabulimia</span></figcaption>
+          <audio controls preload="none" src="/assets/art/dca_diabulimia.mp3"></audio></figure>
+        <figure><button type="button" data-full="/assets/art/dca_dismorfia_muscolare.webp"><img src="/assets/art/dca_dismorfia_muscolare.webp" width="900" height="1286" alt="Muscle dysmorphic disorder" loading="lazy"></button>
+          <figcaption><span data-l="en">Muscle dysmorphic disorder</span><span data-l="it" lang="it">Dismorfia muscolare</span></figcaption>
+          <audio controls preload="none" src="/assets/art/dca_dismorfia_muscolare.mp3"></audio></figure>
+      </div>
+      <p class="eyebrow label"><span data-l="en">After Modigliani</span><span data-l="it" lang="it">Da Modigliani</span></p>
+      <div class="gallery">
+        <figure><button type="button" data-full="/assets/art/modigliani_0_s2.webp"><img src="/assets/art/modigliani_0_s2.webp" width="864" height="1216" alt="Portrait after Modigliani" loading="lazy"></button></figure>
+        <figure><button type="button" data-full="/assets/art/modigliani_1_s1.webp"><img src="/assets/art/modigliani_1_s1.webp" width="864" height="1216" alt="Portrait after Modigliani" loading="lazy"></button></figure>
+        <figure><button type="button" data-full="/assets/art/modigliani_1_s2.webp"><img src="/assets/art/modigliani_1_s2.webp" width="864" height="1216" alt="Portrait after Modigliani" loading="lazy"></button></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="contact">
   <div class="grid">
     <h2><a href="/contact" data-l="en" data-section="contact">Contact</a><a href="/contatti" data-l="it" lang="it" data-section="contact">Contatti</a></h2>
@@ -768,6 +980,7 @@ Decomposition methods and solvers for large-scale
 </footer>
 
 </div>
+<dialog class="lightbox" id="artbox" aria-label="Artwork"><img alt=""></dialog>
 <dialog class="lightbox" id="photo" aria-label="Donato, Maria Meoli">
   <picture>
     <source srcset="photo-large.webp" type="image/webp">
@@ -909,7 +1122,8 @@ Decomposition methods and solvers for large-scale
      shown, one after the other. */
   (function () {
     var it = { research: 'ricerca', publications: 'pubblicazioni',
-               software: 'software', experience: 'esperienze',
+               software: 'software', play: 'gioca', translate: 'traduci',
+               art: 'arte', experience: 'esperienze',
                education: 'formazione', contact: 'contatti' },
         en = {}, ids = Object.keys(it), root = document.documentElement,
         current = 'research', home = true;
@@ -1003,6 +1217,42 @@ Decomposition methods and solvers for large-scale
             setTimeout(function () { a.textContent = 'BibTeX'; }, 1500);
           }, function () { location.href = a.href; });
       });
+  })();
+</script>
+<script>
+  /* a work of the gallery, opened; the translator, which asks the service
+     of the model and says so when it is not reachable */
+  (function () {
+    var box = document.getElementById('artbox'), img = box.querySelector('img');
+    var bs = document.querySelectorAll('.gallery button');
+    for (var i = 0; i < bs.length; i++)
+      bs[i].addEventListener('click', function () {
+        img.src = this.getAttribute('data-full');
+        img.alt = this.querySelector('img').alt;
+        box.showModal();
+      });
+    box.addEventListener('click', function () { box.close(); });
+
+    var API = 'https://tradutturi-372868569544.europe-west1.run.app/translate';
+    var f = document.getElementById('tr-form');
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var out = document.getElementById('tr-out'),
+          it = document.documentElement.getAttribute('data-lang') === 'it';
+      if (!API) {
+        out.textContent = it ? 'Il servizio del modello non è ancora in linea.'
+                             : 'The service of the model is not online yet.';
+        return;
+      }
+      var d = document.getElementById('tr-dir').value.split('-');
+      out.textContent = '…';
+      fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+                   body: JSON.stringify({ text: document.getElementById('tr-in').value,
+                                          src: d[0], tgt: d[1] }) })
+        .then(function (r) { return r.json(); })
+        .then(function (j) { out.textContent = j.translation; },
+              function () { out.textContent = it ? 'Il servizio non risponde.' : 'The service does not answer.'; });
+    });
   })();
 </script>
 </body>
