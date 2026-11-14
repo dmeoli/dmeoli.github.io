@@ -408,23 +408,6 @@ footer {
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 
 /* ---- play, translate, art ---------------------------------------------- */
-/* the translator on a violet panel under the majolica tiles of the slides of
-   SicilianNMT (Wdowiak's NapiziaMeeting theme), drawn through a mask so that
-   they take the lilac of the site and stay transparent */
-.translate .majolica {
-  position: relative; isolation: isolate; overflow: hidden; max-width: 36em;
-  padding: var(--f34) var(--f34) var(--f21); border-radius: var(--f8);
-  background: linear-gradient(160deg, #7338a8, #4e2c72);
-}
-.translate .majolica::before {
-  content: ""; position: absolute; inset: 0; z-index: -1; background: #d4b9eb; opacity: .3;
-  -webkit-mask: url(/assets/translate/tiles.svg) center / cover no-repeat;
-          mask: url(/assets/translate/tiles.svg) center / cover no-repeat;
-}
-.translate .majolica textarea, .translate .majolica output { background: rgb(255 255 255 / .9); color: #2e2040; border-color: transparent; }
-.translate .majolica output { color: #3a1d5e; font-style: italic; }
-.translate .majolica select, .translate .majolica button { background: rgb(255 255 255 / .92); color: #4e2c72; border-color: transparent; }
-.translate .majolica button:hover { background: #fff; }
 .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--f21) var(--f13); }
 .gallery figure { margin: 0; display: grid; gap: var(--f5); align-content: start; }
 /* the picture, its caption and its player in rows shared by the whole row of
@@ -453,7 +436,6 @@ footer {
 @media (max-width: 600px) {
   .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--f13) var(--f8); }
   .gallery figcaption { font-size: var(--s-05); }
-  .translate .majolica { padding: var(--f13); }
 }
 </style>
 </head>
@@ -773,7 +755,7 @@ footer {
     <div class="body">
       <p data-l="en">A translator between Sicilian, Italian and English, a neural model for a low-resource language built with Eryk Wdowiak and Arba Sicula on the work of <a href="https://arxiv.org/abs/2110.01938">Tradutturi Sicilianu</a>.</p>
       <p data-l="it" lang="it">Un traduttore fra siciliano, italiano e inglese, un modello neurale per una lingua con poche risorse, costruito con Eryk Wdowiak e Arba Sicula sul lavoro di <a href="https://arxiv.org/abs/2110.01938">Tradutturi Sicilianu</a>.</p>
-      <form id="tr-form" class="majolica">
+      <form id="tr-form">
         <div class="bar">
           <select id="tr-dir" aria-label="Direction">
             <option value="scn-it">Sicilianu &rarr; Italiano</option>
