@@ -111,12 +111,21 @@
     { t: 'Diffusion', n: 'Noise is added step by step, and a network learns to take it away.',
       ti: 'Diffusione', ni: 'Il rumore si aggiunge passo per passo, e una rete impara a toglierlo.',
       u: 'diffusion.html' },
+    { t: 'Hebbian learning', n: 'Hebb grows along the principal eigenvector, Oja settles on it: online PCA.',
+      ti: 'Apprendimento hebbiano', ni: "Hebb cresce lungo l'autovettore principale, Oja vi si ferma: la PCA online.",
+      u: 'hebbian.html' },
     { t: 'Hopfield networks', n: 'Recall is a descent of the energy, and the dense memory is attention.',
       ti: 'Reti di Hopfield', ni: "Il richiamo è una discesa dell'energia, e la memoria densa è l'attention.",
       u: 'hopfield.html' },
+    { t: 'Izhikevich neurons', n: 'Twenty firing patterns from four parameters, in the phase plane.',
+      ti: 'Neuroni di Izhikevich', ni: 'Venti comportamenti di sparo da quattro parametri, nel piano delle fasi.',
+      u: 'izhikevich.html' },
     { t: 'Spiking networks', n: 'The step has no derivative, and a surrogate one trains the network all the same.',
       ti: 'Reti a impulsi', ni: 'Il gradino non ha derivata, e una derivata surrogata addestra comunque la rete.',
       u: 'spiking.html' },
+    { t: 'Echo state networks', n: 'A random reservoir and a readout trained by ridge regression, a convex problem.',
+      ti: 'Echo state network', ni: 'Un serbatoio casuale e una lettura addestrata con la ridge regression, un problema convesso.',
+      u: 'esn.html' },
   ];
   let i = Math.max(0, Math.min(slides.length - 1, (+location.hash.slice(1) || 1) - 1));
   const $ = id => document.getElementById(id);

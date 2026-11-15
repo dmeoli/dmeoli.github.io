@@ -392,6 +392,13 @@ a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 2
 dl { margin: 0; }
 .contact dd { margin: 0; }
 .contact .addr { font-size: var(--s-025); line-height: 1.4; }
+/* the entries of the sections (papers, roles, studies) as containers of the
+   first tone, raised one tone under the pointer, like the scenes */
+.pub, .entry {
+  background: var(--tone-1); border-radius: 14px; padding: var(--f13) var(--f21);
+  transition: background .3s ease-out;
+}
+.pub:hover, .entry:hover { background: var(--tone-2); }
 .contact { display: grid; grid-template-columns: repeat(auto-fit, minmax(var(--f144), 1fr)); gap: var(--f21); }
 .contact div { display: grid; gap: var(--f3); align-content: start; }
 .contact dt, .label {
@@ -944,12 +951,13 @@ footer {
   <div class="grid">
     <h2><a href="/ml" data-l="en" data-section="ml">Machine Learning</a><a href="/ml" data-l="it" lang="it" data-section="ml">Machine learning</a></h2>
     <div class="body">
-      <p data-l="en">Interactive pages, in the browser, on the models of machine learning, which are trained by optimization: the optimizers on test functions, the support vector machine with its dual, and what happens inside a network, layer by layer, after the TensorFlow Playground and the essays of C. Olah. The scenes in sequence, for a talk, are in <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
-      <p data-l="it" lang="it">Pagine interattive, nel browser, sui modelli di machine learning, che si addestrano ottimizzando: gli ottimizzatori su funzioni di test, la support vector machine con il suo duale, e cosa succede dentro una rete, strato per strato, sul modello del TensorFlow Playground e dei saggi di C. Olah. Le scene in sequenza, per un seminario, sono in <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
+      <p data-l="en">Interactive pages, in the browser, on the models of machine learning, which are trained by optimization: the optimizers on test functions, the support vector machine with its dual, what happens inside a network, layer by layer, after the TensorFlow Playground and the essays of C. Olah, and the models inspired by biology, some of them from my <a href="https://github.com/dmeoli/ComputationalNeuroscience">labs of computational neuroscience</a>. The scenes in sequence, for a talk, are in <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
+      <p data-l="it" lang="it">Pagine interattive, nel browser, sui modelli di machine learning, che si addestrano ottimizzando: gli ottimizzatori su funzioni di test, la support vector machine con il suo duale, cosa succede dentro una rete, strato per strato, sul modello del TensorFlow Playground e dei saggi di C. Olah, e i modelli ispirati alla biologia, alcuni dai miei <a href="https://github.com/dmeoli/ComputationalNeuroscience">laboratori di neuroscienze computazionali</a>. Le scene in sequenza, per un seminario, sono in <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
       <div class="subnav" role="tablist">
         <button type="button" role="tab" data-sub="learning"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span> <span class="count">4</span></button>
-        <button type="button" role="tab" data-sub="networks"><span data-l="en">Inside Networks</span><span data-l="it" lang="it">Dentro le reti</span> <span class="count">6</span></button>
+        <button type="button" role="tab" data-sub="networks"><span data-l="en">Inside Networks</span><span data-l="it" lang="it">Dentro le reti</span> <span class="count">8</span></button>
         <button type="button" role="tab" data-sub="generative"><span data-l="en">Representations and Generative Models</span><span data-l="it" lang="it">Rappresentazioni e modelli generativi</span> <span class="count">3</span></button>
+        <button type="button" role="tab" data-sub="bio"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span> <span class="count">5</span></button>
       </div>
       <div class="sub scenes" data-sub="learning" role="tabpanel">
         <article class="scene">
@@ -998,7 +1006,7 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/manifolds.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/manifolds.webm" poster="/assets/play/manifolds.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Layers as Deformations"></video><video class="th-dark" src="/assets/play/manifolds-dark.webm" poster="/assets/play/manifolds-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Layers as Deformations"></video></a>
           <div class="text">
-            <p class="num">01 / 06</p>
+            <p class="num">01 / 08</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/manifolds.html"><span data-l="en">Layers as Deformations</span><span data-l="it" lang="it">Strati come deformazioni</span></a></h3>
             <p class="desc"><span data-l="en">Each hidden layer as a continuous deformation of the plane (the linear map, the translation, the activation) until the two classes can be cut by a line; with width 2 the ring cannot be untied, after Olah.</span><span data-l="it" lang="it">Ogni strato nascosto come una deformazione continua del piano (la mappa lineare, la traslazione, l'attivazione) finché le due classi si separano con una retta; con larghezza 2 l'anello non si scioglie, da Olah.</span></p>
             <ul class="tags"><li><span data-l="en">Topology</span><span data-l="it" lang="it">Topologia</span></li><li>tanh</li><li>Olah</li></ul>
@@ -1008,7 +1016,7 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/superposition.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/superposition.webm" poster="/assets/play/superposition.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Superposition"></video><video class="th-dark" src="/assets/play/superposition-dark.webm" poster="/assets/play/superposition-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Superposition"></video></a>
           <div class="text">
-            <p class="num">02 / 06</p>
+            <p class="num">02 / 08</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Superposition</span></a></h3>
             <p class="desc"><span data-l="en">Five features squeezed into two dimensions: when they are dense the model keeps the two most important, when they are sparse it packs all of them in a pentagon and accepts a little interference; after the Toy Models of Anthropic.</span><span data-l="it" lang="it">Cinque caratteristiche compresse in due dimensioni: quando sono dense il modello tiene le due più importanti, quando sono rare le mette tutte in un pentagono e accetta un po' di interferenza; dai Toy Models di Anthropic.</span></p>
             <ul class="tags"><li>Superposition</li><li><span data-l="en">Interpretability</span><span data-l="it" lang="it">Interpretabilità</span></li></ul>
@@ -1018,7 +1026,7 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/conv.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/conv.webm" poster="/assets/play/conv.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Convolution"></video><video class="th-dark" src="/assets/play/conv-dark.webm" poster="/assets/play/conv-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Convolution"></video></a>
           <div class="text">
-            <p class="num">03 / 06</p>
+            <p class="num">03 / 08</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a></h3>
             <p class="desc"><span data-l="en">A small convolutional network trained on digits drawn in the page: the filter slides over the input, the maps of both layers show where each pattern occurs, and hovering a cell lights the part of the image it depends on; draw a digit yourself, after Olah.</span><span data-l="it" lang="it">Una piccola rete convoluzionale addestrata su cifre disegnate nella pagina: il filtro scorre sull'input, le mappe dei due strati mostrano dove compare ogni motivo, e passando su una cella si illumina la parte dell'immagine da cui dipende; la cifra si può disegnare a mano, da Olah.</span></p>
             <ul class="tags"><li><span data-l="en">Filters</span><span data-l="it" lang="it">Filtri</span></li><li><span data-l="en">Feature maps</span><span data-l="it" lang="it">Mappe</span></li><li><span data-l="en">Receptive fields</span><span data-l="it" lang="it">Campi recettivi</span></li></ul>
@@ -1028,9 +1036,9 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/lstm.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/lstm.webm" poster="/assets/play/lstm.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="LSTM"></video><video class="th-dark" src="/assets/play/lstm-dark.webm" poster="/assets/play/lstm-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="LSTM"></video></a>
           <div class="text">
-            <p class="num">04 / 06</p>
-            <h3><a href="https://dmeoli.github.io/opt-playground/lstm.html"><span data-l="en">LSTM</span><span data-l="it" lang="it">LSTM</span></a></h3>
-            <p class="desc"><span data-l="en">An LSTM and a plain recurrent network learn side by side to carry a bit across many steps: the cell is unrolled with the real values of its gates, and the gradient of the plain network vanishes with the delay, after Olah.</span><span data-l="it" lang="it">Una LSTM e una rete ricorrente semplice imparano affiancate a portare un bit attraverso molti passi: la cella è srotolata con i valori veri dei suoi gate, e il gradiente della rete semplice svanisce col ritardo, da Olah.</span></p>
+            <p class="num">04 / 08</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/lstm.html"><span data-l="en">LSTM and GRU</span><span data-l="it" lang="it">LSTM e GRU</span></a></h3>
+            <p class="desc"><span data-l="en">An LSTM, a GRU and a plain recurrent network learn side by side to carry a bit across many steps: the cell is unrolled with the real values of its gates, and the gradient of the plain network vanishes with the delay, after Olah.</span><span data-l="it" lang="it">Una LSTM, una GRU e una rete ricorrente semplice imparano affiancate a portare un bit attraverso molti passi: la cella è srotolata con i valori veri dei suoi gate, e il gradiente della rete semplice svanisce col ritardo, da Olah.</span></p>
             <ul class="tags"><li><span data-l="en">Gates</span><span data-l="it" lang="it">Gate</span></li><li><span data-l="en">Cell state</span><span data-l="it" lang="it">Stato di cella</span></li><li><span data-l="en">Vanishing gradient</span><span data-l="it" lang="it">Gradiente che svanisce</span></li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/lstm.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -1038,7 +1046,7 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/attention.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/attention.webm" poster="/assets/play/attention.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Attention"></video><video class="th-dark" src="/assets/play/attention-dark.webm" poster="/assets/play/attention-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Attention"></video></a>
           <div class="text">
-            <p class="num">05 / 06</p>
+            <p class="num">05 / 08</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attention</span></a></h3>
             <p class="desc"><span data-l="en">A transformer of one or two layers learns to reverse, sort or recall a sequence, and the attention of every head forms under the eyes: the anti-diagonal of the reversal, the induction head of the recall, and q, k, v and the softmax for one query.</span><span data-l="it" lang="it">Un transformer di uno o due strati impara a invertire, ordinare o richiamare una sequenza, e l'attenzione di ogni testa si forma sotto gli occhi: l'antidiagonale dell'inversione, la testa a induzione del richiamo, e q, k, v e la softmax per una query.</span></p>
             <ul class="tags"><li>Self-Attention</li><li><span data-l="en">Heads</span><span data-l="it" lang="it">Teste</span></li><li>Transformer</li></ul>
@@ -1046,13 +1054,33 @@ footer {
           </div>
         </article>
         <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/ssm.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/ssm.webm" poster="/assets/play/ssm.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="State-Space Models"></video><video class="th-dark" src="/assets/play/ssm-dark.webm" poster="/assets/play/ssm-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="State-Space Models"></video></a>
+          <div class="text">
+            <p class="num">06 / 08</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/ssm.html"><span data-l="en">State-Space Models</span><span data-l="it" lang="it">Modelli a spazio di stato</span></a></h3>
+            <p class="desc"><span data-l="en">The same linear state space computed as a recurrence and as a convolution, with its poles to drag; the HiPPO state that keeps the history of the input; and a selective model, as in Mamba, that learns which tokens to keep where a time-invariant one cannot.</span><span data-l="it" lang="it">Lo stesso spazio di stato lineare calcolato come ricorrenza e come convoluzione, con i poli da trascinare; lo stato HiPPO che conserva la storia dell'ingresso; e un modello selettivo, come in Mamba, che impara quali token tenere dove uno tempo-invariante non ci riesce.</span></p>
+            <ul class="tags"><li>S4</li><li>HiPPO</li><li>Mamba</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/ssm.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/gnn.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/gnn.webm" poster="/assets/play/gnn.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Graph Networks"></video><video class="th-dark" src="/assets/play/gnn-dark.webm" poster="/assets/play/gnn-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Graph Networks"></video></a>
           <div class="text">
-            <p class="num">06 / 06</p>
+            <p class="num">07 / 08</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/gnn.html"><span data-l="en">Graph Networks</span><span data-l="it" lang="it">Reti su grafi</span></a></h3>
             <p class="desc"><span data-l="en">Message passing round by round: the labels of a few nodes spreading through their communities, the truth values of an assignment reaching the clauses of a formula as in NeuroSAT, and two graphs that no number of rounds can tell apart.</span><span data-l="it" lang="it">Il message passing round per round: le etichette di pochi nodi che si propagano nelle loro comunità, i valori di verità di un assegnamento che raggiungono le clausole di una formula come in NeuroSAT, e due grafi che nessun numero di round distingue.</span></p>
             <ul class="tags"><li>GCN</li><li>GIN</li><li><span data-l="en">Weisfeiler-Leman</span><span data-l="it" lang="it">Weisfeiler-Leman</span></li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/gnn.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/moe.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/moe.webm" poster="/assets/play/moe.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Mixture of Experts"></video><video class="th-dark" src="/assets/play/moe-dark.webm" poster="/assets/play/moe-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Mixture of Experts"></video></a>
+          <div class="text">
+            <p class="num">08 / 08</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/moe.html"><span data-l="en">Mixture of Experts</span><span data-l="it" lang="it">Mixture of experts</span></a></h3>
+            <p class="desc"><span data-l="en">A router splits the plane among a few small experts, each solving a simple piece of the problem; with top-1 routing and no balancing loss the router collapses onto one or two of them, and the loss of the Switch Transformer spreads the load again.</span><span data-l="it" lang="it">Un router divide il piano fra pochi piccoli esperti, ognuno dei quali risolve un pezzo semplice del problema; con il routing top-1 e senza loss di bilanciamento il router si concentra su uno o due di loro, e la loss dello Switch Transformer ridistribuisce il carico.</span></p>
+            <ul class="tags"><li><span data-l="en">Router</span><span data-l="it" lang="it">Router</span></li><li>Top-k</li><li><span data-l="en">Load balancing</span><span data-l="it" lang="it">Bilanciamento</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/moe.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
         <button type="button" class="next" data-goto="generative"><span data-l="en">Next: Representations and Generative Models</span><span data-l="it" lang="it">Avanti: Rappresentazioni e modelli generativi</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
@@ -1086,6 +1114,59 @@ footer {
             <p class="desc"><span data-l="en">A cloud of points turned into noise step by step and brought back by a small network that learns the noise: the forward process, the learnt field of directions and the samples falling onto the shape.</span><span data-l="it" lang="it">Una nuvola di punti trasformata in rumore passo dopo passo e riportata indietro da una piccola rete che impara il rumore: il processo in avanti, il campo di direzioni appreso e i campioni che ricadono sulla forma.</span></p>
             <ul class="tags"><li>DDPM</li><li>DDIM</li><li><span data-l="en">Score</span><span data-l="it" lang="it">Score</span></li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/diffusion.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <button type="button" class="next" data-goto="bio"><span data-l="en">Next: Bio-inspired</span><span data-l="it" lang="it">Avanti: Bio-ispirati</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
+      </div>
+      <div class="sub scenes" data-sub="bio" role="tabpanel">
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/hebbian.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/hebbian.webm" poster="/assets/play/hebbian.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Hebbian Learning"></video><video class="th-dark" src="/assets/play/hebbian-dark.webm" poster="/assets/play/hebbian-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Hebbian Learning"></video></a>
+          <div class="text">
+            <p class="num">01 / 05</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/hebbian.html"><span data-l="en">Hebbian Learning</span><span data-l="it" lang="it">Apprendimento hebbiano</span></a></h3>
+            <p class="desc"><span data-l="en">A single linear neuron learning from a cloud of points with the rules of Hebb, Oja, subtractive normalization, BCM and covariance: plain Hebb grows without bound along the principal eigenvector, Oja's rule settles on it with unit norm, which is online PCA.</span><span data-l="it" lang="it">Un solo neurone lineare che impara da una nuvola di punti con le regole di Hebb, di Oja, della normalizzazione sottrattiva, BCM e della covarianza: la regola di Hebb cresce senza limite lungo l'autovettore principale, quella di Oja vi si ferma con norma unitaria, ed è la PCA online.</span></p>
+            <ul class="tags"><li>Hebb</li><li>Oja</li><li>BCM</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/hebbian.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/hopfield.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/hopfield.webm" poster="/assets/play/hopfield.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Hopfield Networks"></video><video class="th-dark" src="/assets/play/hopfield-dark.webm" poster="/assets/play/hopfield-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Hopfield Networks"></video></a>
+          <div class="text">
+            <p class="num">02 / 05</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/hopfield.html"><span data-l="en">Hopfield Networks</span><span data-l="it" lang="it">Reti di Hopfield</span></a></h3>
+            <p class="desc"><span data-l="en">Glyphs stored by the rule of Hebb and recalled from a corrupted cue, each update lowering the energy on a landscape drawn in three dimensions; the capacity breaking near 0.138 N; and the dense memory of Ramsauer and others, whose update is the attention of a transformer.</span><span data-l="it" lang="it">Glifi memorizzati con la regola di Hebb e richiamati da un indizio corrotto, con ogni aggiornamento che abbassa l'energia su un paesaggio disegnato in tre dimensioni; la capacità che crolla vicino a 0.138 N; e la memoria densa di Ramsauer e altri, il cui aggiornamento è l'attention di un transformer.</span></p>
+            <ul class="tags"><li><span data-l="en">Energy</span><span data-l="it" lang="it">Energia</span></li><li><span data-l="en">Capacity</span><span data-l="it" lang="it">Capacità</span></li><li><span data-l="en">Attention</span><span data-l="it" lang="it">Attention</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/hopfield.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/izhikevich.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/izhikevich.webm" poster="/assets/play/izhikevich.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Izhikevich Neurons"></video><video class="th-dark" src="/assets/play/izhikevich-dark.webm" poster="/assets/play/izhikevich-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Izhikevich Neurons"></video></a>
+          <div class="text">
+            <p class="num">03 / 05</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/izhikevich.html"><span data-l="en">Izhikevich Neurons</span><span data-l="it" lang="it">Neuroni di Izhikevich</span></a></h3>
+            <p class="desc"><span data-l="en">The twenty firing patterns of the model of Izhikevich, with the protocols of the course on computational neuroscience: the membrane potential as it is integrated and the trajectory in the phase plane, between the two nullclines, with its resets and its fixed points.</span><span data-l="it" lang="it">I venti comportamenti di sparo del modello di Izhikevich, con i protocolli del corso di neuroscienze computazionali: il potenziale di membrana mentre si integra e la traiettoria nel piano delle fasi, fra le due isocline, con i suoi reset e i suoi punti fissi.</span></p>
+            <ul class="tags"><li><span data-l="en">Phase plane</span><span data-l="it" lang="it">Piano delle fasi</span></li><li><span data-l="en">Bursting</span><span data-l="it" lang="it">Burst</span></li><li><span data-l="en">Excitability</span><span data-l="it" lang="it">Eccitabilità</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/izhikevich.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/spiking.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/spiking.webm" poster="/assets/play/spiking.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Spiking Networks"></video><video class="th-dark" src="/assets/play/spiking-dark.webm" poster="/assets/play/spiking-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Spiking Networks"></video></a>
+          <div class="text">
+            <p class="num">04 / 05</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/spiking.html"><span data-l="en">Spiking Networks</span><span data-l="it" lang="it">Reti a impulsi</span></a></h3>
+            <p class="desc"><span data-l="en">The leaky integrate-and-fire neuron with its rate against a ReLU, and a small spiking network trained in the page through time with a surrogate gradient, since the step has none: the raster of its spikes, its decision regions and a penalty on the firing rate.</span><span data-l="it" lang="it">Il neurone leaky integrate-and-fire con la sua frequenza contro una ReLU, e una piccola rete a impulsi addestrata nella pagina nel tempo con un gradiente surrogato, perché il gradino non ne ha: il raster dei suoi impulsi, le sue regioni di decisione e una penalità sulla frequenza di sparo.</span></p>
+            <ul class="tags"><li>LIF</li><li><span data-l="en">Surrogate gradient</span><span data-l="it" lang="it">Gradiente surrogato</span></li><li>BPTT</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/spiking.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/esn.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/esn.webm" poster="/assets/play/esn.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Echo State Networks"></video><video class="th-dark" src="/assets/play/esn-dark.webm" poster="/assets/play/esn-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Echo State Networks"></video></a>
+          <div class="text">
+            <p class="num">05 / 05</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/esn.html"><span data-l="en">Echo State Networks</span><span data-l="it" lang="it">Echo state network</span></a></h3>
+            <p class="desc"><span data-l="en">A random reservoir that forgets its initial state when its spectral radius is below one, read by a ridge regression, a convex problem solved in closed form, on NARMA10 and Mackey-Glass, against an input-delayed network and a recurrent one trained by backpropagation.</span><span data-l="it" lang="it">Un serbatoio casuale che dimentica il suo stato iniziale quando il raggio spettrale è sotto uno, letto da una ridge regression, un problema convesso risolto in forma chiusa, su NARMA10 e Mackey-Glass, contro una rete a ingressi ritardati e una ricorrente addestrata con la retropropagazione.</span></p>
+            <ul class="tags"><li><span data-l="en">Reservoir</span><span data-l="it" lang="it">Serbatoio</span></li><li><span data-l="en">Ridge</span><span data-l="it" lang="it">Ridge</span></li><li>NARMA10</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/esn.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
       </div>

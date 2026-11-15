@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hebbian Learning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<style>
+/* hebbian.html: the cloud with the weight vector, the rules and the curves,
+   then the averaged dynamics on the plane of the weights */
+main.heb { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+main.heb figcaption { min-height: 0; }
+main.heb canvas { width: 100%; display: block; border-radius: 6px; }
+#plane, #field { max-width: 460px; }
+.stack { display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr); }
+.stack > *, .eqs > * { min-width: 0; }
+@media (max-width: 860px) { main.heb { grid-template-columns: minmax(0, 1fr); } }
+.eqs { display: grid; gap: 4px; font-size: 15px; }
+.eqs h3 { margin: 0 0 4px; font: 500 11px 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.eq { padding: 5px 8px; border: 1px solid var(--rule); border-radius: 6px; overflow-x: auto; overflow-y: hidden; }
+.eq.a { border-color: var(--accent); }
+.eq.b { border-color: var(--gold); }
+.eq small { display: block; font: 12px/1.35 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.eq small b { font-weight: 500; color: var(--ink); }
+.eq small b.b { color: var(--gold); }
+h2.part { margin: 34px 0 6px; font: 500 13px 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+p.prose { margin: 0 0 14px; max-width: 72ch; }
+.key { list-style: none; padding: 0; margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 4px 16px; font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.key li { display: flex; align-items: center; gap: 6px; }
+.key i { display: inline-block; width: 16px; height: 0; border-top: 2px solid currentColor; }
+.key i.dash { border-top-style: dashed; }
+.key .a { color: var(--accent); } .key .b { color: var(--gold); }
+.controls label.check { display: flex; align-items: center; gap: 6px; }
+</style>
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="ssm.html">State space</a> · <a href="gnn.html">Graphs</a> · <a href="moe.html">Mixture of experts</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html" aria-current="page">Hebbian</a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1><span data-l="en">Hebbian Learning</span><span data-l="it" lang="it">Apprendimento hebbiano</span></h1>
+  <p class="lede" data-l="en">A single linear neuron with output \(v = w \cdot u\) sees the points \(u\) of a
+  cloud in the plane one at a time, in a new random order at every epoch, and after each of them changes
+  its weights \(w\) by a rule that uses only what the synapse can know: the input \(u\), the output \(v\)
+  and, for some of the rules, a running average. The five rules are those of the second laboratory of a
+  course of Computational Neuroscience, with its data, learning rates and numbers of epochs: Hebb's rule,
+  Oja's rule, subtractive normalization, the BCM rule and the covariance rule. Averaged over the points,
+  each of them is a gradient ascent on a function of \(w\) (the mean square of the output, the same
+  function restricted to a circle or to a line, a measure of skewness), so that the stream of the points
+  makes it a stochastic ascent; the figures follow the weight vector against the principal eigenvector
+  \(e_1\) of the correlation matrix \(Q = \langle u u^\top \rangle\), which most of the rules find, as
+  the power method does when nothing stops the growth of \(|w|\).</p>
+  <p class="lede" data-l="it" lang="it">Un singolo neurone lineare con uscita \(v = w \cdot u\) vede i
+  punti \(u\) di una nuvola nel piano uno alla volta, in un nuovo ordine casuale a ogni epoca, e dopo
+  ciascuno di essi cambia i suoi pesi \(w\) con una regola che usa solo ciò che la sinapsi può conoscere:
+  l'ingresso \(u\), l'uscita \(v\) e, per alcune delle regole, una media mobile. Le cinque regole sono
+  quelle del secondo laboratorio di un corso di Computational Neuroscience, con i suoi dati, i suoi passi
+  di apprendimento e i suoi numeri di epoche: la regola di Hebb, la regola di Oja, la normalizzazione
+  sottrattiva, la regola BCM e la regola della covarianza. In media sui punti ciascuna di esse è una
+  salita lungo il gradiente di una funzione di \(w\) (il quadrato medio dell'uscita, la stessa funzione
+  ristretta a una circonferenza o a una retta, una misura di asimmetria), così che il flusso dei punti ne
+  fa una salita stocastica; le figure seguono il vettore dei pesi rispetto all'autovettore principale
+  \(e_1\) della matrice di correlazione \(Q = \langle u u^\top \rangle\), che quasi tutte le regole
+  trovano, come fa il metodo delle potenze quando nulla ferma la crescita di \(|w|\).</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span><span data-l="en">rule</span><span data-l="it" lang="it">regola</span></span><select id="rule"><option value="hebb">Hebb</option><option value="oja">Oja</option><option value="sub">subtractive normalization</option><option value="bcm">BCM</option><option value="cov">covariance</option></select></label>
+    <label><span><span data-l="en">race against</span><span data-l="it" lang="it">in gara con</span></span><select id="race"><option value="">none</option><option value="hebb">Hebb</option><option value="oja">Oja</option><option value="sub">subtractive normalization</option><option value="bcm">BCM</option><option value="cov">covariance</option></select></label>
+    <label><span>\(\eta\)</span><input id="leta" type="range" min="-5" max="-2" step="0.05" value="-3.4" aria-label="log10 eta"><output id="etav"></output></label>
+    <label><span>\(\alpha\) <span data-l="en">(Oja)</span><span data-l="it" lang="it">(Oja)</span></span><select id="alpha"><option value="1">1 (Oja 1982)</option><option value="0.001">0.001 (lab)</option></select></label>
+    <label><span><span data-l="en">cloud</span><span data-l="it" lang="it">nuvola</span></span><select id="cloud"><option value="lab">lab data</option><option value="gauss">elongated Gaussian</option><option value="rotated">rotated, off the origin</option><option value="clusters">two clusters</option></select></label>
+    <label class="check"><input id="center" type="checkbox"><span><span data-l="en">center the data</span><span data-l="it" lang="it">centra i dati</span></span></label>
+    <div class="inline"><label><span><span data-l="en">speed</span><span data-l="it" lang="it">velocità</span></span><select id="speed"><option value="1">1 point</option><option value="10">10 points</option><option value="e1">1 epoch</option><option value="e10">10 epochs</option></select></label><button id="neww" type="button">New w0</button></div>
+  </div>
+  <div class="transport"><label class="counter"><span><span data-l="en">epochs</span><span data-l="it" lang="it">epoche</span></span><output id="count">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+</section>
+<p class="explain" id="rep"></p>
+<main class="heb">
+  <figure><figcaption><span data-l="en">The cloud of the points \(u\), the line of the principal
+  eigenvector \(e_1\) of \(Q\) (dashed) and that of the second one, \(e_2\) (dotted), and the weight
+  vector \(w\) with its trail, violet for the rule chosen and gold for its rival in a race. When \(|w|\)
+  leaves the frame the arrow stops at the border, with an open head and its norm beside it. At a speed of
+  one or ten points per frame the point just presented is ringed, and the short arrow at the tip of \(w\)
+  shows the direction of the update \(\Delta w\). Without centering, the cross is the mean \(\langle u
+  \rangle\) and the thin line is the principal eigenvector of the covariance \(C\).</span><span data-l="it" lang="it">La
+  nuvola dei punti \(u\), la retta dell'autovettore principale \(e_1\) di \(Q\) (tratteggiata) e quella
+  del secondo, \(e_2\) (punteggiata), e il vettore dei pesi \(w\) con la sua scia, viola per la regola
+  scelta e oro per la sua rivale in una gara. Quando \(|w|\) esce dal riquadro la freccia si ferma al
+  bordo, con la punta aperta e la sua norma accanto. Alla velocità di uno o dieci punti per fotogramma il
+  punto appena presentato è cerchiato, e la freccia corta in cima a \(w\) indica la direzione
+  dell'aggiornamento \(\Delta w\). Senza centrare i dati, la croce è la media \(\langle u \rangle\) e la
+  retta sottile è l'autovettore principale della covarianza \(C\).</span></figcaption>
+  <canvas id="plane"></canvas>
+  <ul class="key"><li class="a"><i></i><span data-l="en">rule</span><span data-l="it" lang="it">regola</span></li><li class="b" id="keyb"><i></i><span data-l="en">rival</span><span data-l="it" lang="it">rivale</span></li><li><i class="dash"></i>\(e_1\)</li></ul></figure>
+  <div class="stack">
+    <aside class="eqs">
+      <h3><span data-l="en">The rules</span><span data-l="it" lang="it">Le regole</span></h3>
+      <div class="eq" data-rule="hebb">\(\Delta w = \eta\, v\, u\)<small><span data-l="en">Hebb (1949); in the mean \(\dot w = Q w\), the gradient of \(\tfrac12 \langle v^2 \rangle = \tfrac12 w^\top Q w\), which has no maximum</span><span data-l="it" lang="it">Hebb (1949); in media \(\dot w = Q w\), il gradiente di \(\tfrac12 \langle v^2 \rangle = \tfrac12 w^\top Q w\), che non ha massimo</span></small></div>
+      <div class="eq" data-rule="oja">\(\Delta w = \eta\, v\, (u - \alpha\, v\, w)\)<small><span data-l="en">Oja (1982); in the mean \(\dot w = Q w - \alpha\, (w^\top Q w)\, w\), on \(|w|^2 = 1/\alpha\) the gradient of the Rayleigh quotient projected on the circle</span><span data-l="it" lang="it">Oja (1982); in media \(\dot w = Q w - \alpha\, (w^\top Q w)\, w\), su \(|w|^2 = 1/\alpha\) il gradiente del quoziente di Rayleigh proiettato sulla circonferenza</span></small></div>
+      <div class="eq" data-rule="sub">\(\Delta w = \eta \left( v\, u - \dfrac{v\, (n \cdot u)\, n}{N_u} \right)\)<small><span data-l="en">\(n = (1, 1)\), \(N_u = 2\); in the mean the gradient of \(\tfrac12 w^\top Q w\) projected on the line \(n \cdot w = n \cdot w_0\)</span><span data-l="it" lang="it">\(n = (1, 1)\), \(N_u = 2\); in media il gradiente di \(\tfrac12 w^\top Q w\) proiettato sulla retta \(n \cdot w = n \cdot w_0\)</span></small></div>
+      <div class="eq" data-rule="bcm">\(\Delta w = \eta\, v\, u\, (v - \theta)\), \(\Delta \theta = \eta\, (v^2 - \theta)\)<small><span data-l="en">Bienenstock, Cooper and Munro (1982); with \(\theta = \langle v^2 \rangle\) the gradient of \(\tfrac13 \langle v^3 \rangle - \tfrac14 \langle v^2 \rangle^2\)</span><span data-l="it" lang="it">Bienenstock, Cooper e Munro (1982); con \(\theta = \langle v^2 \rangle\) il gradiente di \(\tfrac13 \langle v^3 \rangle - \tfrac14 \langle v^2 \rangle^2\)</span></small></div>
+      <div class="eq" data-rule="cov">\(\Delta w = \eta\, v\, (u - \langle u \rangle)\)<small><span data-l="en">in the mean \(\dot w = C w\), the gradient of \(\tfrac12 \operatorname{Var}(v) = \tfrac12 w^\top C w\)</span><span data-l="it" lang="it">in media \(\dot w = C w\), il gradiente di \(\tfrac12 \operatorname{Var}(v) = \tfrac12 w^\top C w\)</span></small></div>
+      <div class="eq">\(v = w \cdot u\)<small><b id="liveA"></b><br><b id="liveB" class="b"></b></small></div>
+    </aside>
+    <figure><figcaption><span data-l="en">Over the epochs: the norm \(|w|\) on a logarithmic scale,
+    the angle between \(w\) and the line of \(e_1\) (zero when \(w\) points along \(e_1\) or \(-e_1\)),
+    and, when a run uses BCM, its threshold \(\theta\) with \(\langle v^2 \rangle\) over the cloud,
+    dashed.</span><span data-l="it" lang="it">Lungo le epoche: la norma \(|w|\) in scala logaritmica,
+    l'angolo fra \(w\) e la retta di \(e_1\) (nullo quando \(w\) punta lungo \(e_1\) o \(-e_1\)) e,
+    quando una corsa usa BCM, la sua soglia \(\theta\) con \(\langle v^2 \rangle\) sulla nuvola,
+    tratteggiata.</span></figcaption><canvas id="curves"></canvas></figure>
+  </div>
+</main>
+
+<h2 class="part"><span data-l="en">The Averaged Dynamics</span><span data-l="it" lang="it">La dinamica media</span></h2>
+<p class="prose" data-l="en">With a small \(\eta\) the weights change little within an epoch, and the
+rule follows, up to fluctuations of order \(\eta\), the ordinary differential equation obtained by
+averaging the update over the points. For Hebb's rule the average of \(v u = u u^\top w\) is \(Q w\), so
+that \(\dot w = Q w\), whose solution
+\(w(t) = \sum_i c_i\, e^{\lambda_i t} e_i\), with \(\lambda_1 \ge \lambda_2 \ge 0\) the eigenvalues of
+\(Q\) and \(e_i\) its eigenvectors, grows along every eigenvector and fastest along \(e_1\): the
+direction of \(w\) converges to \(\pm e_1\), as in the power method, while \(|w|\) grows as
+\(e^{\eta \lambda_1 t}\) with \(t\) the number of points presented. The rule is the stochastic gradient
+of \(\tfrac12 v^2\), and its ascent on \(\tfrac12 \langle v^2 \rangle = \tfrac12 w^\top Q w\), a convex
+quadratic, has no maximum to stop at. Oja's rule is its normalized version: dividing
+\(w + \eta v u\) by its norm and expanding to first order in \(\eta\) around \(|w| = 1\) gives
+\(\Delta w = \eta\, v\, (u - v w)\), and the term \(-\eta v^2 w\) is the decay that keeps \(|w|\) near 1
+(near \(1/\sqrt{\alpha}\) with the weight \(\alpha\) of the lab). On the circle the averaged update
+\(Q w - (w^\top Q w)\, w\) is the gradient of the Rayleigh quotient
+\(w^\top Q w / w^\top w\) projected on the tangent line, its maxima are \(\pm e_1\), and \(\pm e_2\) are
+saddles: Oja's neuron computes online the first principal component of the inputs.</p>
+<p class="prose" data-l="it" lang="it">Con un \(\eta\) piccolo i pesi cambiano poco nell'arco di
+un'epoca, e la regola segue, a meno di fluttuazioni di ordine \(\eta\), l'equazione differenziale
+ordinaria che si ottiene facendo la media dell'aggiornamento sui punti. Per la regola di Hebb la media di
+\(v u = u u^\top w\) è \(Q w\), così che \(\dot w = Q w\), la cui soluzione
+\(w(t) = \sum_i c_i\, e^{\lambda_i t} e_i\), con \(\lambda_1 \ge \lambda_2 \ge 0\) gli autovalori di
+\(Q\) ed \(e_i\) i suoi autovettori, cresce lungo ogni autovettore e più in fretta lungo \(e_1\): la
+direzione di \(w\) converge a \(\pm e_1\), come nel metodo delle potenze, mentre \(|w|\) cresce come
+\(e^{\eta \lambda_1 t}\) con \(t\) il numero di punti presentati. La regola è il gradiente stocastico
+di \(\tfrac12 v^2\), e la sua salita su \(\tfrac12 \langle v^2 \rangle = \tfrac12 w^\top Q w\), una
+quadratica convessa, non ha un massimo in cui fermarsi. La regola di Oja ne è la versione normalizzata:
+dividendo \(w + \eta v u\) per la sua norma e sviluppando al primo ordine in \(\eta\) attorno a
+\(|w| = 1\) si ottiene \(\Delta w = \eta\, v\, (u - v w)\), e il termine \(-\eta v^2 w\) è il
+decadimento che tiene \(|w|\) vicino a 1 (vicino a \(1/\sqrt{\alpha}\) con il peso \(\alpha\) del
+laboratorio). Sulla circonferenza l'aggiornamento medio \(Q w - (w^\top Q w)\, w\) è il gradiente del
+quoziente di Rayleigh \(w^\top Q w / w^\top w\) proiettato sulla retta tangente, i suoi massimi sono
+\(\pm e_1\), e \(\pm e_2\) sono punti di sella: il neurone di Oja calcola in linea la prima componente
+principale degli ingressi.</p>
+<main class="heb">
+  <figure><figcaption><span data-l="en">The plane of the weights for the rule chosen: the arrows are
+  the averaged update \(\langle \Delta w \rangle / \eta\), the shading is the objective that it climbs
+  (the more violet, the higher), the dashed lines are the eigenvectors of \(Q\) and the path is the run
+  above. For Oja's rule the shading is the Rayleigh quotient, constant along every ray, and the circle is
+  \(|w| = 1/\sqrt{\alpha}\); for the subtractive rule the straight line is \(n \cdot w = n \cdot w_0\),
+  on which the run stays; for BCM the threshold is taken at its average \(\langle v^2
+  \rangle\).</span><span data-l="it" lang="it">Il piano dei pesi per la regola scelta: le frecce sono
+  l'aggiornamento medio \(\langle \Delta w \rangle / \eta\), la sfumatura è l'obiettivo su cui sale (più
+  viola, più alto), le rette tratteggiate sono gli autovettori di \(Q\) e il cammino è la corsa qui
+  sopra. Per la regola di Oja la sfumatura è il quoziente di Rayleigh, costante lungo ogni semiretta, e la
+  circonferenza è \(|w| = 1/\sqrt{\alpha}\); per la regola sottrattiva la retta è
+  \(n \cdot w = n \cdot w_0\), sulla quale la corsa resta; per BCM la soglia è presa alla sua media
+  \(\langle v^2 \rangle\).</span></figcaption>
+  <canvas id="field"></canvas></figure>
+  <aside class="eqs">
+    <h3><span data-l="en">The data</span><span data-l="it" lang="it">I dati</span></h3>
+    <div class="eq" id="qtex"></div>
+    <div class="eq" id="ctex"></div>
+    <h3><span data-l="en">The rule in the mean</span><span data-l="it" lang="it">La regola in media</span></h3>
+    <div class="eq" data-mean="hebb">\(\dot w = Q w\)<small><span data-l="en">objective \(\tfrac12 w^\top Q w\); \(|w|\) grows as \(e^{\eta \lambda_1 t}\)</span><span data-l="it" lang="it">obiettivo \(\tfrac12 w^\top Q w\); \(|w|\) cresce come \(e^{\eta \lambda_1 t}\)</span></small></div>
+    <div class="eq" data-mean="oja">\(\dot w = Q w - \alpha\, (w^\top Q w)\, w\)<small><span data-l="en">fixed points \(0\), \(\pm e_2 / \sqrt{\alpha}\) (saddles) and \(\pm e_1 / \sqrt{\alpha}\) (maxima of the Rayleigh quotient on the circle)</span><span data-l="it" lang="it">punti fissi \(0\), \(\pm e_2 / \sqrt{\alpha}\) (selle) e \(\pm e_1 / \sqrt{\alpha}\) (massimi del quoziente di Rayleigh sulla circonferenza)</span></small></div>
+    <div class="eq" data-mean="sub">\(\dot w = \left(I - \tfrac{n n^\top}{N_u}\right) Q w\)<small><span data-l="en">\(n \cdot w\) never changes, and on the line the growth is along the direction orthogonal to \(n\)</span><span data-l="it" lang="it">\(n \cdot w\) non cambia mai, e sulla retta la crescita è lungo la direzione ortogonale a \(n\)</span></small></div>
+    <div class="eq" data-mean="bcm">\(\dot w = \langle v^2 u \rangle - \langle v^2 \rangle \langle v u \rangle\)<small><span data-l="en">objective \(\tfrac13 \langle v^3 \rangle - \tfrac14 \langle v^2 \rangle^2\) (Intrator and Cooper 1992): it rewards a skewed output</span><span data-l="it" lang="it">obiettivo \(\tfrac13 \langle v^3 \rangle - \tfrac14 \langle v^2 \rangle^2\) (Intrator e Cooper 1992): premia un'uscita asimmetrica</span></small></div>
+    <div class="eq" data-mean="cov">\(\dot w = C w\)<small><span data-l="en">objective \(\tfrac12 w^\top C w\); on centered data the same as Hebb's</span><span data-l="it" lang="it">obiettivo \(\tfrac12 w^\top C w\); su dati centrati lo stesso di Hebb</span></small></div>
+  </aside>
+</main>
+
+<h2 class="part"><span data-l="en">Five Ascents</span><span data-l="it" lang="it">Cinque salite</span></h2>
+<p class="prose" data-l="en">Subtractive normalization removes from the Hebbian update its component
+along \(n = (1, 1)\), so that the sum of the weights \(n \cdot w\) stays at its initial value: in the
+mean the rule is the gradient of \(\tfrac12 w^\top Q w\) projected on the line \(n \cdot w = n \cdot
+w_0\), a projected gradient ascent on a constraint that does not bound the norm, and \(w\) grows along
+the direction orthogonal to \(n\), which on the lab data lies at 0.26° from \(e_1\). The BCM rule
+replaces the fixed threshold of a covariance rule with one that slides with the square of the output,
+\(\theta \to \langle v^2 \rangle\), so that a neuron that fires too much raises its own threshold and
+the growth stops; with the threshold at its average, the update is the gradient of
+\(\tfrac13 \langle v^3 \rangle - \tfrac14 \langle v^2 \rangle^2\), which rewards the directions in
+which the output is skewed, large on a few inputs and small on the others. The lab cloud is two
+clusters placed symmetrically about the origin, along which every projection has nearly zero third
+moment, so that the objective is highest near \(w = 0\) and \(w\) shrinks slowly; on the two clusters
+of the cloud menu, which are not symmetric, the run becomes
+selective, with \(v\) near zero on one cluster and large on the other (the fixed point has \(v = 2\)
+there, and the run oscillates around it, since the threshold of the lab moves at the same rate as the
+weights while the theory wants it faster). The covariance rule subtracts the mean input, and its ascent is on
+the variance of the output, \(\tfrac12 w^\top C w\): on centered data it is Hebb's rule, while on the
+rotated cloud off the origin, without centering, Hebb follows the principal eigenvector of \(Q\), which
+leans toward the mean, and the covariance rule that of \(C\), the axis of the cloud.</p>
+<p class="prose" data-l="it" lang="it">La normalizzazione sottrattiva toglie all'aggiornamento di Hebb
+la sua componente lungo \(n = (1, 1)\), così che la somma dei pesi \(n \cdot w\) resta al suo valore
+iniziale: in media la regola è il gradiente di \(\tfrac12 w^\top Q w\) proiettato sulla retta
+\(n \cdot w = n \cdot w_0\), una salita del gradiente proiettato su un vincolo che non limita la norma,
+e \(w\) cresce lungo la direzione ortogonale a \(n\), che sui dati del laboratorio sta a 0.26° da
+\(e_1\). La regola BCM sostituisce la soglia fissa di una regola della covarianza con una soglia che
+scorre con il quadrato dell'uscita, \(\theta \to \langle v^2 \rangle\), così che un neurone che scarica
+troppo alza la propria soglia e la crescita si ferma; con la soglia alla sua media, l'aggiornamento è il
+gradiente di \(\tfrac13 \langle v^3 \rangle - \tfrac14 \langle v^2 \rangle^2\), che premia le direzioni
+in cui l'uscita è asimmetrica, grande su pochi ingressi e piccola sugli altri. La nuvola del laboratorio
+è fatta di due gruppi disposti simmetricamente rispetto all'origine, lungo i quali ogni proiezione ha
+momento terzo quasi nullo, così che l'obiettivo è più alto vicino a \(w = 0\) e \(w\) si accorcia
+lentamente; sui due gruppi del menu delle nuvole, che non sono simmetrici, la corsa diventa selettiva, con \(v\) vicino a zero su un gruppo e grande sull'altro (il punto
+fisso ha lì \(v = 2\), e la corsa oscilla attorno a esso, poiché la soglia del laboratorio si muove con
+lo stesso passo dei pesi mentre la teoria la vuole più rapida). La regola della covarianza sottrae l'ingresso medio, e
+la sua salita è sulla varianza dell'uscita, \(\tfrac12 w^\top C w\): su dati centrati è la regola di
+Hebb, mentre sulla nuvola ruotata e lontana dall'origine, senza centrare, Hebb segue l'autovettore
+principale di \(Q\), che pende verso la media, e la regola della covarianza quello di \(C\), l'asse
+della nuvola.</p>
+
+<h2 class="part"><span data-l="en">The Lab</span><span data-l="it" lang="it">Il laboratorio</span></h2>
+<p class="prose" data-l="en">The defaults of the scene are those of the MATLAB code of the lab: 100
+points, a new permutation at every epoch, \(w\) drawn uniformly in \([-1, 1]^2\), \(\eta = 4 \cdot
+10^{-4}\) for Hebb, \(5 \cdot 10^{-4}\) for Oja and the subtractive rule, \(5 \cdot 10^{-3}\) for BCM
+and the covariance rule, 1000 epochs (2000 for BCM), and \(\theta\) of BCM starting at \(-1\) and
+moving with the same \(\eta\). With these numbers the lab found \(|w| \approx 5.9 \cdot 10^8\) after
+1000 epochs of Hebb and \(7.7 \cdot 10^{11}\) of the subtractive rule (the factor depends on
+\(w_0\); the rate does not, about \(e^{\eta \lambda_1 n}\) per epoch with \(n = 100\) points), a norm
+that settles at 31.6 for Oja, since the code weighs the decay with \(\alpha = 10^{-3}\) and
+\(1/\sqrt{\alpha} = 31.6\) (the value 1 of the menu is Oja's own normalization), and a BCM norm that
+falls to 0.63 after 2000 epochs with \(w\) nearly along \(e_2\). Its covariance code subtracts from
+\(u\) the mean of its own two components, which makes it the subtractive rule with \(\eta = 5 \cdot
+10^{-3}\), and \(|w|\) reaches \(5.7 \cdot 10^{125}\); here the covariance rule subtracts the mean
+\(\langle u \rangle\) over the cloud, as in Dayan and Abbott, and since the lab data are centered it
+diverges at the same rate.</p>
+<p class="prose" data-l="it" lang="it">I valori iniziali della scena sono quelli del codice MATLAB del
+laboratorio: 100 punti, una nuova permutazione a ogni epoca, \(w\) estratto uniformemente in
+\([-1, 1]^2\), \(\eta = 4 \cdot 10^{-4}\) per Hebb, \(5 \cdot 10^{-4}\) per Oja e per la regola
+sottrattiva, \(5 \cdot 10^{-3}\) per BCM e per la regola della covarianza, 1000 epoche (2000 per BCM), e
+la \(\theta\) di BCM che parte da \(-1\) e si muove con lo stesso \(\eta\). Con questi numeri il
+laboratorio trovava \(|w| \approx 5.9 \cdot 10^8\) dopo 1000 epoche di Hebb e \(7.7 \cdot 10^{11}\)
+della regola sottrattiva (il fattore dipende da \(w_0\); il tasso no, circa \(e^{\eta \lambda_1 n}\) per
+epoca con \(n = 100\) punti), una norma che si assesta a 31.6 per Oja, poiché il codice pesa il
+decadimento con \(\alpha = 10^{-3}\) e \(1/\sqrt{\alpha} = 31.6\) (il valore 1 del menu è la
+normalizzazione di Oja), e una norma di BCM che scende a 0.63 dopo 2000 epoche con \(w\) quasi lungo
+\(e_2\). Il suo codice della covarianza sottrae da \(u\) la media delle sue due componenti, il che ne fa
+la regola sottrattiva con \(\eta = 5 \cdot 10^{-3}\), e \(|w|\) arriva a \(5.7 \cdot 10^{125}\); qui la
+regola della covarianza sottrae la media \(\langle u \rangle\) sulla nuvola, come in Dayan e Abbott, e
+poiché i dati del laboratorio sono centrati diverge con lo stesso tasso.</p>
+
+<footer><span data-l="en">Scene V of opt-playground, after the laboratory LAB2_1 of the course of
+Computational Neuroscience in <a href="https://github.com/dmeoli/ComputationalNeuroscience">dmeoli/ComputationalNeuroscience</a>,
+whose data and parameters it uses, D. O. Hebb, The Organization of Behavior (1949), E. Oja,
+<a href="https://doi.org/10.1007/BF00275687">Simplified neuron model as a principal component analyzer</a>
+(1982), E. L. Bienenstock, L. N. Cooper and P. W. Munro,
+<a href="https://doi.org/10.1523/JNEUROSCI.02-01-00032.1982">Theory for the development of neuron selectivity</a>
+(1982), N. Intrator and L. N. Cooper, <a href="https://doi.org/10.1016/S0893-6080(05)80003-6">Objective function formulation of the BCM theory of visual cortical plasticity</a>
+(1992), and P. Dayan and L. F. Abbott, Theoretical Neuroscience (2001), chapter 8: the ideas are theirs,
+rebuilt here from the equations.</span><span data-l="it" lang="it">Scena V di opt-playground, dal
+laboratorio LAB2_1 del corso di Computational Neuroscience in
+<a href="https://github.com/dmeoli/ComputationalNeuroscience">dmeoli/ComputationalNeuroscience</a>, di
+cui usa i dati e i parametri, D. O. Hebb, The Organization of Behavior (1949), E. Oja,
+<a href="https://doi.org/10.1007/BF00275687">Simplified neuron model as a principal component analyzer</a>
+(1982), E. L. Bienenstock, L. N. Cooper e P. W. Munro,
+<a href="https://doi.org/10.1523/JNEUROSCI.02-01-00032.1982">Theory for the development of neuron selectivity</a>
+(1982), N. Intrator e L. N. Cooper, <a href="https://doi.org/10.1016/S0893-6080(05)80003-6">Objective function formulation of the BCM theory of visual cortical plasticity</a>
+(1992), e P. Dayan e L. F. Abbott, Theoretical Neuroscience (2001), capitolo 8: le idee sono loro,
+ricostruite qui dalle equazioni.</span></footer>
+<script type="module" src="src/hebbian.js"></script>
+</body>
+</html>
