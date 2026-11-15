@@ -60,6 +60,12 @@ select, button {
   border: 1px solid var(--rule); border-radius: 6px; padding: 5px 9px;
 }
 button { cursor: pointer; }
+input[type=file] { font: inherit; color: var(--ink-soft); max-width: 100%; }
+input[type=file]::file-selector-button {
+  font: inherit; color: var(--ink); background: var(--ground); cursor: pointer;
+  border: 1px solid var(--rule); border-radius: 6px; padding: 5px 9px; margin-right: 8px;
+}
+input[type=file]::file-selector-button:hover { border-color: var(--accent); color: var(--accent); }
 button:hover { border-color: var(--accent); color: var(--accent); }
 input[type=range] { accent-color: var(--accent); width: 120px; }
 .explain { color: var(--ink-soft); font-style: italic; margin: 12px 0; min-height: 3em; }
@@ -138,6 +144,12 @@ nav.pages a { color: var(--ink-soft); text-decoration: none; }
 nav.pages a[aria-current] { color: var(--accent); border-bottom: 1px solid var(--accent); }
 nav.pages .group { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); margin-right: 6px; }
 nav.pages { line-height: 1.8; }
+/* inside the site the overlay bar already names the scene and closes it */
+.embedded nav.pages { display: none; }
+/* on a phone each group stays on one line that scrolls sideways */
+@media (max-width: 46rem) {
+  nav.pages { white-space: nowrap; overflow-x: auto; scrollbar-width: none; }
+}
 main.single { grid-template-columns: 1fr; }
 .stage canvas { width: 100%; height: auto; display: block; cursor: grab; }
 /* the learning scene */
@@ -211,6 +223,7 @@ canvas.neuron { width: 34px; height: 34px; border-radius: 4px; border: 1px solid
 #bars { margin-top: 8px; }
 /* the formulas (MathJax) keep their letters inside the uppercase labels */
 mjx-container { text-transform: none; letter-spacing: normal; }
+mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
 .stats dt mjx-container, .controls span mjx-container, .side label span mjx-container { font-size: 125%; }
 
 /* two languages, as on the site: the text not of the language chosen is hidden

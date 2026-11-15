@@ -309,6 +309,10 @@ h1 {
   border-bottom: 1px solid var(--gold-3);
   font-family: var(--mono); font-size: var(--s-05); letter-spacing: .12em; text-transform: uppercase;
 }
+.sections { transition: transform .25s ease-out; }
+/* on a phone the menu takes four lines: it steps aside while one scrolls down
+   and comes back on the way up */
+@media (max-width: 46rem) { .sections.away { transform: translateY(-100%); } }
 .sections a { color: var(--ink); text-decoration: none; border-bottom: 1px solid transparent; padding-bottom: 1px; }
 .sections a:hover, .sections a:focus-visible { color: var(--accent); }
 .sections a[aria-current="true"] { color: var(--accent); border-bottom-color: var(--gold); }
@@ -430,7 +434,8 @@ footer {
 :focus-visible { outline: 2px solid var(--gold-1); outline-offset: 3px; border-radius: 1px; }
 
 @media (max-width: 46rem) {
-  .grid, .pub, .repos li, .entry { grid-template-columns: 1fr; gap: var(--f8); }
+  .grid, .pub, .repos li, .entry { grid-template-columns: minmax(0, 1fr); gap: var(--f8); }
+  .pub, .entry { overflow-wrap: anywhere; }
   .mottos figure + figure { text-align: left; }
   .masthead { grid-template-columns: 1fr; gap: var(--f21); }
   .portrait { width: var(--f144); height: var(--f144); order: -1; align-self: start; }
@@ -480,6 +485,8 @@ footer {
 @media (max-width: 760px) {
   .sections .menu { display: flex; }
   .sections .row1, .sections .row2 { justify-content: center; padding: 0; }
+  .links { justify-content: center; }
+  .contact { grid-template-columns: minmax(0, 1fr); }
 }
 .sections a.side { font-size: var(--s-075); color: var(--heading); letter-spacing: .146em; }
 .sections a.side:hover, .sections a.side:focus-visible, .sections a.side[aria-current="true"] { color: var(--accent); }
@@ -495,6 +502,11 @@ footer {
 .sv-bar a, .sv-bar .sv-close { color: var(--ink-soft); text-decoration: none; background: none; border: 0; font: inherit; letter-spacing: inherit; text-transform: inherit; cursor: pointer; }
 .sv-bar a:hover, .sv-bar .sv-close:hover { color: var(--accent); }
 .sv-bar .lang { position: static; margin: 0; }
+@media (max-width: 46rem) {
+  .sv-bar { gap: var(--f8); padding: var(--f8) var(--f13); }
+  .sv-bar .sv-word { display: none; }
+  .sv-bar .sv-tab, .sv-bar .sv-close { font-size: 1.4em; line-height: 1; padding: 0 var(--f3); }
+}
 .sv-frame { flex: 1; width: 100%; border: 0; background: var(--ground); }
 @media (prefers-reduced-motion: reduce) { #sceneview[open] { animation: none; } }
 /* the thumbnails of play in the theme of the page */
@@ -516,6 +528,11 @@ footer {
 .subnav button:hover, .subnav button:focus-visible { color: var(--accent); border-color: var(--accent); }
 .subnav button[aria-selected="true"] { color: var(--ground); background: var(--accent); box-shadow: 0 0 0 1px var(--gold-2); }
 .subnav button[aria-selected="true"] .count { color: inherit; background: color-mix(in srgb, currentColor 16%, transparent); }
+@media (max-width: 46rem) {
+  .subnav { justify-content: center; gap: var(--f5); }
+  .subnav button { padding: var(--f3) var(--f8); letter-spacing: .06em; white-space: nowrap; }
+  .subnav .long { display: none; }
+}
 .tabs > .sub:not(.on) { display: none; }
 .tabs > .sub.on { animation: sub-in .35s ease-out; }
 @keyframes sub-in { from { opacity: 0; transform: translateY(8px); } }
@@ -972,7 +989,7 @@ footer {
       <div class="subnav" role="tablist">
         <button type="button" role="tab" data-sub="learning"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span> <span class="count">4</span></button>
         <button type="button" role="tab" data-sub="networks"><span data-l="en">Inside Networks</span><span data-l="it" lang="it">Dentro le reti</span> <span class="count">8</span></button>
-        <button type="button" role="tab" data-sub="generative"><span data-l="en">Representations and Generative Models</span><span data-l="it" lang="it">Rappresentazioni e modelli generativi</span> <span class="count">3</span></button>
+        <button type="button" role="tab" data-sub="generative"><span data-l="en"><span class="long">Representations and </span>Generative Models</span><span data-l="it" lang="it"><span class="long">Rappresentazioni e </span>modelli generativi</span> <span class="count">3</span></button>
         <button type="button" role="tab" data-sub="bio"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span> <span class="count">5</span></button>
       </div>
       <div class="sub scenes" data-sub="learning" role="tabpanel">
@@ -1673,7 +1690,7 @@ Decomposition methods and solvers for large-scale
 <dialog id="sceneview" aria-label="Scene">
   <div class="sv-bar">
     <span class="sv-title"></span>
-    <a class="sv-tab" href="#" target="_blank" rel="noopener"><span data-l="en">new tab</span><span data-l="it" lang="it">nuova scheda</span> &#8599;</a>
+    <a class="sv-tab" href="#" target="_blank" rel="noopener" title="Open in a new tab"><span class="sv-word"><span data-l="en">new tab</span><span data-l="it" lang="it">nuova scheda</span></span> &#8599;</a>
     <div class="lang sv-lang" role="group" aria-label="Language">
       <button type="button" data-set="en" aria-pressed="false" title="English">EN</button>
       <span aria-hidden="true">&middot;</span>
@@ -1684,7 +1701,7 @@ Decomposition methods and solvers for large-scale
         <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
       </button>
     </div>
-    <button type="button" class="sv-close" aria-label="Close"><span data-l="en">close</span><span data-l="it" lang="it">chiudi</span> &times;</button>
+    <button type="button" class="sv-close" aria-label="Close"><span class="sv-word"><span data-l="en">close</span><span data-l="it" lang="it">chiudi</span></span> &times;</button>
   </div>
   <iframe class="sv-frame" title="Scene" allow="fullscreen" allowfullscreen></iframe>
 </dialog>
@@ -1742,6 +1759,19 @@ Decomposition methods and solvers for large-scale
       var card = a.closest('.scene'), h = card && card.querySelector('h3');
       open(a.href, h ? h.innerText.trim() : a.innerText.trim());
     });
+  })();
+</script>
+<script>
+  (function () {
+    var nav = document.querySelector('.sections'), last = window.scrollY,
+        narrow = matchMedia('(max-width: 46rem)');
+    window.addEventListener('scroll', function () {
+      var y = window.scrollY, stuck = nav.getBoundingClientRect().top <= 0;
+      if (Math.abs(y - last) < 8) return;
+      nav.classList.toggle('away', narrow.matches && stuck && y > last &&
+                           !nav.contains(document.activeElement));
+      last = y;
+    }, { passive: true });
   })();
 </script>
 </body>
