@@ -14,35 +14,49 @@
 <body>
 <nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html" aria-current="page">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
-  <h1>Components playground</h1>
-  <p class="lede">A Lagrangian dual that is a sum: <span id="K"></span> independent
+  <h1><span data-l="en">Components playground</span><span data-l="it" lang="it">Laboratorio delle componenti</span></h1>
+  <p class="lede" data-l="en">A Lagrangian dual that is a sum: <span class="K"></span> independent
   subproblems share one coupling row, so that \(L(\lambda) = \sum_k L_k(\lambda)\)
   and the oracle answers one component at a time. Kelley's method with one model of
   \(L\) (aggregated) races the same method with one model per component
   (disaggregated), and the subgradient method races its incremental variant, which
   moves after every component; all are charged by the calls to the oracle of a
   component.</p>
+  <p class="lede" data-l="it" lang="it">Un duale lagrangiano che è una somma: <span class="K"></span> sottoproblemi
+  indipendenti condividono una riga accoppiante, così che \(L(\lambda) = \sum_k L_k(\lambda)\)
+  e l'oracolo risponde una componente alla volta. Il metodo di Kelley con un solo modello di
+  \(L\) (aggregato) gareggia con lo stesso metodo con un modello per componente
+  (disaggregato), e il metodo del subgradiente gareggia con la sua variante incrementale, che
+  si muove dopo ogni componente; a tutti si contano le chiamate all'oracolo di una
+  componente.</p>
 </header>
 <section class="controls">
   <div class="settings">
-    <label><span>instance</span><select id="inst"></select></label>
-    <label><span>subgradient step</span><input id="s0" type="range" min="0.1" max="3" step="0.1" value="1"> <output id="s0v"></output></label>
+    <label><span><span data-l="en">instance</span><span data-l="it" lang="it">istanza</span></span><select id="inst"></select></label>
+    <label><span><span data-l="en">subgradient step</span><span data-l="it" lang="it">passo del subgradiente</span></span><input id="s0" type="range" min="0.1" max="3" step="0.1" value="1"> <output id="s0v"></output></label>
   </div>
   <div class="transport"><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
 </section>
 <main>
-  <figure><figcaption>The dual function \(L\) (dark), the aggregated model and the
+  <figure><figcaption><span data-l="en">The dual function \(L\) (dark), the aggregated model and the
   disaggregated one of the two runs of Kelley, the point of each method (a ring
-  of its colour) and the maximum \(\lambda^*\).</figcaption><svg id="dual" viewBox="0 0 460 360"></svg>
+  of its colour) and the maximum \(\lambda^*\).</span><span data-l="it" lang="it">La funzione duale \(L\) (scura), il modello aggregato e
+  quello disaggregato delle due esecuzioni di Kelley, il punto di ciascun metodo (un anello
+  del suo colore) e il massimo \(\lambda^*\).</span></figcaption><svg id="dual" viewBox="0 0 460 360"></svg>
   <dl class="stats"><div><dt>\(\max L\)</dt><dd id="lstar"></dd></div></dl></figure>
-  <figure><figcaption>The relative gap of the best value found against the calls
+  <figure><figcaption><span data-l="en">The relative gap of the best value found against the calls
   to the oracle of a component, in log scale. For the incremental method the
   value is the true \(L\) at the end of each cycle, which the method itself does not
-  compute.</figcaption><svg id="conv" viewBox="0 0 460 360"></svg></figure>
+  compute.</span><span data-l="it" lang="it">Lo scarto relativo del miglior valore trovato rispetto alle chiamate
+  all'oracolo di una componente, in scala logaritmica. Per il metodo incrementale il
+  valore è la vera \(L\) alla fine di ogni ciclo, che il metodo stesso non
+  calcola.</span></figcaption><svg id="conv" viewBox="0 0 460 360"></svg></figure>
 </main>
-<footer>Scene E of opt-playground. The disaggregated model is the one of the
+<footer><span data-l="en">Scene E of opt-playground. The disaggregated model is the one of the
 bundle methods of SMS++ when the objective is a sum of functions (one bundle per
-component); the incremental subgradient is that of Nedić and Bertsekas.</footer>
+component); the incremental subgradient is that of Nedić and Bertsekas.</span><span data-l="it" lang="it">Scena E di opt-playground. Il modello disaggregato è quello dei
+metodi bundle di SMS++ quando l'obiettivo è una somma di funzioni (un bundle per
+componente); il subgradiente incrementale è quello di Nedić e Bertsekas.</span></footer>
 <script type="module" src="src/components.js"></script>
 </body>
 </html>

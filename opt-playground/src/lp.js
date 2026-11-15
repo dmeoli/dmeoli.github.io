@@ -6,19 +6,21 @@
 // outside the dual region until the basis is optimal. The interior point method
 // follows the central path, in both regions at once.
 
+import { t, onLang } from './i18n.js';
+
 const $ = id => document.getElementById(id);
 const dot = (u, v) => u[0] * v[0] + u[1] * v[1];
 const solve2 = (M, r) => { const d = M[0][0] * M[1][1] - M[0][1] * M[1][0]; return Math.abs(d) < 1e-12 ? null : [(r[0] * M[1][1] - M[0][1] * r[1]) / d, (M[0][0] * r[1] - r[0] * M[1][0]) / d]; };
 
 const instances = {
-  classic: { label: 'max 3x1 + 2x2', c: [3, 2], A: [[1, 1], [2, 1]], b: [4, 6] },
-  flat: { label: 'max x1 + 3x2', c: [1, 3], A: [[1, 2], [3, 1]], b: [9, 12] },
-  degenerate: { label: 'Nearly parallel rows', c: [2, 2.1], A: [[1, 1.05], [1.05, 1]], b: [6, 6.1] },
+  classic: { label: 'max 3x1 + 2x2', it: 'max 3x1 + 2x2', c: [3, 2], A: [[1, 1], [2, 1]], b: [4, 6] },
+  flat: { label: 'max x1 + 3x2', it: 'max x1 + 3x2', c: [1, 3], A: [[1, 2], [3, 1]], b: [9, 12] },
+  degenerate: { label: 'Nearly parallel rows', it: 'Righe quasi parallele', c: [2, 2.1], A: [[1, 1.05], [1.05, 1]], b: [6, 6.1] },
 };
 let P, mode = 'simplex', path = [], dualPath = [], basis, mu, x, timer = null;
 
 // the four constraints of the primal as rows g.x <= h: the two of A and x >= 0
-const cons = () => [{ g: P.A[0], h: P.b[0], name: 'row 1' }, { g: P.A[1], h: P.b[1], name: 'row 2' },
+const cons = () => [{ g: P.A[0], h: P.b[0], name: t('row 1', 'riga 1') }, { g: P.A[1], h: P.b[1], name: t('row 2', 'riga 2') },
                     { g: [-1, 0], h: 0, name: 'x1 ≥ 0' }, { g: [0, -1], h: 0, name: 'x2 ≥ 0' }];
 
 // the vertex of a basis (two active constraints) and its dual: c = sum u_k g_k
@@ -89,8 +91,8 @@ function ipmStep() {
 }
 
 function step() { if (!(mode === 'simplex' ? simplexStep() : ipmStep())) stop(); draw(); }
-function stop() { clearInterval(timer); timer = null; $('play').textContent = 'Play'; }
-function play() { if (timer) return stop(); $('play').textContent = 'Pause'; timer = setInterval(step, 600); }
+function stop() { clearInterval(timer); timer = null; $('play').textContent = t('Play', 'Avvia'); }
+function play() { if (timer) return stop(); $('play').textContent = t('Pause', 'Pausa'); timer = setInterval(step, 600); }
 
 // ------------------------------------------------------------------ drawing
 const NS = 'http://www.w3.org/2000/svg';
@@ -149,12 +151,24 @@ function draw() {
   $('dval').textContent = dot(P.b, yp).toFixed(4);
   $('gap').textContent = (dot(P.b, yp) - dot(P.c, xp)).toExponential(2);
   $('info').textContent = mode === 'simplex'
-    ? `basis {${basis.map(k => C[k].name).join(', ')}}; dual point ${dualFeasible(yp) ? 'feasible: the basis is optimal' : 'infeasible: some multiplier is negative'}`
-    : `μ = ${mu.toExponential(2)}; the primal and the dual estimate follow the central path`;
+    ? t(`basis {${basis.map(k => C[k].name).join(', ')}}; dual point ${dualFeasible(yp) ? 'feasible: the basis is optimal' : 'infeasible: some multiplier is negative'}`,
+        `base {${basis.map(k => C[k].name).join(', ')}}; punto duale ${dualFeasible(yp) ? 'ammissibile: la base è ottima' : 'non ammissibile: qualche moltiplicatore è negativo'}`)
+    : t(`μ = ${mu.toExponential(2)}; the primal and the dual estimate follow the central path`,
+        `μ = ${mu.toExponential(2)}; il primale e la stima duale seguono il cammino centrale`);
 }
 function dualFeasible(y) { return y.every(v => v >= -1e-9) && [0, 1].every(j => P.A[0][j] * y[0] + P.A[1][j] * y[1] >= P.c[j] - 1e-9); }
 
+// the words that depend on the language: title, options, the Play button
+function words() {
+  document.title = t('LP playground', 'Laboratorio di PL');
+  for (const o of $('inst').options) o.textContent = t(instances[o.value].label, instances[o.value].it);
+  for (const o of $('mode').options) o.textContent = o.value === 'simplex' ? t('Simplex', 'Simplesso') : t('Interior point (barrier)', 'Punto interno (barriera)');
+  $('play').textContent = timer ? t('Pause', 'Pausa') : t('Play', 'Avvia');
+  $('step').textContent = t('Step', 'Passo');
+}
 for (const [k, v] of Object.entries(instances)) $('inst').append(new Option(v.label, k));
+words();
+onLang(() => { words(); draw(); });
 $('inst').onchange = reset;
 $('mode').onchange = e => { mode = e.target.value; reset(); };
 $('step').onclick = step; $('play').onclick = play; $('reset').onclick = reset;

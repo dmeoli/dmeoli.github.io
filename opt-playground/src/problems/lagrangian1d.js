@@ -4,6 +4,8 @@
 // c.v + l (a.v - b) is concave and piecewise linear: every integer point gives
 // a line (a cut), and the oracle returns the point that is lowest at l.
 
+import { t } from '../i18n.js';
+
 // a regular polygon with n sides, radius r and centre (cx, cy), counter-clockwise
 const ngon = (n, r, cx, cy, rot = 0.13) =>
   Array.from({ length: n }, (_, i) => {
@@ -13,22 +15,22 @@ const ngon = (n, r, cx, cy, rot = 0.13) =>
 
 export const presets = {
   disc: {
-    label: 'Disc (many columns)',
+    get label() { return t('Disc (many columns)', "Disco (molte colonne)"); },
     polygon: ngon(18, 6.4, 7, 7),
     c: [-0.35, -1], a: [1, 0.25], b: 7.5, lmax: 3,
   },
   ellipse: {
-    label: 'Flat ellipse',
+    get label() { return t('Flat ellipse', "Ellisse schiacciata"); },
     polygon: ngon(20, 1, 0, 0).map(([x, y]) => [8 + 7.5 * x - 1.5 * y, 5 + 1.2 * x + 3.2 * y]),
     c: [-1, -0.45], a: [0.3, 1], b: 5.2, lmax: 3,
   },
   pentagon: {
-    label: 'Pentagon',
+    get label() { return t('Pentagon', "Pentagono"); },
     polygon: [[0, 0], [6, 0], [6, 2], [3, 5], [0, 4]],
     c: [-1, -1.6], a: [1, 1.2], b: 6.3, lmax: 3,
   },
   kite: {
-    label: 'Kite',
+    get label() { return t('Kite', "Aquilone"); },
     polygon: [[1, 0], [5, 1], [6, 5], [2, 6], [0, 3]],
     c: [-1.4, -1], a: [1.5, 0.6], b: 6.6, lmax: 3,
   },

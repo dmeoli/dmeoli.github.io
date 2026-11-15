@@ -5,6 +5,7 @@
 import { el } from './views.js';
 import { hull } from './problems/lagrangian1d.js';
 import { primalPoint, modelAt } from './problems/lagrangian2d.js';
+import { t } from './i18n.js';
 
 const scale = (d0, d1, r0, r1) => v => r0 + (v - d0) / (d1 - d0) * (r1 - r0);
 const pts = (ps, X, Y) => ps.map(p => `${X(p[0])},${Y(p[1])}`).join(' ');
@@ -149,8 +150,8 @@ export function curve2(svg, problem, runs) {
   const n = Math.max(...all.map(g => g.length - 1), 10);
   const X = scale(0, n, pad, W - 10), Y = scale(-6, Math.log10(Math.max(...all.flat(), 1)) + 0.3, H - 22, 8);
   el('line', { x1: pad, x2: W - 10, y1: H - 22, y2: H - 22, class: 'axis' }, svg);
-  el('text', { x: pad, y: 12, class: 'lab' }, svg).textContent = 'gap to max L (log)';
-  el('text', { x: W - 10, y: H - 6, class: 'lab end' }, svg).textContent = 'iteration';
+  el('text', { x: pad, y: 12, class: 'lab' }, svg).textContent = t('gap to max L (log)', 'scarto da max L (log)');
+  el('text', { x: W - 10, y: H - 6, class: 'lab end' }, svg).textContent = t('iteration', 'iterazione');
   all.forEach((gaps, r) =>
     el('polyline', { points: gaps.map((g, i) => `${X(i)},${Y(Math.log10(g))}`).join(' '), class: 'gapline ' + (runs[r].cls || '') }, svg));
 }

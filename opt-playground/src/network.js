@@ -9,6 +9,9 @@ import { build, forward, backward, dropMask, update, optimizers, dataset, featur
 import { texClear, texSet } from './tex.js';
 import { getV, landscape, project, at } from './landscape.js';
 import { THREE, stage3d, axes, tok, css, onTheme } from './stage3d-b.js';
+import { t as tr, onLang } from './i18n.js';
+
+const oname = o => tr(o.name, o.it ?? o.name);
 
 const $ = id => document.getElementById(id);
 const q = new URLSearchParams(location.hash.slice(1));
@@ -66,8 +69,8 @@ function step() {
   if (S.race) history[1].push([loss(nets[1], train), loss(nets[1], test)]);
   draw();
 }
-function stop() { clearInterval(timer); timer = null; $('play').textContent = 'Play'; }
-function play() { if (timer) return stop(); $('play').textContent = 'Pause'; timer = setInterval(step, 40); }
+function stop() { clearInterval(timer); timer = null; $('play').textContent = tr('Play', 'Avvia'); }
+function play() { if (timer) return stop(); $('play').textContent = tr('Pause', 'Pausa'); timer = setInterval(step, 40); }
 function reset() { stop(); makeData(); makeNets(); save(); buildControls(); clearLandscape(); draw(); }
 
 // ------------------------------------------------------------------ drawing
@@ -117,7 +120,7 @@ function drawNet(net, svgId, k) {
     // a wide transparent twin of the link, to click on it and edit its weight
     const hit = el('path', { d: dpath, fill: 'none', stroke: 'transparent', 'stroke-width': 10, class: 'linkhit' });
     hit.addEventListener('click', e => editWeight(lk, e));
-    hit.appendChild(document.createElementNS(NS, 'title')).textContent = `weight ${w.toFixed(3)} (click to edit)`;
+    hit.appendChild(document.createElementNS(NS, 'title')).textContent = tr(`weight ${w.toFixed(3)} (click to edit)`, `peso ${w.toFixed(3)} (clic per modificarlo)`);
   }
   net.forEach((layer, l) => layer.forEach((n, i) => {
     const [x, y] = pos.get(n), size = 2 * R;
@@ -190,7 +193,7 @@ function drawLand(full) {
 // the surface in [-1, 1]^2 x [0, 0.8]: a / R, b / R and the height of the loss
 let surfG = null, pathG = null;
 function drawLand3d(full) {
-  if (!stage) stage = stage3d($('land3d'), { position: [2.6, -3.4, 4.4], target: [0, 0, 0.2], label: 'loss landscape' });
+  if (!stage) stage = stage3d($('land3d'), { position: [2.6, -3.4, 4.4], target: [0, 0, 0.2], label: tr('loss landscape', 'paesaggio della loss') });
   const T = THREE, { G, R, vals } = land, Hs = 0.8;
   const z = (a, b) => Hs * lheight(at(land, a, b));
   if (full || !surfG) {
@@ -263,7 +266,7 @@ function draw() {
   $('trainLoss').textContent = h[0].toFixed(3); $('testLoss').textContent = h[1].toFixed(3);
   if (S.race) { const g = history[1].at(-1) || [loss(nets[1], train), loss(nets[1], test)]; $('trainLossB').textContent = g[0].toFixed(3); $('testLossB').textContent = g[1].toFixed(3); }
   document.body.classList.toggle('racing', S.race);
-  $('nameA').textContent = optimizers[S.opt].name; $('nameB').textContent = optimizers[S.optB].name;
+  $('nameA').textContent = oname(optimizers[S.opt]); $('nameB').textContent = oname(optimizers[S.optB]);
 }
 
 // ----------------------------------------------------------------- controls
@@ -272,8 +275,8 @@ function sel(id, entries, value, on) {
   s.onchange = () => on(s.value);
 }
 function buildControls() {
-  const datas = S.problem === 'regression' ? [['plane', 'Plane'], ['gaussreg', 'Gaussians']] : [['circle', 'Circle'], ['xor', 'Exclusive or'], ['gauss', 'Gaussians'], ['spiral', 'Spiral']];
-  sel('problem', [['classification', 'Classification'], ['regression', 'Regression']], S.problem, v => { S.problem = v; S.data = v === 'regression' ? 'plane' : 'circle'; reset(); });
+  const datas = S.problem === 'regression' ? [['plane', tr('Plane', 'Piano')], ['gaussreg', tr('Gaussians', 'Gaussiane')]] : [['circle', tr('Circle', 'Cerchio')], ['xor', tr('Exclusive or', 'Or esclusivo')], ['gauss', tr('Gaussians', 'Gaussiane')], ['spiral', tr('Spiral', 'Spirale')]];
+  sel('problem', [['classification', tr('Classification', 'Classificazione')], ['regression', tr('Regression', 'Regressione')]], S.problem, v => { S.problem = v; S.data = v === 'regression' ? 'plane' : 'circle'; reset(); });
   const db = $('datas'); db.replaceChildren();
   for (const [k, l] of datas) {
     const b = document.createElement('button'); b.type = 'button'; b.title = l;
@@ -282,12 +285,12 @@ function buildControls() {
     thumb(c, k); b.onclick = () => { S.data = k; reset(); };
     db.appendChild(b);
   }
-  sel('act', [['relu', 'ReLU'], ['tanh', 'Tanh'], ['sigmoid', 'Sigmoid'], ['linear', 'Linear']], S.act, v => { S.act = v; reset(); });
+  sel('act', [['relu', 'ReLU'], ['tanh', 'Tanh'], ['sigmoid', 'Sigmoid'], ['linear', tr('Linear', 'Lineare')]], S.act, v => { S.act = v; reset(); });
   sel('lr', [0.00001, 0.0001, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10].map(v => [v, v]), S.lr, v => { S.lr = +v; save(); });
-  sel('reg', [['none', 'None'], ['L1', 'L1'], ['L2', 'L2']], S.reg, v => { S.reg = v; save(); });
+  sel('reg', [['none', tr('None', 'Nessuna')], ['L1', 'L1'], ['L2', 'L2']], S.reg, v => { S.reg = v; save(); });
   sel('regRate', [0, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10].map(v => [v, v]), S.regRate, v => { S.regRate = +v; save(); });
   sel('drop', [0, 0.1, 0.2, 0.3, 0.5].map(v => [v, v]), S.drop, v => { S.drop = +v; save(); draw(); });
-  const opts = Object.entries(optimizers).map(([k, o]) => [k, o.name]);
+  const opts = Object.entries(optimizers).map(([k, o]) => [k, oname(o)]);
   sel('opt', opts, S.opt, v => { S.opt = v; reset(); });
   sel('optB', opts, S.optB, v => { S.optB = v; reset(); });
   $('race').checked = S.race; $('race').onchange = e => { S.race = e.target.checked; reset(); };
@@ -312,16 +315,16 @@ function buildControls() {
   // above the network, as in the TensorFlow Playground: + and − for the
   // layers, and over the column of each hidden layer + and − for its neurons
   const btn = (t, title, f) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.title = title; b.onclick = f; return b; };
-  $('layersctl').replaceChildren(btn('+', 'add a hidden layer', () => { if (S.hidden.length < 6) S.hidden.push(2); reset(); }),
-                                 btn('−', 'remove a hidden layer', () => { S.hidden.pop(); reset(); }));
-  $('nlayers').textContent = `${S.hidden.length} hidden layer${S.hidden.length === 1 ? '' : 's'}`;
+  $('layersctl').replaceChildren(btn('+', tr('add a hidden layer', 'aggiungi uno strato nascosto'), () => { if (S.hidden.length < 6) S.hidden.push(2); reset(); }),
+                                 btn('−', tr('remove a hidden layer', 'togli uno strato nascosto'), () => { S.hidden.pop(); reset(); }));
+  $('nlayers').textContent = tr(`${S.hidden.length} hidden layer${S.hidden.length === 1 ? '' : 's'}`, `${S.hidden.length} strat${S.hidden.length === 1 ? 'o' : 'i'} nascost${S.hidden.length === 1 ? 'o' : 'i'}`);
   const ch = $('colheads'); ch.replaceChildren();
   S.hidden.forEach((n, i) => {
     const g = document.createElement('div'); g.className = 'colhead';
     g.style.left = `${100 * colX(i + 1, S.hidden.length + 2) / W}%`;
     const pm = document.createElement('span'); pm.className = 'pm';
-    pm.append(btn('+', 'add a neuron', () => { if (S.hidden[i] < 8) S.hidden[i]++; reset(); }), btn('−', 'remove a neuron', () => { if (S.hidden[i] > 1) S.hidden[i]--; reset(); }));
-    g.append(pm, Object.assign(document.createElement('span'), { textContent: `${n} neuron${n === 1 ? '' : 's'}` }));
+    pm.append(btn('+', tr('add a neuron', 'aggiungi un neurone'), () => { if (S.hidden[i] < 8) S.hidden[i]++; reset(); }), btn('−', tr('remove a neuron', 'togli un neurone'), () => { if (S.hidden[i] > 1) S.hidden[i]--; reset(); }));
+    g.append(pm, Object.assign(document.createElement('span'), { textContent: tr(`${n} neuron${n === 1 ? '' : 's'}`, `${n} neuron${n === 1 ? 'e' : 'i'}`) }));
     ch.appendChild(g);
   });
 }
@@ -335,6 +338,19 @@ function thumb(c, kind) {
   }
 }
 
+// the texts that the page cannot hold twice: options, titles, the button
+function texts() {
+  const D = { random: ['random, filter-normalized', 'casuali, normalizzate per filtro'], pca: ['principal, of the path', 'principali, del cammino'] };
+  for (const o of $('landDir').options) o.textContent = tr(...D[o.value]);
+  $('dropLab').title = tr('probability of dropping a hidden neuron in a training mini-batch; off at test time', "probabilità di spegnere un neurone nascosto in un minibatch dell'addestramento; nessuno spento in fase di test");
+  $('datas').setAttribute('aria-label', tr('data set', 'data set'));
+  $('wedit').querySelector('input').setAttribute('aria-label', tr('weight', 'peso'));
+  $('play').textContent = timer ? tr('Pause', 'Pausa') : tr('Play', 'Avvia');
+  $('step').textContent = tr('Step', 'Passo');
+  document.title = tr('Network playground', 'Laboratorio di reti neurali');
+}
+texts();
+onLang(() => { texts(); buildControls(); draw(); });
 $('play').onclick = play; $('step').onclick = step; $('reset').onclick = reset;
 $('landBtn').onclick = landscapeCompute;
 $('landDir').value = S.landDir;

@@ -21,30 +21,37 @@
 <body>
 <nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html" aria-current="page">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
-  <h1>LP in three variables</h1>
-  <p class="lede">The same linear program as in <a href="lp.html">the plane</a>, \(\max\, c \cdot x,\ A x \le b,\ x \ge 0\),
+  <h1><span data-l="en">LP in three variables</span><span data-l="it" lang="it">PL in tre variabili</span></h1>
+  <p class="lede" data-l="en">The same linear program as in <a href="lp.html">the plane</a>, \(\max\, c \cdot x,\ A x \le b,\ x \ge 0\),
   now with three variables, so that the feasible region is a polytope. The simplex
   walks along its edges from vertex to vertex, each pivot raising the level plane
   \(c \cdot x = z\), until no reduced cost is positive; on the Klee-Minty cube
   Dantzig's rule visits all 8 vertices. The barrier method goes through the inside
   instead, along the central path, from the analytic center to the optimum as \(\mu\) shrinks.</p>
+  <p class="lede" data-l="it" lang="it">Lo stesso programma lineare del <a href="lp.html">piano</a>, \(\max\, c \cdot x,\ A x \le b,\ x \ge 0\),
+  ora con tre variabili, cos&igrave; che la regione ammissibile &egrave; un politopo. Il simplesso
+  ne percorre gli spigoli da vertice a vertice, e ogni pivot alza il piano di livello
+  \(c \cdot x = z\), finch&eacute; nessun costo ridotto &egrave; positivo; sul cubo di Klee-Minty
+  la regola di Dantzig visita tutti gli 8 vertici. Il metodo barriera passa invece per l'interno,
+  lungo il cammino centrale, dal centro analitico all'ottimo mentre \(\mu\) decresce.</p>
 </header>
 <section class="controls">
   <div class="settings">
-    <div class="inline"><label><span>instance</span><select id="inst"></select></label><button id="regen" type="button">Regenerate</button></div>
-    <label><span>method</span><select id="mode"><option value="simplex">Simplex</option><option value="ipm">Interior point (barrier)</option></select></label>
-    <label><span>pivot rule</span><select id="rule"><option value="dantzig">Dantzig (largest reduced cost)</option><option value="bland">Bland (smallest index)</option></select></label>
-    <label class="check"><span>level plane</span><input id="level" type="checkbox" checked></label>
+    <div class="inline"><label><span data-l="en">instance</span><span data-l="it" lang="it">istanza</span><select id="inst"></select></label><button id="regen" type="button">Regenerate</button></div>
+    <label><span data-l="en">method</span><span data-l="it" lang="it">metodo</span><select id="mode"><option value="simplex">Simplex</option><option value="ipm">Interior point (barrier)</option></select></label>
+    <label><span data-l="en">pivot rule</span><span data-l="it" lang="it">regola di pivot</span><select id="rule"><option value="dantzig">Dantzig (largest reduced cost)</option><option value="bland">Bland (smallest index)</option></select></label>
+    <label class="check"><span data-l="en">level plane</span><span data-l="it" lang="it">piano di livello</span><input id="level" type="checkbox" checked></label>
   </div>
   <div class="transport"><label class="counter"><span id="cname">pivots</span><output id="iter">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
 </section>
 <p id="info" class="explain"></p>
 <main class="lp3">
   <figure>
-    <figcaption>The polytope (translucent faces, its edges), the objective \(c\) as an
-    arrow and the level plane through the current point <span class="k dw"></span>;
-    the path of the method <span class="k path3"></span> and the optimum <span class="k opt"></span>.
-    Drag to turn, wheel to zoom.</figcaption>
+    <figcaption><span data-l="en">The polytope (translucent faces, its edges), the objective \(c\) as an
+    arrow and the level plane through the current point</span><span data-l="it" lang="it">Il politopo (facce traslucide, i suoi spigoli), l'obiettivo \(c\) come
+    freccia e il piano di livello per il punto corrente</span> <span class="k dw"></span>;
+    <span data-l="en">the path of the method</span><span data-l="it" lang="it">il cammino del metodo</span> <span class="k path3"></span> <span data-l="en">and the optimum</span><span data-l="it" lang="it">e l'ottimo</span> <span class="k opt"></span>.
+    <span data-l="en">Drag to turn, wheel to zoom.</span><span data-l="it" lang="it">Trascinare per ruotare, rotella per lo zoom.</span></figcaption>
     <div id="stage"></div>
   </figure>
   <figure>
@@ -54,8 +61,9 @@
     <p id="dual" class="explain"></p>
   </figure>
 </main>
-<footer>Scene C of opt-playground, in three variables; the Klee-Minty cube is from
-Klee and Minty (1972), the first instance from Chvátal's Linear Programming (1983).</footer>
+<footer><span data-l="en">Scene C of opt-playground, in three variables; the Klee-Minty cube is from
+Klee and Minty (1972), the first instance from Chvátal's Linear Programming (1983).</span><span data-l="it" lang="it">Scena C di opt-playground, in tre variabili; il cubo di Klee-Minty &egrave; di
+Klee e Minty (1972), la prima istanza dal Linear Programming di Chvátal (1983).</span></footer>
 <script type="module" src="src/lp3d.js"></script>
 </body>
 </html>

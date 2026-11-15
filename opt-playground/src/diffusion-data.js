@@ -6,6 +6,9 @@ import { mulberry, gauss } from './diffusion-model.js';
 export const DATASETS = {
   spirals: 'Two spirals', ring: 'Ring', gaussians: 'Eight gaussians', word: 'The word DDPM', checker: 'Checkerboard',
 };
+export const DATASETS_IT = {
+  spirals: 'Due spirali', ring: 'Anello', gaussians: 'Otto gaussiane', word: 'La parola DDPM', checker: 'Scacchiera',
+};
 
 // the letters as polylines in a box of width W and height H, the origin at the
 // bottom left; an arc is a list of points on an ellipse

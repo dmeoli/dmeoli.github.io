@@ -9,6 +9,7 @@
 // oracle of one component.
 
 import { maxOfMin } from './problems/lagrangian1d.js';
+import { t, onLang } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const dot = (u, v) => u[0] * v[0] + u[1] * v[1];
@@ -39,9 +40,9 @@ function instance(K, seed) {
 }
 
 const instances = {
-  k3: { label: '3 components', K: 3, seed: 7 },
-  k8: { label: '8 components', K: 8, seed: 11 },
-  k20: { label: '20 components', K: 20, seed: 5 },
+  k3: { get label() { return t('3 components', '3 componenti'); }, K: 3, seed: 7 },
+  k8: { get label() { return t('8 components', '8 componenti'); }, K: 8, seed: 11 },
+  k20: { get label() { return t('20 components', '20 componenti'); }, K: 20, seed: 5 },
 };
 
 let P, Lstar, lstar, runs, timer = null;
@@ -75,7 +76,7 @@ function maxOfSum(models) {
 // the best value, one entry per point visited
 const methods = {
   aggregated: {
-    name: 'Kelley, aggregated', color: 'var(--m1)',
+    get name() { return t('Kelley, aggregated', 'Kelley, aggregato'); }, color: 'var(--m1)',
     init: () => ({ l: 0, cuts: [] }),
     step(s) {
       let g = 0, v = 0;
@@ -88,7 +89,7 @@ const methods = {
     },
   },
   disaggregated: {
-    name: 'Kelley, disaggregated', color: 'var(--m2)',
+    get name() { return t('Kelley, disaggregated', 'Kelley, disaggregato'); }, color: 'var(--m2)',
     init: () => ({ l: 0, models: Array.from({ length: P.K }, () => []) }),
     step(s) {
       let v = 0;
@@ -101,7 +102,7 @@ const methods = {
     },
   },
   subgradient: {
-    name: 'Subgradient', color: 'var(--m3)',
+    get name() { return t('Subgradient', 'Subgradiente'); }, color: 'var(--m3)',
     init: () => ({ l: 0, k: 0 }),
     step(s, p) {
       let g = 0, v = 0;
@@ -112,7 +113,7 @@ const methods = {
     },
   },
   incremental: {
-    name: 'Incremental subgradient', color: 'var(--m4)',
+    get name() { return t('Incremental subgradient', 'Subgradiente incrementale'); }, color: 'var(--m4)',
     init: () => ({ l: 0, k: 0 }),
     // one cycle per step: K moves, each after one component; the value shown
     // is the true L at the end of the cycle, which the method does not compute
@@ -151,8 +152,8 @@ function step() {
   if (!any) stop();
   draw();
 }
-function stop() { clearInterval(timer); timer = null; $('play').textContent = 'Play'; }
-function play() { if (timer) return stop(); $('play').textContent = 'Pause'; timer = setInterval(step, 400); }
+function stop() { clearInterval(timer); timer = null; $('play').textContent = t('Play', 'Avvia'); }
+function play() { if (timer) return stop(); $('play').textContent = t('Pause', 'Pausa'); timer = setInterval(step, 400); }
 
 // ------------------------------------------------------------------ drawing
 const NS = 'http://www.w3.org/2000/svg';
@@ -186,30 +187,40 @@ function drawConv() {
   el('line', { x1: X(0), x2: X(cmax), y1: Y(1e-8), y2: Y(1e-8), class: 'axis' }, svg);
   el('line', { x1: X(0), x2: X(0), y1: Y(1), y2: Y(1e-8), class: 'axis' }, svg);
   for (let e = 0; e <= 8; e += 2) el('text', { x: pad - 6, y: Y(10 ** -e) + 4, class: 'lab small', 'text-anchor': 'end' }, svg).textContent = `1e-${e}`;
-  el('text', { x: W - pad, y: H - pad + 18, class: 'lab small', 'text-anchor': 'end' }, svg).textContent = 'calls to the oracle of a component';
+  el('text', { x: W - pad, y: H - pad + 18, class: 'lab small', 'text-anchor': 'end' }, svg).textContent = t('calls to the oracle of a component', "chiamate all'oracolo di una componente");
   runs.forEach((s, i) => {
     if (!s.hist.length) return;
     el('path', { d: 'M' + s.hist.map(h => `${X(h.calls)},${Y(gap(h.best))}`).join('L'), style: `fill: none; stroke: ${s.M.color}; stroke-width: 2` }, svg);
     el('text', { x: pad + 10, y: H - pad - 12 - 16 * (3 - i), class: 'lab small', style: `fill: ${s.M.color}` }, svg).textContent =
-      `${s.M.name}: ${s.calls} calls, gap ${gap(s.best).toExponential(1)}${s.done ? ' (done)' : ''}`;
+      t(`${s.M.name}: ${s.calls} calls, gap ${gap(s.best).toExponential(1)}${s.done ? ' (done)' : ''}`,
+        `${s.M.name}: ${s.calls} chiamate, scarto ${gap(s.best).toExponential(1)}${s.done ? ' (finito)' : ''}`);
   });
 }
 
 function draw() {
   drawDual(); drawConv();
   $('lstar').textContent = Lstar.toFixed(4);
-  $('K').textContent = P.K;
+  document.querySelectorAll('.K').forEach(e => { e.textContent = P.K; });
 }
 
 for (const [k, v] of Object.entries(instances)) $('inst').append(new Option(v.label, k));
+// the language: the title, the names of the instances, the buttons, the drawings
+function texts() {
+  document.title = t('Components playground', 'Laboratorio delle componenti');
+  for (const o of $('inst').options) o.textContent = instances[o.value].label;
+  $('play').textContent = timer ? t('Pause', 'Pausa') : t('Play', 'Avvia');
+  $('step').textContent = t('Step', 'Passo');
+}
+onLang(() => { texts(); draw(); });
+texts();
 $('inst').onchange = reset;
 $('s0').oninput = () => { $('s0v').textContent = (+$('s0').value).toFixed(2); reset(); };
 $('step').onclick = step; $('play').onclick = play; $('reset').onclick = reset;
 document.addEventListener('keydown', e => {
   // not while typing or choosing; on a slider the arrows move the slider
-  const t = e.target;
-  if (t.tagName === 'SELECT' || (t.tagName === 'INPUT' && t.type !== 'range')) return;
-  if (e.key === 'ArrowRight' && t.type !== 'range') step();
+  const tg = e.target;
+  if (tg.tagName === 'SELECT' || (tg.tagName === 'INPUT' && tg.type !== 'range')) return;
+  if (e.key === 'ArrowRight' && tg.type !== 'range') step();
   if (e.key === ' ') { e.preventDefault(); play(); }
 });
 $('s0v').textContent = (+$('s0').value).toFixed(2);

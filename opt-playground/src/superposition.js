@@ -13,6 +13,7 @@
 import * as SM from './superposition-model.js';
 import { THREE, stage3d, axes, label, tok, onTheme } from './stage3d-b.js';
 import { ConvexHull } from 'three/addons/math/ConvexHull.js';
+import { t, onLang } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const S = { n: 5, m: 2, sparsity: 0, decay: 0.9, out: 'relu', seed: 1 };
@@ -69,7 +70,8 @@ function draw() {
     ctx.fillStyle = css('--ink-soft'); ctx.font = '11px IBM Plex Mono, monospace'; ctx.fillText(i + 1, 4, 5 + i * bh + bh / 2 + 3);
   }
   const rep = norms.filter(v => v > 0.5).length;
-  $('rep').textContent = `${rep} of ${n} features represented in ${m} dimensions` + (rep > m ? ' (superposition)' : '');
+  $('rep').textContent = t(`${rep} of ${n} features represented in ${m} dimensions` + (rep > m ? ' (superposition)' : ''),
+    `${rep} feature su ${n} rappresentate in ${m} dimensioni` + (rep > m ? ' (sovrapposizione)' : ''));
   $('steps').textContent = steps;
   $('dens').textContent = density().toPrecision(2);
 }
@@ -163,7 +165,7 @@ function spans3d(P) {
 onTheme(() => { g3 = null; draw(); });
 
 function save() { history.replaceState(null, '', '#' + new URLSearchParams(S)); }
-function stop() { clearInterval(timer); timer = null; $('play').textContent = 'Play'; }
+function stop() { clearInterval(timer); timer = null; $('play').textContent = t('Play', 'Avvia'); }
 
 for (const k of ['n', 'm', 'sparsity', 'decay', 'out']) {
   $(k).value = S[k];
@@ -174,7 +176,7 @@ $('reset').onclick = reset;
 $('step').onclick = () => { trainSteps(20); draw(); };
 $('play').onclick = () => {
   if (timer) return stop();
-  $('play').textContent = 'Pause';
+  $('play').textContent = t('Pause', 'Pausa');
   timer = setInterval(() => { trainSteps(20); draw(); if (steps >= 4000) stop(); }, 30);
 };
 document.addEventListener('keydown', e => {
@@ -184,4 +186,16 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' && t.type !== 'range') $('step').click();
   if (e.key === ' ') { e.preventDefault(); $('play').click(); }
 });
+// the texts of the language: the title, the options of the read-out, the buttons
+function words() {
+  document.title = t('Superposition playground', 'Laboratorio della sovrapposizione');
+  const o = { relu: ['ReLU', 'ReLU'], linear: ['linear', 'lineare'] };
+  for (const op of $('out').options) op.textContent = t(...o[op.value]);
+  $('seed').textContent = t('New weights', 'Nuovi pesi');
+  $('reset').textContent = t('Reset', 'Reset');
+  $('step').textContent = t('Step', 'Passo'); $('step').title = t('20 steps of Adam', '20 passi di Adam');
+  $('play').textContent = timer ? t('Pause', 'Pausa') : t('Play', 'Avvia');
+}
+onLang(() => { words(); draw(); });
+words();
 reset();

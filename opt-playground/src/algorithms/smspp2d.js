@@ -4,6 +4,7 @@
 // works in the terms of SMS++ (f, its subgradients) where the rules are stated.
 
 import { maxModel, proxMax, modelAt, levelProject } from '../problems/lagrangian2d.js';
+import { t } from '../i18n.js';
 
 const dot = (u, v) => u[0] * v[0] + u[1] * v[1];
 const box = (l, m) => [Math.min(m, Math.max(0, l[0])), Math.min(m, Math.max(0, l[1]))];
@@ -25,8 +26,8 @@ function addColumn(s, problem, o) {
   if (!s.cuts.some(k => same(k.v))) s.cuts.push(problem.cut(o.column));
 }
 const startParams = {
-  l1: { label: 'start \\(\\lambda_1\\)', min: 0, max: 3, step: 0.1, value: 1.8 },
-  l2: { label: 'start \\(\\lambda_2\\)', min: 0, max: 3, step: 0.1, value: 1.8 },
+  l1: { get label() { return t('start \\(\\lambda_1\\)', "inizio \\(\\lambda_1\\)"); }, min: 0, max: 3, step: 0.1, value: 1.8 },
+  l2: { get label() { return t('start \\(\\lambda_2\\)', "inizio \\(\\lambda_2\\)"); }, min: 0, max: 3, step: 0.1, value: 1.8 },
 };
 
 // ----------------------------------------------------------------------------
@@ -35,18 +36,21 @@ const startParams = {
 
 const STEP = ['Polyak', 'ColorTV', 'FumeroTV', 'PrimalDual', 'diminishing (not in SMS++)'];
 const DEFL = ['none', 'Volume'];
+// the names shown in the controls; the rules above compare the English ones
+const STEP_IT = ['Polyak', 'ColorTV', 'FumeroTV', 'PrimalDual', 'decrescente (non in SMS++)'];
+const DEFL_IT = ['nessuna', 'Volume'];
 
 export const subgradSolver = {
   name: 'SubGradSolver (SMS++)',
   params: {
     ...startParams,
-    strStepsize: { label: 'strStepsize', options: STEP, value: 1 },
-    strDeflection: { label: 'strDeflection', options: DEFL, value: 1 },
+    strStepsize: { label: 'strStepsize', get options() { return t(STEP, STEP_IT); }, value: 1 },
+    strDeflection: { label: 'strDeflection', get options() { return t(DEFL, DEFL_IT); }, value: 1 },
     beta0: { label: '\\(\\beta_0\\)', min: 0.05, max: 2, step: 0.05, value: 1 },
     tau: { label: 'Volume \\(\\tau\\)', min: 0.1, max: 1, step: 0.05, value: 1 },
     gamma: { label: 'PrimalDual \\(\\gamma\\)', min: 0.2, max: 10, step: 0.2, value: 2 },
   },
-  explain: 'The subgradient method of SMS++ (Frangioni, Gorgone, Gendron 2017): a target-value step \\(\\nu = \\beta\\,(f(c) - f_{\\mathrm{lev}}) / \\|d\\|^2\\) along a deflected direction \\(d\\); Polyak uses a lower bound as target, ColorTV adapts \\(\\beta\\) by the colour of the iteration, FumeroTV moves the target between the lower bound and the record; Volume deflection mixes the new subgradient with the old direction and moves the centre only on serious steps; PrimalDual is dual averaging from the start.',
+  get explain() { return t('The subgradient method of SMS++ (Frangioni, Gorgone, Gendron 2017): a target-value step \\(\\nu = \\beta\\,(f(c) - f_{\\mathrm{lev}}) / \\|d\\|^2\\) along a deflected direction \\(d\\); Polyak uses a lower bound as target, ColorTV adapts \\(\\beta\\) by the colour of the iteration, FumeroTV moves the target between the lower bound and the record; Volume deflection mixes the new subgradient with the old direction and moves the centre only on serious steps; PrimalDual is dual averaging from the start.', "Il metodo del subgradiente di SMS++ (Frangioni, Gorgone, Gendron 2017): un passo a valore bersaglio \\(\\nu = \\beta\\,(f(c) - f_{\\mathrm{lev}}) / \\|d\\|^2\\) lungo una direzione deflessa \\(d\\); Polyak usa come bersaglio una limitazione inferiore, ColorTV adatta \\(\\beta\\) secondo il colore dell'iterazione, FumeroTV sposta il bersaglio fra la limitazione inferiore e il record; la deflessione Volume combina il nuovo subgradiente con la direzione precedente e sposta il centro solo nei passi seri; PrimalDual è il dual averaging fin dall'inizio."); },
   init(problem, p) {
     const s = start(problem, p);
     const o = s.trace[0];
@@ -135,6 +139,7 @@ export const subgradSolver = {
 
 const STBL = ['0 kProximal', '1 kLevel', '2 kDoublyStabilized', '3 kNone (Kelley)', '4 kTrustRegion'];
 const TSTRAT = ['fixed t', 'counts (intMnSSC, intMnNSC)', 'Heuristic1', 'Heuristic2', 'Heuristic3', 'Heuristic5', 'long-term soft', 'long-term hard', 'long-term balancing (default 12)', 'Heuristic4'];
+const TSTRAT_IT = ['t fisso', 'conteggi (intMnSSC, intMnNSC)', 'Heuristic1', 'Heuristic2', 'Heuristic3', 'Heuristic5', 'a lungo termine, morbida', 'a lungo termine, rigida', 'a lungo termine, bilanciata (default 12)', 'Heuristic4'];
 const BSIZE = [Infinity, 2, 5, 10];
 
 export const bundleSolver = {
@@ -144,12 +149,12 @@ export const bundleSolver = {
     intMPStbl: { label: 'intMPStbl', options: STBL, value: 0 },
     dbltInit: { label: 'dbltInit \\(t\\)', min: 0.02, max: 3, step: 0.02, value: 0.3 },
     dblm1: { label: 'dblm1', min: 0.01, max: 0.9, step: 0.01, value: 0.1 },
-    tStrategy: { label: 't-strategy', options: TSTRAT, value: 0 },
-    endgame: { label: 'endgame (+16)', options: ['off', 'on'], value: 0 },
-    intBPar2: { label: 'intBPar2 (max size)', options: ['unbounded', '2 (poorman)', '5', '10'], value: 0 },
+    tStrategy: { get label() { return t('t-strategy', "strategia di t"); }, get options() { return t(TSTRAT, TSTRAT_IT); }, value: 0 },
+    endgame: { get label() { return t('endgame (+16)', "fase finale (+16)"); }, get options() { return t(['off', 'on'], ['no', 'sì']); }, value: 0 },
+    intBPar2: { get label() { return t('intBPar2 (max size)', "intBPar2 (dim. massima)"); }, get options() { return t(['unbounded', '2 (poorman)', '5', '10'], ['illimitata', '2 (poorman)', '5', '10']); }, value: 0 },
     dblLStabM: { label: 'dblLStabM', min: 0.05, max: 0.95, step: 0.05, value: 0.5 },
   },
-  explain: 'The bundle method of SMS++ (Frangioni 2002): intMPStbl chooses the stabilization (proximal term, level constraint, both, none, i.e., Kelley, or a trust region \\(\\|\\lambda - c\\|_\\infty \\le t\\)); a serious step needs an increase of at least dblm1 times the predicted one; the t-strategy changes \\(t\\) on serious and null steps; intBPar2 bounds the bundle, aggregating the old items into one.',
+  get explain() { return t('The bundle method of SMS++ (Frangioni 2002): intMPStbl chooses the stabilization (proximal term, level constraint, both, none, i.e., Kelley, or a trust region \\(\\|\\lambda - c\\|_\\infty \\le t\\)); a serious step needs an increase of at least dblm1 times the predicted one; the t-strategy changes \\(t\\) on serious and null steps; intBPar2 bounds the bundle, aggregating the old items into one.', "Il metodo bundle di SMS++ (Frangioni 2002): intMPStbl sceglie la stabilizzazione (termine prossimale, vincolo di livello, entrambi, nessuna, cioè Kelley, o una regione di fiducia \\(\\|\\lambda - c\\|_\\infty \\le t\\)); un passo serio richiede un aumento pari ad almeno dblm1 volte quello previsto; la strategia di t cambia \\(t\\) nei passi seri e nei passi nulli; intBPar2 limita la dimensione del bundle, aggregando i vecchi elementi in uno solo."); },
   init(problem, p) {
     const s = start(problem, p);
     Object.assign(s, { t: p.dbltInit, ss: 0, ns: 0 });

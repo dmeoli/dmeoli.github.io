@@ -21,8 +21,8 @@
 <body>
 <nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html" aria-current="page">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
-  <h1>Manifolds playground</h1>
-  <p class="lede">What a hidden layer does to the plane: a network with layers of width 2
+  <h1><span data-l="en">Manifolds playground</span><span data-l="it" lang="it">Laboratorio delle varietà</span></h1>
+  <p class="lede" data-l="en">What a hidden layer does to the plane: a network with layers of width 2
   or 3 is trained on the left, and on the right the same points and the same grid are carried
   into a hidden layer by the three steps of a layer, the linear map \(W\), the translation \(b\)
   and the activation, played as a continuous deformation. With \(\tanh\) and \(\det W > 0\) the
@@ -30,29 +30,42 @@
   separated with two units per layer, however long one trains. With three units the plane is
   laid in space at \(z = 0\), and the layers can lift the disc out of the ring, after which a
   plane separates them: choose width 3 and the disc inside the ring.</p>
+  <p class="lede" data-l="it" lang="it">Che cosa fa al piano uno strato nascosto: a sinistra si addestra una rete con strati di larghezza 2
+  o 3, e a destra gli stessi punti e la stessa griglia sono portati
+  in uno strato nascosto dai tre passi di uno strato, la mappa lineare \(W\), la traslazione \(b\)
+  e l'attivazione, mostrati come una deformazione continua. Con \(\tanh\) e \(\det W > 0\) il
+  piano si piega ma non si strappa mai, ed è per questo che il disco dentro l'anello non si può
+  separare con due unità per strato, per quanto a lungo si addestri. Con tre unità il piano è
+  posto nello spazio a \(z = 0\), e gli strati possono sollevare il disco fuori dall'anello, dopo di che
+  un piano li separa: si scelga la larghezza 3 e il disco dentro l'anello.</p>
 </header>
 <section class="controls">
   <div class="settings">
-    <label><span>data</span><select id="data"><option value="curves">Two curves</option><option value="spiral">Two spirals</option><option value="xor">XOR</option><option value="ring">Disc inside a ring</option></select></label>
-    <label><span>width</span><select id="width"><option>2</option><option>3</option></select></label>
-    <label><span>hidden layers</span><select id="layers"><option>1</option><option>2</option><option>3</option></select></label>
-    <div class="inline"><label><span>activation</span><select id="act"><option value="tanh">tanh</option><option value="relu">ReLU (folds the plane)</option></select></label><button id="seed" type="button">New weights</button></div>
-    <div class="inline"><label><span>deformation \(t\) <output id="Tv"></output></span><input id="T" type="range" min="0" max="6" step="0.01" value="0"></label><button id="morph" type="button">Animate</button></div>
+    <label><span><span data-l="en">data</span><span data-l="it" lang="it">dati</span></span><select id="data"><option value="curves">Two curves</option><option value="spiral">Two spirals</option><option value="xor">XOR</option><option value="ring">Disc inside a ring</option></select></label>
+    <label><span><span data-l="en">width</span><span data-l="it" lang="it">larghezza</span></span><select id="width"><option>2</option><option>3</option></select></label>
+    <label><span><span data-l="en">hidden layers</span><span data-l="it" lang="it">strati nascosti</span></span><select id="layers"><option>1</option><option>2</option><option>3</option></select></label>
+    <div class="inline"><label><span><span data-l="en">activation</span><span data-l="it" lang="it">attivazione</span></span><select id="act"><option value="tanh">tanh</option><option value="relu">ReLU (folds the plane)</option></select></label><button id="seed" type="button">New weights</button></div>
+    <div class="inline"><label><span><span data-l="en">deformation</span><span data-l="it" lang="it">deformazione</span> \(t\) <output id="Tv"></output></span><input id="T" type="range" min="0" max="6" step="0.01" value="0"></label><button id="morph" type="button">Animate</button></div>
   </div>
-  <div class="transport"><label class="counter"><span>epoch</span><output id="epoch">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+  <div class="transport"><label class="counter"><span><span data-l="en">epoch</span><span data-l="it" lang="it">epoca</span></span><output id="epoch">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
 </section>
 <p class="explain"><span id="phase"></span>; <span id="detW"></span><span id="det"></span><span id="detNeg"></span></p>
 <main>
-  <figure><figcaption>The input plane: the data, the decision of the network (violet
-  positive, gold negative) and the grid.</figcaption><canvas id="input" width="460" height="460"></canvas>
-  <dl class="stats"><div><dt>accuracy</dt><dd id="acc"></dd></div></dl></figure>
-  <figure><figcaption>The same points and grid inside the network: \(t\) from 0 to 3 is the
+  <figure><figcaption><span data-l="en">The input plane: the data, the decision of the network (violet
+  positive, gold negative) and the grid.</span><span data-l="it" lang="it">Il piano degli ingressi: i dati, la decisione della rete (viola
+  positiva, oro negativa) e la griglia.</span></figcaption><canvas id="input" width="460" height="460"></canvas>
+  <dl class="stats"><div><dt><span data-l="en">accuracy</span><span data-l="it" lang="it">accuratezza</span></dt><dd id="acc"></dd></div></dl></figure>
+  <figure><figcaption><span data-l="en">The same points and grid inside the network: \(t\) from 0 to 3 is the
   first layer (\(W\), then \(b\), then the activation), from 3 to 6 the second, and so on;
-  with width 3 the space of the layer, the sheet tinted by the decision.</figcaption><canvas id="hidden" width="460" height="460"></canvas><div id="hidden3d" hidden></div></figure>
+  with width 3 the space of the layer, the sheet tinted by the decision.</span><span data-l="it" lang="it">Gli stessi punti e la stessa griglia dentro la rete: \(t\) da 0 a 3 è il
+  primo strato (\(W\), poi \(b\), poi l'attivazione), da 3 a 6 il secondo, e così via;
+  con larghezza 3 lo spazio dello strato, con il foglio colorato secondo la decisione.</span></figcaption><canvas id="hidden" width="460" height="460"></canvas><div id="hidden3d" hidden></div></figure>
 </main>
-<footer>Scene G of opt-playground, after C. Olah,
+<footer><span data-l="en">Scene G of opt-playground, after C. Olah,
 <a href="https://colah.github.io/posts/2014-03-NN-Manifolds-Topology/">Neural Networks, Manifolds, and Topology</a>
-(2014): the idea is his, rebuilt here from the equations.</footer>
+(2014): the idea is his, rebuilt here from the equations.</span><span data-l="it" lang="it">Scena G di opt-playground, da C. Olah,
+<a href="https://colah.github.io/posts/2014-03-NN-Manifolds-Topology/">Neural Networks, Manifolds, and Topology</a>
+(2014): l'idea è sua, qui ricostruita dalle equazioni.</span></footer>
 <script type="module" src="src/manifolds.js"></script>
 </body>
 </html>

@@ -11,6 +11,7 @@ import { primal, dual, curve } from './views.js';
 import { primal2, dualMap, curve2 } from './views2d.js';
 import { dual3d, dispose3d } from './views3d.js';
 import { texClear, texSet } from './tex.js';
+import { t, onLang } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 
@@ -27,9 +28,15 @@ function svgIn(box, cls, viewBox) {
 
 const scenes = {
   a2: {
-    label: 'Two multipliers', problems: p2, algorithms: a2, preset: 'ring',
-    dualCaption: 'Dual: the space of the two multipliers, split into the regions where each column found so far is the lowest in the model (a polyhedral complex, colored per column, darker where the model is lower); the star is the maximum of \\(L\\), the line the path of the iterates (hollow: null steps), the circle the stability centre.',
-    caption3d: 'Dual in 3D (drag to turn, wheel to zoom): the Lagrangian function is a concave roof of flat faces, one per column (the faint wire); the model is the roof of the cuts found so far, colored per column, which comes down onto the true one as cuts are added. The iterates sit on the true roof, with a line down to the plane of the multipliers; the gold octahedron is the maximum, the ring the stability centre.',
+    get label() { return t('Two multipliers', 'Due moltiplicatori'); }, problems: p2, algorithms: a2, preset: 'ring',
+    get dualCaption() {
+      return t('Dual: the space of the two multipliers, split into the regions where each column found so far is the lowest in the model (a polyhedral complex, colored per column, darker where the model is lower); the star is the maximum of \\(L\\), the line the path of the iterates (hollow: null steps), the circle the stability centre.',
+        "Duale: lo spazio dei due moltiplicatori, diviso nelle regioni in cui ciascuna colonna trovata finora è la più bassa nel modello (un complesso poliedrale, colorato per colonna, più scuro dove il modello è più basso); la stella è il massimo di \\(L\\), la linea il cammino degli iterati (vuoti: passi nulli), il cerchio il centro di stabilità.");
+    },
+    get caption3d() {
+      return t('Dual in 3D (drag to turn, wheel to zoom): the Lagrangian function is a concave roof of flat faces, one per column (the faint wire); the model is the roof of the cuts found so far, colored per column, which comes down onto the true one as cuts are added. The iterates sit on the true roof, with a line down to the plane of the multipliers; the gold octahedron is the maximum, the ring the stability centre.',
+        "Duale in 3D (trascinare per ruotare, rotella per lo zoom): la funzione lagrangiana è un tetto concavo di facce piane, una per colonna (il reticolo tenue); il modello è il tetto dei tagli trovati finora, colorato per colonna, che scende sul tetto vero man mano che si aggiungono tagli. Gli iterati stanno sul tetto vero, con una linea che scende al piano dei moltiplicatori; l'ottaedro dorato è il massimo, l'anello il centro di stabilità.");
+    },
     drawOne(run, k, ctx) {
       primal2($('primal' + k), ctx.problem, run.state, ctx.hover);
       const box = $('dualbox' + k);
@@ -39,8 +46,11 @@ const scenes = {
     curve: (problem, runs) => curve2($('curve'), problem, runs),
   },
   a1: {
-    label: 'One multiplier', problems: p1, algorithms: a1, preset: 'disc',
-    dualCaption: 'Dual: the Lagrangian function (dashed), the cuts, the model (their minimum), the iterates (hollow: null steps) and, for the bundle, the stability centre and the proximal term.',
+    get label() { return t('One multiplier', 'Un moltiplicatore'); }, problems: p1, algorithms: a1, preset: 'disc',
+    get dualCaption() {
+      return t('Dual: the Lagrangian function (dashed), the cuts, the model (their minimum), the iterates (hollow: null steps) and, for the bundle, the stability centre and the proximal term.',
+        'Duale: la funzione lagrangiana (tratteggiata), i tagli, il modello (il loro minimo), gli iterati (vuoti: passi nulli) e, per il bundle, il centro di stabilità e il termine prossimale.');
+    },
     drawOne(run, k, ctx) {
       primal($('primal' + k), ctx.problem, run.state, ctx.hover);
       const box = $('dualbox' + k);
@@ -110,7 +120,7 @@ function buildControls() {
   const algos = Object.entries(scene.algorithms).map(([k, a]) => [k, a.name]);
   fill($('algo'), algos, runs[0].algo);
   fill($('algoB'), algos, runs[1].algo);
-  fill($('view'), [['map', 'map'], ['3d', '3D']], view);
+  fill($('view'), [['map', t('map', 'mappa')], ['3d', '3D']], view);
   $('view').parentElement.hidden = sceneName !== 'a2';
   $('race').parentElement.hidden = sceneName !== 'a2';
   $('race').checked = race;
@@ -129,7 +139,7 @@ function buildControls() {
 
 function save() {
   const s = { s: sceneName, p: presetName, a: runs[0].algo, v: view, ...runs[0].params };
-  if (presetName === 'trace' && traceName) s.t = traceName;
+  if (presetName === 'trace' && traceName) s.tr = traceName;
   if (race) {
     s.r = 1; s.b = runs[1].algo;
     for (const [k, v] of Object.entries(runs[1].params)) s['b' + k] = v;
@@ -148,7 +158,7 @@ function draw() {
   $('target').textContent = problem.optimum.value.toFixed(4);
   $('zlp').textContent = problem.lp ? problem.lp.value.toFixed(4) : '–';
   $('zip').textContent = problem.ip ? problem.ip.value.toFixed(4) : '–';
-  $('status').textContent = st.done ? 'converged' : (last.serious ? 'serious step' : 'null step');
+  $('status').textContent = st.done ? t('converged', 'convergenza raggiunta') : (last.serious ? t('serious step', 'passo serio') : t('null step', 'passo nullo'));
 }
 
 function reset() {
@@ -166,10 +176,10 @@ function step() {
   for (const r of active) if (!r.state.done) r.state = scene.algorithms[r.algo].step(problem, r.state, r.params);
   draw();
 }
-function stop() { clearInterval(timer); timer = null; $('play').textContent = 'Play'; }
+function stop() { clearInterval(timer); timer = null; $('play').textContent = t('Play', 'Avvia'); }
 function play() {
   if (timer) return stop();
-  $('play').textContent = 'Pause';
+  $('play').textContent = t('Pause', 'Pausa');
   timer = setInterval(step, 700);
 }
 
@@ -189,19 +199,19 @@ $('step').addEventListener('click', step);
 // export the current run as a trace, import a trace to replay it
 $('exportTrace').addEventListener('click', () => {
   const pr = scene.problems.presets[presetName];
-  const t = { kind: sceneName === 'a2' ? 'dual2d' : 'dual1d', source: 'opt-playground ' + scene.algorithms[runs[0].algo].name,
+  const tc = { kind: sceneName === 'a2' ? 'dual2d' : 'dual1d', source: 'opt-playground ' + scene.algorithms[runs[0].algo].name,
               config: runs[0].params, problem: { points: pr.points || null, polygon: pr.polygon, c: pr.c, A: pr.A || [pr.a], b: Array.isArray(pr.b) ? pr.b : [pr.b], lmax: pr.lmax },
               iterations: runs[0].state.trace.map(o => ({ lam: o.lam, value: o.value, subgradient: o.subgradient, column: o.column, serious: o.serious, center: o.center })) };
-  const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([JSON.stringify(t)], { type: 'application/json' })), download: `trace-${presetName}-${runs[0].algo}.json` });
+  const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([JSON.stringify(tc)], { type: 'application/json' })), download: `trace-${presetName}-${runs[0].algo}.json` });
   a.click();
 });
 // a trace replayed in place of an algorithm; the traces of real runs shipped in
 // traces/ are named in the address (#t=smspp-box-bundle), so that a link opens them
 let traceName = '';
-function loadTrace(t, name = '') {
-  if (t.kind !== 'dual2d') return;
-  window.dmeoliTrace = t; traceName = name;
-  p2.presets.trace = { label: 'From the trace: ' + (t.source || ''), ...t.problem, points: t.problem.points || undefined };
+function loadTrace(tc, name = '') {
+  if (tc.kind !== 'dual2d') return;
+  window.dmeoliTrace = tc; traceName = name;
+  p2.presets.trace = { get label() { return t('From the trace: ', 'Dalla traccia: ') + (tc.source || ''); }, ...tc.problem, points: tc.problem.points || undefined };
   sceneName = 'a2'; scene = scenes.a2; presetName = 'trace'; runs[0].algo = 'replay'; race = false;
   readParams(runs[0], false); buildControls(); reset();
 }
@@ -214,14 +224,29 @@ $('play').addEventListener('click', play);
 $('reset').addEventListener('click', reset);
 document.addEventListener('keydown', e => {
   // not while typing or choosing; on a slider the arrows move the slider
-  const t = e.target;
-  if (t.tagName === 'SELECT' || (t.tagName === 'INPUT' && t.type !== 'range')) return;
-  if (e.key === 'ArrowRight' && t.type !== 'range') step();
+  const tg = e.target;
+  if (tg.tagName === 'SELECT' || (tg.tagName === 'INPUT' && tg.type !== 'range')) return;
+  if (e.key === 'ArrowRight' && tg.type !== 'range') step();
   if (e.key === ' ') { e.preventDefault(); play(); }
 });
 
+// the texts that are not built with the controls: the title, the transport, the traces
+function texts() {
+  document.title = t('Decomposition playground', 'Laboratorio di decomposizione');
+  $('play').textContent = timer ? t('Pause', 'Pausa') : t('Play', 'Avvia');
+  $('step').textContent = t('Step', 'Passo');
+  $('exportTrace').textContent = t('Export trace', 'Esporta la traccia');
+  const real = t(' (real run)', ' (esecuzione reale)');
+  for (const o of $('traceSel').options)
+    o.textContent = !o.value ? t('none', 'nessuna') : { 'smspp-box-bundle': 'SMS++ BundleSolver', 'smspp-box-subgrad-volume': 'SMS++ SubGradSolver, Volume', 'smspp-box-subgrad': 'SMS++ SubGradSolver' }[o.value] + real;
+}
+onLang(() => { texts(); buildControls(); draw(); });
+
+texts();
 readParams(runs[0], true);
 readParams(runs[1], true, 'b');
 buildControls();
 reset();
-if (q.get('t')) { $('traceSel').value = q.get('t'); fetchTrace(q.get('t')); }
+// the trace to replay is 'tr' ('t' is the prox parameter; an old link with a trace name in 't' still works)
+const trq = q.get('tr') || (q.get('t') && isNaN(+q.get('t')) ? q.get('t') : null);
+if (trq) { $('traceSel').value = trq; fetchTrace(trq); }

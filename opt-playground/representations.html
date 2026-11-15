@@ -47,61 +47,82 @@
 <body>
 <nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html" aria-current="page">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
-  <h1>Representations playground</h1>
-  <p class="lede">A perceptron with two hidden layers is trained in the page to classify
+  <h1><span data-l="en">Representations playground</span><span data-l="it" lang="it">Laboratorio delle rappresentazioni</span></h1>
+  <p class="lede" data-l="en">A perceptron with two hidden layers is trained in the page to classify
   digits, and 500 digits that it never sees in training are followed through its layers:
   each layer maps them to a point cloud in its own space, which is drawn here in two
   dimensions with PCA, with t-SNE or with a linear probe. In the input the classes overlap
   (two images of a 3 in different fonts may share fewer pixels than a 3 and an 8), and
   the training pulls them apart layer after layer, until in the last hidden layer they
   lie in regions that the linear map to the logits can separate.</p>
+  <p class="lede" data-l="it" lang="it">Un percettrone con due strati nascosti è addestrato nella pagina
+  a classificare cifre, e 500 cifre che non vede mai durante l'addestramento sono seguite attraverso
+  i suoi strati: ogni strato le porta in una nuvola di punti nel proprio spazio, disegnata qui in due
+  dimensioni con la PCA, con t-SNE o con una sonda lineare. Nell'ingresso le classi si sovrappongono
+  (due immagini di un 3 in caratteri diversi possono avere in comune meno pixel di un 3 e di un 8), e
+  l'addestramento le separa strato dopo strato, finché nell'ultimo strato nascosto stanno in regioni
+  che la mappa lineare verso i logit riesce a separare.</p>
 </header>
 <section class="controls">
   <div class="settings">
-    <label><span>map</span><select id="view"><option value="tsne">t-SNE</option><option value="pca">PCA</option><option value="probe">linear probe</option></select></label>
-    <label><span>perplexity</span><select id="perp"><option>10</option><option>30</option><option>50</option></select></label>
-    <label><span>hidden layers</span><select id="hid"><option>32-16</option><option>64-32</option><option>128-64</option></select></label>
-    <label><span>step size of Adam</span><select id="lr"><option>0.001</option><option>0.003</option><option>0.01</option></select></label>
-    <label><span>weights seed</span><select id="seed"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
-    <label><span>points</span><select id="marks"><option value="dots">dots</option><option value="digits">numerals</option></select></label>
+    <label><span><span data-l="en">map</span><span data-l="it" lang="it">mappa</span></span><select id="view"><option value="tsne">t-SNE</option><option value="pca">PCA</option><option value="probe">linear probe</option></select></label>
+    <label><span><span data-l="en">perplexity</span><span data-l="it" lang="it">perplessità</span></span><select id="perp"><option>10</option><option>30</option><option>50</option></select></label>
+    <label><span><span data-l="en">hidden layers</span><span data-l="it" lang="it">strati nascosti</span></span><select id="hid"><option>32-16</option><option>64-32</option><option>128-64</option></select></label>
+    <label><span><span data-l="en">step size of Adam</span><span data-l="it" lang="it">passo di Adam</span></span><select id="lr"><option>0.001</option><option>0.003</option><option>0.01</option></select></label>
+    <label><span><span data-l="en">weights seed</span><span data-l="it" lang="it">seme dei pesi</span></span><select id="seed"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+    <label><span><span data-l="en">points</span><span data-l="it" lang="it">punti</span></span><select id="marks"><option value="dots">dots</option><option value="digits">numerals</option></select></label>
   </div>
-  <div class="transport"><label class="counter"><span>epoch</span><output id="count"></output></label><button id="reset" type="button">Reset</button><button id="step" type="button" disabled>Step</button><button id="train" type="button" disabled>Play</button></div>
+  <div class="transport"><label class="counter"><span><span data-l="en">epoch</span><span data-l="it" lang="it">epoca</span></span><output id="count"></output></label><button id="reset" type="button">Reset</button><button id="step" type="button" disabled>Step</button><button id="train" type="button" disabled>Play</button></div>
 </section>
 <p class="explain" id="explain"></p>
 <main class="repr">
-  <figure class="wideall"><figcaption>The same 500 held-out digits in the four spaces of
+  <figure class="wideall"><figcaption><span data-l="en">The same 500 held-out digits in the four spaces of
   the network, from the 400 pixels of the input to the 10 logits, each map computed on
   that layer alone; beside its name, the leave-one-out accuracy of the vote of the 5
   nearest neighbours in that space. Hover a point: it and its 8 nearest neighbours in
   the space of that layer are ringed in every map, so that one sees which neighbours a
-  layer brings together and where the other layers put them.</figcaption>
+  layer brings together and where the other layers put them.</span><span data-l="it" lang="it">Le stesse
+  500 cifre tenute da parte nei quattro spazi della rete, dai 400 pixel dell'ingresso ai 10 logit,
+  ogni mappa calcolata sul solo strato a cui si riferisce; accanto al nome, l'accuratezza
+  leave-one-out del voto dei 5 vicini più prossimi in quello spazio. Passando su un punto, esso e i
+  suoi 8 vicini più prossimi nello spazio di quello strato sono cerchiati in ogni mappa, così che si
+  vede quali vicini uno strato avvicina e dove gli altri strati li collocano.</span></figcaption>
   <div class="mapgrid" id="maps"></div>
   <ul class="classes" id="classes"></ul></figure>
-  <figure><figcaption>Draw a digit (or take a held-out one): the cross marks where it
+  <figure><figcaption><span data-l="en">Draw a digit (or take a held-out one): the cross marks where it
   lands in every map. In PCA and in the probe the place is exact; t-SNE has no map for
   new points, so the cross is put at the mean of the positions of the 500, weighted by the
-  Gaussian affinities \(p_{j|\mathrm{new}}\) of the new point in that layer.</figcaption>
+  Gaussian affinities \(p_{j|\mathrm{new}}\) of the new point in that layer.</span><span data-l="it" lang="it">Si
+  disegni una cifra (o se ne prenda una tenuta da parte): la croce segna dove cade in ogni mappa.
+  Nella PCA e nella sonda la posizione è esatta; t-SNE non ha una mappa per punti nuovi, per cui la
+  croce è posta nella media delle posizioni dei 500, pesata con le affinità gaussiane
+  \(p_{j|\mathrm{new}}\) del nuovo punto in quello strato.</span></figcaption>
   <div class="padrow"><div><canvas id="pad" width="400" height="400"></canvas>
   <div class="row"><button id="clear" type="button">Clear</button><button id="sample" type="button">Held-out digit</button></div></div>
   <p class="note" id="padnote"></p></div></figure>
-  <figure><figcaption>The hovered digit and its 8 nearest neighbours in the space of the
+  <figure><figcaption><span data-l="en">The hovered digit and its 8 nearest neighbours in the space of the
   layer it was hovered in, nearest first, and below how many of the 8 nearest share its
-  class in each layer.</figcaption>
+  class in each layer.</span><span data-l="it" lang="it">La cifra indicata e i suoi 8 vicini più prossimi
+  nello spazio dello strato in cui è stata indicata, dal più vicino, e sotto quanti degli 8 più
+  vicini ne condividono la classe in ogni strato.</span></figcaption>
   <canvas id="nb" width="520" height="220"></canvas>
   <p class="note" id="nbnote"></p></figure>
-  <figure><figcaption>Separation per layer: the accuracy of the 5-nearest-neighbour vote
+  <figure><figcaption><span data-l="en">Separation per layer: the accuracy of the 5-nearest-neighbour vote
   on the 500 points (violet), against its value for the untrained network (gold tick);
-  the dashed line is the accuracy of the network itself on the same digits.</figcaption>
+  the dashed line is the accuracy of the network itself on the same digits.</span><span data-l="it" lang="it">La
+  separazione per strato: l'accuratezza del voto dei 5 vicini più prossimi sui 500 punti (viola),
+  a confronto con il suo valore per la rete non addestrata (tacca oro); la linea tratteggiata è
+  l'accuratezza della rete stessa sulle stesse cifre.</span></figcaption>
   <canvas id="bars" width="520" height="230"></canvas></figure>
-  <figure class="prose"><figcaption>What the maps keep, and what they do not.</figcaption>
-  <p>t-SNE turns the distances of a layer into affinities
+  <figure class="prose"><figcaption><span data-l="en">What the maps keep, and what they do not.</span><span data-l="it" lang="it">Che cosa le mappe conservano, e che cosa no.</span></figcaption>
+  <p data-l="en">t-SNE turns the distances of a layer into affinities
   \(p_{j|i} \propto \exp(-\|x_i - x_j\|^2 / 2\sigma_i^2)\), with \(\sigma_i\) set for every
   point so that it has about as many effective neighbours as the perplexity, and places
   points \(y_i\) in the plane to minimize \(\mathrm{KL}(P\,\|\,Q)\), where
   \(p_{ij} = (p_{j|i} + p_{i|j})/2n\) and \(q_{ij} \propto (1 + \|y_i - y_j\|^2)^{-1}\).
   The loss is large when near neighbours are put far apart and small for the converse, so
   that what the map preserves is who is next to whom: the clusters and their members.</p>
-  <p>It does not preserve the size of a cluster (\(\sigma_i\) adapts to the local
+  <p data-l="en">It does not preserve the size of a cluster (\(\sigma_i\) adapts to the local
   density), nor the distance between two clusters (the heavy tail of \(q\) pushes
   moderately distant groups far apart), nor their relative position, which changes with
   the seed and the perplexity; two clusters drawn far apart are therefore not more
@@ -114,14 +135,38 @@
   does not see either (500 points in 400 dimensions are separated by almost any plane
   fitted on them), which makes it a measure of linear separability in two dimensions
   rather than a picture of the geometry.</p>
+  <p data-l="it" lang="it">t-SNE trasforma le distanze di uno strato in affinità
+  \(p_{j|i} \propto \exp(-\|x_i - x_j\|^2 / 2\sigma_i^2)\), con \(\sigma_i\) fissato per ogni
+  punto in modo che abbia circa tanti vicini effettivi quanti ne indica la perplessità, e colloca
+  i punti \(y_i\) nel piano in modo da minimizzare \(\mathrm{KL}(P\,\|\,Q)\), dove
+  \(p_{ij} = (p_{j|i} + p_{i|j})/2n\) e \(q_{ij} \propto (1 + \|y_i - y_j\|^2)^{-1}\).
+  La loss è grande quando vicini prossimi sono posti lontani e piccola nel caso opposto, così che
+  ciò che la mappa conserva è chi sta accanto a chi: i cluster e i loro membri.</p>
+  <p data-l="it" lang="it">Non conserva la dimensione di un cluster (\(\sigma_i\) si adatta alla densità
+  locale), né la distanza fra due cluster (la coda pesante di \(q\) allontana molto gruppi
+  moderatamente distanti), né la loro posizione relativa, che cambia con il seme e con la
+  perplessità; due cluster disegnati lontani non sono quindi più diversi di due disegnati vicini.
+  Per questo l'accuratezza sopra ogni mappa è misurata nello strato stesso e non nel disegno. La
+  PCA, al contrario, è una proiezione lineare sulle due direzioni di varianza massima: le sue
+  distanze sono fedeli lungo di esse e contratte lungo tutte le altre, così che classi che si
+  sovrappongono nella PCA possono benissimo essere separate in una direzione che essa non mostra.
+  La sonda disegna il piano \(z = A x\) che un classificatore softmax su \(z\) trova più utile,
+  stimato su altre 1000 cifre che neanche la rete vede (500 punti in 400 dimensioni sono separati
+  da quasi ogni piano stimato su di essi), il che ne fa una misura di separabilità lineare in due
+  dimensioni più che un'immagine della geometria.</p>
   </figure>
 </main>
-<footer>Scene M of opt-playground, after C. Olah,
+<footer><span data-l="en">Scene M of opt-playground, after C. Olah,
 <a href="https://colah.github.io/posts/2014-10-Visualizing-MNIST/">Visualizing MNIST: An Exploration of Dimensionality Reduction</a>
 (2014) and <a href="https://colah.github.io/posts/2015-01-Visualizing-Representations/">Visualizing Representations: Deep Learning and Human Beings</a>
 (2015), and L. van der Maaten and G. Hinton,
 <a href="https://www.jmlr.org/papers/v9/vandermaaten08a.html">Visualizing Data using t-SNE</a>
-(JMLR, 2008): the ideas are theirs, rebuilt here from the equations.</footer>
+(JMLR, 2008): the ideas are theirs, rebuilt here from the equations.</span><span data-l="it" lang="it">Scena M di opt-playground, da C. Olah,
+<a href="https://colah.github.io/posts/2014-10-Visualizing-MNIST/">Visualizing MNIST: An Exploration of Dimensionality Reduction</a>
+(2014) e <a href="https://colah.github.io/posts/2015-01-Visualizing-Representations/">Visualizing Representations: Deep Learning and Human Beings</a>
+(2015), e L. van der Maaten e G. Hinton,
+<a href="https://www.jmlr.org/papers/v9/vandermaaten08a.html">Visualizing Data using t-SNE</a>
+(JMLR, 2008): le idee sono loro, ricostruite qui dalle equazioni.</span></footer>
 <script type="module" src="src/repr.js"></script>
 </body>
 </html>

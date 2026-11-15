@@ -6,10 +6,11 @@
 import { rng } from './nn.js';
 import * as THREE from 'three';
 import { stage3d, rod, ball, clear, label } from './stage3d.js';
+import { t as tr, onLang } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const S = { kernel: 'linear', C: 1, gamma: 0.5, data: 'blobs', seed: 3 };
-let pts = [], alpha = [], b = 0, iter = 0, last = null, timer = null;
+let pts = [], alpha = [], b = 0, iter = 0, last = null, timer = null, kkt = false;
 
 const kernels = {
   linear: (u, v) => u[0] * v[0] + u[1] * v[1],
@@ -102,8 +103,8 @@ function drawDual() {
                  fill: hot ? '#c0281e' : p.y > 0 ? '#7338a8' : '#b59a45', opacity: a > 1e-6 ? 0.9 : 0.35 });
   });
   // the legend on two lines, so that it fits in the frame
-  el('text', { x: 32, y: H - 14, class: 'lab' }).textContent = 'α_i of each point (violet y = +1, gold y = -1;';
-  el('text', { x: 32, y: H - 1, class: 'lab' }).textContent = 'red: the pair of the last step)';
+  el('text', { x: 32, y: H - 14, class: 'lab' }).textContent = tr('α_i of each point (violet y = +1, gold y = -1;', 'α_i di ogni punto (viola y = +1, oro y = -1;');
+  el('text', { x: 32, y: H - 1, class: 'lab' }).textContent = tr('red: the pair of the last step)', 'rosso: la coppia dell\'ultimo passo)');
 }
 
 // the lift: the height of x is <w, phi(x)> / |w| = (f(x) - b) / |w|, its
@@ -170,13 +171,14 @@ function drawLift() {
     liftGroup.add(ball([...u, FL], 0.015, new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: 0.6 })));
   });
   if (nw > 1e-9) {
-    const t = label(`plane: -b/‖w‖ = ${(-b / nw).toFixed(2)}`, col.soft, 0.08);
+    const t = label(`${tr('plane', 'piano')}: -b/‖w‖ = ${(-b / nw).toFixed(2)}`, col.soft, 0.08);
     t.position.set(-1, 1.3, 0); liftGroup.add(t);
   }
   lift.setAxes({ origin: [-1, -1, FL], ends: [[1.25, -1, FL], [-1, 1.25, FL], [-1, -1, 1.35]], names: ['x1', 'x2', '⟨w,φ(x)⟩/‖w‖'], size: 0.09 });
   $('liftinfo').textContent = nw > 1e-9
-    ? `‖w‖ = ${nw.toFixed(3)}: the margins are ${(1 / nw).toFixed(3)} from the plane, ${(2 / nw).toFixed(3)} apart, in the space of the kernel.`
-    : 'All the multipliers are zero, so w = 0: the first SMO step starts the lift.';
+    ? tr(`‖w‖ = ${nw.toFixed(3)}: the margins are ${(1 / nw).toFixed(3)} from the plane, ${(2 / nw).toFixed(3)} apart, in the space of the kernel.`,
+      `‖w‖ = ${nw.toFixed(3)}: i margini distano ${(1 / nw).toFixed(3)} dal piano, ${(2 / nw).toFixed(3)} fra loro, nello spazio del kernel.`)
+    : tr('All the multipliers are zero, so w = 0: the first SMO step starts the lift.', 'Tutti i moltiplicatori sono nulli, quindi w = 0: il primo passo di SMO avvia il sollevamento.');
 }
 
 function draw() {
@@ -185,11 +187,23 @@ function draw() {
   $('iter').textContent = iter; $('dval').textContent = dualValue().toFixed(4);
   $('sv').textContent = sv; $('svC').textContent = bound;
   $('eq').textContent = pts.reduce((s, p, i) => s + alpha[i] * p.y, 0).toExponential(1);
+  $('status').textContent = kkt ? tr('KKT satisfied', 'KKT soddisfatte') : '';
 }
-function step() { if (smoStep()) { iter++; draw(); } else { stop(); $('status').textContent = 'KKT satisfied'; } }
-function stop() { clearInterval(timer); timer = null; $('play').textContent = 'Play'; }
-function play() { if (timer) return stop(); $('play').textContent = 'Pause'; timer = setInterval(step, 250); }
-function reset() { stop(); makeData(); $('status').textContent = ''; draw(); }
+function step() { if (smoStep()) { iter++; draw(); } else { stop(); kkt = true; $('status').textContent = tr('KKT satisfied', 'KKT soddisfatte'); } }
+function stop() { clearInterval(timer); timer = null; $('play').textContent = tr('Play', 'Avvia'); }
+function play() { if (timer) return stop(); $('play').textContent = tr('Pause', 'Pausa'); timer = setInterval(step, 250); }
+function reset() { stop(); makeData(); kkt = false; draw(); }
+// the texts of the page in its language: the options, the title, the button
+const OPTS = { blobs: ['Two clusters', 'Due gruppi'], rings: ['Disc in a ring', 'Disco in un anello'],
+  linear: ['linear', 'lineare'], poly: ['polynomial (degree 2)', 'polinomiale (grado 2)'], rbf: ['Gaussian', 'gaussiano'] };
+function texts() {
+  for (const o of [...$('data').options, ...$('kernel').options]) o.textContent = tr(...OPTS[o.value]);
+  $('play').textContent = timer ? tr('Pause', 'Pausa') : tr('Play', 'Avvia');
+  $('step').textContent = tr('Step', 'Passo'); $('regen').textContent = tr('Regenerate', 'Rigenera');
+  document.title = tr('SVM playground', 'Laboratorio SVM');
+}
+texts();
+onLang(() => { texts(); draw(); });
 
 // the address may set the data, the kernel, C, gamma, the seed and a number of
 // SMO steps to take at once (e.g. #data=rings&kernel=poly&k=40)

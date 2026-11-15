@@ -44,70 +44,99 @@
 <body>
 <nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html" aria-current="page">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
-  <h1>Latent space playground</h1>
-  <p class="lede">An autoencoder compresses each image of a digit into a code of two
+  <h1><span data-l="en">Latent space playground</span><span data-l="it" lang="it">Laboratorio dello spazio latente</span></h1>
+  <p class="lede" data-l="en">An autoencoder compresses each image of a digit into a code of two
   numbers and learns to rebuild the image from the code alone, so that every digit becomes
   a point of the plane and every point of the plane an image. Trained only to reconstruct,
   it leaves wide regions between the classes whose points decode to nothing recognizable;
   the variational version encodes each digit as a small Gaussian and pays, in the KL term,
   for moving it away from a standard normal, which packs the codes around the origin and
   makes the whole plane decodable.</p>
+  <p class="lede" data-l="it" lang="it">Un autoencoder comprime ogni immagine di una cifra in un codice
+  di due numeri e impara a ricostruire l'immagine dal solo codice, così che ogni cifra diventa un
+  punto del piano e ogni punto del piano un'immagine. Addestrato solo a ricostruire, lascia fra le
+  classi ampie regioni i cui punti si decodificano in nulla di riconoscibile; la versione
+  variazionale codifica ogni cifra come una piccola gaussiana e paga, nel termine KL,
+  l'allontanarsi da una normale standard, il che addensa i codici attorno all'origine e rende
+  decodificabile l'intero piano.</p>
 </header>
 <section class="controls">
   <div class="settings">
-    <label><span>model</span><select id="model"><option value="ae">autoencoder</option><option value="vae">variational (VAE)</option></select></label>
-    <label><span>weight \(\beta\) of the KL</span><select id="beta"><option>0.25</option><option>0.5</option><option>1</option><option>2</option><option>4</option></select></label>
-    <label><span>hidden units</span><select id="H"><option>64</option><option>128</option></select></label>
-    <label><span>step size of Adam</span><select id="lr"><option>0.001</option><option>0.002</option><option>0.005</option></select></label>
-    <label><span>weights seed</span><select id="seed"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+    <label><span><span data-l="en">model</span><span data-l="it" lang="it">modello</span></span><select id="model"><option value="ae">autoencoder</option><option value="vae">variational (VAE)</option></select></label>
+    <label><span><span data-l="en">weight</span><span data-l="it" lang="it">peso</span> \(\beta\) <span data-l="en">of the KL</span><span data-l="it" lang="it">della KL</span></span><select id="beta"><option>0.25</option><option>0.5</option><option>1</option><option>2</option><option>4</option></select></label>
+    <label><span><span data-l="en">hidden units</span><span data-l="it" lang="it">unità nascoste</span></span><select id="H"><option>64</option><option>128</option></select></label>
+    <label><span><span data-l="en">step size of Adam</span><span data-l="it" lang="it">passo di Adam</span></span><select id="lr"><option>0.001</option><option>0.002</option><option>0.005</option></select></label>
+    <label><span><span data-l="en">weights seed</span><span data-l="it" lang="it">seme dei pesi</span></span><select id="seed"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
   </div>
-  <div class="transport"><label class="counter"><span>epoch · step</span><output id="count"></output></label><button id="reset" type="button">Reset</button><button id="step" type="button" disabled>Step</button><button id="train" type="button" disabled>Play</button></div>
+  <div class="transport"><label class="counter"><span><span data-l="en">epoch · step</span><span data-l="it" lang="it">epoca · passo</span></span><output id="count"></output></label><button id="reset" type="button">Reset</button><button id="step" type="button" disabled>Step</button><button id="train" type="button" disabled>Play</button></div>
 </section>
 <p class="explain" id="explain"></p>
 <main>
-  <figure class="lt"><figcaption>The latent plane: the code of each of 600 held-out digits,
+  <figure class="lt"><figcaption><span data-l="en">The latent plane: the code of each of 600 held-out digits,
   coloured by its class (for the VAE the mean \(\mu(x)\), with the circles of radius 1 and 2
   of the prior). Drag the ring to decode any point; click two digits to interpolate between
-  them.</figcaption>
+  them.</span><span data-l="it" lang="it">Il piano latente: il codice di ciascuna di 600 cifre tenute da parte,
+  colorato secondo la sua classe (per il VAE la media \(\mu(x)\), con i cerchi di raggio 1 e 2
+  della prior). Trascinando l'anello si decodifica un punto qualsiasi; un clic su due cifre
+  interpola fra di esse.</span></figcaption>
   <canvas id="lat" width="520" height="520"></canvas>
   <ul class="keys" id="keys"></ul></figure>
-  <figure class="lt"><figcaption>The same square of the plane, cut into 12&times;12 cells,
+  <figure class="lt"><figcaption><span data-l="en">The same square of the plane, cut into 12&times;12 cells,
   each showing what the decoder makes of the point at its centre: the regions that no digit
-  maps to decode to blurs or to mixtures, until the VAE fills them.</figcaption>
+  maps to decode to blurs or to mixtures, until the VAE fills them.</span><span data-l="it" lang="it">Lo stesso
+  quadrato del piano, diviso in 12&times;12 celle, ciascuna delle quali mostra che cosa il decoder
+  ricava dal punto al suo centro: le regioni in cui non cade alcuna cifra si decodificano in
+  macchie o in miscugli, finché il VAE non le riempie.</span></figcaption>
   <canvas id="grid" width="520" height="520"></canvas>
   <p class="readout" id="gridnote"></p></figure>
-  <figure class="lt"><figcaption>The point under the ring, decoded, and the interpolation
+  <figure class="lt"><figcaption><span data-l="en">The point under the ring, decoded, and the interpolation
   between the two digits clicked on the plane: the images decoded at evenly spaced points
-  of the segment that joins their codes.</figcaption>
-  <div class="pair"><div><h3>decoded at the ring</h3><canvas id="probe" width="240" height="240"></canvas></div>
-  <div><h3>the ring</h3><p class="readout" id="probenote"></p></div></div>
+  of the segment that joins their codes.</span><span data-l="it" lang="it">Il punto sotto l'anello,
+  decodificato, e l'interpolazione fra le due cifre scelte sul piano: le immagini decodificate in
+  punti equispaziati del segmento che unisce i loro codici.</span></figcaption>
+  <div class="pair"><div><h3><span data-l="en">decoded at the ring</span><span data-l="it" lang="it">decodificato all'anello</span></h3><canvas id="probe" width="240" height="240"></canvas></div>
+  <div><h3><span data-l="en">the ring</span><span data-l="it" lang="it">l'anello</span></h3><p class="readout" id="probenote"></p></div></div>
   <canvas id="path" class="strip" width="520" height="60"></canvas>
   <p class="readout" id="pathnote"></p></figure>
-  <figure class="lt"><figcaption>Draw a digit with the mouse or a finger: it is scaled and
+  <figure class="lt"><figcaption><span data-l="en">Draw a digit with the mouse or a finger: it is scaled and
   centred as the training digits are (its inked box to 16 pixels, its centre of mass in the
   middle, as for MNIST), its code is the gold diamond on both views, and on the right is the
-  image decoded from that code.</figcaption>
-  <div class="pair"><div><h3>input</h3><canvas id="pad" width="240" height="240"></canvas></div>
-  <div><h3>reconstruction</h3><canvas id="recon" width="240" height="240"></canvas></div></div>
+  image decoded from that code.</span><span data-l="it" lang="it">Si disegni una cifra con il mouse o con un
+  dito: è scalata e centrata come le cifre di addestramento (il riquadro inchiostrato a 16 pixel,
+  il baricentro nel mezzo, come per MNIST), il suo codice è il rombo oro in entrambe le viste, e a
+  destra c'è l'immagine decodificata da quel codice.</span></figcaption>
+  <div class="pair"><div><h3><span data-l="en">input</span><span data-l="it" lang="it">ingresso</span></h3><canvas id="pad" width="240" height="240"></canvas></div>
+  <div><h3><span data-l="en">reconstruction</span><span data-l="it" lang="it">ricostruzione</span></h3><canvas id="recon" width="240" height="240"></canvas></div></div>
   <div class="row"><button id="clear" type="button">Clear</button><button id="sample" type="button">Held-out digit</button></div>
   <p class="readout" id="padnote"></p></figure>
-  <figure class="lt span" id="fig-loss"><figcaption>The VAE maximizes, for each digit \(x\),
+  <figure class="lt span" id="fig-loss"><figcaption><span data-l="en">The VAE maximizes, for each digit \(x\),
   the evidence lower bound below (with weight \(\beta\) on its second term), and the curves
   show its two terms per digit as losses, averaged over the last batches: the reconstruction
   error \(-\mathbb{E}\log p_\theta(x\mid z)\), the binary cross-entropy of the decoded image,
   and the KL divergence of \(q_\phi(z\mid x) = \mathcal{N}(\mu, \mathrm{diag}\,\sigma^2)\)
   from the prior. The plain autoencoder sets \(z = \mu(x)\) and minimizes the first term
-  only. Hover a curve or a term.</figcaption>
+  only. Hover a curve or a term.</span><span data-l="it" lang="it">Il VAE massimizza, per ogni cifra \(x\),
+  il limite inferiore dell'evidenza qui sotto (con peso \(\beta\) sul secondo termine), e le curve
+  ne mostrano i due termini per cifra come loss, mediati sugli ultimi batch: l'errore di
+  ricostruzione \(-\mathbb{E}\log p_\theta(x\mid z)\), l'entropia incrociata binaria
+  dell'immagine decodificata, e la divergenza KL di
+  \(q_\phi(z\mid x) = \mathcal{N}(\mu, \mathrm{diag}\,\sigma^2)\) dalla prior. L'autoencoder
+  semplice pone \(z = \mu(x)\) e minimizza solo il primo termine. Passando su una curva o su un
+  termine li si mette in evidenza.</span></figcaption>
   <p class="formula">\(\mathcal{L}_\beta(x) = \class{frec}{\mathbb{E}_{q_\phi(z\mid x)}\big[\log p_\theta(x\mid z)\big]} - \beta\,\class{fkl}{D_{\mathrm{KL}}\big(q_\phi(z\mid x)\,\big\|\,\mathcal{N}(0, I)\big)},\)</p>
   <p class="formula">\(\class{fkl}{D_{\mathrm{KL}} = \tfrac12 \textstyle\sum_{q=1}^{2} \big(\mu_q^2 + \sigma_q^2 - 1 - \log \sigma_q^2\big)}, \quad z = \mu + \sigma \odot \varepsilon\)</p>
   <canvas id="lc" width="1040" height="240"></canvas>
   <p class="readout" id="lossnote"></p></figure>
 </main>
-<footer>Scene N of opt-playground, after D. P. Kingma and M. Welling,
+<footer><span data-l="en">Scene N of opt-playground, after D. P. Kingma and M. Welling,
 <a href="https://arxiv.org/abs/1312.6114">Auto-Encoding Variational Bayes</a> (2014), and
 G. E. Hinton and R. R. Salakhutdinov,
 <a href="https://doi.org/10.1126/science.1127647">Reducing the Dimensionality of Data with Neural Networks</a>
-(2006): the ideas are theirs, rebuilt here from the equations.</footer>
+(2006): the ideas are theirs, rebuilt here from the equations.</span><span data-l="it" lang="it">Scena N di opt-playground, da D. P. Kingma e M. Welling,
+<a href="https://arxiv.org/abs/1312.6114">Auto-Encoding Variational Bayes</a> (2014), e
+G. E. Hinton e R. R. Salakhutdinov,
+<a href="https://doi.org/10.1126/science.1127647">Reducing the Dimensionality of Data with Neural Networks</a>
+(2006): le idee sono loro, ricostruite qui dalle equazioni.</span></footer>
 <script type="module" src="src/latent.js"></script>
 </body>
 </html>

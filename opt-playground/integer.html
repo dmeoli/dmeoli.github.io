@@ -14,40 +14,49 @@
 <body>
 <nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html" aria-current="page">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
-  <h1>Integer playground</h1>
-  <p class="lede">An integer program in the plane: the polygon of its continuous
+  <h1><span data-l="en">Integer playground</span><span data-l="it" lang="it">Laboratorio di programmazione intera</span></h1>
+  <p class="lede" data-l="en">An integer program in the plane: the polygon of its continuous
   relaxation (dashed) and the hull of its integer points (filled). Branch and
   bound splits the polygon on a fractional coordinate, and every node of the tree
   is a piece of it (click a node to see its piece); cuts shave the polygon
   instead, until the continuous optimum is integer.</p>
+  <p class="lede" data-l="it" lang="it">Un programma intero nel piano: il poligono del suo rilassamento
+  continuo (tratteggiato) e l'inviluppo dei suoi punti interi (pieno). Il branch and
+  bound divide il poligono su una coordinata frazionaria, e ogni nodo dell'albero
+  ne &egrave; un pezzo (si clicchi un nodo per vederne il pezzo); i tagli invece
+  rifilano il poligono, finch&eacute; l'ottimo continuo non &egrave; intero.</p>
 </header>
 <section class="controls">
   <div class="settings">
-    <label><span>instance</span><select id="inst"></select></label>
-    <label><span>method</span><select id="mode"><option value="bb">Branch and bound</option><option value="gomory">Gomory fractional cuts</option><option value="cuts">Cutting planes (hull facets)</option><option value="cover">Cover cuts (binary)</option></select></label>
-    <label><span>node selection</span><select id="rule"><option value="best">best bound</option><option value="depth">depth first</option></select></label>
+    <label><span data-l="en">instance</span><span data-l="it" lang="it">istanza</span><select id="inst"></select></label>
+    <label><span data-l="en">method</span><span data-l="it" lang="it">metodo</span><select id="mode"><option value="bb">Branch and bound</option><option value="gomory">Gomory fractional cuts</option><option value="cuts">Cutting planes (hull facets)</option><option value="cover">Cover cuts (binary)</option></select></label>
+    <label><span data-l="en">node selection</span><span data-l="it" lang="it">scelta del nodo</span><select id="rule"><option value="best">best bound</option><option value="depth">depth first</option></select></label>
   </div>
   <div class="transport"><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
 </section>
 <p id="node" class="explain"></p>
 <main>
-  <figure><figcaption>The plane: polygon, integer hull, the open nodes (light) and
-  the selected one, its continuous optimum <span class="k lpk"></span>, the best
-  integer point found <span class="k ipk"></span>.</figcaption>
+  <figure><figcaption><span data-l="en">The plane: polygon, integer hull, the open nodes (light) and
+  the selected one, its continuous optimum</span><span data-l="it" lang="it">Il piano: poligono, inviluppo intero, i nodi aperti (chiari) e
+  quello selezionato, il suo ottimo continuo</span> <span class="k lpk"></span>, <span data-l="en">the best
+  integer point found</span><span data-l="it" lang="it">il miglior punto intero trovato</span> <span class="k ipk"></span>.</figcaption>
   <svg id="plane" viewBox="0 0 460 460"></svg></figure>
-  <figure><figcaption>The tree: each node shows its bound; violet open, gold
-  integer, grey pruned or infeasible, ringed the one selected.</figcaption>
+  <figure><figcaption><span data-l="en">The tree: each node shows its bound; violet open, gold
+  integer, grey pruned or infeasible, ringed the one selected.</span><span data-l="it" lang="it">L'albero: ogni nodo mostra il suo bound; in viola gli aperti, in oro
+  gli interi, in grigio i potati o non ammissibili, cerchiato quello selezionato.</span></figcaption>
   <svg id="tree" viewBox="0 0 560 300"></svg>
   <dl class="stats">
     <div><dt>\(z_{\mathrm{LP}}\)</dt><dd id="zlp"></dd></div>
     <div><dt>incumbent</dt><dd id="inc"></dd></div>
     <div><dt>\(z_{\mathrm{IP}}\)</dt><dd id="zip"></dd></div>
-    <div><dt>progress</dt><dd id="cnt"></dd></div>
+    <div><dt><span data-l="en">progress</span><span data-l="it" lang="it">avanzamento</span></dt><dd id="cnt"></dd></div>
   </dl></figure>
 </main>
-<footer>Scene B of opt-playground. Gomory cuts come from the row of the basis of
+<footer><span data-l="en">Scene B of opt-playground. Gomory cuts come from the row of the basis of
 a fractional coordinate and keep integer coefficients; the facets of the integer
-hull are the best cuts one can add.</footer>
+hull are the best cuts one can add.</span><span data-l="it" lang="it">Scena B di opt-playground. I tagli di Gomory nascono dalla riga della base di
+una coordinata frazionaria e hanno coefficienti interi; le faccette dell'inviluppo
+intero sono i migliori tagli che si possano aggiungere.</span></footer>
 <script type="module" src="src/integer.js"></script>
 </body>
 </html>

@@ -8,8 +8,9 @@
 // field at that time, the sampling with its trails, and the loss.
 
 import { schedule, noisy, makeNet, makeTrainer, trainStep, makeSampler, samplerStep, forward, slicedW, exactDisplacement, mulberry, gauss } from './diffusion-model.js';
-import { DATASETS, makeData } from './diffusion-data.js';
+import { DATASETS, DATASETS_IT, makeData } from './diffusion-data.js';
 import { setTex } from './tex.js';
+import { t as tt, onLang } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const S = { data: 'spirals', sched: 'linear', T: 100, depth: 3, width: 64, lr: 0.003, sampler: 'ddpm', seed: 1, t: 30 };
@@ -54,10 +55,10 @@ function loop() {
   draw();
   requestAnimationFrame(loop);
 }
-function start() { running = true; $('train').textContent = 'Pause'; requestAnimationFrame(loop); }
+function start() { running = true; $('train').textContent = tt('Pause', 'Pausa'); requestAnimationFrame(loop); }
 function stop() {
   if (!running) return;
-  running = false; $('train').textContent = 'Play';
+  running = false; $('train').textContent = tt('Play', 'Avvia');
   startSampling();
 }
 
@@ -67,9 +68,9 @@ function startSampling() {
   trails = Array.from({ length: NTRAIL }, (_, i) => [smp.X[2 * i], smp.X[2 * i + 1]]);
   swLast = null;
   if (!sampling) { sampling = true; setTimeout(sampleLoop, 30); }
-  $('sample').textContent = 'Stop';
+  $('sample').textContent = tt('Stop', 'Ferma');
 }
-function stopSampling() { sampling = false; $('sample').textContent = 'Sample'; }
+function stopSampling() { sampling = false; $('sample').textContent = tt('Sample', 'Campiona'); }
 function sampleLoop() {
   if (!sampling || !smp) return;
   const per = Math.max(1, Math.ceil((smp.ts.length - 1) / 70));
@@ -180,8 +181,8 @@ function drawField() {
   };
   for (const p of pts) draw1(p.x, p.y, p.dx, p.dy, P.accent, 1.6);
   if (ex) for (const p of pts) draw1(p.x, p.y, p.ex, p.ey, P.gold, 1);
-  $('fieldNote').innerHTML = t === 0 ? 'At t = 0 there is no noise to remove: the arrows are those of t = 1.'
-    : `t = <b>${t}</b>, longest move <b>${mx.toFixed(2)}</b>` + (ex ? `, exact <b>${mxe.toFixed(2)}</b>` : '');
+  $('fieldNote').innerHTML = t === 0 ? tt('At t = 0 there is no noise to remove: the arrows are those of t = 1.', 'A t = 0 non c\'è rumore da togliere: le frecce sono quelle di t = 1.')
+    : `t = <b>${t}</b>, ` + tt('longest move', 'spostamento più lungo') + ` <b>${mx.toFixed(2)}</b>` + (ex ? tt(', exact', ', esatto') + ` <b>${mxe.toFixed(2)}</b>` : '');
 }
 
 function drawReverse() {
@@ -190,7 +191,7 @@ function drawReverse() {
   dots(F, data, NDATA, P['ink-soft'], 1.3, 0.35);
   if (!smp) {
     ctx.fillStyle = P['ink-soft']; ctx.font = 'italic 15px Spectral, Georgia, serif'; ctx.textAlign = 'center';
-    ctx.fillText('Press Sample, or pause the training', cv.width / 2, cv.height / 2); ctx.textAlign = 'start';
+    ctx.fillText(tt('Press Sample, or pause the training', 'Premere Campiona, o mettere in pausa l\'addestramento'), cv.width / 2, cv.height / 2); ctx.textAlign = 'start';
     $('revNote').textContent = '';
     return;
   }
@@ -214,7 +215,7 @@ function drawReverse() {
   }
   dots(F, smp.X, n, P.accent, 2, lit ? 0.5 : 0.9);
   const t = smp.ts[smp.k];
-  $('revNote').textContent = smp.done ? `t = 0 after ${smp.ts.length - 1} steps` : `t = ${t}, step ${smp.k} of ${smp.ts.length - 1}`;
+  $('revNote').textContent = smp.done ? tt(`t = 0 after ${smp.ts.length - 1} steps`, `t = 0 dopo ${smp.ts.length - 1} passi`) : tt(`t = ${t}, step ${smp.k} of ${smp.ts.length - 1}`, `t = ${t}, passo ${smp.k} di ${smp.ts.length - 1}`);
 }
 
 function drawLoss() {
@@ -240,15 +241,17 @@ function draw() {
   const a = sc.abar[S.t];
   $('count').textContent = steps;
   $('tv').textContent = S.t;
-  setTex($('explain'), `At \\(t = ${S.t}\\) of \\(T = ${sc.T}\\): \\(\\bar\\alpha_t = ${a.toFixed(4)}\\), so a point keeps
+  setTex($('explain'), tt(`At \\(t = ${S.t}\\) of \\(T = ${sc.T}\\): \\(\\bar\\alpha_t = ${a.toFixed(4)}\\), so a point keeps
     \\(\\sqrt{\\bar\\alpha_t} = ${Math.sqrt(a).toFixed(3)}\\) of its position and gets noise of standard deviation
-    \\(\\sqrt{1-\\bar\\alpha_t} = ${Math.sqrt(1 - a).toFixed(3)}\\).` + (steps ? '' : ' The network is not trained yet: press Play.'));
+    \\(\\sqrt{1-\\bar\\alpha_t} = ${Math.sqrt(1 - a).toFixed(3)}\\).`, `A \\(t = ${S.t}\\) su \\(T = ${sc.T}\\): \\(\\bar\\alpha_t = ${a.toFixed(4)}\\), quindi un punto conserva
+    \\(\\sqrt{\\bar\\alpha_t} = ${Math.sqrt(a).toFixed(3)}\\) della sua posizione e riceve rumore di deviazione standard
+    \\(\\sqrt{1-\\bar\\alpha_t} = ${Math.sqrt(1 - a).toFixed(3)}\\).`) + (steps ? '' : tt(' The network is not trained yet: press Play.', ' La rete non è ancora addestrata: premere Avvia.')));
   $('eqDDPM').hidden = S.sampler !== 'ddpm'; $('eqDDIM').hidden = S.sampler === 'ddpm';
   drawForward(); drawCoef(); drawField(); drawReverse(); drawLoss();
   const last = ema.length ? ema.at(-1) : null;
-  $('lossNote').innerHTML = (last === null ? 'No step yet.' : `moving average of the loss <b>${last.toFixed(3)}</b> after <b>${steps}</b> steps.`)
-    + ` Sliced Wasserstein distance from the data: noise <b>${swNoise.toFixed(3)}</b>`
-    + (swLast === null ? '' : `, last samples <b>${swLast.toFixed(3)}</b>`) + '.';
+  $('lossNote').innerHTML = (last === null ? tt('No step yet.', 'Ancora nessun passo.') : tt(`moving average of the loss <b>${last.toFixed(3)}</b> after <b>${steps}</b> steps.`, `media mobile della loss <b>${last.toFixed(3)}</b> dopo <b>${steps}</b> passi.`))
+    + tt(` Sliced Wasserstein distance from the data: noise <b>${swNoise.toFixed(3)}</b>`, ` Distanza sliced Wasserstein dai dati: rumore <b>${swNoise.toFixed(3)}</b>`)
+    + (swLast === null ? '' : tt(`, last samples <b>${swLast.toFixed(3)}</b>`, `, ultimi campioni <b>${swLast.toFixed(3)}</b>`)) + '.';
 }
 
 // ------------------------------------------------------------------ the formulas, part by part
@@ -263,7 +266,7 @@ for (const f of document.querySelectorAll('.formula')) {
 
 // ------------------------------------------------------------------ controls
 const sel = $('data');
-for (const [k, v] of Object.entries(DATASETS)) sel.add(new Option(v, k));
+for (const k of Object.keys(DATASETS)) sel.add(new Option(k, k));
 for (const k of ['data', 'sched', 'T', 'depth', 'width', 'lr', 'sampler', 'seed']) {
   $(k).value = S[k];
   $(k).onchange = e => {
@@ -275,19 +278,19 @@ for (const k of ['data', 'sched', 'T', 'depth', 'width', 'lr', 'sampler', 'seed'
 }
 $('t').oninput = e => { S.t = +e.target.value; save(); draw(); };
 $('anim').onclick = () => {
-  if (animT) { clearInterval(animT); animT = null; $('anim').textContent = 'Animate'; return; }
-  $('anim').textContent = 'Stop';
+  if (animT) { clearInterval(animT); animT = null; $('anim').textContent = tt('Animate', 'Anima'); return; }
+  $('anim').textContent = tt('Stop', 'Ferma');
   if (S.t >= sc.T) S.t = 0;
   animT = setInterval(() => {
     S.t = Math.min(sc.T, S.t + Math.max(1, Math.round(sc.T / 100)));
     $('t').value = S.t; draw();
-    if (S.t >= sc.T) { clearInterval(animT); animT = null; $('anim').textContent = 'Animate'; save(); }
+    if (S.t >= sc.T) { clearInterval(animT); animT = null; $('anim').textContent = tt('Animate', 'Anima'); save(); }
   }, 40);
 };
 $('exact').onchange = () => draw();
 $('sample').onclick = () => sampling ? (stopSampling(), draw()) : startSampling();
 $('reset').onclick = reset;
-$('step').onclick = () => { const was = running; running = false; $('train').textContent = 'Play'; trainSome(50); draw(); if (was) startSampling(); };
+$('step').onclick = () => { const was = running; running = false; $('train').textContent = tt('Play', 'Avvia'); trainSome(50); draw(); if (was) startSampling(); };
 $('train').onclick = () => running ? stop() : start();
 document.addEventListener('keydown', e => {
   if (e.target.closest && e.target.closest('select, input, textarea')) return;
@@ -297,5 +300,19 @@ document.addEventListener('keydown', e => {
 // a change of the theme on the site, or of the system, recolours the canvases
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { palette(); draw(); });
 
+// the texts that are not in the page twice: title, buttons, options
+function labels() {
+  document.title = tt('Diffusion playground', 'Laboratorio della diffusione');
+  $('step').textContent = tt('Step', 'Passo');
+  $('train').textContent = running ? tt('Pause', 'Pausa') : tt('Play', 'Avvia');
+  $('sample').textContent = sampling ? tt('Stop', 'Ferma') : tt('Sample', 'Campiona');
+  $('anim').textContent = animT ? tt('Stop', 'Ferma') : tt('Animate', 'Anima');
+  for (const o of $('data').options) o.textContent = tt(DATASETS[o.value], DATASETS_IT[o.value]);
+  const O = { linear: ['linear', 'lineare'], cosine: ['cosine', 'coseno'], ddpm: ['DDPM, T steps', 'DDPM, T passi'], ddim: ['DDIM, T steps', 'DDIM, T passi'], ddim20: ['DDIM, 20 steps', 'DDIM, 20 passi'] };
+  for (const id of ['sched', 'sampler']) for (const o of $(id).options) o.textContent = tt(...O[o.value]);
+}
+onLang(() => { labels(); draw(); });
+
 palette();
+labels();
 reset();

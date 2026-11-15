@@ -3,6 +3,8 @@
 // curves and the norms of the gradient with respect to h_t. The colours are the
 // tokens of style.css, read at every drawing so that both themes work.
 
+import { t as tx } from './i18n.js';
+
 const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 function rgb(c) {
   if (c[0] === '#') {
@@ -223,7 +225,7 @@ export function drawLoss(cv, hist, chance, epoch) {
   const { ctx, W, P } = fit(cv, 230), box = [40, 24, W - 10, 196];
   const all = [...hist.lstm, ...hist.rnn], ymax = Math.max(chance * 1.15, ...all.map(q => Math.min(q.loss, 3 * chance)));
   const xmax = Math.max(20, epoch), X = e => box[0] + e / xmax * (box[2] - box[0]), Y = l => box[3] - Math.min(l, ymax) / ymax * (box[3] - box[1]);
-  axes(ctx, P, box, ticks(0, xmax, 5).map(v => [v, X(v)]), ticks(0, ymax, 4).map(v => [v, Y(v), String(v)]), 'epoch', 'loss (cross-entropy on 200 test sequences)');
+  axes(ctx, P, box, ticks(0, xmax, 5).map(v => [v, X(v)]), ticks(0, ymax, 4).map(v => [v, Y(v), String(v)]), tx('epoch', 'epoca'), tx('loss (cross-entropy on 200 test sequences)', 'loss (entropia incrociata, 200 seq. di test)'));
   ctx.strokeStyle = mix(P['ink-soft'], P.ground, 0.3); ctx.setLineDash([4, 4]); ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(box[0], Y(chance)); ctx.lineTo(box[2], Y(chance)); ctx.stroke(); ctx.setLineDash([]);
   for (const [k, col] of [['rnn', P.gold], ['lstm', P.accent]]) {
@@ -231,8 +233,8 @@ export function drawLoss(cv, hist, chance, epoch) {
     hist[k].forEach((q, i) => i ? ctx.lineTo(X(q.epoch), Y(q.loss)) : ctx.moveTo(X(q.epoch), Y(q.loss))); ctx.stroke();
   }
   const last = k => hist[k].length ? ` ${(100 * hist[k].at(-1).acc).toFixed(0)}%` : '';
-  legend(ctx, P, Math.max(box[0] + 8, box[2] - 190), box[1] + 0.35 * (box[3] - box[1]), [[mix(P.accent, P.accent, 0), 'LSTM' + last('lstm')], [mix(P.gold, P.gold, 0), 'plain RNN' + last('rnn')],
-    [mix(P['ink-soft'], P.ground, 0.3), 'uniform guess, ln K', [4, 4]]]);
+  legend(ctx, P, Math.max(box[0] + 8, box[2] - 190), box[1] + 0.35 * (box[3] - box[1]), [[mix(P.accent, P.accent, 0), 'LSTM' + last('lstm')], [mix(P.gold, P.gold, 0), tx('plain RNN', 'RNN semplice') + last('rnn')],
+    [mix(P['ink-soft'], P.ground, 0.3), tx('uniform guess, ln K', 'risposta uniforme, ln K'), [4, 4]]]);
 }
 
 // g = { lstm: Float64Array(T), rnn: ... }: the mean of |dL/dh_t| over the test sequences
@@ -247,7 +249,7 @@ export function drawGrad(cv, g0, t) {
   const X = s => box[0] + (T > 1 ? s / (T - 1) : 0.5) * (box[2] - box[0]), Y = v => box[3] - (clamp(Math.log10(Math.max(v, 1e-300)), lo, hi) - lo) / (hi - lo) * (box[3] - box[1]);
   const step = Math.max(1, Math.ceil((hi - lo) / 5)), ys = [];
   for (let e = lo; e <= hi; e += step) ys.push([e, Y(10 ** e), `1e${e}`]);
-  axes(ctx, P, box, ticks(1, T, 6).filter(v => Number.isInteger(v)).map(v => [v, X(v - 1)]), ys, 'step t', '|∂L/∂h_t| / |∂L/∂h_T|');
+  axes(ctx, P, box, ticks(1, T, 6).filter(v => Number.isInteger(v)).map(v => [v, X(v - 1)]), ys, tx('step t', 'passo t'), '|∂L/∂h_t| / |∂L/∂h_T|');
   ctx.strokeStyle = mix(P.ink, P.ink, 0); ctx.globalAlpha = 0.25; ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(X(t), box[1]); ctx.lineTo(X(t), box[3]); ctx.stroke(); ctx.globalAlpha = 1;
   for (const [k, col] of [['rnn', P.gold], ['lstm', P.accent]]) {
@@ -255,5 +257,5 @@ export function drawGrad(cv, g0, t) {
     g[k].forEach((v, s) => s ? ctx.lineTo(X(s), Y(v)) : ctx.moveTo(X(s), Y(v))); ctx.stroke();
     g[k].forEach((v, s) => { ctx.beginPath(); ctx.arc(X(s), Y(v), 2.2, 0, 2 * Math.PI); ctx.fill(); });
   }
-  legend(ctx, P, box[0] + 8, box[1] + 10, [[mix(P.accent, P.accent, 0), 'LSTM'], [mix(P.gold, P.gold, 0), 'plain RNN']]);
+  legend(ctx, P, box[0] + 8, box[1] + 10, [[mix(P.accent, P.accent, 0), 'LSTM'], [mix(P.gold, P.gold, 0), tx('plain RNN', 'RNN semplice')]]);
 }

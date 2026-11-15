@@ -5,6 +5,7 @@
 // hull that separate the current continuous optimum, i.e., the best cuts.
 
 import { hull } from './problems/lagrangian1d.js';
+import { t, onLang } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const dot = (u, v) => u[0] * v[0] + u[1] * v[1];
@@ -12,11 +13,11 @@ const dot = (u, v) => u[0] * v[0] + u[1] * v[1];
 // every instance is a set of integer inequalities a.x <= b (and x >= 0), so
 // that Gomory cuts stay integer
 const instances = {
-  classic: { label: 'Textbook: max x + 2y', ineq: [[2, 3, 12], [3, -1, 9], [0, 2, 7]], c: [1, 2] },
-  knapsack: { label: 'Two knapsack rows', ineq: [[3, 5, 19], [4, 2, 15]], c: [3, 4] },
-  thin: { label: 'Thin polygon', ineq: [[5, -6, 3], [-5, 6, 2], [1, 0, 7]], c: [1, 1.4] },
+  classic: { label: 'Textbook: max x + 2y', it: 'Da manuale: max x + 2y', ineq: [[2, 3, 12], [3, -1, 9], [0, 2, 7]], c: [1, 2] },
+  knapsack: { label: 'Two knapsack rows', it: 'Due righe di zaino', ineq: [[3, 5, 19], [4, 2, 15]], c: [3, 4] },
+  thin: { label: 'Thin polygon', it: 'Poligono sottile', ineq: [[5, -6, 3], [-5, 6, 2], [1, 0, 7]], c: [1, 1.4] },
   // binary: a knapsack row and the bounds x <= 1; the instance of the cover cuts
-  binary: { label: 'Binary knapsack: 3x + 4y ≤ 5', ineq: [[3, 4, 5], [1, 0, 1], [0, 1, 1]], c: [2, 3], span: 1.6, bin: true },
+  binary: { label: 'Binary knapsack: 3x + 4y ≤ 5', it: 'Zaino binario: 3x + 4y ≤ 5', ineq: [[3, 4, 5], [1, 0, 1], [0, 1, 1]], c: [2, 3], span: 1.6, bin: true },
 };
 
 function clip(poly, a, b) {           // poly ∩ {a.x <= b}
@@ -150,8 +151,8 @@ function cutStep() {
 
 const steps = { bb: () => bbStep(), gomory: () => gomoryStep(), cuts: () => cutStep(), cover: () => coverStep() };
 function step() { if (!steps[mode]()) stop(); draw(); }
-function stop() { clearInterval(timer); timer = null; $('play').textContent = 'Play'; }
-function play() { if (timer) return stop(); $('play').textContent = 'Pause'; timer = setInterval(step, 700); }
+function stop() { clearInterval(timer); timer = null; $('play').textContent = t('Play', 'Avvia'); }
+function play() { if (timer) return stop(); $('play').textContent = t('Pause', 'Pausa'); timer = setInterval(step, 700); }
 
 // ------------------------------------------------------------------ drawing
 const NS = 'http://www.w3.org/2000/svg';
@@ -191,9 +192,10 @@ function drawPlane() {
 function drawTree() {
   const svg = $('tree'); svg.replaceChildren();
   if (mode !== 'bb') {
-    if (mode === 'cover' && !I.bin) { el('text', { x: 20, y: 30, class: 'lab' }, svg).textContent = 'Cover cuts need a binary instance: choose the binary knapsack.'; return; }
-    el('text', { x: 20, y: 30, class: 'lab' }, svg).textContent = `${cuts.length} cuts added; the continuous optimum after them is ${lp(region, I.c) ? lp(region, I.c).value.toFixed(3) : '–'}.`;
-    cuts.forEach((k, i) => { el('text', { x: 20, y: 56 + 18 * i, class: 'lab' }, svg).textContent = `${i + 1}. ${k.a[0]} x1 + ${k.a[1]} x2 ≤ ${k.b}` + (k.cover ? `  (cover {${k.cover.map(j => 'x' + (j + 1)).join(', ')}})` : ''); });
+    if (mode === 'cover' && !I.bin) { el('text', { x: 20, y: 30, class: 'lab' }, svg).textContent = t('Cover cuts need a binary instance: choose the binary knapsack.', 'I tagli di copertura richiedono un\'istanza binaria: si scelga lo zaino binario.'); return; }
+    const zc = lp(region, I.c) ? lp(region, I.c).value.toFixed(3) : '–';
+    el('text', { x: 20, y: 30, class: 'lab' }, svg).textContent = t(`${cuts.length} cuts added; the continuous optimum after them is ${zc}.`, `${cuts.length} tagli aggiunti; l'ottimo continuo dopo di essi vale ${zc}.`);
+    cuts.forEach((k, i) => { el('text', { x: 20, y: 56 + 18 * i, class: 'lab' }, svg).textContent = `${i + 1}. ${k.a[0]} x1 + ${k.a[1]} x2 ≤ ${k.b}` + (k.cover ? `  (${t('cover', 'copertura')} {${k.cover.map(j => 'x' + (j + 1)).join(', ')}})` : ''); });
     return;
   }
   const depth = Math.max(...nodes.map(n => n.depth)), W = 560, H = 60 + depth * 64, pos = new Map();
@@ -213,7 +215,7 @@ function drawTree() {
   for (const n of nodes) if (n.parent !== null) {
     const [x1, y1] = pos.get(n.parent), [x2, y2] = pos.get(n.id);
     el('line', { x1, y1, x2, y2, class: 'treeedge' }, svg);
-    el('text', { x: (x1 + x2) / 2 + 4, y: (y1 + y2) / 2, class: 'lab small' }, svg).textContent = n.label;
+    el('text', { x: (x1 + x2) / 2 + 4, y: (y1 + y2) / 2, class: 'lab small' }, svg).textContent = nodeName(n);
   }
   for (const n of nodes) {
     const [x, y] = pos.get(n.id), g = el('g', { class: 'tnode ' + n.status.split(' ')[0] + (n.id === selected ? ' hot' : '') }, svg);
@@ -223,18 +225,35 @@ function drawTree() {
   }
 }
 
+// the status of a node stays in English (it names a class of the style); its
+// words in the language of the page
+const statusWords = { open: 'aperto', integer: 'intero', infeasible: 'non ammissibile', branched: 'diviso', 'pruned (bound)': 'potato (bound)' };
+const nodeName = n => (n.label === 'root' ? t('root', 'radice') : n.label);
 function draw() {
   drawPlane(); drawTree();
   const n = nodes[selected];
-  $('node').textContent = mode === 'bb' ? `${n.label}: ${n.status}` + (n.sol ? `, bound ${n.sol.value.toFixed(3)} at (${n.sol.x.map(v => v.toFixed(2))})` : '') : '';
+  $('node').textContent = mode === 'bb' ? `${nodeName(n)}: ${t(n.status, statusWords[n.status])}` + (n.sol ? t(`, bound ${n.sol.value.toFixed(3)} at (${n.sol.x.map(v => v.toFixed(2))})`, `, bound ${n.sol.value.toFixed(3)} in (${n.sol.x.map(v => v.toFixed(2))})`) : '') : '';
   $('inc').textContent = incumbent ? incumbent.value.toFixed(3) : '–';
   $('zlp').textContent = lp(I.poly, I.c).value.toFixed(3);
   const zip = Math.max(...ipts.map(p => dot(I.c, p)));
   $('zip').textContent = zip.toFixed(3);
-  $('cnt').textContent = mode === 'bb' ? `${nodes.length} nodes, ${open.length} open` : `${cuts.length} cuts`;
+  $('cnt').textContent = mode === 'bb' ? t(`${nodes.length} nodes, ${open.length} open`, `${nodes.length} nodi, ${open.length} aperti`) : t(`${cuts.length} cuts`, `${cuts.length} tagli`);
 }
 
 for (const [k, v] of Object.entries(instances)) $('inst').append(new Option(v.label, k));
+// the words that depend on the language: title, options, the Play button
+const optWords = { bb: ['Branch and bound', 'Branch and bound'], gomory: ['Gomory fractional cuts', 'Tagli frazionari di Gomory'],
+  cuts: ['Cutting planes (hull facets)', 'Piani di taglio (faccette dell\'inviluppo)'], cover: ['Cover cuts (binary)', 'Tagli di copertura (binari)'],
+  best: ['best bound', 'miglior bound'], depth: ['depth first', 'in profondità'] };
+function words() {
+  document.title = t('Integer playground', 'Laboratorio di programmazione intera');
+  for (const o of $('inst').options) o.textContent = t(instances[o.value].label, instances[o.value].it);
+  for (const o of [...$('mode').options, ...$('rule').options]) o.textContent = t(...optWords[o.value]);
+  $('play').textContent = timer ? t('Pause', 'Pausa') : t('Play', 'Avvia');
+  $('step').textContent = t('Step', 'Passo');
+}
+words();
+onLang(() => { words(); draw(); });
 $('inst').onchange = reset;
 $('mode').onchange = e => { mode = e.target.value; $('rule').parentElement.hidden = mode !== 'bb'; reset(); };
 $('rule').onchange = e => { rule = e.target.value; reset(); };

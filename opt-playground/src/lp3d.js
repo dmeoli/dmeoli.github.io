@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import { stage3d, rod, ball, clear, label } from './stage3d.js';
 import { instances, randomInstance, geometry, simplex, barrier, bruteOpt, dot, varName, cons } from './lp3-core.js';
 import { setTex } from './tex.js';
+import { t, onLang } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const fmt = v => (Math.abs(v - Math.round(v)) < 1e-9 ? String(Math.round(v)) : v.toFixed(3));
@@ -175,43 +176,50 @@ function step() {
   }
   drawPath(); show();
 }
-function stop() { clearInterval(timer); timer = null; $('play').textContent = 'Play'; }
-function play() { if (timer) return stop(); $('play').textContent = 'Pause'; timer = setInterval(step, mode === 'simplex' ? 1300 : 650); }
+function stop() { clearInterval(timer); timer = null; $('play').textContent = t('Play', 'Avvia'); }
+function play() { if (timer) return stop(); $('play').textContent = t('Pause', 'Pausa'); timer = setInterval(step, mode === 'simplex' ? 1300 : 650); }
 
 // the panel: the basis with the values and the reduced costs, or the barrier
 function show() {
   save();
   const m = P.A.length, names = Array.from({ length: 3 + m }, (_, j) => varName(j, m));
   const C = cons(P);
-  $('cname').textContent = mode === 'simplex' ? 'pivots' : 'iterations';
+  $('cname').textContent = mode === 'simplex' ? t('pivots', 'pivot') : t('iterations', 'iterazioni');
   $('iter').textContent = k;
   $('rule').disabled = mode !== 'simplex';
   if (mode === 'simplex') {
     const s = steps[k], nx = steps[k + 1];
     const cell = (j, v) => `<td class="${s.basis.includes(j) ? 'inb' : ''}${nx && nx.enter === j ? ' enter' : ''}${nx && nx.leave === j ? ' leave' : ''}">${v}</td>`;
-    $('table').innerHTML = `<tr><th>variable</th>${names.map(n => `<th>${n}</th>`).join('')}</tr>`
-      + `<tr><td>value</td>${names.map((_, j) => cell(j, fmt(s.vals[j]))).join('')}</tr>`
-      + `<tr><td>reduced cost</td>${names.map((_, j) => cell(j, s.basis.includes(j) ? '·' : fmt(s.r[j]))).join('')}</tr>`;
-    setTex($('tcap'), `The basis \\(\\{${s.basis.map(j => names[j].replace(/(\d)/, '_$1')).join(', ')}\\}\\) (in violet), the values of all the variables and the reduced costs \\(c_j - c_B B^{-1} A_j\\) of those out of the basis; the slack \\(s_i\\) belongs to row \\(i\\). Lilac: the variable that enters next, framed: the one that leaves.`);
+    $('table').innerHTML = `<tr><th>${t('variable', 'variabile')}</th>${names.map(n => `<th>${n}</th>`).join('')}</tr>`
+      + `<tr><td>${t('value', 'valore')}</td>${names.map((_, j) => cell(j, fmt(s.vals[j]))).join('')}</tr>`
+      + `<tr><td>${t('reduced cost', 'costo ridotto')}</td>${names.map((_, j) => cell(j, s.basis.includes(j) ? '·' : fmt(s.r[j]))).join('')}</tr>`;
+    const bs = `\\(\\{${s.basis.map(j => names[j].replace(/(\d)/, '_$1')).join(', ')}\\}\\)`;
+    setTex($('tcap'), t(`The basis ${bs} (in violet), the values of all the variables and the reduced costs \\(c_j - c_B B^{-1} A_j\\) of those out of the basis; the slack \\(s_i\\) belongs to row \\(i\\). Lilac: the variable that enters next, framed: the one that leaves.`,
+      `La base ${bs} (in viola), i valori di tutte le variabili e i costi ridotti \\(c_j - c_B B^{-1} A_j\\) di quelle fuori base; la variabile di scarto \\(s_i\\) appartiene alla riga \\(i\\). In lilla la variabile che entra al passo successivo, riquadrata quella che esce.`));
     const tight = Geo.V.find(v => Math.hypot(...v.x.map((q, d) => q - s.x[d])) < 1e-7);
     const act = tight ? tight.act.map(q => C.names[q]).join(', ') : '';
-    let txt = `Vertex ${vec(s.x)}, c·x = ${fmt(s.z)}, on ${act}. `;
-    if (s.optimal) txt += 'No reduced cost is positive: the basis is optimal.';
-    else if (s.unbounded) txt += 'The entering column has no positive entry: unbounded.';
-    else txt += `Next: ${names[nx.enter]} enters (reduced cost ${fmt(s.r[nx.enter])}, ${rule === 'bland' ? 'the first positive one' : 'the largest'}), ${names[nx.leave]} leaves by the ratio test.`;
+    let txt = t(`Vertex ${vec(s.x)}, c·x = ${fmt(s.z)}, on ${act}. `, `Vertice ${vec(s.x)}, c·x = ${fmt(s.z)}, su ${act}. `);
+    if (s.optimal) txt += t('No reduced cost is positive: the basis is optimal.', 'Nessun costo ridotto è positivo: la base è ottima.');
+    else if (s.unbounded) txt += t('The entering column has no positive entry: unbounded.', 'La colonna entrante non ha elementi positivi: problema illimitato.');
+    else txt += t(`Next: ${names[nx.enter]} enters (reduced cost ${fmt(s.r[nx.enter])}, ${rule === 'bland' ? 'the first positive one' : 'the largest'}), ${names[nx.leave]} leaves by the ratio test.`,
+      `Prossimo passo: entra ${names[nx.enter]} (costo ridotto ${fmt(s.r[nx.enter])}, ${rule === 'bland' ? 'il primo positivo' : 'il più grande'}), esce ${names[nx.leave]} per il test del rapporto.`);
     $('info').textContent = txt;
     const feas = s.y.every(v => v >= -1e-9) && [0, 1, 2].every(j => P.A.reduce((a, row, i) => a + row[j] * s.y[i], 0) >= P.c[j] - 1e-9);
-    $('dual').textContent = `Dual point of the basis y = ${vec(s.y)} (minus the reduced costs of the slacks): ${feas ? 'feasible, so b·y = c·x and both are optimal.' : 'infeasible until the basis is optimal.'}`;
+    $('dual').textContent = t(`Dual point of the basis y = ${vec(s.y)} (minus the reduced costs of the slacks): ${feas ? 'feasible, so b·y = c·x and both are optimal.' : 'infeasible until the basis is optimal.'}`,
+      `Punto duale della base y = ${vec(s.y)} (l'opposto dei costi ridotti delle variabili di scarto): ${feas ? 'ammissibile, quindi b·y = c·x e sono entrambi ottimi.' : 'non ammissibile finché la base non è ottima.'}`);
     $('pval').textContent = fmt(s.z); $('dval').textContent = fmt(dot(P.b, s.y)); $('gap').textContent = fmt(dot(P.b, s.y) - s.z);
   } else {
     const p = B.dense[B.iters[k]], s = C.h.map((h, q) => h - dot(C.G[q], p.x));
-    $('table').innerHTML = `<tr><th>constraint</th><th>slack</th><th>y estimate</th></tr>`
+    $('table').innerHTML = `<tr><th>${t('constraint', 'vincolo')}</th><th>${t('slack', 'scarto')}</th><th>${t('y estimate', 'stima di y')}</th></tr>`
       + C.names.map((n, q) => `<tr><td>${n}</td><td>${s[q].toExponential(2)}</td><td>${k === 0 ? '·' : (p.mu / s[q]).toExponential(2)}</td></tr>`).join('');
-    setTex($('tcap'), `Every constraint with its slack and its multiplier estimate \\(\\mu / s\\) (for \\(x_j \\ge 0\\), the reduced cost); on the central path the products are all \\(\\mu\\), so the gap is \\(${C.G.length}\\mu\\).`);
+    setTex($('tcap'), t(`Every constraint with its slack and its multiplier estimate \\(\\mu / s\\) (for \\(x_j \\ge 0\\), the reduced cost); on the central path the products are all \\(\\mu\\), so the gap is \\(${C.G.length}\\mu\\).`,
+      `Ogni vincolo con il suo scarto e la stima del suo moltiplicatore \\(\\mu / s\\) (per \\(x_j \\ge 0\\), il costo ridotto); sul cammino centrale i prodotti valgono tutti \\(\\mu\\), quindi il gap è \\(${C.G.length}\\mu\\).`));
     $('info').textContent = k === 0
-      ? 'The analytic center: the maximum of the sum of the logarithms of the slacks, where μ is infinite.'
-      : `μ = ${p.mu.toExponential(2)}, x = ${vec(p.x.map(v => +v.toFixed(4)))}; each iteration divides μ by 0.6 and recenters with Newton's method.`;
-    $('dual').textContent = k === 0 ? '' : `Dual estimate y = ${vec(p.y.map(v => +v.toFixed(4)))}; it is feasible all along and reaches the optimal dual as μ goes to 0.`;
+      ? t('The analytic center: the maximum of the sum of the logarithms of the slacks, where μ is infinite.', 'Il centro analitico: il massimo della somma dei logaritmi degli scarti, dove μ è infinito.')
+      : t(`μ = ${p.mu.toExponential(2)}, x = ${vec(p.x.map(v => +v.toFixed(4)))}; each iteration divides μ by 0.6 and recenters with Newton's method.`,
+        `μ = ${p.mu.toExponential(2)}, x = ${vec(p.x.map(v => +v.toFixed(4)))}; ogni iterazione divide μ per 0.6 e ricentra con il metodo di Newton.`);
+    $('dual').textContent = k === 0 ? '' : t(`Dual estimate y = ${vec(p.y.map(v => +v.toFixed(4)))}; it is feasible all along and reaches the optimal dual as μ goes to 0.`,
+      `Stima duale y = ${vec(p.y.map(v => +v.toFixed(4)))}; è ammissibile lungo tutto il cammino e raggiunge il duale ottimo quando μ tende a 0.`);
     $('pval').textContent = p.z.toFixed(4);
     $('dval').textContent = k === 0 ? '' : p.dval.toFixed(4);
     $('gap').textContent = k === 0 ? '' : (p.dval - p.z).toExponential(2);
@@ -223,6 +231,19 @@ const H = { inst: 'klee', mode, rule, seed, k: 0 };
 new URLSearchParams(location.hash.slice(1)).forEach((v, key) => { if (key in H) H[key] = typeof H[key] === 'number' ? +v : v; });
 const save = () => history.replaceState(null, '', '#' + new URLSearchParams({ inst: $('inst').value, mode, rule, seed, k }));
 for (const [key, v] of Object.entries(instances)) $('inst').append(new Option(v.label, key));
+// the words that depend on the language: title, options, the Play button
+const optWords = { simplex: ['Simplex', 'Simplesso'], ipm: ['Interior point (barrier)', 'Punto interno (barriera)'],
+  dantzig: ['Dantzig (largest reduced cost)', 'Dantzig (costo ridotto più grande)'], bland: ['Bland (smallest index)', 'Bland (indice più piccolo)'] };
+function words() {
+  document.title = t('LP in 3D', 'PL in 3D');
+  for (const o of $('inst').options) o.textContent = t(instances[o.value].label, instances[o.value].it);
+  for (const o of [...$('mode').options, ...$('rule').options]) o.textContent = t(...optWords[o.value]);
+  $('play').textContent = timer ? t('Pause', 'Pausa') : t('Play', 'Avvia');
+  $('step').textContent = t('Step', 'Passo');
+  $('regen').textContent = t('Regenerate', 'Rigenera');
+}
+words();
+onLang(() => { words(); if (P) show(); });
 if (instances[H.inst]) $('inst').value = H.inst;
 if (['simplex', 'ipm'].includes(H.mode)) mode = $('mode').value = H.mode;
 if (['dantzig', 'bland'].includes(H.rule)) rule = $('rule').value = H.rule;

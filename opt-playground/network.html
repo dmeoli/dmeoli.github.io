@@ -21,8 +21,8 @@
 <body class="wide">
 <nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html" aria-current="page">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
-  <h1>Network playground</h1>
-  <p class="lede">A small neural network trained in the browser, with everything
+  <h1><span data-l="en">Network playground</span><span data-l="it" lang="it">Laboratorio di reti neurali</span></h1>
+  <p class="lede" data-l="en">A small neural network trained in the browser, with everything
   the TensorFlow Playground has, and two additions: the optimizer is chosen among
   those of optiml, and two networks can race from the same initial weights with
   different optimizers. Every neuron shows its output over the plane; links are
@@ -31,30 +31,40 @@
   \(p\), every hidden neuron is switched off with probability \(p\) in each mini-batch of
   training (drawn faded while the network trains) and the others are scaled by
   \(1/(1-p)\); at test time, and in every map and loss shown, all neurons are on.</p>
+  <p class="lede" data-l="it" lang="it">Una piccola rete neurale addestrata nel browser, con tutto
+  ciò che ha il TensorFlow Playground e due aggiunte: l'ottimizzatore si sceglie fra quelli
+  di optiml, e due reti possono gareggiare dagli stessi pesi iniziali con ottimizzatori
+  diversi. Ogni neurone mostra la sua uscita sul piano; i collegamenti sono i pesi (viola
+  i positivi, oro i negativi, più spessi quando sono più grandi); puntando un neurone lo
+  si vede in grande a destra, un clic su un collegamento ne modifica il peso. Con dropout
+  \(p\), ogni neurone nascosto è spento con probabilità \(p\) in ogni minibatch
+  dell'addestramento (disegnato sbiadito mentre la rete si addestra) e gli altri sono
+  scalati di \(1/(1-p)\); in fase di test, e in ogni mappa e loss mostrata, tutti i neuroni
+  sono accesi.</p>
 </header>
 <section class="controls">
   <div class="settings">
     <label><span>learning rate</span><select id="lr"></select></label>
-    <label><span>activation</span><select id="act"></select></label>
-    <label><span>regularization</span><select id="reg"></select></label>
-    <label><span>regularization rate</span><select id="regRate"></select></label>
-    <label title="probability of dropping a hidden neuron in a training mini-batch; off at test time"><span>dropout</span><select id="drop"></select></label>
-    <label><span>problem type</span><select id="problem"></select></label>
-    <label><span>optimizer</span><select id="opt"></select></label>
-    <label class="check"><span>race</span><input id="race" type="checkbox"></label>
-    <label class="race-only"><span>against</span><select id="optB"></select></label>
+    <label><span><span data-l="en">activation</span><span data-l="it" lang="it">attivazione</span></span><select id="act"></select></label>
+    <label><span><span data-l="en">regularization</span><span data-l="it" lang="it">regolarizzazione</span></span><select id="reg"></select></label>
+    <label><span><span data-l="en">regularization rate</span><span data-l="it" lang="it">tasso di regolarizzazione</span></span><select id="regRate"></select></label>
+    <label id="dropLab" title="probability of dropping a hidden neuron in a training mini-batch; off at test time"><span>dropout</span><select id="drop"></select></label>
+    <label><span><span data-l="en">problem type</span><span data-l="it" lang="it">tipo di problema</span></span><select id="problem"></select></label>
+    <label><span><span data-l="en">optimizer</span><span data-l="it" lang="it">ottimizzatore</span></span><select id="opt"></select></label>
+    <label class="check"><span><span data-l="en">race</span><span data-l="it" lang="it">gara</span></span><input id="race" type="checkbox"></label>
+    <label class="race-only"><span><span data-l="en">against</span><span data-l="it" lang="it">contro</span></span><select id="optB"></select></label>
   </div>
-  <div class="transport"><label class="counter"><span>epoch</span><output id="epoch"></output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+  <div class="transport"><label class="counter"><span><span data-l="en">epoch</span><span data-l="it" lang="it">epoca</span></span><output id="epoch"></output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
 </section>
 <main class="nnlayout">
   <section class="side nndata">
-    <h3>Data</h3>
+    <h3><span data-l="en">Data</span><span data-l="it" lang="it">Dati</span></h3>
     <div id="datas" class="datas" role="radiogroup" aria-label="data set"></div>
-    <label><span>ratio of training data: <output id="ratioOut"></output>%</span><input id="ratio" type="range" min="10" max="90" step="10"></label>
-    <label><span>noise: <output id="noiseOut"></output></span><input id="noise" type="range" min="0" max="50" step="5"></label>
-    <label><span>batch size: <output id="batchOut"></output></span><input id="batch" type="range" min="1" max="30" step="1"></label>
-    <button id="regen" type="button">Regenerate</button>
-    <h3>Features</h3>
+    <label><span><span data-l="en">ratio of training data</span><span data-l="it" lang="it">frazione dei dati di addestramento</span>: <output id="ratioOut"></output>%</span><input id="ratio" type="range" min="10" max="90" step="10"></label>
+    <label><span><span data-l="en">noise</span><span data-l="it" lang="it">rumore</span>: <output id="noiseOut"></output></span><input id="noise" type="range" min="0" max="50" step="5"></label>
+    <label><span><span data-l="en">batch size</span><span data-l="it" lang="it">dimensione del batch</span>: <output id="batchOut"></output></span><input id="batch" type="range" min="1" max="30" step="1"></label>
+    <button id="regen" type="button"><span data-l="en">Regenerate</span><span data-l="it" lang="it">Rigenera</span></button>
+    <h3><span data-l="en">Features</span><span data-l="it" lang="it">Feature</span></h3>
     <div id="feats" class="feats"></div>
   </section>
   <section class="mid nnmid">
@@ -66,27 +76,31 @@
     <svg id="netB" class="race-only" viewBox="0 0 640 330"></svg>
   </section>
   <section class="side nnout">
-    <h3>Output</h3>
-    <dl class="stats"><div><dt>test loss</dt><dd id="testLoss"></dd></div><div><dt>training loss</dt><dd id="trainLoss"></dd></div></dl>
-    <dl class="stats race-only b"><div><dt>test loss B</dt><dd id="testLossB"></dd></div><div><dt>training loss B</dt><dd id="trainLossB"></dd></div></dl>
+    <h3><span data-l="en">Output</span><span data-l="it" lang="it">Uscita</span></h3>
+    <dl class="stats"><div><dt><span data-l="en">test loss</span><span data-l="it" lang="it">loss di test</span></dt><dd id="testLoss"></dd></div><div><dt><span data-l="en">training loss</span><span data-l="it" lang="it">loss di addestramento</span></dt><dd id="trainLoss"></dd></div></dl>
+    <dl class="stats race-only b"><div><dt><span data-l="en">test loss B</span><span data-l="it" lang="it">loss di test B</span></dt><dd id="testLossB"></dd></div><div><dt><span data-l="en">training loss B</span><span data-l="it" lang="it">loss di addestramento B</span></dt><dd id="trainLossB"></dd></div></dl>
     <canvas id="loss" width="260" height="70"></canvas>
     <canvas id="out" width="260" height="260"></canvas>
     <canvas id="outB" class="race-only" width="260" height="260"></canvas>
-    <label class="check row"><input id="showTest" type="checkbox"><span>show test data</span></label>
-    <label class="check row"><input id="disc" type="checkbox"><span>discretize output</span></label>
-    <h3>Loss landscape <span id="landView" class="switch"><button type="button" data-v="map" aria-pressed="true">map</button><button type="button" data-v="3d" aria-pressed="false">3D</button></span></h3>
-    <p id="landNote" class="placeholder">Not computed yet: the training loss on a plane through the current weights, spanned by two random filter-normalized directions or by the two principal directions of the path, with the path of the past epochs projected on it and the current weights (gold) moving as training goes on.</p>
+    <label class="check row"><input id="showTest" type="checkbox"><span><span data-l="en">show test data</span><span data-l="it" lang="it">mostra i dati di test</span></span></label>
+    <label class="check row"><input id="disc" type="checkbox"><span><span data-l="en">discretize output</span><span data-l="it" lang="it">discretizza l'uscita</span></span></label>
+    <h3><span data-l="en">Loss landscape</span><span data-l="it" lang="it">Paesaggio della loss</span> <span id="landView" class="switch"><button type="button" data-v="map" aria-pressed="true"><span data-l="en">map</span><span data-l="it" lang="it">mappa</span></button><button type="button" data-v="3d" aria-pressed="false">3D</button></span></h3>
+    <p id="landNote" class="placeholder"><span data-l="en">Not computed yet: the training loss on a plane through the current weights, spanned by two random filter-normalized directions or by the two principal directions of the path, with the path of the past epochs projected on it and the current weights (gold) moving as training goes on.</span><span data-l="it" lang="it">Non ancora calcolato: la loss di addestramento su un piano per i pesi correnti, generato da due direzioni casuali normalizzate per filtro o dalle due direzioni principali del cammino, con il cammino delle epoche passate proiettato su di esso e i pesi correnti (in oro) che si muovono durante l'addestramento.</span></p>
     <canvas id="land" width="260" height="260" hidden></canvas>
     <div id="land3d" hidden></div>
-    <label><span>directions</span><select id="landDir"><option value="random">random, filter-normalized</option><option value="pca">principal, of the path</option></select></label>
-    <button id="landBtn" type="button">Compute around the current weights</button>
+    <label><span><span data-l="en">directions</span><span data-l="it" lang="it">direzioni</span></span><select id="landDir"><option value="random">random, filter-normalized</option><option value="pca">principal, of the path</option></select></label>
+    <button id="landBtn" type="button"><span data-l="en">Compute around the current weights</span><span data-l="it" lang="it">Calcola attorno ai pesi correnti</span></button>
   </section>
 </main>
 <div id="wedit" class="wedit" hidden><input type="text" inputmode="decimal" aria-label="weight"></div>
-<footer>Scene F of opt-playground. Loss curves: solid training, dashed test;
+<footer><span data-l="en">Scene F of opt-playground. Loss curves: solid training, dashed test;
 violet the first network, gold the second. The loss landscape follows H. Li et al.,
 <a href="https://arxiv.org/abs/1712.09913">Visualizing the Loss Landscape of Neural Nets</a> (2018).
-The configuration is kept in the address.</footer>
+The configuration is kept in the address.</span><span data-l="it" lang="it">Scena F di
+opt-playground. Curve della loss: continua l'addestramento, tratteggiata il test; in viola
+la prima rete, in oro la seconda. Il paesaggio della loss segue H. Li et al.,
+<a href="https://arxiv.org/abs/1712.09913">Visualizing the Loss Landscape of Neural Nets</a> (2018).
+La configurazione è conservata nell'indirizzo.</span></footer>
 <script type="module" src="src/network.js"></script>
 </body>
 </html>

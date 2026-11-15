@@ -15,6 +15,7 @@ import { palette, drawPlane, drawGrid, drawImage, drawStrip, drawCurves, toPx, t
 import { makeNormSet, normalize } from './latent-data.js';
 import { N } from './convnet.js';
 import { rng } from './nn.js';
+import { t, onLang } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const S = { model: 'ae', beta: 1, H: 128, lr: 0.002, seed: 1 };
@@ -47,7 +48,7 @@ function makeData(ready) {
     if (te.X.length >= NTEST && !test) { test = te; st.Y = te.Y; st.codes = new Array(NTEST).fill(null); }
     if (test && pool.X.length >= 500 && !data) { data = pool; ready(); }
     if (pool.X.length < NTRAIN) requestAnimationFrame(chunk);
-    if (!data) $('explain').textContent = `Writing the digits: ${te.X.length + pool.X.length} of ${NTEST + NTRAIN}.`;
+    if (!data) $('explain').textContent = t(`Writing the digits: ${te.X.length + pool.X.length} of ${NTEST + NTRAIN}.`, `Scrittura delle cifre: ${te.X.length + pool.X.length} su ${NTEST + NTRAIN}.`);
     else if (!running) refresh();
   };
   chunk();
@@ -158,12 +159,12 @@ function idleWork() {
 
 function start() {
   if (!data) return;
-  running = true; $('train').textContent = 'Pause';
+  running = true; $('train').textContent = t('Pause', 'Pausa');
   requestAnimationFrame(loop);
 }
 function stop() {
   if (!running) return;
-  running = false; $('train').textContent = 'Play';
+  running = false; $('train').textContent = t('Play', 'Avvia');
   kick(); refresh();
 }
 
@@ -198,12 +199,15 @@ function refresh() {
   $('step').disabled = $('train').disabled = !data;
   const v = st.view, cell = 2 * v.R / G, nb = nearest(st.probe);
   $('probenote').innerHTML = `z = (<b>${st.probe[0].toFixed(2)}</b>, <b>${st.probe[1].toFixed(2)}</b>)` +
-    (m.vae ? `<br>density of the prior there: ${(Math.exp(-(st.probe[0] ** 2 + st.probe[1] ** 2) / 2) / (2 * Math.PI)).toFixed(3)} (at the origin 0.159)` : '') +
-    (nb ? `<br>nearest held-out code: a ${nb.y}, at distance ${nb.d.toFixed(2)}` : '');
-  $('pathnote').textContent = st.sel.length === 0 ? 'Click a digit on the plane to choose A, then another to choose B.'
-    : st.sel.length === 1 ? `A is a held-out ${test.Y[st.sel[0]]}; now click B.`
-    : !st.path ? `From a ${test.Y[st.sel[0]]} to a ${test.Y[st.sel[1]]}.`
-    : `From a ${test.Y[st.sel[0]]} to a ${test.Y[st.sel[1]]}, ${(Math.hypot(st.path[0][0] - st.path[1][0], st.path[0][1] - st.path[1][1])).toFixed(2)} apart in the plane; click again to start over.`;
+    (m.vae ? t(`<br>density of the prior there: ${(Math.exp(-(st.probe[0] ** 2 + st.probe[1] ** 2) / 2) / (2 * Math.PI)).toFixed(3)} (at the origin 0.159)`,
+      `<br>densità della prior in quel punto: ${(Math.exp(-(st.probe[0] ** 2 + st.probe[1] ** 2) / 2) / (2 * Math.PI)).toFixed(3)} (nell'origine 0.159)`) : '') +
+    (nb ? t(`<br>nearest held-out code: a ${nb.y}, at distance ${nb.d.toFixed(2)}`, `<br>codice tenuto da parte più vicino: un ${nb.y}, a distanza ${nb.d.toFixed(2)}`) : '');
+  const dist = st.path ? (Math.hypot(st.path[0][0] - st.path[1][0], st.path[0][1] - st.path[1][1])).toFixed(2) : '';
+  $('pathnote').textContent = st.sel.length === 0 ? t('Click a digit on the plane to choose A, then another to choose B.', 'Un clic su una cifra del piano sceglie A, un altro su una seconda cifra sceglie B.')
+    : st.sel.length === 1 ? t(`A is a held-out ${test.Y[st.sel[0]]}; now click B.`, `A è un ${test.Y[st.sel[0]]} tenuto da parte; ora si scelga B.`)
+    : !st.path ? t(`From a ${test.Y[st.sel[0]]} to a ${test.Y[st.sel[1]]}.`, `Da un ${test.Y[st.sel[0]]} a un ${test.Y[st.sel[1]]}.`)
+    : t(`From a ${test.Y[st.sel[0]]} to a ${test.Y[st.sel[1]]}, ${dist} apart in the plane; click again to start over.`,
+      `Da un ${test.Y[st.sel[0]]} a un ${test.Y[st.sel[1]]}, a distanza ${dist} nel piano; un altro clic ricomincia.`);
   if (st.codes && st.codes.every(Boolean)) {
     let empty = 0;
     const full = new Uint8Array(G * G);
@@ -212,21 +216,25 @@ function refresh() {
       if (i >= 0 && j >= 0 && i < G && j < G) full[i * G + j] = 1;
     }
     for (const f of full) if (!f) empty++;
-    $('gridnote').textContent = `${empty} of the ${G * G} cells contain no held-out code; each cell is ${cell.toFixed(2)} wide.`;
+    $('gridnote').textContent = t(`${empty} of the ${G * G} cells contain no held-out code; each cell is ${cell.toFixed(2)} wide.`,
+      `${empty} delle ${G * G} celle non contengono alcun codice tenuto da parte; ogni cella è larga ${cell.toFixed(2)}.`);
   } else $('gridnote').textContent = '';
   if (st.drawn) {
     const c = forward(m, padN, [0, 0]), L = losses(m, c);
-    $('padnote').innerHTML = `code (<b>${st.drawn[0].toFixed(2)}</b>, <b>${st.drawn[1].toFixed(2)}</b>); reconstruction error ${L.rec.toFixed(1)} nats` +
+    $('padnote').innerHTML = t(`code (<b>${st.drawn[0].toFixed(2)}</b>, <b>${st.drawn[1].toFixed(2)}</b>); reconstruction error ${L.rec.toFixed(1)} nats`,
+      `codice (<b>${st.drawn[0].toFixed(2)}</b>, <b>${st.drawn[1].toFixed(2)}</b>); errore di ricostruzione ${L.rec.toFixed(1)} nat`) +
       (m.vae ? `, KL ${L.kl.toFixed(2)}, σ = (${Math.exp(c.lv[0] / 2).toFixed(2)}, ${Math.exp(c.lv[1] / 2).toFixed(2)})` : '');
-  } else $('padnote').textContent = 'The pad is empty.';
+  } else $('padnote').textContent = t('The pad is empty.', 'Il riquadro è vuoto.');
   if (!data) return;
   const last = hist.length ? hist[hist.length - 1] : null;
-  $('lossnote').textContent = last ? `On the last ${every} batches of ${B}: reconstruction ${last.rec.toFixed(1)} nats per digit` +
-    (m.vae ? `, KL ${last.kl.toFixed(2)}, so a loss of ${(last.rec + S.beta * last.kl).toFixed(1)} with β = ${S.beta}.` : '.') : '';
-  $('explain').textContent = `${m.vae ? `VAE with β = ${S.beta}` : 'Autoencoder'}, ${S.H} hidden units per side. ` +
-    (held ? `On the ${NTEST} held-out digits (at the mean code${held.step === steps ? '' : `, as of step ${held.step}`}): reconstruction error ${held.rec.toFixed(1)} nats per digit` +
-      (m.vae ? `, KL ${held.kl.toFixed(2)}` : '') + '.' : 'Coding the held-out digits…') +
-    (data.X.length < NTRAIN ? ` Training digits written so far: ${data.X.length} of ${NTRAIN}.` : '');
+  $('lossnote').textContent = last ? t(`On the last ${every} batches of ${B}: reconstruction ${last.rec.toFixed(1)} nats per digit`,
+    `Sugli ultimi ${every} batch da ${B}: ricostruzione ${last.rec.toFixed(1)} nat per cifra`) +
+    (m.vae ? t(`, KL ${last.kl.toFixed(2)}, so a loss of ${(last.rec + S.beta * last.kl).toFixed(1)} with β = ${S.beta}.`, `, KL ${last.kl.toFixed(2)}, quindi una loss di ${(last.rec + S.beta * last.kl).toFixed(1)} con β = ${S.beta}.`) : '.') : '';
+  $('explain').textContent = (m.vae ? t(`VAE with β = ${S.beta}`, `VAE con β = ${S.beta}`) : 'Autoencoder') + t(`, ${S.H} hidden units per side. `, `, ${S.H} unità nascoste per lato. `) +
+    (held ? t(`On the ${NTEST} held-out digits (at the mean code${held.step === steps ? '' : `, as of step ${held.step}`}): reconstruction error ${held.rec.toFixed(1)} nats per digit`,
+      `Sulle ${NTEST} cifre tenute da parte (nel codice medio${held.step === steps ? '' : `, al passo ${held.step}`}): errore di ricostruzione ${held.rec.toFixed(1)} nat per cifra`) +
+      (m.vae ? `, KL ${held.kl.toFixed(2)}` : '') + '.' : t('Coding the held-out digits…', 'Codifica delle cifre tenute da parte…')) +
+    (data.X.length < NTRAIN ? t(` Training digits written so far: ${data.X.length} of ${NTRAIN}.`, ` Cifre di addestramento scritte finora: ${data.X.length} su ${NTRAIN}.`) : '');
 }
 
 function nearest(z) {
@@ -358,6 +366,18 @@ document.addEventListener('keydown', e => {
 addEventListener('resize', () => { if (!running) refresh(); });
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { palette_(); refresh(); });
 
+// the texts that are not in the page twice: title, buttons, options
+function labels() {
+  document.title = t('Latent space playground', 'Laboratorio dello spazio latente');
+  $('step').textContent = t('Step', 'Passo');
+  $('train').textContent = running ? t('Pause', 'Pausa') : t('Play', 'Avvia');
+  $('clear').textContent = t('Clear', 'Cancella');
+  $('sample').textContent = t('Held-out digit', 'Cifra tenuta da parte');
+  for (const o of $('model').options) o.textContent = o.value === 'ae' ? 'autoencoder' : t('variational (VAE)', 'variazionale (VAE)');
+}
+onLang(() => { labels(); if (data) refresh(); });
+
+labels();
 reset();
 makeData(() => {
   pad = Float64Array.from(test.X[3]);

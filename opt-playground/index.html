@@ -20,28 +20,32 @@
 <body>
 <nav class="pages"><a href="index.html" aria-current="page">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
-  <h1>Decomposition playground</h1>
-  <p class="lede">The Lagrangian dual of a small integer program, and the same
+  <h1><span data-l="en">Decomposition playground</span><span data-l="it" lang="it">Laboratorio di decomposizione</span></h1>
+  <p class="lede" data-l="en">The Lagrangian dual of a small integer program, and the same
   iterations seen in the primal: every cut of the dual is a column, i.e., an
   integer point of the subproblem, and the Dantzig-Wolfe point moves in the hull
   of the columns found so far.</p>
+  <p class="lede" data-l="it" lang="it">Il duale lagrangiano di un piccolo problema intero, e le stesse
+  iterazioni viste nel primale: ogni taglio del duale è una colonna, cioè un
+  punto intero del sottoproblema, e il punto di Dantzig-Wolfe si muove nell'inviluppo
+  delle colonne trovate finora.</p>
 </header>
 
 <section class="controls">
   <div class="settings">
-    <label><span>scene</span><select id="scene"></select></label>
-    <label><span>instance</span><select id="preset"></select></label>
-    <label><span>algorithm</span><select id="algo"></select></label>
-    <label><span>dual view</span><select id="view"></select></label>
+    <label><span><span data-l="en">scene</span><span data-l="it" lang="it">scena</span></span><select id="scene"></select></label>
+    <label><span><span data-l="en">instance</span><span data-l="it" lang="it">istanza</span></span><select id="preset"></select></label>
+    <label><span><span data-l="en">algorithm</span><span data-l="it" lang="it">algoritmo</span></span><select id="algo"></select></label>
+    <label><span><span data-l="en">dual view</span><span data-l="it" lang="it">vista del duale</span></span><select id="view"></select></label>
     <div id="params" class="params"></div>
-    <label class="check"><span>race</span><input id="race" type="checkbox"></label>
-    <label><span>against</span><select id="algoB"></select></label>
+    <label class="check"><span><span data-l="en">race</span><span data-l="it" lang="it">gara</span></span><input id="race" type="checkbox"></label>
+    <label><span><span data-l="en">against</span><span data-l="it" lang="it">contro</span></span><select id="algoB"></select></label>
     <div id="paramsB" class="params b"></div>
-    <label><span>replay a trace</span><select id="traceSel"><option value="">none</option><option value="smspp-box-bundle">SMS++ BundleSolver (real run)</option><option value="smspp-box-subgrad-volume">SMS++ SubGradSolver, Volume (real run)</option><option value="smspp-box-subgrad">SMS++ SubGradSolver (real run)</option></select></label>
-    <label><span>trace file</span><input id="importTrace" type="file" accept=".json,application/json"></label>
+    <label><span><span data-l="en">replay a trace</span><span data-l="it" lang="it">riproduci una traccia</span></span><select id="traceSel"><option value="">none</option><option value="smspp-box-bundle">SMS++ BundleSolver (real run)</option><option value="smspp-box-subgrad-volume">SMS++ SubGradSolver, Volume (real run)</option><option value="smspp-box-subgrad">SMS++ SubGradSolver (real run)</option></select></label>
+    <label><span><span data-l="en">trace file</span><span data-l="it" lang="it">file di traccia</span></span><input id="importTrace" type="file" accept=".json,application/json"></label>
     <button id="exportTrace" type="button">Export trace</button>
   </div>
-  <div class="transport"><label class="counter"><span>iteration</span><output id="iter">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+  <div class="transport"><label class="counter"><span><span data-l="en">iteration</span><span data-l="it" lang="it">iterazione</span></span><output id="iter">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
 </section>
 
 <p id="explain" class="explain"></p>
@@ -50,13 +54,19 @@
 <main>
   <h2 id="nameA" class="runname"></h2>
   <figure>
-    <figcaption id="primalcap">Primal: the columns of the subproblem (its integer
+    <figcaption id="primalcap"><span data-l="en">Primal: the columns of the subproblem (its integer
     points, or a given finite set) and their hull, the coupling constraints (the
     shaded sides are infeasible), the columns generated so far and their hull, the
     Dantzig-Wolfe point <span class="k dw"></span>; the optima of the continuous
     relaxation <span class="k lpk"></span> (its region dotted), of the Lagrangian
     dual, i.e., over the hull <span class="k opt"></span>, and of the integer
-    problem <span class="k ipk"></span>: \(z_{\mathrm{LP}} \le z_{\mathrm{LD}} \le z_{\mathrm{IP}}\).</figcaption>
+    problem <span class="k ipk"></span>: \(z_{\mathrm{LP}} \le z_{\mathrm{LD}} \le z_{\mathrm{IP}}\).</span><span data-l="it" lang="it">Primale: le colonne del sottoproblema (i suoi punti
+    interi, o un insieme finito dato) e il loro inviluppo, i vincoli accoppianti (i lati
+    ombreggiati non sono ammissibili), le colonne generate finora e il loro inviluppo, il
+    punto di Dantzig-Wolfe <span class="k dw"></span>; gli ottimi del rilassamento
+    continuo <span class="k lpk"></span> (la sua regione punteggiata), del duale
+    lagrangiano, cioè sull'inviluppo <span class="k opt"></span>, e del problema
+    intero <span class="k ipk"></span>: \(z_{\mathrm{LP}} \le z_{\mathrm{LD}} \le z_{\mathrm{IP}}\).</span></figcaption>
     <svg id="primal" viewBox="0 0 440 440"></svg>
   </figure>
   <figure>
@@ -69,17 +79,18 @@
   <figure class="wide">
     <svg id="curve" viewBox="0 0 480 140"></svg>
     <dl class="stats">
-      <div><dt>best \(L\)</dt><dd id="best"></dd></div>
+      <div><dt><span data-l="en">best \(L\)</span><span data-l="it" lang="it">miglior \(L\)</span></dt><dd id="best"></dd></div>
       <div><dt>\(z_{\mathrm{LP}}\) <span class="k lpk"></span></dt><dd id="zlp"></dd></div>
       <div><dt>\(z_{\mathrm{LD}} = \max L\) <span class="k opt"></span></dt><dd id="target"></dd></div>
       <div><dt>\(z_{\mathrm{IP}}\) <span class="k ipk"></span></dt><dd id="zip"></dd></div>
-      <div><dt>status</dt><dd id="status"></dd></div>
+      <div><dt><span data-l="en">status</span><span data-l="it" lang="it">stato</span></dt><dd id="status"></dd></div>
     </dl>
   </figure>
 </main>
 
-<footer>Prototype of scene A of opt-playground, with one and two multipliers. Arrow right: one step;
-space: play and pause. The configuration is kept in the address.</footer>
+<footer><span data-l="en">Prototype of scene A of opt-playground, with one and two multipliers. Arrow right: one step;
+space: play and pause. The configuration is kept in the address.</span><span data-l="it" lang="it">Prototipo della scena A di opt-playground, con uno e due moltiplicatori. Freccia a destra: un passo;
+spazio: avvia e pausa. La configurazione è conservata nell'indirizzo.</span></footer>
 <script type="module" src="src/main.js"></script>
 </body>
 </html>

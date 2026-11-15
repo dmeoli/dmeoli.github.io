@@ -21,53 +21,70 @@
 <body>
 <nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html" aria-current="page">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
-  <h1>SVM playground</h1>
-  <p class="lede">A support vector machine, primal and dual side by side. The
+  <h1><span data-l="en">SVM playground</span><span data-l="it" lang="it">Laboratorio SVM</span></h1>
+  <p class="lede" data-l="en">A support vector machine, primal and dual side by side. The
   dual is a quadratic problem over the multipliers, one per point, each in the
   box \([0, C]\), with \(\sum_i \alpha_i y_i = 0\); the primal surface is \(f(x) = \sum_i \alpha_i y_i K(x_i, x) + b\).
   SMO moves two multipliers at a time: a multiplier leaving zero is a support
   vector lighting up in the plane.</p>
+  <p class="lede" data-l="it" lang="it">Una support vector machine, con il primale e il duale affiancati.
+  Il duale è un problema quadratico nei moltiplicatori, uno per punto, ciascuno nella
+  scatola \([0, C]\), con \(\sum_i \alpha_i y_i = 0\); la superficie primale è \(f(x) = \sum_i \alpha_i y_i K(x_i, x) + b\).
+  SMO muove due moltiplicatori alla volta: un moltiplicatore che lascia lo zero è un
+  vettore di supporto che si accende nel piano.</p>
 </header>
 <section class="controls">
   <div class="settings">
-    <div class="inline"><label><span>data</span><select id="data"><option value="blobs">Two clusters</option><option value="rings">Disc in a ring</option></select></label><button id="regen" type="button">Regenerate</button></div>
+    <div class="inline"><label><span><span data-l="en">data</span><span data-l="it" lang="it">dati</span></span><select id="data"><option value="blobs">Two clusters</option><option value="rings">Disc in a ring</option></select></label><button id="regen" type="button">Regenerate</button></div>
     <label><span>kernel</span><select id="kernel"><option value="linear">linear</option><option value="poly">polynomial (degree 2)</option><option value="rbf">Gaussian</option></select></label>
     <label><span>\(C\)</span><input id="C" type="range" min="0.05" max="10" step="0.05" value="1"><output id="COut">1</output></label>
-    <label><span>\(\gamma\) (Gaussian)</span><input id="gamma" type="range" min="0.05" max="3" step="0.05" value="0.5"><output id="gammaOut">0.5</output></label>
+    <label><span>\(\gamma\) <span data-l="en">(Gaussian)</span><span data-l="it" lang="it">(gaussiano)</span></span><input id="gamma" type="range" min="0.05" max="3" step="0.05" value="0.5"><output id="gammaOut">0.5</output></label>
   </div>
-  <div class="transport"><label class="counter"><span>SMO steps</span><output id="iter">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+  <div class="transport"><label class="counter"><span><span data-l="en">SMO steps</span><span data-l="it" lang="it">passi di SMO</span></span><output id="iter">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
 </section>
 <main>
   <figure>
-    <figcaption>Primal: the decision surface (the dark line is \(f = 0\), the lighter
+    <figcaption><span data-l="en">Primal: the decision surface (the dark line is \(f = 0\), the lighter
     ones the margins \(f = \pm 1\)), the points (ringed: support vectors; red: the pair
-    of the last step).</figcaption>
+    of the last step).</span><span data-l="it" lang="it">Primale: la superficie di decisione (la linea
+    scura è \(f = 0\), quelle più chiare i margini \(f = \pm 1\)), i punti (cerchiati: i
+    vettori di supporto; in rosso: la coppia dell'ultimo passo).</span></figcaption>
     <canvas id="plane" width="460" height="460"></canvas>
   </figure>
   <figure>
-    <figcaption>Dual: the multipliers \(\alpha_i\) in their boxes \([0, C]\); at \(C\) a point is
-    inside the margin or misclassified.</figcaption>
+    <figcaption><span data-l="en">Dual: the multipliers \(\alpha_i\) in their boxes \([0, C]\); at \(C\) a point is
+    inside the margin or misclassified.</span><span data-l="it" lang="it">Duale: i moltiplicatori \(\alpha_i\)
+    nelle loro scatole \([0, C]\); a \(C\) un punto è dentro il margine o classificato
+    male.</span></figcaption>
     <svg id="dual" viewBox="0 0 520 300"></svg>
     <dl class="stats">
-      <div><dt>dual value</dt><dd id="dval"></dd></div>
-      <div><dt>support vectors</dt><dd><span id="sv"></span> (<span id="svC"></span> at \(C\))</dd></div>
+      <div><dt><span data-l="en">dual value</span><span data-l="it" lang="it">valore duale</span></dt><dd id="dval"></dd></div>
+      <div><dt><span data-l="en">support vectors</span><span data-l="it" lang="it">vettori di supporto</span></dt><dd><span id="sv"></span> (<span id="svC"></span> <span data-l="en">at</span><span data-l="it" lang="it">a</span> \(C\))</dd></div>
       <div><dt>\(\sum_i \alpha_i y_i\)</dt><dd id="eq"></dd></div>
-      <div><dt>status</dt><dd id="status"></dd></div>
+      <div><dt><span data-l="en">status</span><span data-l="it" lang="it">stato</span></dt><dd id="status"></dd></div>
     </dl>
   </figure>
   <figure id="liftfig" class="lift">
-    <figcaption>The lift: every point \(x\) goes up to the height \(\langle w, \varphi(x) \rangle / \|w\|\),
+    <figcaption><span data-l="en">The lift: every point \(x\) goes up to the height \(\langle w, \varphi(x) \rangle / \|w\|\),
     its coordinate along \(w = \sum_i \alpha_i y_i \varphi(x_i)\) in the space of the kernel, so that the
     separating hyperplane becomes the plane at height \(-b / \|w\|\) and the margins the two
     planes \(1 / \|w\|\) above and below it. The plane cuts the lifted surface along a curve
     whose shadow on the floor is the boundary \(f = 0\) of the primal picture; the surface and
-    the plane move with every SMO step.</figcaption>
+    the plane move with every SMO step.</span><span data-l="it" lang="it">Il sollevamento: ogni punto \(x\)
+    sale all'altezza \(\langle w, \varphi(x) \rangle / \|w\|\), la sua coordinata lungo
+    \(w = \sum_i \alpha_i y_i \varphi(x_i)\) nello spazio del kernel, così che l'iperpiano separatore
+    diventa il piano all'altezza \(-b / \|w\|\) e i margini i due piani a \(1 / \|w\|\) sopra e
+    sotto di esso. Il piano taglia la superficie sollevata lungo una curva la cui ombra sul
+    fondo è la frontiera \(f = 0\) della figura primale; la superficie e il piano si muovono a
+    ogni passo di SMO.</span></figcaption>
     <div id="lift"></div>
     <p id="liftinfo" class="explain"></p>
   </figure>
 </main>
-<footer>Part of scene E of opt-playground; optiml has the same machine with the
-primal, the Wolfe dual and the Lagrangian dual (github.com/dmeoli/optiml).</footer>
+<footer><span data-l="en">Part of scene E of opt-playground; optiml has the same machine with the
+primal, the Wolfe dual and the Lagrangian dual (github.com/dmeoli/optiml).</span><span data-l="it"
+lang="it">Parte della scena E di opt-playground; optiml ha la stessa macchina con il primale,
+il duale di Wolfe e il duale lagrangiano (github.com/dmeoli/optiml).</span></footer>
 <script type="module" src="src/svm.js"></script>
 </body>
 </html>

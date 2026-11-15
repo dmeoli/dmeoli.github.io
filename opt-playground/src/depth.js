@@ -6,8 +6,10 @@
 // every layer the page draws its activations and the gradient of its weights.
 
 import { createRun, DATA } from './depth-run.js';
+const DATA_IT = { circle: 'Cerchio', xor: 'Or esclusivo', gauss: 'Gaussiane', spiral: 'Spirale' };
 import { INITS } from './depth-net.js';
 import { drawMap, drawLoss, drawLayers, drawStrip, nice } from './depth-views.js';
+import { t as tr, onLang } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const DEF = { data: 'circle', depth: 20, width: 12, act: 'tanh', init: 'naive', norm: 'none', res: 0, opt: 'adam', lr: 0.01, seed: 1 };
@@ -27,11 +29,11 @@ S.seed = +ok(S.seed, [1, 2, 3, 4, 5], DEF.seed);
 
 // the classic comparisons, one control at a time
 const PRESETS = [
-  ['20 layers, small init', { depth: 20, init: 'small', norm: 'none', res: 0 }],
-  ['20 layers, naive init', { depth: 20, init: 'naive', norm: 'none', res: 0 }],
-  ['20 layers, He', { depth: 20, init: 'he', norm: 'none', res: 0 }],
-  ['+ batch norm', { depth: 20, init: 'he', norm: 'batch', res: 0 }],
-  ['+ residual', { depth: 20, init: 'he', norm: 'batch', res: 1 }],
+  ['20 layers, small init', { depth: 20, init: 'small', norm: 'none', res: 0 }, '20 strati, init piccola'],
+  ['20 layers, naive init', { depth: 20, init: 'naive', norm: 'none', res: 0 }, '20 strati, init ingenua'],
+  ['20 layers, He', { depth: 20, init: 'he', norm: 'none', res: 0 }, '20 strati, He'],
+  ['+ batch norm', { depth: 20, init: 'he', norm: 'batch', res: 0 }, '+ batch norm'],
+  ['+ residual', { depth: 20, init: 'he', norm: 'batch', res: 1 }, '+ residua'],
 ];
 
 let run, timer = null;
@@ -43,11 +45,11 @@ function reset() {
   run = createRun({ ...S, res: !!S.res });
   save(); sync(); draw();
 }
-function stop() { clearInterval(timer); timer = null; $('train').textContent = 'Play'; }
+function stop() { clearInterval(timer); timer = null; $('train').textContent = tr('Play', 'Avvia'); }
 function step() { run.trainEpoch(); run.measure(); draw(); }
 function play() {
   if (timer) return stop();
-  $('train').textContent = 'Pause';
+  $('train').textContent = tr('Pause', 'Pausa');
   timer = setInterval(() => {
     const t0 = performance.now();
     for (let k = 0; k < 10 && (k === 0 || performance.now() - t0 < 25); k++) run.trainEpoch();
@@ -75,25 +77,27 @@ function draw() {
   $('epoch').textContent = run.epoch;
   $('trainLoss').textContent = m.loss.toFixed(3); $('testLoss').textContent = m.testLoss.toFixed(3);
   $('testAcc').textContent = `${(100 * m.testAcc).toFixed(0)}%`;
-  $('range').textContent = rg.lo === 0 ? `[0, ${rg.R}]` : `[-${rg.R}, ${rg.R}]`;
+  for (const e of document.querySelectorAll('.range')) e.textContent = rg.lo === 0 ? `[0, ${rg.R}]` : `[-${rg.R}, ${rg.R}]`;
   $('explain').textContent = explain(m);
 }
 
 // what the panels show, in one sentence
 function explain(m) {
   const d = S.depth, g1 = m.gnorm[0], gd = m.gnorm[d - 1], h = m.acts[d - 1];
-  const e = Math.log10(g1 / gd), sci = v => (isFinite(v) ? v.toExponential(1).replace('e+', 'e') : 'not finite');
+  const e = Math.log10(g1 / gd), sci = v => (isFinite(v) ? v.toExponential(1).replace('e+', 'e') : tr('not finite', 'non finito'));
   let ratio;
-  if (!isFinite(e)) ratio = 'is not finite';
-  else if (Math.abs(e) < 1) ratio = 'is of the same order as that of the last layer';
-  else ratio = `is 10^${e.toFixed(0)} times that of layer ${d}`;
+  if (!isFinite(e)) ratio = tr('is not finite', 'non è finito');
+  else if (Math.abs(e) < 1) ratio = tr('is of the same order as that of the last layer', "è dello stesso ordine di quello dell'ultimo strato");
+  else ratio = tr(`is 10^${e.toFixed(0)} times that of layer ${d}`, `è 10^${e.toFixed(0)} volte quello dello strato ${d}`);
   let sat = '';
-  if (!S.res && S.act === 'tanh') sat = `${pct(h, v => Math.abs(v) > 0.99)} of the units of layer ${d} are saturated (|h| > 0.99)`;
-  else if (!S.res && S.act === 'sigmoid') sat = `${pct(h, v => v < 0.01 || v > 0.99)} of the units of layer ${d} are saturated`;
-  else if (!S.res && S.act === 'relu') sat = `${pct(h, v => v === 0)} of the outputs of layer ${d} are zero`;
+  if (!S.res && S.act === 'tanh') sat = tr(`${pct(h, v => Math.abs(v) > 0.99)} of the units of layer ${d} are saturated (|h| > 0.99)`, `il ${pct(h, v => Math.abs(v) > 0.99)} delle unità dello strato ${d} è saturo (|h| > 0.99)`);
+  else if (!S.res && S.act === 'sigmoid') sat = tr(`${pct(h, v => v < 0.01 || v > 0.99)} of the units of layer ${d} are saturated`, `il ${pct(h, v => v < 0.01 || v > 0.99)} delle unità dello strato ${d} è saturo`);
+  else if (!S.res && S.act === 'relu') sat = tr(`${pct(h, v => v === 0)} of the outputs of layer ${d} are zero`, `il ${pct(h, v => v === 0)} delle uscite dello strato ${d} è nullo`);
   const sd = Math.sqrt(h.reduce((s, v) => s + v * v, 0) / h.length - (h.reduce((s, v) => s + v, 0) / h.length) ** 2);
-  return `Epoch ${run.epoch}: the gradient with respect to the weights of layer 1 has norm ${sci(g1)} and ${ratio}; ` +
-    `the activations of layer ${d} have standard deviation ${sci(sd)}${sat ? ', and ' + sat : ''}. Test accuracy ${(100 * m.testAcc).toFixed(0)}%.`;
+  return tr(`Epoch ${run.epoch}: the gradient with respect to the weights of layer 1 has norm ${sci(g1)} and ${ratio}; ` +
+    `the activations of layer ${d} have standard deviation ${sci(sd)}${sat ? ', and ' + sat : ''}. Test accuracy ${(100 * m.testAcc).toFixed(0)}%.`,
+    `Epoca ${run.epoch}: il gradiente rispetto ai pesi dello strato 1 ha norma ${sci(g1)} e ${ratio}; ` +
+    `le attivazioni dello strato ${d} hanno deviazione standard ${sci(sd)}${sat ? ', e ' + sat : ''}. Accuratezza sul test set ${(100 * m.testAcc).toFixed(0)}%.`);
 }
 const pct = (a, f) => `${(100 * a.reduce((s, v) => s + (f(v) ? 1 : 0), 0) / a.length).toFixed(0)}%`;
 
@@ -118,8 +122,8 @@ $('depth').onchange = e => { S.depth = +e.target.value; reset(); };
 $('res').onchange = e => { S.res = e.target.checked ? 1 : 0; reset(); };
 $('showTest').onchange = draw;
 const pb = document.querySelector('.presets');
-PRESETS.forEach(([name, p], k) => {
-  const b = document.createElement('button'); b.type = 'button'; b.textContent = name; b.dataset.k = k;
+PRESETS.forEach(([name, p, it], k) => {
+  const b = document.createElement('button'); b.type = 'button'; b.textContent = tr(name, it); b.dataset.k = k;
   b.onclick = () => { Object.assign(S, p); reset(); };
   pb.appendChild(b);
 });
@@ -133,4 +137,17 @@ document.addEventListener('keydown', e => {
 });
 let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(draw, 100); });
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+// the texts that the page cannot hold twice: the options, the presets, the title
+const OPTS = { data: DATA_IT, init: { naive: 'ingenua N(0, 1)', small: 'piccola N(0, 0.01²)' }, norm: { none: 'nessuna' }, act: { sigmoid: 'Sigmoide' } };
+const OPTS_EN = {};
+for (const k of Object.keys(OPTS)) OPTS_EN[k] = Object.fromEntries([...$(k).options].map(o => [o.value, o.textContent]));
+function texts() {
+  for (const k of Object.keys(OPTS)) for (const o of $(k).options) o.textContent = tr(OPTS_EN[k][o.value], OPTS[k][o.value] ?? OPTS_EN[k][o.value]);
+  for (const b of document.querySelectorAll('.presets button')) b.textContent = tr(PRESETS[+b.dataset.k][0], PRESETS[+b.dataset.k][2]);
+  $('train').textContent = timer ? tr('Pause', 'Pausa') : tr('Play', 'Avvia');
+  $('step').textContent = tr('Step', 'Passo');
+  document.title = tr('Depth playground', 'Laboratorio della profondità');
+}
+texts();
+onLang(() => { texts(); draw(); });
 reset();

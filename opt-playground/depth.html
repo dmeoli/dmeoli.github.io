@@ -38,8 +38,8 @@
 <body>
 <nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html" aria-current="page">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
-  <h1>Depth playground</h1>
-  <p class="lede">A stack of up to 30 fully connected layers of the same width, trained in
+  <h1><span data-l="en">Depth playground</span><span data-l="it" lang="it">Laboratorio della profondità</span></h1>
+  <p class="lede" data-l="en">A stack of up to 30 fully connected layers of the same width, trained in
   the page on a data set of the TensorFlow Playground, trains or not according to how the
   signal crosses the layers: with weights too small the activations and the gradients
   shrink by a nearly constant factor at every layer, while with weights too large the
@@ -48,70 +48,90 @@
   choose the variance of the weights so that the variance of the activations stays about
   constant from layer to layer; normalization restores it at every layer, and residual
   connections give the gradient a path around each layer.</p>
+  <p class="lede" data-l="it" lang="it">Una pila di fino a 30 strati completamente connessi della
+  stessa larghezza, addestrata nella pagina su un data set del TensorFlow Playground, si addestra
+  o no secondo come il segnale attraversa gli strati: con pesi troppo piccoli le attivazioni e i
+  gradienti si riducono di un fattore quasi costante a ogni strato, mentre con pesi troppo grandi
+  le unità \(\tanh\) e sigmoidi saturano e la rete calcola una funzione che varia in modo
+  irregolare sul piano. Le inizializzazioni di Glorot e Bengio e di He et al. scelgono la varianza
+  dei pesi in modo che la varianza delle attivazioni resti circa costante da uno strato all'altro;
+  la normalizzazione la ripristina a ogni strato, e le connessioni residue danno al gradiente un
+  percorso che aggira ciascuno strato.</p>
 </header>
 <section class="controls">
   <div class="settings">
-    <label><span>data set</span><select id="data"><option value="circle">Circle</option><option value="xor">Exclusive or</option><option value="gauss">Gaussians</option><option value="spiral">Spiral</option></select></label>
-    <label><span>depth <output id="depthOut"></output></span><input id="depth" type="range" min="2" max="30" step="1"></label>
-    <label><span>width</span><select id="width"><option>8</option><option>12</option><option>16</option></select></label>
-    <label><span>activation</span><select id="act"><option value="tanh">Tanh</option><option value="relu">ReLU</option><option value="sigmoid">Sigmoid</option></select></label>
-    <label><span>initialization</span><select id="init"><option value="naive">naive N(0, 1)</option><option value="small">small N(0, 0.01²)</option><option value="xavier">Xavier / Glorot</option><option value="he">He</option></select></label>
-    <label><span>normalization</span><select id="norm"><option value="none">none</option><option value="batch">batch norm</option><option value="layer">layer norm</option></select></label>
-    <label class="check"><span>residual</span><input id="res" type="checkbox"></label>
-    <label><span>optimizer</span><select id="opt"><option value="adam">Adam</option><option value="sgd">SGD</option></select></label>
+    <label><span><span data-l="en">data set</span><span data-l="it" lang="it">data set</span></span><select id="data"><option value="circle">Circle</option><option value="xor">Exclusive or</option><option value="gauss">Gaussians</option><option value="spiral">Spiral</option></select></label>
+    <label><span><span data-l="en">depth</span><span data-l="it" lang="it">profondità</span> <output id="depthOut"></output></span><input id="depth" type="range" min="2" max="30" step="1"></label>
+    <label><span><span data-l="en">width</span><span data-l="it" lang="it">larghezza</span></span><select id="width"><option>8</option><option>12</option><option>16</option></select></label>
+    <label><span><span data-l="en">activation</span><span data-l="it" lang="it">attivazione</span></span><select id="act"><option value="tanh">Tanh</option><option value="relu">ReLU</option><option value="sigmoid">Sigmoid</option></select></label>
+    <label><span><span data-l="en">initialization</span><span data-l="it" lang="it">inizializzazione</span></span><select id="init"><option value="naive">naive N(0, 1)</option><option value="small">small N(0, 0.01²)</option><option value="xavier">Xavier / Glorot</option><option value="he">He</option></select></label>
+    <label><span><span data-l="en">normalization</span><span data-l="it" lang="it">normalizzazione</span></span><select id="norm"><option value="none">none</option><option value="batch">batch norm</option><option value="layer">layer norm</option></select></label>
+    <label class="check"><span><span data-l="en">residual</span><span data-l="it" lang="it">residua</span></span><input id="res" type="checkbox"></label>
+    <label><span><span data-l="en">optimizer</span><span data-l="it" lang="it">ottimizzatore</span></span><select id="opt"><option value="adam">Adam</option><option value="sgd">SGD</option></select></label>
     <label><span>learning rate</span><select id="lr"><option>0.001</option><option>0.003</option><option>0.01</option><option>0.03</option><option>0.1</option><option>0.3</option></select></label>
-    <label><span>weights seed</span><select id="seed"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+    <label><span><span data-l="en">weights seed</span><span data-l="it" lang="it">seme dei pesi</span></span><select id="seed"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
   </div>
-  <div class="transport"><label class="counter"><span>epoch</span><output id="epoch"></output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="train" type="button">Play</button></div>
-  <div class="row presets"><span>presets</span></div>
+  <div class="transport"><label class="counter"><span><span data-l="en">epoch</span><span data-l="it" lang="it">epoca</span></span><output id="epoch"></output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="train" type="button">Play</button></div>
+  <div class="row presets"><span><span data-l="en">presets</span><span data-l="it" lang="it">configurazioni</span></span></div>
 </section>
 <div class="eqs">
-  <section><h3>Layer \(l\)</h3>
-    <div class="eq base">\(a_l = W_l\,h_{l-1} + b_l\)<small>\(W_l\) is \(n_{\rm out} \times n_{\rm in}\), \(h_0 = x / 3\)</small></div>
-    <div class="eq base">\(h_l = \phi\big(N(a_l)\big)\)<small>\(\phi\) the activation, \(N\) the normalization</small></div>
+  <section><h3><span data-l="en">Layer</span><span data-l="it" lang="it">Strato</span> \(l\)</h3>
+    <div class="eq base">\(a_l = W_l\,h_{l-1} + b_l\)<small><span data-l="en">\(W_l\) is \(n_{\rm out} \times n_{\rm in}\), \(h_0 = x / 3\)</span><span data-l="it" lang="it">\(W_l\) è \(n_{\rm out} \times n_{\rm in}\), \(h_0 = x / 3\)</span></small></div>
+    <div class="eq base">\(h_l = \phi\big(N(a_l)\big)\)<small><span data-l="en">\(\phi\) the activation, \(N\) the normalization</span><span data-l="it" lang="it">\(\phi\) l'attivazione, \(N\) la normalizzazione</span></small></div>
   </section>
-  <section><h3>Initialization of \(W_l\)</h3>
+  <section><h3><span data-l="en">Initialization of</span><span data-l="it" lang="it">Inizializzazione di</span> \(W_l\)</h3>
     <div class="eq" data-init="naive">\(W_{ij} \sim \mathcal N(0, 1)\)</div>
     <div class="eq" data-init="small">\(W_{ij} \sim \mathcal N(0, 10^{-4})\)</div>
-    <div class="eq" data-init="xavier">\(\operatorname{Var} W_{ij} = \dfrac{2}{n_{\rm in} + n_{\rm out}}\)<small>Glorot and Bengio</small></div>
-    <div class="eq" data-init="he">\(\operatorname{Var} W_{ij} = \dfrac{2}{n_{\rm in}}\)<small>He et al., for ReLU</small></div>
+    <div class="eq" data-init="xavier">\(\operatorname{Var} W_{ij} = \dfrac{2}{n_{\rm in} + n_{\rm out}}\)<small><span data-l="en">Glorot and Bengio</span><span data-l="it" lang="it">Glorot e Bengio</span></small></div>
+    <div class="eq" data-init="he">\(\operatorname{Var} W_{ij} = \dfrac{2}{n_{\rm in}}\)<small><span data-l="en">He et al., for ReLU</span><span data-l="it" lang="it">He et al., per ReLU</span></small></div>
   </section>
-  <section><h3>Normalization \(N\)</h3>
+  <section><h3><span data-l="en">Normalization</span><span data-l="it" lang="it">Normalizzazione</span> \(N\)</h3>
     <div class="eq" data-norm="none">\(N(a) = a\)</div>
-    <div class="eq" data-norm="batch">\(N(a)_j = \gamma_j\,\dfrac{a_j - \mu_j}{\sqrt{\sigma_j^2 + \epsilon}} + \beta_j\)<small>batch norm: \(\mu_j, \sigma_j^2\) of unit \(j\) over the minibatch</small></div>
-    <div class="eq" data-norm="layer"><small>layer norm: the same, with \(\mu, \sigma^2\) over the units of one example</small></div>
+    <div class="eq" data-norm="batch">\(N(a)_j = \gamma_j\,\dfrac{a_j - \mu_j}{\sqrt{\sigma_j^2 + \epsilon}} + \beta_j\)<small><span data-l="en">batch norm: \(\mu_j, \sigma_j^2\) of unit \(j\) over the minibatch</span><span data-l="it" lang="it">batch norm: \(\mu_j, \sigma_j^2\) dell'unità \(j\) sul minibatch</span></small></div>
+    <div class="eq" data-norm="layer"><small><span data-l="en">layer norm: the same, with \(\mu, \sigma^2\) over the units of one example</span><span data-l="it" lang="it">layer norm: la stessa, con \(\mu, \sigma^2\) sulle unità di un esempio</span></small></div>
   </section>
-  <section><h3>Residual connection</h3>
-    <div class="eq" id="eqres">\(h_l = h_{l-1} + F(h_{l-1})\)<small>\(F(h) = \phi(N(W_l h + b_l))\), for \(l \ge 2\); then \(\partial h_l / \partial h_{l-1} = I + \partial F / \partial h\)</small></div>
+  <section><h3><span data-l="en">Residual connection</span><span data-l="it" lang="it">Connessione residua</span></h3>
+    <div class="eq" id="eqres">\(h_l = h_{l-1} + F(h_{l-1})\)<small><span data-l="en">\(F(h) = \phi(N(W_l h + b_l))\), for \(l \ge 2\); then \(\partial h_l / \partial h_{l-1} = I + \partial F / \partial h\)</span><span data-l="it" lang="it">\(F(h) = \phi(N(W_l h + b_l))\), per \(l \ge 2\); quindi \(\partial h_l / \partial h_{l-1} = I + \partial F / \partial h\)</span></small></div>
   </section>
 </div>
 <p class="explain" id="explain"></p>
 <main class="dp">
-  <figure><figcaption>The probability of the violet class over the plane \([-6, 6]^2\),
+  <figure><figcaption><span data-l="en">The probability of the violet class over the plane \([-6, 6]^2\),
   with the training points (filled); the loss of the training set (solid) and of the test
-  set (dashed), the dotted line at \(\log 2\) being that of a constant answer.</figcaption>
+  set (dashed), the dotted line at \(\log 2\) being that of a constant answer.</span><span data-l="it"
+  lang="it">La probabilità della classe viola sul piano \([-6, 6]^2\), con i punti di addestramento
+  (pieni); la loss dell'insieme di addestramento (continua) e del test set (tratteggiata), la linea
+  punteggiata a \(\log 2\) essendo quella di una risposta costante.</span></figcaption>
   <canvas id="map"></canvas>
-  <label class="showtest"><input id="showTest" type="checkbox">show the test points (hollow)</label>
-  <dl class="stats"><div><dt>training loss</dt><dd id="trainLoss"></dd></div><div><dt>test loss</dt><dd id="testLoss"></dd></div><div><dt>test accuracy</dt><dd id="testAcc"></dd></div></dl>
+  <label class="showtest"><input id="showTest" type="checkbox"><span data-l="en">show the test points (hollow)</span><span data-l="it" lang="it">mostra i punti di test (vuoti)</span></label>
+  <dl class="stats"><div><dt><span data-l="en">training loss</span><span data-l="it" lang="it">loss di addestramento</span></dt><dd id="trainLoss"></dd></div><div><dt><span data-l="en">test loss</span><span data-l="it" lang="it">loss di test</span></dt><dd id="testLoss"></dd></div><div><dt><span data-l="en">test accuracy</span><span data-l="it" lang="it">accuratezza sul test set</span></dt><dd id="testAcc"></dd></div></dl>
   <canvas id="loss"></canvas></figure>
-  <figure><figcaption>Layer by layer, from the input (top) to the output, on the 200
-  training points: the histogram of the activations \(h_l\) over <span id="range"></span>
+  <figure><figcaption><span data-l="en">Layer by layer, from the input (top) to the output, on the 200
+  training points: the histogram of the activations \(h_l\) over <span class="range"></span>
   (violet), and that of \(\log_{10} |\partial L / \partial (W_l)_{ij}|\) over the entries of
   \(W_l\) (gold), the tick marking the norm of the whole gradient of \(W_l\); values beyond
-  the ends fall in the darker end bins.</figcaption>
+  the ends fall in the darker end bins.</span><span data-l="it" lang="it">Strato per strato,
+  dall'ingresso (in alto) all'uscita, sui 200 punti di addestramento: l'istogramma delle
+  attivazioni \(h_l\) su <span class="range"></span> (in viola), e quello di
+  \(\log_{10} |\partial L / \partial (W_l)_{ij}|\) sugli elementi di \(W_l\) (in oro), con la
+  tacca che segna la norma dell'intero gradiente di \(W_l\); i valori oltre gli estremi cadono
+  nelle classi estreme più scure.</span></figcaption>
   <canvas id="layers"></canvas></figure>
-  <figure class="across"><figcaption>The first unit of every layer over the plane, on the
+  <figure class="across"><figcaption><span data-l="en">The first unit of every layer over the plane, on the
   scale of the histograms: a unit whose signal has vanished takes the colour of zero, a
-  saturated one is violet or gold almost everywhere.</figcaption>
+  saturated one is violet or gold almost everywhere.</span><span data-l="it" lang="it">La prima
+  unità di ogni strato sul piano, nella scala degli istogrammi: un'unità il cui segnale è svanito
+  prende il colore dello zero, una saturata è viola o oro quasi ovunque.</span></figcaption>
   <canvas id="strip"></canvas></figure>
 </main>
-<footer>Scene O of opt-playground, after X. Glorot and Y. Bengio,
+<footer><span data-l="en">Scene O of opt-playground, after</span><span data-l="it" lang="it">Scena O di opt-playground, da</span> X. Glorot <span data-l="en">and</span><span data-l="it" lang="it">e</span> Y. Bengio,
 <a href="https://proceedings.mlr.press/v9/glorot10a.html">Understanding the difficulty of training deep feedforward neural networks</a> (2010);
-K. He, X. Zhang, S. Ren and J. Sun, <a href="https://arxiv.org/abs/1502.01852">Delving deep into rectifiers</a> (2015)
-and <a href="https://arxiv.org/abs/1512.03385">Deep residual learning for image recognition</a> (2016);
-S. Ioffe and C. Szegedy, <a href="https://arxiv.org/abs/1502.03167">Batch normalization</a> (2015);
-J. L. Ba, J. R. Kiros and G. E. Hinton, <a href="https://arxiv.org/abs/1607.06450">Layer normalization</a> (2016):
-the ideas are theirs, rebuilt here from the equations. The configuration is kept in the address.</footer>
+K. He, X. Zhang, S. Ren <span data-l="en">and</span><span data-l="it" lang="it">e</span> J. Sun, <a href="https://arxiv.org/abs/1502.01852">Delving deep into rectifiers</a> (2015)
+<span data-l="en">and</span><span data-l="it" lang="it">e</span> <a href="https://arxiv.org/abs/1512.03385">Deep residual learning for image recognition</a> (2016);
+S. Ioffe <span data-l="en">and</span><span data-l="it" lang="it">e</span> C. Szegedy, <a href="https://arxiv.org/abs/1502.03167">Batch normalization</a> (2015);
+J. L. Ba, J. R. Kiros <span data-l="en">and</span><span data-l="it" lang="it">e</span> G. E. Hinton, <a href="https://arxiv.org/abs/1607.06450">Layer normalization</a> (2016):
+<span data-l="en">the ideas are theirs, rebuilt here from the equations. The configuration is kept in the address.</span><span data-l="it"
+lang="it">le idee sono loro, ricostruite qui dalle equazioni. La configurazione è conservata nell'indirizzo.</span></footer>
 <script type="module" src="src/depth.js"></script>
 </body>
 </html>

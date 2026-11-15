@@ -13,6 +13,7 @@ import { createModel } from './attention-model.js';
 import { VOCAB, randomPrompt, answer, example, generate, evaluate, trainStep } from './attention-tasks.js';
 import { palette, label, exampleLayout, drawExample, bigLayout, drawBig, thumbsLayout, drawThumbs, qkvHeight, qkvPart, drawQKV, drawCurves } from './attention-views.js';
 import { rng } from './nn.js';
+import { t, onLang } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const D = 24, MAXSTEPS = 4000;
@@ -74,11 +75,13 @@ function draw() {
   drawQKV(q, gen, sel, M, P, lit, pal);
   drawCurves($('curves2'), hist, pal);
   const last = hist.at(-1), ok = gen.preds.every(p => p.token === p.target);
-  $('status').textContent = `Token accuracy ${(100 * last.acc).toFixed(1)}% on 200 held-out examples (teacher forcing), loss ${last.loss.toFixed(3)}, after ${steps} steps of Adam (${(trainMs / 1000).toFixed(1)} s of training)` +
-    (S.task === 'recall' && S.layers === 1 ? '; with one layer the query cannot reach the token after its earlier copy.' : '.');
+  $('status').textContent = t(`Token accuracy ${(100 * last.acc).toFixed(1)}% on 200 held-out examples (teacher forcing), loss ${last.loss.toFixed(3)}, after ${steps} steps of Adam (${(trainMs / 1000).toFixed(1)} s of training)`,
+    `Accuratezza sui token ${(100 * last.acc).toFixed(1)}% su 200 esempi tenuti da parte (teacher forcing), loss ${last.loss.toFixed(3)}, dopo ${steps} passi di Adam (${(trainMs / 1000).toFixed(1)} s di addestramento)`) +
+    (S.task === 'recall' && S.layers === 1 ? t('; with one layer the query cannot reach the token after its earlier copy.', '; con uno strato la query non può raggiungere il token che segue la sua copia precedente.') : '.');
   $('steps').textContent = steps;
   const pred = gen.preds.map(p => p.token === p.target ? label(p.token) : `<span class="bad">${label(p.token)}</span>`).join(' ');
-  $('readout').innerHTML = `prediction <b>${pred}</b> · answer ${answer(S.task, prompt).join(' ')} (${ok ? 'right' : 'wrong'})`;
+  $('readout').innerHTML = t(`prediction <b>${pred}</b> · answer ${answer(S.task, prompt).join(' ')} (${ok ? 'right' : 'wrong'})`,
+    `previsione <b>${pred}</b> · risposta ${answer(S.task, prompt).join(' ')} (${ok ? 'giusta' : 'sbagliata'})`);
   if (document.activeElement !== $('prompt')) $('prompt').value = showPrompt(prompt);
 }
 
@@ -86,7 +89,7 @@ function save() {
   S.x = prompt ? prompt.join('') : S.x;
   history.replaceState(null, '', '#' + new URLSearchParams(S));
 }
-function stop() { clearTimeout(timer); timer = null; $('train').textContent = 'Play'; }
+function stop() { clearTimeout(timer); timer = null; $('train').textContent = t('Play', 'Avvia'); }
 function frame() {
   const t0 = performance.now();
   do step1(); while (performance.now() - t0 < 40 && steps < MAXSTEPS);
@@ -96,7 +99,7 @@ function frame() {
 }
 function train() {
   if (timer) return stop();
-  $('train').textContent = 'Pause';
+  $('train').textContent = t('Pause', 'Pausa');
   timer = setTimeout(frame, 0);
 }
 function step() { if (timer) stop(); step1(); refresh(); }
@@ -119,8 +122,8 @@ $('prompt').oninput = e => {
   const xs = parsePrompt(e.target.value);
   if (xs) { prompt = xs; save(); refresh(); }
   else $('readout').textContent = S.task === 'recall'
-    ? `type ${S.n} distinct digits and then one of the first ${S.n - 1} of them`
-    : `type ${S.n} digits`;
+    ? t(`type ${S.n} distinct digits and then one of the first ${S.n - 1} of them`, `scrivere ${S.n} cifre distinte e poi una delle prime ${S.n - 1} di esse`)
+    : t(`type ${S.n} digits`, `scrivere ${S.n} cifre`);
 };
 $('prompt').onblur = () => draw();
 document.addEventListener('keydown', e => {
@@ -153,5 +156,20 @@ for (const id of ['example', 'big', 'qkv']) $(id).onpointerdown = e => $(id).onm
 for (const id of ['example', 'big', 'qkv']) $(id).onmouseleave = () => { setLit(null); draw(); };
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => draw());
 
+// the texts that are not in the page twice: title, buttons, options
+function texts() {
+  document.title = t('Attention playground', "Laboratorio dell'attention");
+  $('step').textContent = t('Step', 'Passo');
+  $('train').textContent = timer ? t('Pause', 'Pausa') : t('Play', 'Avvia');
+  $('random').textContent = t('Random', 'Casuale');
+  $('prompt').setAttribute('aria-label', t('prompt digits', 'cifre del prompt'));
+  const O = { reverse: ['reverse', 'inverti'], sort: ['sort', 'ordina'], recall: ['recall', 'richiama'] };
+  for (const o of $('task').options) o.textContent = t(...O[o.value]);
+  for (const o of $('causal').options) o.textContent = o.value === '1' ? t('causal', 'causale') : t('open prompt', 'prompt aperto');
+  for (const o of $('ln').options) o.textContent = o.value === '1' ? t('on', 'sì') : t('off', 'no');
+}
+onLang(() => { texts(); draw(); });
+
+texts();
 reset();
 save();

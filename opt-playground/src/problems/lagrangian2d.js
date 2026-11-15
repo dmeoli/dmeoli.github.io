@@ -5,6 +5,7 @@
 // regions where each point is the lowest, a polyhedral complex.
 
 import { hull } from './lagrangian1d.js';
+import { t } from '../i18n.js';
 
 const ngon = (n, r, cx, cy, rot = 0.13) =>
   Array.from({ length: n }, (_, i) => {
@@ -19,34 +20,34 @@ const ring = ngon(120, 1, 0, 0, 0.05).map(([x, y]) => [7 + 6 * x, 6 + 4.5 * y]);
 export const presets = {
   // the textbook cases of Lagrangian relaxation: z_LP <= z_LD <= z_IP
   integral: {
-    label: 'Integrality property (z_LD = z_LP)',
+    get label() { return t('Integrality property (z_LD = z_LP)', "Proprietà di integralità (z_LD = z_LP)"); },
     polygon: [[0, 0], [8, 0], [9, 3], [6, 8], [1, 7]],
     c: [-1, -1.3], A: [[1, 0.3], [-0.4, 1]], b: [7.4, 5.9], lmax: 2,
   },
   // found by a search over random couplings: the continuous optimum lies on a
   // fractional side of the polygon, outside the hull, so one multiplier is zero
   gap: {
-    label: 'Strict improvement (z_LP < z_LD < z_IP)',
+    get label() { return t('Strict improvement (z_LP < z_LD < z_IP)', "Miglioramento stretto (z_LP < z_LD < z_IP)"); },
     polygon: [[0.4, 0.3], [8.6, 0.5], [9.5, 3.4], [6.5, 8.6], [0.6, 7.4]],
     c: [-0.815, -1.297], A: [[1.284, 0.55], [-0.325, 1.247]], b: [4.017, 7.602], lmax: 3,
   },
   knapsack: {
-    label: 'Two knapsacks',
+    get label() { return t('Two knapsacks', "Due zaini"); },
     polygon: [[0, 0], [9.7, 0], [9.7, 2.6], [3.2, 6.1], [0, 6.1]],
     c: [-3, -4], A: [[3, 4], [4, 2.5]], b: [31.5, 33.3], lmax: 2,
   },
   ring: {
-    label: 'Many columns on an ellipse (tailing-off)',
+    get label() { return t('Many columns on an ellipse (tailing-off)', "Molte colonne su un'ellisse (tailing-off)"); },
     polygon: ring, points: ring,
     c: [-0.35, -1], A: [[1, 0.25], [-0.45, 1]], b: [9.2, 6.9], lmax: 3,
   },
   disc: {
-    label: 'Disc, two couplings',
+    get label() { return t('Disc, two couplings', "Disco, due vincoli accoppianti"); },
     polygon: ngon(18, 6.4, 7, 7),
     c: [-0.35, -1], A: [[1, 0.25], [-0.45, 1]], b: [7.5, 8.2], lmax: 2,
   },
   ellipse: {
-    label: 'Ellipse, two couplings',
+    get label() { return t('Ellipse, two couplings', "Ellisse, due vincoli accoppianti"); },
     polygon: ngon(20, 1, 0, 0).map(([x, y]) => [8 + 7.5 * x - 1.5 * y, 6 + 1.2 * x + 4.2 * y]),
     c: [-1, -0.6], A: [[0.35, 1], [1, -0.3]], b: [8.3, 8.8], lmax: 2,
   },

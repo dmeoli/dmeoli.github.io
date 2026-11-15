@@ -3,14 +3,16 @@
 // origin is a vertex, the first basis of the simplex). The constraints are kept
 // as rows g.x <= h: the m rows of A, then -x_j <= 0.
 
+import { t } from './i18n.js';
+
 export const instances = {
-  chvatal: { label: 'Chvátal: max 5x1 + 4x2 + 3x3', c: [5, 4, 3],
+  chvatal: { label: 'Chvátal: max 5x1 + 4x2 + 3x3', it: 'Chvátal: max 5x1 + 4x2 + 3x3', c: [5, 4, 3],
     A: [[2, 3, 1], [4, 1, 2], [3, 4, 2]], b: [5, 11, 8] },
-  klee: { label: 'Klee-Minty cube', c: [4, 2, 1],
+  klee: { label: 'Klee-Minty cube', it: 'Cubo di Klee-Minty', c: [4, 2, 1],
     A: [[1, 0, 0], [4, 1, 0], [8, 4, 1]], b: [5, 25, 125] },
-  house: { label: 'A house: box, roof, a corner cut', c: [2, 3, 4],
+  house: { label: 'A house: box, roof, a corner cut', it: 'Una casa: scatola, tetto, un angolo tagliato', c: [2, 3, 4],
     A: [[1, 0, 0], [0, 1, 0], [1, 0, 1], [0, 1, 1], [1, 1, 1]], b: [4, 4, 6, 6, 9] },
-  random: { label: 'Random (5 rows)', random: true },
+  random: { label: 'Random (5 rows)', it: 'Casuale (5 righe)', random: true },
 };
 
 // a small seeded generator (mulberry32)
@@ -30,7 +32,7 @@ export const dot = (u, v) => u.reduce((s, x, i) => s + x * v[i], 0);
 
 export function cons(P) {
   const G = [...P.A, [-1, 0, 0], [0, -1, 0], [0, 0, -1]], h = [...P.b, 0, 0, 0];
-  const names = [...P.A.map((_, i) => `row ${i + 1}`), 'x1 ≥ 0', 'x2 ≥ 0', 'x3 ≥ 0'];
+  const names = [...P.A.map((_, i) => t(`row ${i + 1}`, `riga ${i + 1}`)), 'x1 ≥ 0', 'x2 ≥ 0', 'x3 ≥ 0'];
   return { G, h, names };
 }
 

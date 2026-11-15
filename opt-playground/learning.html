@@ -52,53 +52,68 @@
 <body>
 <nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html" aria-current="page">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
-  <h1>Learning playground</h1>
-  <p class="lede">Training a model is minimizing a function: here the test
+  <h1><span data-l="en">Learning playground</span><span data-l="it" lang="it">Laboratorio di apprendimento</span></h1>
+  <p class="lede" data-l="en">Training a model is minimizing a function: here the test
   functions of optiml in two dimensions, and its algorithms racing on the same
   landscape from the same start, first-order, adaptive, second-order and a
   bundle method, the only one built for the nonsmooth case. The level map and
   the surface show the same iteration; click on the map to move the start,
   drag the surface to turn it. Space plays and pauses, the arrows step forward
   and back, also in full screen.</p>
+  <p class="lede" data-l="it" lang="it">Addestrare un modello è minimizzare una funzione: qui le
+  funzioni di test di optiml in due dimensioni, e i suoi algoritmi in gara sullo
+  stesso paesaggio dallo stesso punto di partenza, del primo ordine, adattivi, del
+  secondo ordine e un metodo bundle, l'unico costruito per il caso non differenziabile.
+  La mappa delle curve di livello e la superficie mostrano la stessa iterazione; un
+  clic sulla mappa sposta il punto di partenza, trascinando la superficie la si ruota.
+  Lo spazio avvia e mette in pausa, le frecce fanno un passo avanti e indietro, anche
+  a schermo intero.</p>
 </header>
 <section class="controls">
   <div class="settings">
-    <label><span>function</span><select id="fn"></select></label>
+    <label><span><span data-l="en">function</span><span data-l="it" lang="it">funzione</span></span><select id="fn"></select></label>
     <label><span>learning rate</span><input id="lr" type="range" min="0.00001" max="0.1" step="0.00001" value="0.002"><output id="lrOut">0.002</output></label>
     <label><span>bundle \(t\)</span><input id="t" type="range" min="0.05" max="3" step="0.05" value="0.5"><output id="tOut">0.5</output></label>
-    <label><span>log scale</span><input id="log" type="checkbox"></label>
-    <label><span>levels on surface</span><input id="sc" type="checkbox"></label>
-    <label><span>replay a trace</span><select id="traceSel"><option value="">none</option><option value="traces/rosenbrock-optiml.json">optiml on Rosenbrock (real run)</option><option value="traces/rosenbrock2-optiml.json">optiml on Rosenbrock, b = 2 (real run)</option><option value="traces/optimlQuadratic-optiml.json">optiml on its quadratic (real run)</option><option value="traces/sixhump-optiml.json">optiml on Six-Hump Camel (real run)</option></select></label>
-    <label><span>or load a file</span><input id="traceFile" type="file" accept=".json,application/json"></label>
+    <label><span><span data-l="en">log scale</span><span data-l="it" lang="it">scala logaritmica</span></span><input id="log" type="checkbox"></label>
+    <label><span><span data-l="en">levels on surface</span><span data-l="it" lang="it">curve di livello sulla superficie</span></span><input id="sc" type="checkbox"></label>
+    <label><span><span data-l="en">replay a trace</span><span data-l="it" lang="it">riproduci una traccia</span></span><select id="traceSel"><option value="">none</option><option value="traces/rosenbrock-optiml.json">optiml on Rosenbrock (real run)</option><option value="traces/rosenbrock2-optiml.json">optiml on Rosenbrock, b = 2 (real run)</option><option value="traces/optimlQuadratic-optiml.json">optiml on its quadratic (real run)</option><option value="traces/sixhump-optiml.json">optiml on Six-Hump Camel (real run)</option></select></label>
+    <label><span><span data-l="en">or load a file</span><span data-l="it" lang="it">o carica un file</span></span><input id="traceFile" type="file" accept=".json,application/json"></label>
   </div>
-  <div class="transport"><label class="counter"><span>iteration</span><output id="iter">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+  <div class="transport"><label class="counter"><span><span data-l="en">iteration</span><span data-l="it" lang="it">iterazione</span></span><output id="iter">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
   <div class="row scrub">
-    <label><span>speed</span><input id="speed" type="range" min="0" max="7" step="1" value="5"><output id="speedOut">30/s</output></label>
-    <label class="scrubber"><span>go to iteration</span><input id="scrub" type="range" min="0" max="600" step="1" value="0"></label>
+    <label><span><span data-l="en">speed</span><span data-l="it" lang="it">velocità</span></span><input id="speed" type="range" min="0" max="7" step="1" value="5"><output id="speedOut">30/s</output></label>
+    <label class="scrubber"><span><span data-l="en">go to iteration</span><span data-l="it" lang="it">vai all'iterazione</span></span><input id="scrub" type="range" min="0" max="600" step="1" value="0"></label>
   </div>
   <div id="algos" class="algos row"></div>
 </section>
 <main class="land">
   <figure id="figMap" class="fig">
-    <div class="figbar"><span class="figname">level map</span><output id="readout"></output><span class="fiter">iteration <b>0</b></span><button type="button" data-fs="figMap">full screen</button></div>
+    <div class="figbar"><span class="figname"><span data-l="en">level map</span><span data-l="it" lang="it">curve di livello</span></span><output id="readout"></output><span class="fiter"><span data-l="en">iteration</span><span data-l="it" lang="it">iterazione</span> <b>0</b></span><button type="button" data-fs="figMap">full screen</button></div>
     <div id="mapwrap" class="mapwrap"><canvas id="map"></canvas></div>
   </figure>
   <figure id="fig3d" class="fig">
-    <div class="figbar"><span class="figname">surface</span><span class="fiter">iteration <b>0</b></span><button type="button" id="rotate" aria-pressed="false">auto-rotate</button><button type="button" id="home">reset camera</button><button type="button" data-fs="fig3d">full screen</button></div>
+    <div class="figbar"><span class="figname"><span data-l="en">surface</span><span data-l="it" lang="it">superficie</span></span><span class="fiter"><span data-l="en">iteration</span><span data-l="it" lang="it">iterazione</span> <b>0</b></span><button type="button" id="rotate" aria-pressed="false"><span data-l="en">auto-rotate</span><span data-l="it" lang="it">rotazione automatica</span></button><button type="button" id="home"><span data-l="en">reset camera</span><span data-l="it" lang="it">ripristina la vista</span></button><button type="button" data-fs="fig3d">full screen</button></div>
     <div id="surface" class="stage3d"></div>
   </figure>
   <figure class="curvesfig">
-    <figcaption>The value of each algorithm against the iterations (log scale), up
+    <figcaption><span data-l="en">The value of each algorithm against the iterations (log scale), up
     to the iteration shown, and its value there; the dashed lines are the runs of
     optiml replayed. Newton and BFGS need a smooth function and are left out on
-    the nonsmooth one.</figcaption>
+    the nonsmooth one.</span><span data-l="it" lang="it">Il valore di ogni algoritmo in funzione delle
+    iterazioni (in scala logaritmica), fino all'iterazione mostrata, e il suo valore lì;
+    le linee tratteggiate sono le esecuzioni di optiml riprodotte. Newton e BFGS
+    richiedono una funzione differenziabile e sono esclusi da quella non
+    differenziabile.</span></figcaption>
     <div class="curvewrap"><canvas id="curves"></canvas></div>
     <ul id="legend" class="legend"></ul>
   </figure>
 </main>
-<footer>Scene E of opt-playground; the algorithms are those of optiml
+<footer><span data-l="en">Scene E of opt-playground; the algorithms are those of optiml
 (github.com/dmeoli/optiml), written again in the browser; the dashed paths are
-real runs of optiml, recorded and replayed.</footer>
+real runs of optiml, recorded and replayed.</span><span data-l="it" lang="it">Scena E di
+opt-playground; gli algoritmi sono quelli di optiml (github.com/dmeoli/optiml),
+riscritti nel browser; i percorsi tratteggiati sono esecuzioni reali di optiml,
+registrate e riprodotte.</span></footer>
 <script type="module" src="src/learning.js"></script>
 </body>
 </html>

@@ -5,6 +5,8 @@
 // maximum of one line per vertex, and every Benders cut is a vertex. Single cut
 // or multi-cut (int_BDSlv_CutType) and a trust region (dblTRRadius), as in SMS++.
 
+import { t, onLang } from './i18n.js';
+
 const $ = id => document.getElementById(id);
 const dot = (u, v) => u[0] * v[0] + u[1] * v[1];
 
@@ -99,8 +101,8 @@ function step() {
   iters.push({ y: m.y, f, subs, lo, hi });
   draw();
 }
-function stop() { clearInterval(timer); timer = null; $('play').textContent = 'Play'; }
-function play() { if (timer) return stop(); $('play').textContent = 'Pause'; timer = setInterval(step, 700); }
+function stop() { clearInterval(timer); timer = null; $('play').textContent = t('Play', 'Avvia'); }
+function play() { if (timer) return stop(); $('play').textContent = t('Pause', 'Pausa'); timer = setInterval(step, 700); }
 
 // ------------------------------------------------------------------ drawing
 const NS = 'http://www.w3.org/2000/svg';
@@ -116,7 +118,7 @@ function drawMaster() {
   const g = el('g', { 'clip-path': 'url(#mclip)' }, svg);
   el('line', { x1: pad, x2: W - 10, y1: H - pad, y2: H - pad, class: 'axis' }, svg);
   for (let t = 0; t <= P.Y; t += 2) el('text', { x: X(t), y: H - pad + 16, class: 'tick' }, svg).textContent = t;
-  el('text', { x: W - 10, y: H - 6, class: 'lab end' }, svg).textContent = 'y (the master variable)';
+  el('text', { x: W - 10, y: H - 6, class: 'lab end' }, svg).textContent = t('y (the master variable)', 'y (la variabile del master)');
   const last = iters.at(-1);
   if (tr && last.lo !== undefined) el('rect', { x: X(last.lo), y: 0, width: X(last.hi) - X(last.lo), height: H - pad, class: 'trbox' }, g);
   el('polyline', { points: ys.map((y, i) => `${X(y)},${Yv(fv[i])}`).join(' '), class: 'truef' }, g);
@@ -165,9 +167,17 @@ $('cut').onchange = reset; $('tr').oninput = e => { $('trOut').textContent = e.t
 $('step').onclick = step; $('play').onclick = play; $('reset').onclick = reset;
 document.addEventListener('keydown', e => {
   // not while typing or choosing; on a slider the arrows move the slider
-  const t = e.target;
-  if (t.tagName === 'SELECT' || (t.tagName === 'INPUT' && t.type !== 'range')) return;
-  if (e.key === 'ArrowRight' && t.type !== 'range') step();
+  const tg = e.target;
+  if (tg.tagName === 'SELECT' || (tg.tagName === 'INPUT' && tg.type !== 'range')) return;
+  if (e.key === 'ArrowRight' && tg.type !== 'range') step();
   if (e.key === ' ') { e.preventDefault(); play(); }
 });
+// the language: the title, the buttons, the drawings
+function texts() {
+  document.title = t('Benders playground', 'Laboratorio di Benders');
+  $('play').textContent = timer ? t('Pause', 'Pausa') : t('Play', 'Avvia');
+  $('step').textContent = t('Step', 'Passo');
+}
+onLang(() => { texts(); draw(); });
+texts();
 reset();

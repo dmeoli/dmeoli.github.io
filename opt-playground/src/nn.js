@@ -75,7 +75,7 @@ export function backward(net, y) {
 // one update of every parameter with the chosen optimizer
 export const optimizers = {
   sgd: { name: 'SGD', upd: (g, st, lr) => -lr * g },
-  momentum: { name: 'Momentum (Polyak)', upd: (g, st, lr) => (st.v = 0.9 * (st.v || 0) - lr * g) },
+  momentum: { name: 'Momentum (Polyak)', it: 'Momento (Polyak)', upd: (g, st, lr) => (st.v = 0.9 * (st.v || 0) - lr * g) },
   nesterov: { name: 'Nesterov', upd: (g, st, lr) => { const v0 = st.v || 0; st.v = 0.9 * v0 - lr * g; return -0.9 * v0 + 1.9 * st.v; } },
   adagrad: { name: 'AdaGrad', upd: (g, st, lr) => { st.G = (st.G || 0) + g * g; return -lr * g / (Math.sqrt(st.G) + 1e-8); } },
   rmsprop: { name: 'RMSProp', upd: (g, st, lr) => { st.E = 0.9 * (st.E || 0) + 0.1 * g * g; return -lr * g / (Math.sqrt(st.E) + 1e-8); } },

@@ -35,87 +35,123 @@
 <body>
 <nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html" aria-current="page">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
-  <h1>Convolution playground</h1>
-  <p class="lede">What the layers of a convolutional network compute on the image of a digit.
+  <h1><span data-l="en">Convolution playground</span><span data-l="it" lang="it">Laboratorio della convoluzione</span></h1>
+  <p class="lede" data-l="en">What the layers of a convolutional network compute on the image of a digit.
   A layer applies one small filter at every position of its input, with the same weights
   everywhere, so that its map records where the pattern of the filter occurs; max-pooling
   keeps the strongest response of every 2&times;2 block, and the second layer looks for
   patterns among the pooled maps of the first, over a larger part of the image. The network
   is trained in the page on digits written in a few fonts: draw one yourself, and hover a
   cell of a map to see the part of the input it depends on.</p>
+  <p class="lede" data-l="it" lang="it">Che cosa calcolano gli strati di una rete convoluzionale sull'immagine di una cifra.
+  Uno strato applica un piccolo filtro in ogni posizione del suo ingresso, con gli stessi pesi
+  ovunque, così che la sua mappa registra dove compare il motivo del filtro; il max-pooling
+  conserva la risposta più forte di ogni blocco 2&times;2, e il secondo strato cerca
+  motivi fra le mappe ridotte del primo, su una parte più ampia dell'immagine. La rete
+  è addestrata nella pagina su cifre scritte in alcuni font: se ne disegni una, e si passi
+  col puntatore su una cella di una mappa per vedere la parte dell'ingresso da cui dipende.</p>
 </header>
 <section class="controls">
   <div class="settings">
-    <label><span>filters in layer 1</span><select id="c1"><option>4</option><option>6</option><option>8</option></select></label>
-    <label><span>filters in layer 2</span><select id="c2"><option>6</option><option>8</option><option>12</option></select></label>
-    <label><span>step size of Adam</span><select id="lr"><option>0.001</option><option>0.003</option><option>0.01</option></select></label>
-    <label><span>weights seed</span><select id="seed"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+    <label><span><span data-l="en">filters in layer 1</span><span data-l="it" lang="it">filtri dello strato 1</span></span><select id="c1"><option>4</option><option>6</option><option>8</option></select></label>
+    <label><span><span data-l="en">filters in layer 2</span><span data-l="it" lang="it">filtri dello strato 2</span></span><select id="c2"><option>6</option><option>8</option><option>12</option></select></label>
+    <label><span><span data-l="en">step size of Adam</span><span data-l="it" lang="it">passo di Adam</span></span><select id="lr"><option>0.001</option><option>0.003</option><option>0.01</option></select></label>
+    <label><span><span data-l="en">weights seed</span><span data-l="it" lang="it">seme dei pesi</span></span><select id="seed"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
   </div>
-  <div class="transport"><label class="counter"><span>epoch · step</span><output id="count"></output></label><button id="reset" type="button">Reset</button><button id="step" type="button" disabled>Step</button><button id="train" type="button" disabled>Play</button></div>
+  <div class="transport"><label class="counter"><span><span data-l="en">epoch · step</span><span data-l="it" lang="it">epoca · passo</span></span><output id="count"></output></label><button id="reset" type="button">Reset</button><button id="step" type="button" disabled>Step</button><button id="train" type="button" disabled>Play</button></div>
 </section>
 <p class="explain" id="explain"></p>
 <main>
-  <figure class="cv"><figcaption>The input, 20&times;20 intensities in \([0, 1]\): draw a digit
+  <figure class="cv"><figcaption><span data-l="en">The input, 20&times;20 intensities in \([0, 1]\): draw a digit
   with the mouse or a finger. Below, the probabilities that the network gives to the 10
-  classes; the outline is the receptive field of the hovered cell.</figcaption>
+  classes; the outline is the receptive field of the hovered cell.</span><span data-l="it" lang="it">L'ingresso, 20&times;20 intensità in \([0, 1]\): si disegni una cifra
+  col mouse o con un dito. Sotto, le probabilità che la rete assegna alle 10
+  classi; il contorno è il campo recettivo della cella sotto il puntatore.</span></figcaption>
   <canvas id="in" width="400" height="400"></canvas>
   <div class="row"><button id="clear" type="button">Clear</button><button id="sample" type="button">Held-out digit</button><span id="truth"></span></div>
   <canvas id="prob" width="400" height="130"></canvas>
   <p class="note" id="hover"></p></figure>
-  <figure class="cv"><figcaption>One filter of layer 1 sliding over the input: at every
+  <figure class="cv"><figcaption><span data-l="en">One filter of layer 1 sliding over the input: at every
   position \((i, j)\) the map takes \(y_{ij} = \mathrm{ReLU}\big(b + \sum_{u,v} w_{uv}\,
   x_{i+u,\,j+v}\big)\), with \(u, v \in \{-1, 0, 1\}\) and zeros outside the grid. Click a
-  filter below to choose it, or the input to move the window.</figcaption>
+  filter below to choose it, or the input to move the window.</span><span data-l="it" lang="it">Un filtro dello strato 1 che scorre sull'ingresso: in ogni
+  posizione \((i, j)\) la mappa vale \(y_{ij} = \mathrm{ReLU}\big(b + \sum_{u,v} w_{uv}\,
+  x_{i+u,\,j+v}\big)\), con \(u, v \in \{-1, 0, 1\}\) e zeri fuori dalla griglia. Si clicchi un
+  filtro qui sotto per sceglierlo, o l'ingresso per spostare la finestra.</span></figcaption>
   <canvas id="slide" width="620" height="284"></canvas>
   <div class="row"><button id="next" type="button">Next position</button><button id="play" type="button">Slide</button><span id="pos"></span></div>
   <p class="note" id="sum"></p></figure>
-  <figure class="cv"><figcaption>Layer 1: the filters \(w\) (violet positive, gold negative),
+  <figure class="cv"><figcaption><span data-l="en">Layer 1: the filters \(w\) (violet positive, gold negative),
   then their maps for the current input after the ReLU, then the maps after max-pooling
-  2&times;2, one column per filter; every map is scaled to its own maximum.</figcaption>
-  <h3>filters 3&times;3</h3><canvas id="f1" width="520" height="80"></canvas>
-  <h3>maps 20&times;20</h3><canvas id="m1" class="m1" width="520" height="80"></canvas>
-  <h3>pooled 10&times;10</h3><canvas id="q1" class="q1" width="520" height="80"></canvas></figure>
-  <figure class="cv"><figcaption>Layer 2: each filter reads all the pooled maps of layer 1,
+  2&times;2, one column per filter; every map is scaled to its own maximum.</span><span data-l="it" lang="it">Strato 1: i filtri \(w\) (viola positivo, oro negativo),
+  poi le loro mappe per l'ingresso corrente dopo la ReLU, poi le mappe dopo il max-pooling
+  2&times;2, una colonna per filtro; ogni mappa è scalata sul proprio massimo.</span></figcaption>
+  <h3><span data-l="en">filters 3&times;3</span><span data-l="it" lang="it">filtri 3&times;3</span></h3><canvas id="f1" width="520" height="80"></canvas>
+  <h3><span data-l="en">maps 20&times;20</span><span data-l="it" lang="it">mappe 20&times;20</span></h3><canvas id="m1" class="m1" width="520" height="80"></canvas>
+  <h3><span data-l="en">pooled 10&times;10</span><span data-l="it" lang="it">ridotte 10&times;10</span></h3><canvas id="q1" class="q1" width="520" height="80"></canvas></figure>
+  <figure class="cv"><figcaption><span data-l="en">Layer 2: each filter reads all the pooled maps of layer 1,
   so its cells depend on 8&times;8 pixels and those of its pooled maps on 10&times;10. Last, the
   input that drives each channel highest, found by gradient ascent from noise, after
-  <a href="https://distill.pub/2017/feature-visualization/">Feature Visualization</a>.</figcaption>
-  <h3>maps 10&times;10</h3><canvas id="m2" class="m2" width="520" height="80"></canvas>
-  <h3>pooled 5&times;5</h3><canvas id="q2" class="q2" width="520" height="80"></canvas>
-  <h3>input maximizing the channel</h3><canvas id="viz" width="520" height="80"></canvas></figure>
-  <h2 class="looks">What the network looks at</h2>
-  <figure class="cv"><figcaption>The saliency of a class \(c\): the gradient
+  <a href="https://distill.pub/2017/feature-visualization/">Feature Visualization</a>.</span><span data-l="it" lang="it">Strato 2: ogni filtro legge tutte le mappe ridotte dello strato 1,
+  così le sue celle dipendono da 8&times;8 pixel e quelle delle sue mappe ridotte da 10&times;10. Infine,
+  l'ingresso che porta più in alto ciascun canale, trovato per ascesa del gradiente a partire dal rumore, come in
+  <a href="https://distill.pub/2017/feature-visualization/">Feature Visualization</a>.</span></figcaption>
+  <h3><span data-l="en">maps 10&times;10</span><span data-l="it" lang="it">mappe 10&times;10</span></h3><canvas id="m2" class="m2" width="520" height="80"></canvas>
+  <h3><span data-l="en">pooled 5&times;5</span><span data-l="it" lang="it">ridotte 5&times;5</span></h3><canvas id="q2" class="q2" width="520" height="80"></canvas>
+  <h3><span data-l="en">input maximizing the channel</span><span data-l="it" lang="it">ingresso che massimizza il canale</span></h3><canvas id="viz" width="520" height="80"></canvas></figure>
+  <h2 class="looks"><span data-l="en">What the network looks at</span><span data-l="it" lang="it">Che cosa guarda la rete</span></h2>
+  <figure class="cv"><figcaption><span data-l="en">The saliency of a class \(c\): the gradient
   \(\partial s_c / \partial x\) of its score \(s_c\) (the logit, before the softmax) with
   respect to every pixel of the input, violet where more ink would raise the score, gold
   where it would lower it, scaled to its largest magnitude. With &times; input the map is
   the gradient times the pixel, which keeps only the inked pixels and tells which of them
   push the score up. The gradient is local: it says what a small change does, not what the
-  network has understood.</figcaption>
-  <div class="row"><label>class <select id="salc"><option value="-1">predicted</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></label><label><input id="salx" type="checkbox"> &times; input</label></div>
+  network has understood.</span><span data-l="it" lang="it">La salienza di una classe \(c\): il gradiente
+  \(\partial s_c / \partial x\) del suo punteggio \(s_c\) (il logit, prima della softmax) rispetto
+  a ogni pixel dell'ingresso, viola dove più inchiostro alzerebbe il punteggio, oro
+  dove lo abbasserebbe, scalato sul suo valore assoluto più grande. Con &times; ingresso la mappa è
+  il gradiente per il pixel, che tiene solo i pixel inchiostrati e dice quali di essi
+  spingono in alto il punteggio. Il gradiente è locale: dice che cosa fa una piccola variazione, non che cosa
+  la rete abbia capito.</span></figcaption>
+  <div class="row"><label><span data-l="en">class</span><span data-l="it" lang="it">classe</span> <select id="salc"><option value="-1">predicted</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></label><label><input id="salx" type="checkbox"> &times; <span data-l="en">input</span><span data-l="it" lang="it">ingresso</span></label></div>
   <canvas id="sal" width="400" height="400"></canvas>
   <p class="note" id="salnote"></p></figure>
-  <figure class="cv"><figcaption>An adversarial example: a few steps of the fast gradient
+  <figure class="cv"><figcaption><span data-l="en">An adversarial example: a few steps of the fast gradient
   sign method, \(x' = \mathrm{clip}(x + \epsilon\, \mathrm{sign}(\nabla_x \ell))\), with
   \(\ell\) the loss of the current answer (to move away from it) or minus the loss of a
   target class; every step has size \(2.5\,\epsilon/\text{steps}\), and the iterate is kept
   within \(\epsilon\) of \(x\) in every pixel and in \([0, 1]\). The change is small in
   pixels and still flips the answer; on a network this small, trained on a few thousand
   digits, the perturbation is often visible as faint strokes, unlike those of large
-  networks on photographs.</figcaption>
-  <div class="row"><label>target <select id="tgt"><option value="-1">away</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></label>
+  networks on photographs.</span><span data-l="it" lang="it">Un esempio avversario: alcuni passi del fast gradient
+  sign method, \(x' = \mathrm{clip}(x + \epsilon\, \mathrm{sign}(\nabla_x \ell))\), con
+  \(\ell\) la loss della risposta corrente (per allontanarsene) o l'opposto della loss di una
+  classe bersaglio; ogni passo ha ampiezza \(2.5\,\epsilon/\text{passi}\), e l'iterato resta
+  entro \(\epsilon\) da \(x\) in ogni pixel e in \([0, 1]\). La variazione è piccola nei
+  pixel e tuttavia cambia la risposta; su una rete così piccola, addestrata su qualche migliaio
+  di cifre, la perturbazione è spesso visibile come tratti tenui, a differenza di quelle delle reti
+  grandi sulle fotografie.</span></figcaption>
+  <div class="row"><label><span data-l="en">target</span><span data-l="it" lang="it">bersaglio</span> <select id="tgt"><option value="-1">away</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></label>
   <label>\(\epsilon\) <input id="eps" type="range" min="0.02" max="0.3" step="0.01"><output id="epsOut"></output></label>
-  <label>steps <select id="iters"><option>1</option><option>5</option><option>10</option><option>20</option></select></label></div>
+  <label><span data-l="en">steps</span><span data-l="it" lang="it">passi</span> <select id="iters"><option>1</option><option>5</option><option>10</option><option>20</option></select></label></div>
   <div class="row"><button id="attack" type="button">Attack</button><button id="useadv" type="button" disabled>Use as input</button></div>
   <canvas id="adv" width="620" height="226"></canvas>
   <canvas id="advprob" width="400" height="130"></canvas>
   <p class="note" id="advnote"></p></figure>
 </main>
-<footer>Scene I of opt-playground, after C. Olah,
+<footer><span data-l="en">Scene I of opt-playground, after C. Olah,
 <a href="https://colah.github.io/posts/2014-07-Conv-Nets-Modular/">Conv Nets: A Modular Perspective</a>
 (2014): the idea is his, rebuilt here from the equations. Saliency after K. Simonyan,
 A. Vedaldi and A. Zisserman, <a href="https://arxiv.org/abs/1312.6034">Deep Inside
 Convolutional Networks</a> (2014); adversarial examples after I. Goodfellow, J. Shlens and
 C. Szegedy, <a href="https://arxiv.org/abs/1412.6572">Explaining and Harnessing Adversarial
-Examples</a> (2015).</footer>
+Examples</a> (2015).</span><span data-l="it" lang="it">Scena I di opt-playground, da C. Olah,
+<a href="https://colah.github.io/posts/2014-07-Conv-Nets-Modular/">Conv Nets: A Modular Perspective</a>
+(2014): l'idea è sua, qui ricostruita dalle equazioni. La salienza da K. Simonyan,
+A. Vedaldi e A. Zisserman, <a href="https://arxiv.org/abs/1312.6034">Deep Inside
+Convolutional Networks</a> (2014); gli esempi avversari da I. Goodfellow, J. Shlens e
+C. Szegedy, <a href="https://arxiv.org/abs/1412.6572">Explaining and Harnessing Adversarial
+Examples</a> (2015).</span></footer>
 <script type="module" src="src/conv.js"></script>
 </body>
 </html>

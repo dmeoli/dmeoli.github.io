@@ -14,6 +14,7 @@
 import { makeNet, forward, trainBatch, accuracy, visualize, receptiveField, classScore, fgsm, argmax, N, P1, P2, NC } from './convnet.js';
 import { makeSet } from './convdata.js';
 import { rng } from './nn.js';
+import { t, onLang } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const S = { c1: 6, c2: 8, lr: 0.003, seed: 1, f: 0, salc: -1, salx: 0, tgt: -1, eps: 0.1, iters: 10 };
@@ -38,7 +39,7 @@ function makeData(ready) {
     if (te.X.length >= NTEST && !test) test = te;
     if (test && pool.X.length >= 500 && !data) { data = pool; ready(); }
     if (pool.X.length < NTRAIN) requestAnimationFrame(chunk);
-    if (!data) $('explain').textContent = `Writing the digits: ${te.X.length + pool.X.length} of ${NTEST + NTRAIN}.`;
+    if (!data) $('explain').textContent = t(`Writing the digits: ${te.X.length + pool.X.length} of ${NTEST + NTRAIN}.`, `Scrittura delle cifre: ${te.X.length + pool.X.length} su ${NTEST + NTRAIN}.`);
     else if (!running) refresh();
   };
   chunk();
@@ -103,12 +104,12 @@ function idleWork() {
 
 function start() {
   if (!data) return;
-  running = true; $('train').textContent = 'Pause';
+  running = true; $('train').textContent = t('Pause', 'Pausa');
   requestAnimationFrame(loop);
 }
 function stop() {
   if (!running) return;
-  running = false; $('train').textContent = 'Play';
+  running = false; $('train').textContent = t('Play', 'Avvia');
   kick(); refresh();
 }
 
@@ -218,7 +219,7 @@ function drawSlide() {
   const pi = Math.floor(pos / N), pj = pos % N;
   ctx.fillStyle = P.ground; ctx.fillRect(0, 0, cv.width, cv.height);
   ctx.font = '11px IBM Plex Mono, monospace'; ctx.fillStyle = P.soft; ctx.textAlign = 'start';
-  ctx.fillText('input x', ix, 10); ctx.fillText(`filter ${f + 1}`, kx, ky - 10); ctx.fillText(`map y of filter ${f + 1}`, ox, 10);
+  ctx.fillText(t('input x', 'ingresso x'), ix, 10); ctx.fillText(`${t('filter', 'filtro')} ${f + 1}`, kx, ky - 10); ctx.fillText(t(`map y of filter ${f + 1}`, `mappa y del filtro ${f + 1}`), ox, 10);
   for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) { ctx.fillStyle = seq(P.ink, x[i * N + j]); ctx.fillRect(ix + j * cell, iy + i * cell, cell, cell); }
   ctx.strokeStyle = P.rule; ctx.lineWidth = 1; ctx.strokeRect(ix + 0.5, iy + 0.5, N * cell - 1, N * cell - 1);
   // the window of the kernel, which leaves the grid at the border (zero padding)
@@ -251,8 +252,8 @@ function drawSlide() {
   let terms = 0;
   for (let u = 0; u < 3; u++) for (let v = 0; v < 3; v++) { const r = pi + u - 1, c = pj + v - 1; if (r >= 0 && c >= 0 && r < N && c < N && x[r * N + c] > 0) terms++; }
   $('pos').textContent = `(i, j) = (${pi}, ${pj})`;
-  $('sum').textContent = `b + Σ w·x = ${net.b1[f].toFixed(2)} + (${(z - net.b1[f]).toFixed(2)}) = ${z.toFixed(2)}, so y = ${Math.max(0, z).toFixed(2)}` +
-    ` (${terms} of the 9 pixels under the window are inked)`;
+  $('sum').textContent = `b + Σ w·x = ${net.b1[f].toFixed(2)} + (${(z - net.b1[f]).toFixed(2)}) = ${z.toFixed(2)}, ${t('so', 'quindi')} y = ${Math.max(0, z).toFixed(2)}` +
+    t(` (${terms} of the 9 pixels under the window are inked)`, ` (${terms} dei 9 pixel sotto la finestra sono inchiostrati)`);
 }
 
 // ------------------------------------------------------------------ what the network looks at
@@ -268,8 +269,10 @@ function drawSaliency() {
   const cv = $('sal'), ctx = cv.getContext('2d');
   ctx.fillStyle = P.ground; ctx.fillRect(0, 0, cv.width, cv.height);
   grid(ctx, m, 0, 0, cv.width / N, v => div(v / mx));
-  $('salnote').textContent = `${S.salx ? '∂s/∂x × x' : '∂s/∂x'} for class ${c}, whose score is s = ${value.toFixed(2)} ` +
-    `(probability ${F.prob[c].toFixed(2)}); the largest |${S.salx ? 'value' : 'gradient'}| is ${mx.toFixed(3)}.`;
+  $('salnote').textContent = t(`${S.salx ? '∂s/∂x × x' : '∂s/∂x'} for class ${c}, whose score is s = ${value.toFixed(2)} ` +
+    `(probability ${F.prob[c].toFixed(2)}); the largest |${S.salx ? 'value' : 'gradient'}| is ${mx.toFixed(3)}.`,
+    `${S.salx ? '∂s/∂x × x' : '∂s/∂x'} per la classe ${c}, il cui punteggio è s = ${value.toFixed(2)} ` +
+    `(probabilità ${F.prob[c].toFixed(2)}); il più grande |${S.salx ? 'valore' : 'gradiente'}| è ${mx.toFixed(3)}.`);
 }
 
 function drawAdversarial() {
@@ -278,13 +281,14 @@ function drawAdversarial() {
   ctx.font = '11px IBM Plex Mono, monospace'; ctx.fillStyle = P.soft; ctx.textAlign = 'start';
   $('useadv').disabled = !adv;
   if (!adv) {
-    ctx.fillText('press Attack to perturb the current input', 0, 14);
+    ctx.fillText(t('press Attack to perturb the current input', "si prema Attacca per perturbare l'ingresso corrente"), 0, 14);
     drawProb($('advprob'), F.prob);
-    $('advnote').textContent = `The network says ${argmax(F.prob)} on the input; choose a target and ε, then Attack.`;
+    $('advnote').textContent = t(`The network says ${argmax(F.prob)} on the input; choose a target and ε, then Attack.`,
+      `Sull'ingresso la rete dice ${argmax(F.prob)}; si scelgano un bersaglio ed ε, poi Attacca.`);
     return;
   }
   const d = adv.xa.map((v, k) => v - adv.x0[k]), e = Math.max(adv.eps, 1e-9);
-  ctx.fillText('x', 0, 14); ctx.fillText(`x' − x, scaled by 1/ε`, N * c + gap, 14); ctx.fillText(`x'`, 2 * (N * c + gap), 14);
+  ctx.fillText('x', 0, 14); ctx.fillText(t(`x' − x, scaled by 1/ε`, `x' − x, scalato di 1/ε`), N * c + gap, 14); ctx.fillText(`x'`, 2 * (N * c + gap), 14);
   grid(ctx, adv.x0, 0, top, c, v => seq(P.ink, v));
   grid(ctx, d, N * c + gap, top, c, v => div(v / e));
   grid(ctx, adv.xa, 2 * (N * c + gap), top, c, v => seq(P.ink, v));
@@ -292,11 +296,15 @@ function drawAdversarial() {
   drawProb($('advprob'), pa, adv.target ?? was);
   let l1 = 0, linf = 0, moved = 0;
   for (const v of d) { l1 += Math.abs(v); linf = Math.max(linf, Math.abs(v)); if (Math.abs(v) > 1e-9) moved++; }
-  const aim = adv.target === null ? `away from ${was}` : `towards ${adv.target}`;
-  $('advnote').textContent = `${adv.steps} step${adv.steps > 1 ? 's' : ''} ${aim} with ε = ${adv.eps.toFixed(2)}: ${moved} of ${N * N} pixels moved, ` +
+  const aim = adv.target === null ? t(`away from ${was}`, `lontano da ${was}`) : t(`towards ${adv.target}`, `verso ${adv.target}`);
+  $('advnote').textContent = t(`${adv.steps} step${adv.steps > 1 ? 's' : ''} ${aim} with ε = ${adv.eps.toFixed(2)}: ${moved} of ${N * N} pixels moved, ` +
     `by ${(l1 / (N * N)).toFixed(3)} on average and at most ${linf.toFixed(2)}. The network said ${was} (p ${p0[was].toFixed(2)}) ` +
     `and now says ${now} (p ${pa[now].toFixed(2)})` + (now === was ? ', unchanged: try a larger ε or more steps.' :
-    adv.target !== null && now !== adv.target ? `, not yet the target ${adv.target}.` : '.') + ' The bars are the probabilities on x′, the gold outline the class aimed at (or left).';
+    adv.target !== null && now !== adv.target ? `, not yet the target ${adv.target}.` : '.') + ' The bars are the probabilities on x′, the gold outline the class aimed at (or left).',
+    `${adv.steps} pass${adv.steps > 1 ? 'i' : 'o'} ${aim} con ε = ${adv.eps.toFixed(2)}: ${moved} pixel su ${N * N} spostati, ` +
+    `in media di ${(l1 / (N * N)).toFixed(3)} e al più di ${linf.toFixed(2)}. La rete diceva ${was} (p ${p0[was].toFixed(2)}) ` +
+    `e ora dice ${now} (p ${pa[now].toFixed(2)})` + (now === was ? ', invariata: si provi un ε più grande o più passi.' :
+    adv.target !== null && now !== adv.target ? `, non ancora il bersaglio ${adv.target}.` : '.') + ' Le barre sono le probabilità su x′, il contorno oro la classe cercata (o lasciata).');
 }
 
 function attack() {
@@ -317,17 +325,25 @@ function refresh() {
   if (!data) return;
   let best = 0; for (let k = 1; k < NC; k++) if (F.prob[k] > F.prob[best]) best = k;
   const L = losses.length ? losses.reduce((s, v) => s + v, 0) / losses.length : null;
-  $('explain').textContent = `Held-out accuracy ${acc === null ? '…' : (100 * acc).toFixed(1) + '%'} on ${NTEST} digits not used in training` +
+  const A = acc === null ? '…' : (100 * acc).toFixed(1) + '%';
+  $('explain').textContent = t(`Held-out accuracy ${A} on ${NTEST} digits not used in training` +
     (L === null ? '' : `, mean loss ${L.toFixed(3)} on the last ${losses.length} batches of ${B}`) +
     `; on the input the network says ${best}, with probability ${F.prob[best].toFixed(2)}` +
-    (data.X.length < NTRAIN ? ` (training digits written so far: ${data.X.length} of ${NTRAIN}).` : '.');
-  $('truth').textContent = truth === null ? '' : `written as a ${truth}`;
+    (data.X.length < NTRAIN ? ` (training digits written so far: ${data.X.length} of ${NTRAIN}).` : '.'),
+    `Accuratezza ${A} su ${NTEST} cifre non usate nell'addestramento` +
+    (L === null ? '' : `, loss media ${L.toFixed(3)} sugli ultimi ${losses.length} batch da ${B}`) +
+    `; sull'ingresso la rete dice ${best}, con probabilità ${F.prob[best].toFixed(2)}` +
+    (data.X.length < NTRAIN ? ` (cifre di addestramento scritte finora: ${data.X.length} su ${NTRAIN}).` : '.'));
+  $('truth').textContent = truth === null ? '' : t(`written as a ${truth}`, `scritta come ${truth}`);
   if (hover) {
-    const [r0, r1, c0, c1] = receptiveField(hover.stage, hover.i, hover.j), name = { m1: 'map', q1: 'pooled map', m2: 'map', q2: 'pooled map' }[hover.stage];
+    const [r0, r1, c0, c1] = receptiveField(hover.stage, hover.i, hover.j), name = hover.stage[0] === 'm' ? t('map', 'mappa') : t('pooled map', 'mappa ridotta');
     const arr = { m1: F.a1, q1: F.p1, m2: F.a2, q2: F.p2 }[hover.stage], s = { m1: N, q1: P1, m2: P1, q2: P2 }[hover.stage];
-    $('hover').textContent = `layer ${hover.stage[1]}, ${name} ${hover.m + 1}, cell (${hover.i}, ${hover.j}) = ${arr[hover.m * s * s + hover.i * s + hover.j].toFixed(2)}: ` +
-      `it depends on rows ${r0}-${r1} and columns ${c0}-${c1} of the input (${(r1 - r0 + 1) * (c1 - c0 + 1)} pixels).`;
-  } else $('hover').textContent = 'Hover a cell of a map to see its receptive field.';
+    const v = arr[hover.m * s * s + hover.i * s + hover.j].toFixed(2), np = (r1 - r0 + 1) * (c1 - c0 + 1);
+    $('hover').textContent = t(`layer ${hover.stage[1]}, ${name} ${hover.m + 1}, cell (${hover.i}, ${hover.j}) = ${v}: ` +
+      `it depends on rows ${r0}-${r1} and columns ${c0}-${c1} of the input (${np} pixels).`,
+      `strato ${hover.stage[1]}, ${name} ${hover.m + 1}, cella (${hover.i}, ${hover.j}) = ${v}: ` +
+      `dipende dalle righe ${r0}-${r1} e dalle colonne ${c0}-${c1} dell'ingresso (${np} pixel).`);
+  } else $('hover').textContent = t('Hover a cell of a map to see its receptive field.', 'Si passi col puntatore su una cella di una mappa per vederne il campo recettivo.');
 }
 
 function save() { history.replaceState(null, '', '#' + new URLSearchParams({ c1: S.c1, c2: S.c2, lr: S.lr, seed: S.seed, f: S.f, salc: S.salc, salx: S.salx, tgt: S.tgt, eps: S.eps, iters: S.iters })); }
@@ -388,11 +404,11 @@ $('slide').addEventListener('click', e => {
     if (i >= 0 && j >= 0 && i < N && j < N) { pos = i * N + j; stopSlide(); refresh(); return; }
   }
 });
-function stopSlide() { clearInterval(sliding); sliding = null; $('play').textContent = 'Slide'; }
+function stopSlide() { clearInterval(sliding); sliding = null; $('play').textContent = t('Slide', 'Scorri'); }
 $('next').onclick = () => { stopSlide(); pos = (pos + 1) % (N * N); drawSlide(); };
 $('play').onclick = () => {
   if (sliding) return stopSlide();
-  $('play').textContent = 'Stop';
+  $('play').textContent = t('Stop', 'Ferma');
   sliding = setInterval(() => { pos = (pos + 1) % (N * N); drawSlide(); }, 45);
 };
 
@@ -421,6 +437,20 @@ document.addEventListener('keydown', e => {
 // a change of the theme on the site, or of the system, recolours the canvases
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { palette(); refresh(); });
 
+// the texts of the language: the title, the buttons, the first option of the
+// class and of the target
+function words() {
+  document.title = t('Convolution playground', 'Laboratorio della convoluzione');
+  $('reset').textContent = t('Reset', 'Reset'); $('step').textContent = t('Step', 'Passo');
+  $('train').textContent = running ? t('Pause', 'Pausa') : t('Play', 'Avvia');
+  $('clear').textContent = t('Clear', 'Cancella'); $('sample').textContent = t('Held-out digit', 'Cifra di test');
+  $('next').textContent = t('Next position', 'Posizione successiva');
+  $('play').textContent = sliding ? t('Stop', 'Ferma') : t('Slide', 'Scorri');
+  $('attack').textContent = t('Attack', 'Attacca'); $('useadv').textContent = t('Use as input', 'Usa come ingresso');
+  $('salc').options[0].textContent = t('predicted', 'predetta'); $('tgt').options[0].textContent = t('away', 'allontanarsi');
+}
+onLang(() => { words(); if (net) refresh(); });
+words();
 reset();
 makeData(() => {
   x = Float64Array.from(test.X[3]); truth = test.Y[3]; adv = null;

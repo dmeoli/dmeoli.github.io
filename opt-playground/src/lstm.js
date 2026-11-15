@@ -10,6 +10,7 @@ import { forward, rng, argmax } from './lstm-net.js';
 import { createRun } from './lstm-run.js';
 import { TASKS, sample } from './lstm-tasks.js';
 import { drawChain, drawHeat, drawLoss, drawGrad } from './lstm-views.js';
+import { t as tx, onLang } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const S = { task: 'first', T: 20, H: 6, lr: 0.005, show: 'lstm', seed: 2, seq: 1, t: 20 };
@@ -18,6 +19,9 @@ if (!TASKS[S.task]) S.task = 'first';
 S.T = Math.max(5, Math.min(40, Math.round(S.T) || 20));
 if (![4, 6, 8].includes(S.H)) S.H = 6;
 if (S.show !== 'rnn') S.show = 'lstm';
+
+// the names of the tasks in Italian (src/lstm-tasks.js has the English ones)
+const NAME_IT = { first: 'il primo bit', depth: 'la profondità di annidamento', count: 'il numero di uni' };
 
 let run, seq, timer = null, part = null, chainHits = [], heat = null;
 
@@ -47,22 +51,25 @@ function draw() {
   for (const e of document.querySelectorAll('.rnn-only')) e.hidden = kind !== 'rnn';
   for (const e of document.querySelectorAll('.eq')) e.classList.toggle('lit', !!part && e.dataset.part === part && !e.hidden);
   $('eqt').textContent = S.t;
-  $('where').textContent = S.task === 'depth' ? 'at every step' : 'at the last step only';
+  $('where').textContent = S.task === 'depth' ? tx('at every step', 'a ogni passo') : tx('at the last step only', "solo all'ultimo passo");
   const L = run.hist.lstm.at(-1), Rn = run.hist.rnn.at(-1), pct = v => `${(100 * v).toFixed(0)}%`;
-  $('rep').textContent = `${TASKS[S.task].name[0].toUpperCase() + TASKS[S.task].name.slice(1)}` +
+  const name = tx(TASKS[S.task].name, NAME_IT[S.task]);
+  $('rep').textContent = `${name[0].toUpperCase() + name.slice(1)}` + tx(
     `${S.task === 'depth' ? ' at every step' : ` after ${S.T} steps`}: the LSTM answers ${pct(L.acc)} of the test outputs right, ` +
-    `the plain RNN ${pct(Rn.acc)}, a constant answer ${pct(run.baseline)}.`;
+    `the plain RNN ${pct(Rn.acc)}, a constant answer ${pct(run.baseline)}.`,
+    `${S.task === 'depth' ? ' a ogni passo' : ` dopo ${S.T} passi`}: la LSTM risponde giusto sul ${pct(L.acc)} delle uscite di test, ` +
+    `la RNN semplice sul ${pct(Rn.acc)}, una risposta costante sul ${pct(run.baseline)}.`);
   $('epoch').textContent = run.epoch;
   $('Tv').textContent = S.T;
   $('t').max = S.T; $('t').value = S.t; $('tv').textContent = `${S.t} / ${S.T}`;
 }
 
 function save() { history.replaceState(null, '', '#' + new URLSearchParams({ task: S.task, T: S.T, H: S.H, lr: S.lr, show: S.show, seed: S.seed, seq: S.seq, t: S.t })); }
-function stopTrain() { clearInterval(timer); timer = null; $('train').textContent = 'Play'; }
+function stopTrain() { clearInterval(timer); timer = null; $('train').textContent = tx('Play', 'Avvia'); }
 function step() { run.trainEpoch(); run.measure(); draw(); }
 function train() {
   if (timer) return stopTrain();
-  $('train').textContent = 'Pause';
+  $('train').textContent = tx('Pause', 'Pausa');
   timer = setInterval(() => {
     const t0 = performance.now();
     for (let k = 0; k < 8 && (k === 0 || performance.now() - t0 < 30); k++) run.trainEpoch();
@@ -104,4 +111,20 @@ for (const cv of [$('chain'), $('heat')]) cv.onmouseleave = () => point(null);
 for (const e of document.querySelectorAll('.eq')) { e.onmouseenter = () => point(e.dataset.part); e.onmouseleave = () => point(null); }
 let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(draw, 100); });
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+// the texts of the language: the title, the options of the selects, the buttons
+const OPTS = {
+  task: { first: ['Remember the first bit', 'Ricorda il primo bit'], depth: ['Bracket depth', 'Profondità delle parentesi'], count: ['Count the ones', 'Conta gli uni'] },
+  show: { lstm: ['LSTM', 'LSTM'], rnn: ['plain RNN', 'RNN semplice'] },
+};
+function words() {
+  document.title = tx('LSTM playground', 'Laboratorio LSTM');
+  for (const [id, o] of Object.entries(OPTS)) for (const op of $(id).options) op.textContent = tx(...o[op.value]);
+  $('reset').textContent = tx('Reset', 'Reset'); $('step').textContent = tx('Step', 'Passo');
+  $('train').textContent = timer ? tx('Pause', 'Pausa') : tx('Play', 'Avvia');
+  $('seq').textContent = tx('New sequence', 'Nuova sequenza');
+  $('prev').setAttribute('aria-label', tx('previous step', 'passo precedente'));
+  $('next').setAttribute('aria-label', tx('next step', 'passo successivo'));
+}
+onLang(() => { words(); if (run) draw(); });
+words();
 reset();

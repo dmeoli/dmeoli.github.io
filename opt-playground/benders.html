@@ -14,32 +14,41 @@
 <body>
 <nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html" aria-current="page">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
-  <h1>Benders playground</h1>
-  <p class="lede">A two-stage problem with three scenarios: the first-stage
+  <h1><span data-l="en">Benders playground</span><span data-l="it" lang="it">Laboratorio di Benders</span></h1>
+  <p class="lede" data-l="en">A two-stage problem with three scenarios: the first-stage
   variable \(y\), and in each scenario a recourse LP whose dual polygon is the same
   for all of them. The expected recourse is convex and piecewise linear, one
   piece per vertex of that polygon; every Benders cut is a vertex, chosen by the
   direction \(h - T y\) of the scenario. Single cut or one cut per scenario, with or
   without a trust region, as in BendersDecompositionSolver of SMS++.</p>
+  <p class="lede" data-l="it" lang="it">Un problema a due stadi con tre scenari: la variabile di primo
+  stadio \(y\), e in ogni scenario un LP di ricorso il cui poligono duale è lo stesso
+  per tutti. Il ricorso atteso è convesso e lineare a tratti, un
+  tratto per vertice di quel poligono; ogni taglio di Benders è un vertice, scelto dalla
+  direzione \(h - T y\) dello scenario. Un solo taglio o un taglio per scenario, con o
+  senza una regione di fiducia, come in BendersDecompositionSolver di SMS++.</p>
 </header>
 <section class="controls">
   <div class="settings">
     <label><span>int_BDSlv_CutType</span><select id="cut"><option value="single">eSingleCut</option><option value="multi">eMultiCut</option></select></label>
-    <label><span>dblTRRadius (0: none)</span><input id="tr" type="range" min="0" max="5" step="0.25" value="0"><output id="trOut">0</output></label>
+    <label><span><span data-l="en">dblTRRadius (0: none)</span><span data-l="it" lang="it">dblTRRadius (0: nessuna)</span></span><input id="tr" type="range" min="0" max="5" step="0.25" value="0"><output id="trOut">0</output></label>
   </div>
-  <div class="transport"><label class="counter"><span>iteration</span><output id="it">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+  <div class="transport"><label class="counter"><span><span data-l="en">iteration</span><span data-l="it" lang="it">iterazione</span></span><output id="it">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
 </section>
 <main>
-  <figure><figcaption>The master: the true objective \(c\,y + \mathbb{E}[Q(y)]\) (dashed), the
-  model of the cuts (violet), the iterates, the trust region and its centre.</figcaption>
+  <figure><figcaption><span data-l="en">The master: the true objective \(c\,y + \mathbb{E}[Q(y)]\) (dashed), the
+  model of the cuts (violet), the iterates, the trust region and its centre.</span><span data-l="it" lang="it">Il problema master: il vero obiettivo \(c\,y + \mathbb{E}[Q(y)]\) (tratteggiato), il
+  modello dei tagli (viola), gli iterati, la regione di fiducia e il suo centro.</span></figcaption>
   <svg id="master" viewBox="0 0 520 400"></svg>
-  <dl class="stats"><div><dt>upper bound</dt><dd id="ub"></dd></div><div><dt>lower bound</dt><dd id="lb"></dd></div><div><dt>cuts</dt><dd id="nc"></dd></div></dl></figure>
-  <figure><figcaption>The dual polygon of the recourse: each ring is a vertex used
+  <dl class="stats"><div><dt><span data-l="en">upper bound</span><span data-l="it" lang="it">limitazione superiore</span></dt><dd id="ub"></dd></div><div><dt><span data-l="en">lower bound</span><span data-l="it" lang="it">limitazione inferiore</span></dt><dd id="lb"></dd></div><div><dt><span data-l="en">cuts</span><span data-l="it" lang="it">tagli</span></dt><dd id="nc"></dd></div></dl></figure>
+  <figure><figcaption><span data-l="en">The dual polygon of the recourse: each ring is a vertex used
   as a cut by a scenario (violet, gold, teal; bright at the last iteration), the
-  arrows the directions \(h - T y\) at the last \(y\).</figcaption>
+  arrows the directions \(h - T y\) at the last \(y\).</span><span data-l="it" lang="it">Il poligono duale del ricorso: ogni anello è un vertice usato
+  come taglio da uno scenario (viola, oro, verde acqua; acceso all'ultima iterazione), le
+  frecce le direzioni \(h - T y\) all'ultimo \(y\).</span></figcaption>
   <svg id="dualpoly" viewBox="0 0 400 400"></svg></figure>
 </main>
-<footer>Scene D of opt-playground.</footer>
+<footer><span data-l="en">Scene D of opt-playground.</span><span data-l="it" lang="it">Scena D di opt-playground.</span></footer>
 <script type="module" src="src/benders.js"></script>
 </body>
 </html>

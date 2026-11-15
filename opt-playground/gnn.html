@@ -40,8 +40,8 @@
 <body>
 <nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html" aria-current="page">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
-  <h1>Graph networks playground</h1>
-  <p class="lede">A graph network gives every node a vector and, in every round, replaces it
+  <h1><span data-l="en">Graph networks playground</span><span data-l="it" lang="it">Laboratorio delle reti su grafi</span></h1>
+  <p class="lede" data-l="en">A graph network gives every node a vector and, in every round, replaces it
   with a function of the sum of the vectors of its neighbours and its own, the same
   function at every node; after \(k\) rounds a node can depend only on the nodes within
   \(k\) edges of it. The network here, written with its own backward pass, is trained in
@@ -49,36 +49,50 @@
   nodes spreading through their communities, the truth values of a hidden assignment
   reaching the clauses of a formula, and two different graphs which no number of rounds
   can tell apart.</p>
+  <p class="lede" data-l="it" lang="it">Una rete su grafi assegna a ogni nodo un vettore e, a ogni
+  turno, lo sostituisce con una funzione della somma dei vettori dei suoi vicini e del proprio,
+  la stessa funzione in ogni nodo; dopo \(k\) turni un nodo può dipendere solo dai nodi che
+  distano da esso al più \(k\) archi. La rete qui, scritta con il suo passo all'indietro, è
+  addestrata nella pagina con Adam, e se ne possono seguire gli stati turno per turno: le
+  etichette di pochi nodi che si diffondono nelle loro comunità, i valori di verità di un
+  assegnamento nascosto che raggiungono le clausole di una formula, e due grafi diversi che
+  nessun numero di turni riesce a distinguere.</p>
 </header>
 <section class="controls">
   <div class="settings">
-    <label><span>task</span><select id="task"><option value="community">communities</option><option value="clauses">clauses of a formula</option><option value="triangles">triangles (1-WL)</option></select></label>
+    <label><span><span data-l="en">task</span><span data-l="it" lang="it">compito</span></span><select id="task"><option value="community">communities</option><option value="clauses">clauses of a formula</option><option value="triangles">triangles (1-WL)</option></select></label>
     <button id="regen" type="button">New graph</button>
-    <label class="opt-community"><span>communities</span><select id="comm"><option>2</option><option>3</option></select></label>
-    <label class="opt-community"><span>labelled per community</span><select id="lab"><option>1</option><option selected>2</option><option>3</option></select></label>
-    <label class="opt-triangles"><span>pair</span><select id="pair"><option value="ring">C6 and two triangles</option><option value="k33">K3,3 and the prism</option></select></label>
-    <label><span>aggregation</span><select id="agg"><option value="gcn">GCN (normalised)</option><option value="gin">sum (GIN)</option></select></label>
-    <label><span>rounds \(K\)</span><select id="K"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option></select></label>
-    <label><span>hidden size</span><select id="H"><option>8</option><option selected>12</option><option>16</option></select></label>
+    <label class="opt-community"><span><span data-l="en">communities</span><span data-l="it" lang="it">comunità</span></span><select id="comm"><option>2</option><option>3</option></select></label>
+    <label class="opt-community"><span><span data-l="en">labelled per community</span><span data-l="it" lang="it">etichettati per comunità</span></span><select id="lab"><option>1</option><option selected>2</option><option>3</option></select></label>
+    <label class="opt-triangles"><span><span data-l="en">pair</span><span data-l="it" lang="it">coppia</span></span><select id="pair"><option value="ring">C6 and two triangles</option><option value="k33">K3,3 and the prism</option></select></label>
+    <label><span><span data-l="en">aggregation</span><span data-l="it" lang="it">aggregazione</span></span><select id="agg"><option value="gcn">GCN (normalised)</option><option value="gin">sum (GIN)</option></select></label>
+    <label><span><span data-l="en">rounds</span><span data-l="it" lang="it">turni</span> \(K\)</span><select id="K"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option></select></label>
+    <label><span><span data-l="en">hidden size</span><span data-l="it" lang="it">dimensione nascosta</span></span><select id="H"><option>8</option><option selected>12</option><option>16</option></select></label>
     <label><span>learning rate</span><select id="lr"><option>0.003</option><option selected>0.01</option><option>0.03</option></select></label>
   </div>
-  <div class="transport"><label class="counter"><span>step</span><output id="steps">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="train" type="button">Play</button></div>
+  <div class="transport"><label class="counter"><span><span data-l="en">step</span><span data-l="it" lang="it">passo</span></span><output id="steps">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="train" type="button">Play</button></div>
 </section>
 <p class="explain" id="status"></p>
 <main>
 <div class="col">
   <figure id="fig-graph"><figcaption id="graphcap"></figcaption>
   <canvas id="graph" width="560" height="460"></canvas>
-  <div class="stepper"><span>round \(k\)</span><button id="prev" type="button" aria-label="previous round">&lsaquo;</button><input id="k" type="range" min="0" max="3" step="1" value="3"><button id="next" type="button" aria-label="next round">&rsaquo;</button><output id="kv"></output></div>
-  <p class="legend2">state at round <i>k</i>, first principal component: <span class="scale"></span> second: towards the ink or the ground</p>
+  <div class="stepper"><span><span data-l="en">round</span><span data-l="it" lang="it">turno</span> \(k\)</span><button id="prev" type="button" aria-label="previous round">&lsaquo;</button><input id="k" type="range" min="0" max="3" step="1" value="3"><button id="next" type="button" aria-label="next round">&rsaquo;</button><output id="kv"></output></div>
+  <p class="legend2" data-l="en">state at round <i>k</i>, first principal component: <span class="scale"></span> second: towards the ink or the ground</p>
+  <p class="legend2" data-l="it" lang="it">stato al turno <i>k</i>, prima componente principale: <span class="scale"></span> seconda: verso l'inchiostro o il fondo</p>
   <p class="readout" id="readout"></p></figure>
 </div>
 <div class="col">
-  <figure id="fig-update"><figcaption>The update that gives the hovered node its state at
+  <figure id="fig-update"><figcaption><span data-l="en">The update that gives the hovered node its state at
   round \(k\) (the first update when \(k = 0\)): its vector before, the message of every
   neighbour (its state times the coefficient of the aggregation, the largest first), their
   sum \(z_v\), and the vector after; the bars of each row are the hidden units, violet when
-  positive and gold when negative, all on one scale. Hover a row to find its part in the formula.</figcaption>
+  positive and gold when negative, all on one scale. Hover a row to find its part in the formula.</span><span data-l="it" lang="it">L'aggiornamento
+  che dà al nodo indicato il suo stato al turno \(k\) (il primo aggiornamento quando \(k = 0\)):
+  il suo vettore prima, il messaggio di ogni vicino (il suo stato per il coefficiente
+  dell'aggregazione, dal più grande), la loro somma \(z_v\) e il vettore dopo; le barre di ogni
+  riga sono le unità nascoste, viola quando positive e oro quando negative, tutte su una stessa
+  scala. Passando su una riga se ne trova la parte nella formula.</span></figcaption>
   <p class="formula main" id="f-gcn">\(\class{fo}{h_v^{(k+1)}} = \class{fw}{\tanh\Big(W^{(k)}} \class{fs}{\sum_{u \in N(v) \cup \{v\}}} \class{fm fh}{\frac{h_u^{(k)}}{\sqrt{d_u d_v}}} \class{fw}{{} + b^{(k)}\Big)}\)</p>
   <p class="formula main" id="f-gin" hidden>\(\class{fo}{h_v^{(k+1)}} = \class{fw}{\tanh\Big(W^{(k)}}\big(\class{fh}{h_v^{(k)}} + \class{fs}{\sum_{u \in N(v)}} \class{fm}{h_u^{(k)}}\big) \class{fw}{{} + b^{(k)}\Big)}\)</p>
   <p class="formula small" id="f-out"></p>
@@ -88,12 +102,17 @@
   <p class="legend2" id="curvelegend"></p></figure>
 </div>
 </main>
-<footer>Scene L of opt-playground, after J. Gilmer et al.,
+<footer><span data-l="en">Scene L of opt-playground, after J. Gilmer et al.,
 <a href="https://arxiv.org/abs/1704.01212">Neural Message Passing for Quantum Chemistry</a> (2017),
 T. N. Kipf and M. Welling, <a href="https://arxiv.org/abs/1609.02907">Semi-Supervised Classification with Graph Convolutional Networks</a> (2017),
 K. Xu et al., <a href="https://arxiv.org/abs/1810.00826">How Powerful are Graph Neural Networks?</a> (2019), and
 D. Selsam et al., <a href="https://arxiv.org/abs/1802.03685">Learning a SAT Solver from Single-Bit Supervision</a> (2019):
-the ideas are theirs, rebuilt here from the equations.</footer>
+the ideas are theirs, rebuilt here from the equations.</span><span data-l="it" lang="it">Scena L di opt-playground, da J. Gilmer et al.,
+<a href="https://arxiv.org/abs/1704.01212">Neural Message Passing for Quantum Chemistry</a> (2017),
+T. N. Kipf e M. Welling, <a href="https://arxiv.org/abs/1609.02907">Semi-Supervised Classification with Graph Convolutional Networks</a> (2017),
+K. Xu et al., <a href="https://arxiv.org/abs/1810.00826">How Powerful are Graph Neural Networks?</a> (2019), e
+D. Selsam et al., <a href="https://arxiv.org/abs/1802.03685">Learning a SAT Solver from Single-Bit Supervision</a> (2019):
+le idee sono loro, ricostruite qui dalle equazioni.</span></footer>
 <script type="module" src="src/gnn.js"></script>
 </body>
 </html>

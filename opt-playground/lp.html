@@ -14,31 +14,40 @@
 <body>
 <nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html" aria-current="page">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
-  <h1>LP playground</h1>
-  <p class="lede">A linear program with two variables and two rows, so that its
+  <h1><span data-l="en">LP playground</span><span data-l="it" lang="it">Laboratorio di PL</span></h1>
+  <p class="lede" data-l="en">A linear program with two variables and two rows, so that its
   dual lives in the plane too: \(\max\, c \cdot x,\ A x \le b,\ x \ge 0\) on the
   left, \(\min\, b \cdot y,\ A^\top y \ge c,\ y \ge 0\) on the right. The simplex
   walks the vertices of the primal, and every basis gives a dual point, outside the
   dual region until the basis is optimal; the barrier method follows the central path in both.</p>
+  <p class="lede" data-l="it" lang="it">Un programma lineare con due variabili e due righe, cos&igrave; che anche
+  il suo duale stia nel piano: \(\max\, c \cdot x,\ A x \le b,\ x \ge 0\) a
+  sinistra, \(\min\, b \cdot y,\ A^\top y \ge c,\ y \ge 0\) a destra. Il simplesso
+  percorre i vertici del primale, e ogni base d&agrave; un punto duale, fuori dalla
+  regione duale finch&eacute; la base non &egrave; ottima; il metodo barriera segue il cammino centrale in entrambi.</p>
 </header>
 <section class="controls">
   <div class="settings">
-    <label><span>instance</span><select id="inst"></select></label>
-    <label><span>method</span><select id="mode"><option value="simplex">Simplex</option><option value="ipm">Interior point (barrier)</option></select></label>
+    <label><span data-l="en">instance</span><span data-l="it" lang="it">istanza</span><select id="inst"></select></label>
+    <label><span data-l="en">method</span><span data-l="it" lang="it">metodo</span><select id="mode"><option value="simplex">Simplex</option><option value="ipm">Interior point (barrier)</option></select></label>
   </div>
   <div class="transport"><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
 </section>
 <p id="info" class="explain"></p>
 <main>
-  <figure><figcaption>Primal: the feasible region, the two rows, the path of the
-  method and the optimum <span class="k opt"></span>.</figcaption><svg id="primal" viewBox="0 0 420 420"></svg></figure>
-  <figure><figcaption>Dual: its feasible region (unbounded, cut by the frame), the
-  two rows \(A^\top y \ge c\), the dual points of the path and the optimum.</figcaption><svg id="dual" viewBox="0 0 420 420"></svg>
+  <figure><figcaption><span data-l="en">Primal: the feasible region, the two rows, the path of the
+  method and the optimum</span><span data-l="it" lang="it">Primale: la regione ammissibile, le due righe, il cammino del
+  metodo e l'ottimo</span> <span class="k opt"></span>.</figcaption><svg id="primal" viewBox="0 0 420 420"></svg></figure>
+  <figure><figcaption><span data-l="en">Dual: its feasible region (unbounded, cut by the frame), the
+  two rows \(A^\top y \ge c\), the dual points of the path and the optimum.</span><span data-l="it" lang="it">Duale: la sua regione ammissibile (illimitata, tagliata dalla cornice), le
+  due righe \(A^\top y \ge c\), i punti duali del cammino e l'ottimo.</span></figcaption><svg id="dual" viewBox="0 0 420 420"></svg>
   <dl class="stats"><div><dt>\(c \cdot x\)</dt><dd id="pval"></dd></div><div><dt>\(b \cdot y\)</dt><dd id="dval"></dd></div><div><dt>\(b \cdot y - c \cdot x\)</dt><dd id="gap"></dd></div></dl></figure>
 </main>
-<footer>Scene C of opt-playground; the same program in three variables, with the
+<footer><span data-l="en">Scene C of opt-playground; the same program in three variables, with the
 simplex on the edges of a polytope, is in <a href="lp3d.html">LP in 3D</a>; for richer LP pictures in the plane see lpviz
-(lpviz.net) and GILP.</footer>
+(lpviz.net) and GILP.</span><span data-l="it" lang="it">Scena C di opt-playground; lo stesso programma in tre variabili, con il
+simplesso sugli spigoli di un politopo, &egrave; in <a href="lp3d.html">LP in 3D</a>; per figure pi&ugrave; ricche della PL nel piano si vedano lpviz
+(lpviz.net) e GILP.</span></footer>
 <script type="module" src="src/lp.js"></script>
 </body>
 </html>

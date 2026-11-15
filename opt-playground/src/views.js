@@ -2,6 +2,7 @@
 // an SVG, and they are linked through the step under the pointer.
 
 import { hull, primalPoint } from './problems/lagrangian1d.js';
+import { t } from './i18n.js';
 
 const NS = 'http://www.w3.org/2000/svg';
 export function el(tag, attrs = {}, parent) {
@@ -104,8 +105,8 @@ export function curve(svg, problem, state) {
   const n = Math.max(gaps.length - 1, 10);
   const X = scale(0, n, pad, W - 10), Y = scale(-6, Math.log10(Math.max(...gaps, 1)) + 0.3, H - 22, 8);
   el('line', { x1: pad, x2: W - 10, y1: H - 22, y2: H - 22, class: 'axis' }, svg);
-  el('text', { x: pad, y: 12, class: 'lab' }, svg).textContent = 'gap to max L (log)';
-  el('text', { x: W - 10, y: H - 6, class: 'lab end' }, svg).textContent = 'iteration';
+  el('text', { x: pad, y: 12, class: 'lab' }, svg).textContent = t('gap to max L (log)', 'scarto da max L (log)');
+  el('text', { x: W - 10, y: H - 6, class: 'lab end' }, svg).textContent = t('iteration', 'iterazione');
   el('polyline', { points: gaps.map((g, i) => `${X(i)},${Y(Math.log10(g))}`).join(' '), class: 'gapline' }, svg);
 }
 

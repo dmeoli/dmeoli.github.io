@@ -6,13 +6,14 @@
 
 import { proxMax } from './problems/lagrangian2d.js';
 import { createSurface, niceTicks, fmt } from './learning3d.js';
+import { t as tr, onLang } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 
 // ---------------------------------------------------------------- functions
 const functions = {
   quadratic: {
-    label: 'Ill-conditioned quadratic', lr: 0.05,
+    label: 'Ill-conditioned quadratic', it: 'Quadratica mal condizionata', lr: 0.05,
     box: [-4, 4, -4, 4], start: [-3.5, 3], minima: [[0, 0]],
     f: ([x, y]) => 0.5 * (x * x + 12 * y * y) + 0.4 * x * y,
     g: ([x, y]) => [x + 0.4 * y, 12 * y + 0.4 * x],
@@ -27,7 +28,7 @@ const functions = {
     log: true,
   },
   himmelblau: {
-    label: 'Himmelblau (four minima)', lr: 0.01,
+    label: 'Himmelblau (four minima)', it: 'Himmelblau (quattro minimi)', lr: 0.01,
     box: [-5, 5, -5, 5], start: [-0.3, -0.8],
     minima: [[3, 2], [-2.805118, 3.131312], [-3.779310, -3.283186], [3.584428, -1.848126]],
     f: ([x, y]) => (x * x + y - 11) ** 2 + (x + y * y - 7) ** 2,
@@ -36,7 +37,7 @@ const functions = {
     log: true,
   },
   nonsmooth: {
-    label: 'Nonsmooth: |x| + 3|y| + a ridge', lr: 0.05,
+    label: 'Nonsmooth: |x| + 3|y| + a ridge', it: 'Non differenziabile: |x| + 3|y| + una cresta', lr: 0.05,
     box: [-4, 4, -4, 4], start: [-3.2, 2.6], minima: [[0, 0]],
     f: ([x, y]) => Math.abs(x) + 3 * Math.abs(y) + Math.max(0, x + y - 1),
     g: ([x, y]) => [Math.sign(x) + (x + y > 1 ? 1 : 0), 3 * Math.sign(y) + (x + y > 1 ? 1 : 0)],
@@ -44,28 +45,28 @@ const functions = {
   },
   // the instances of the notebooks of optiml (LineSearchMethods, StochasticMethods)
   optimlQuadratic: {
-    label: 'Quadratic of optiml: Q = [[5, -3], [-3, 5]], q = [10, 5]', lr: 0.05,
+    label: 'Quadratic of optiml: Q = [[5, -3], [-3, 5]], q = [10, 5]', it: 'Quadratica di optiml: Q = [[5, -3], [-3, 5]], q = [10, 5]', lr: 0.05,
     box: [-5, 2, -5, 2], start: [-1, 1], minima: [[-65 / 16, -55 / 16]],
     f: ([x, y]) => 0.5 * (5 * x * x - 6 * x * y + 5 * y * y) + 10 * x + 5 * y,
     g: ([x, y]) => [5 * x - 3 * y + 10, -3 * x + 5 * y + 5],
     h: () => [[5, -3], [-3, 5]],
   },
   rosenbrock2: {
-    label: 'Rosenbrock of optiml (b = 2)', lr: 0.05,
+    label: 'Rosenbrock of optiml (b = 2)', it: 'Rosenbrock di optiml (b = 2)', lr: 0.05,
     box: [-2, 2, -1, 3], start: [-1, 1], minima: [[1, 1]],
     f: ([x, y]) => (1 - x) ** 2 + 2 * (y - x * x) ** 2,
     g: ([x, y]) => [-2 * (1 - x) - 8 * x * (y - x * x), 4 * (y - x * x)],
     h: ([x, y]) => [[2 - 8 * (y - 3 * x * x), -8 * x], [-8 * x, 4]],
   },
   sixhump: {
-    label: 'Six-Hump Camel (two global minima, four local)', lr: 0.02,
+    label: 'Six-Hump Camel (two global minima, four local)', it: 'Six-Hump Camel (due minimi globali, quattro locali)', lr: 0.02,
     box: [-2, 2, -1, 1], start: [-1, 0], minima: [[0.0898, -0.7126], [-0.0898, 0.7126]],
     f: ([x, y]) => (4 - 2.1 * x * x + x ** 4 / 3) * x * x + x * y + (-4 + 4 * y * y) * y * y,
     g: ([x, y]) => [8 * x - 8.4 * x ** 3 + 2 * x ** 5 + y, x - 8 * y + 16 * y ** 3],
     h: ([x, y]) => [[8 - 25.2 * x * x + 10 * x ** 4, 1], [1, -8 + 48 * y * y]],
   },
   ackley: {
-    label: 'Ackley (many local minima around a deep hole)', lr: 0.02,
+    label: 'Ackley (many local minima around a deep hole)', it: 'Ackley (molti minimi locali attorno a una buca profonda)', lr: 0.02,
     box: [-4, 4, -4, 4], start: [2.6, 2.2], minima: [[0, 0]],
     f: ([x, y]) => -20 * Math.exp(-0.2 * Math.sqrt((x * x + y * y) / 2)) - Math.exp((Math.cos(2 * Math.PI * x) + Math.cos(2 * Math.PI * y)) / 2) + Math.E + 20,
     g: ([x, y]) => {
@@ -74,14 +75,14 @@ const functions = {
     },
   },
   leastsquares: {
-    label: 'Least squares: a linear model on correlated features', lr: 0.05,
+    label: 'Least squares: a linear model on correlated features', it: 'Minimi quadrati: un modello lineare su feature correlate', lr: 0.05,
     box: [7, 23, -25, -9], start: [8, -10], minima: [[15, -17]],
     f: ([x, y]) => { const u = x - 15, v = y + 17; return 0.5 * (2 * u * u + 3.2 * u * v + 2 * v * v); },
     g: ([x, y]) => { const u = x - 15, v = y + 17; return [2 * u + 1.6 * v, 1.6 * u + 2 * v]; },
     h: () => [[2, 1.6], [1.6, 2]],
   },
   ridge: {
-    label: 'Least squares with L2 (ridge)', lr: 0.05,
+    label: 'Least squares with L2 (ridge)', it: 'Minimi quadrati con L2 (ridge)', lr: 0.05,
     box: [-10, 10, -10, 10], start: [7, 9], minima: [[9.76 / 8.0025, -3.82 / 8.0025]],
     // 0.5 (w - w*)' A (w - w*) + 0.5 lambda |w|^2, w* = (4, -3), A as above, lambda = 1.25
     f: ([x, y]) => { const u = x - 4, v = y + 3; return 0.5 * (2 * u * u + 3.2 * u * v + 2 * v * v) + 0.625 * (x * x + y * y); },
@@ -90,7 +91,7 @@ const functions = {
   },
   // classics of the literature
   beale: {
-    label: 'Beale (flat valleys, steep walls)', lr: 0.002,
+    label: 'Beale (flat valleys, steep walls)', it: 'Beale (valli piatte, pareti ripide)', lr: 0.002,
     box: [-4.5, 4.5, -4.5, 4.5], start: [1, 1.5], minima: [[3, 0.5]],
     f: ([x, y]) => (1.5 - x + x * y) ** 2 + (2.25 - x + x * y * y) ** 2 + (2.625 - x + x * y ** 3) ** 2,
     g: ([x, y]) => {
@@ -100,21 +101,21 @@ const functions = {
     log: true,
   },
   rastrigin: {
-    label: 'Rastrigin (a regular grid of local minima)', lr: 0.002,
+    label: 'Rastrigin (a regular grid of local minima)', it: 'Rastrigin (una griglia regolare di minimi locali)', lr: 0.002,
     box: [-5.12, 5.12, -5.12, 5.12], start: [3.3, -2.7], minima: [[0, 0]],
     f: ([x, y]) => 20 + x * x - 10 * Math.cos(2 * Math.PI * x) + y * y - 10 * Math.cos(2 * Math.PI * y),
     g: ([x, y]) => [2 * x + 20 * Math.PI * Math.sin(2 * Math.PI * x), 2 * y + 20 * Math.PI * Math.sin(2 * Math.PI * y)],
     h: ([x, y]) => [[2 + 40 * Math.PI ** 2 * Math.cos(2 * Math.PI * x), 0], [0, 2 + 40 * Math.PI ** 2 * Math.cos(2 * Math.PI * y)]],
   },
   styblinski: {
-    label: 'Styblinski-Tang (four basins of different depth)', lr: 0.01,
+    label: 'Styblinski-Tang (four basins of different depth)', it: 'Styblinski-Tang (quattro bacini di diversa profondità)', lr: 0.01,
     box: [-5, 5, -5, 5], start: [4.5, 4.2], minima: [[-2.903534, -2.903534]],
     f: ([x, y]) => 0.5 * (x ** 4 - 16 * x * x + 5 * x + y ** 4 - 16 * y * y + 5 * y),
     g: ([x, y]) => [0.5 * (4 * x ** 3 - 32 * x + 5), 0.5 * (4 * y ** 3 - 32 * y + 5)],
     h: ([x, y]) => [[6 * x * x - 16, 0], [0, 6 * y * y - 16]],
   },
   goldstein: {
-    label: 'Goldstein-Price (values from 3 to millions)', lr: 0.00002,
+    label: 'Goldstein-Price (values from 3 to millions)', it: 'Goldstein-Price (valori da 3 a milioni)', lr: 0.00002,
     box: [-2, 2, -2, 2], start: [1, -0.5], minima: [[0, -1]],
     f: ([x, y]) => (1 + (x + y + 1) ** 2 * (19 - 14 * x + 3 * x * x - 14 * y + 6 * x * y + 3 * y * y))
       * (30 + (2 * x - 3 * y) ** 2 * (18 - 32 * x + 12 * x * x + 48 * y - 36 * x * y + 27 * y * y)),
@@ -141,9 +142,9 @@ for (const F of Object.values(functions)) {
 const add = (a, b, t = 1) => [a[0] + t * b[0], a[1] + t * b[1]];
 const dot = (a, b) => a[0] * b[0] + a[1] * b[1];
 const algorithms = {
-  gd: { name: 'Gradient descent',
+  gd: { name: 'Gradient descent', it: 'Discesa del gradiente',
     step: (F, s, p) => { s.x = add(s.x, F.g(s.x), -p.lr); } },
-  polyak: { name: 'Momentum (Polyak)',
+  polyak: { name: 'Momentum (Polyak)', it: 'Momento (Polyak)',
     step: (F, s, p) => { s.v = add([0.9 * (s.v?.[0] ?? 0), 0.9 * (s.v?.[1] ?? 0)], F.g(s.x), -p.lr); s.x = add(s.x, s.v); } },
   nesterov: { name: 'Nesterov',
     step: (F, s, p) => { const v = s.v ?? [0, 0], look = add(s.x, v, 0.9); s.v = add([0.9 * v[0], 0.9 * v[1]], F.g(look), -p.lr); s.x = add(s.x, s.v); } },
@@ -183,7 +184,7 @@ const algorithms = {
       }
       s.x = xn;
     } },
-  bundle: { name: 'Proximal bundle',
+  bundle: { name: 'Proximal bundle', it: 'Bundle prossimale',
     step: (F, s, p) => {
       // minimize f: the model is the max of the cuts; in the terms of the
       // dual machinery, maximize -model over the box shifted to the origin
@@ -246,11 +247,11 @@ const step = () => goTo(k + 1), back = () => goTo(k - 1);
 
 // Play advances ips iterations per second, one frame at a time
 let raf = 0, lastT = 0, acc = 0;
-function stop() { if (playing) save(); playing = false; cancelAnimationFrame(raf); $('play').textContent = 'Play'; }
+function stop() { if (playing) save(); playing = false; cancelAnimationFrame(raf); $('play').textContent = tr('Play', 'Avvia'); }
 function play() {
   if (playing) return stop();
   if (k >= HZ) goTo(0);
-  playing = true; $('play').textContent = 'Pause'; lastT = performance.now(); acc = 0;
+  playing = true; $('play').textContent = tr('Pause', 'Pausa'); lastT = performance.now(); acc = 0;
   // the clock of the page, not that of the frame (which may precede the
   // click); a hidden page does not jump forward when it comes back
   const tick = () => {
@@ -449,8 +450,8 @@ function drawCurves() {
   g.textAlign = 'center'; g.textBaseline = 'top';
   for (const i of niceTicks(0, n, 5)) { g.strokeStyle = C.inkSoft; g.beginPath(); g.moveTo(X(i), R.y + R.h); g.lineTo(X(i), R.y + R.h + 4); g.stroke(); g.fillText(fmt(i), X(i), R.y + R.h + 6); }
   g.textAlign = 'left'; g.textBaseline = 'alphabetic';
-  g.fillText('f − best f found (log)', R.x, 11);
-  g.textAlign = 'right'; g.fillText('iteration', R.x + R.w, h - 2);
+  g.fillText(tr('f − best f found (log)', 'f − miglior f trovato (log)'), R.x, 11);
+  g.textAlign = 'right'; g.fillText(tr('iteration', 'iterazione'), R.x + R.w, h - 2);
   // where the race is now
   g.strokeStyle = C.inkSoft; g.setLineDash([3, 3]); g.beginPath(); g.moveTo(X(k), R.y); g.lineTo(X(k), R.y + R.h); g.stroke(); g.setLineDash([]);
   const line = (vs, col, dash) => {
@@ -471,7 +472,7 @@ function draw() {
   drawCurves();
   $('legend').replaceChildren(...runs.map(r => {
     const li = document.createElement('li'), v = r.vals[k];
-    li.innerHTML = `<i style="background:${C.alg[r.k]}"></i>${algorithms[r.k].name} <b>${isFinite(v) ? v.toPrecision(4) : 'diverged'}</b>`;
+    li.innerHTML = `<i style="background:${C.alg[r.k]}"></i>${label(algorithms[r.k])} <b>${isFinite(v) ? v.toPrecision(4) : tr('diverged', 'divergente')}</b>`;
     return li;
   }), ...replays.map(r => {
     const li = document.createElement('li'), c = C.alg[r.key];
@@ -498,14 +499,30 @@ function save() {
 }
 
 // -------------------------------------------------------------------- setup
-for (const [key, f] of Object.entries(functions)) $('fn').append(new Option(f.label, key, false, key === Fname));
+// the names in the language of the page (the functions and the algorithms
+// keep the Italian beside the English, the options are written again)
+const label = o => tr(o.label ?? o.name, o.it ?? o.label ?? o.name);
+const TRACES = { '': ['none', 'nessuna'], 'traces/rosenbrock-optiml.json': ['optiml on Rosenbrock (real run)', 'optiml su Rosenbrock (esecuzione reale)'],
+  'traces/rosenbrock2-optiml.json': ['optiml on Rosenbrock, b = 2 (real run)', 'optiml su Rosenbrock, b = 2 (esecuzione reale)'],
+  'traces/optimlQuadratic-optiml.json': ['optiml on its quadratic (real run)', 'optiml sulla sua quadratica (esecuzione reale)'],
+  'traces/sixhump-optiml.json': ['optiml on Six-Hump Camel (real run)', 'optiml su Six-Hump Camel (esecuzione reale)'] };
+function texts() {
+  for (const o of $('fn').options) o.textContent = label(functions[o.value]);
+  for (const o of $('traceSel').options) if (TRACES[o.value]) o.textContent = tr(...TRACES[o.value]);
+  for (const n of document.querySelectorAll('#algos .algo')) n.lastChild.textContent = label(algorithms[n.querySelector('i').dataset.k]);
+  $('play').textContent = playing ? tr('Pause', 'Pausa') : tr('Play', 'Avvia');
+  $('step').textContent = tr('Step', 'Passo');
+  fsTexts();
+  document.title = tr('Learning playground', 'Laboratorio di apprendimento');
+}
+for (const [key, f] of Object.entries(functions)) $('fn').append(new Option(label(f), key, false, key === Fname));
 function useLr() { params.lr = F.lr; $('lr').value = F.lr; $('lrOut').textContent = F.lr; }
 function useFunction(name) { Fname = name; F = functions[Fname]; start = F.start.slice(); logScale = !!F.log; $('log').checked = logScale; useLr(); computeField(); }
 $('fn').addEventListener('change', e => { traceSrc = ''; $('traceSel').value = ''; replays = []; useFunction(e.target.value); reset(); });
 readTheme();
 for (const [key, a] of Object.entries(algorithms)) {
   const lab = document.createElement('label'); lab.className = 'algo';
-  lab.innerHTML = `<input type="checkbox" ${chosen.has(key) ? 'checked' : ''}><i data-k="${key}" style="background:${C.alg[key]}"></i>${a.name}`;
+  lab.innerHTML = `<input type="checkbox" ${chosen.has(key) ? 'checked' : ''}><i data-k="${key}" style="background:${C.alg[key]}"></i>${label(a)}`;
   lab.querySelector('input').addEventListener('change', e => { e.target.checked ? chosen.add(key) : chosen.delete(key); reset(); });
   $('algos').appendChild(lab);
 }
@@ -549,9 +566,10 @@ for (const b of document.querySelectorAll('[data-fs]')) {
   const fig = $(b.dataset.fs);
   b.addEventListener('click', () => (document.fullscreenElement === fig ? document.exitFullscreen() : fig.requestFullscreen()));
 }
-document.addEventListener('fullscreenchange', () => {
-  for (const b of document.querySelectorAll('[data-fs]')) b.textContent = document.fullscreenElement === $(b.dataset.fs) ? 'exit full screen' : 'full screen';
-});
+function fsTexts() {
+  for (const b of document.querySelectorAll('[data-fs]')) b.textContent = document.fullscreenElement === $(b.dataset.fs) ? tr('exit full screen', 'esci dallo schermo intero') : tr('full screen', 'schermo intero');
+}
+document.addEventListener('fullscreenchange', fsTexts);
 $('rotate').addEventListener('click', e => { const on = e.target.getAttribute('aria-pressed') !== 'true'; e.target.setAttribute('aria-pressed', on); surf?.setAutoRotate(on); });
 $('home').addEventListener('click', () => surf?.resetCamera());
 new ResizeObserver(() => { drawMap(); drawCurves(); }).observe($('mapwrap'));
@@ -559,6 +577,8 @@ new ResizeObserver(() => { drawMap(); drawCurves(); }).observe($('mapwrap'));
 // the theme of the site, chosen there or by the system
 new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
+onLang(() => { texts(); draw(); });
+texts();
 
 async function init() {
   const q = new URLSearchParams(location.hash.slice(1));
@@ -579,7 +599,7 @@ async function init() {
     surf.setColors(C); computeField(); surf.setSurfaceLines($('sc').checked);
   } catch (err) {
     // without WebGL the map and the curves still work
-    $('surface').textContent = 'The surface needs WebGL, which this browser does not offer.';
+    $('surface').textContent = tr('The surface needs WebGL, which this browser does not offer.', 'La superficie richiede WebGL, che questo browser non offre.');
     console.warn(err);
   }
   reset();

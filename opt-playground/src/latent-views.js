@@ -3,6 +3,7 @@
 // of the codes and what the decoder makes of it sit at the same place.
 
 import { N } from './convnet.js';
+import { t } from './i18n.js';
 
 // ------------------------------------------------------------------ colours
 const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
@@ -198,7 +199,7 @@ export function drawCurves(cv, hist, vae, lit, P) {
   ctx.fillStyle = P.ground; ctx.fillRect(0, 0, W, H);
   ctx.strokeStyle = P.rule; ctx.lineWidth = 1; ctx.strokeRect(x0 + 0.5, y0 + 0.5, w - 1, h - 1);
   ctx.font = '11px IBM Plex Mono, monospace'; ctx.fillStyle = P['ink-soft'];
-  if (hist.length < 2) { ctx.fillText('press Play or Step to train', x0 + 12, y0 + 22); return null; }
+  if (hist.length < 2) { ctx.fillText(t('press Play or Step to train', 'premere Avvia o Passo per addestrare'), x0 + 12, y0 + 22); return null; }
   const vals = []; for (const p of hist) { vals.push(p.rec); if (vae && p.kl > 0) vals.push(p.kl); }
   let lo = Math.log10(Math.max(1e-3, Math.min(...vals))), hi = Math.log10(Math.max(...vals));
   lo = Math.floor(lo * 2) / 2; hi = Math.ceil(hi * 2) / 2; if (hi - lo < 1) hi = lo + 1;
@@ -213,7 +214,7 @@ export function drawCurves(cv, hist, vae, lit, P) {
   ctx.textAlign = 'center';
   const st = nice(smax / 6);
   for (let s = 0; s <= smax; s += st) ctx.fillText(String(s), X(s), y0 + h + 16);
-  ctx.textAlign = 'end'; ctx.fillText('steps of Adam', x0 + w, y0 + h + 28); ctx.textAlign = 'start';
+  ctx.textAlign = 'end'; ctx.fillText(t('steps of Adam', 'passi di Adam'), x0 + w, y0 + h + 28); ctx.textAlign = 'start';
   const line = (key, color, name) => {
     const on = !lit || lit === key;
     ctx.strokeStyle = color; ctx.lineWidth = lit === key ? 3.5 : 2; ctx.globalAlpha = on ? 1 : 0.3; ctx.beginPath();
@@ -224,7 +225,7 @@ export function drawCurves(cv, hist, vae, lit, P) {
     ctx.globalAlpha = 1;
   };
   ctx.save(); ctx.beginPath(); ctx.rect(x0, 0, w + r, H); ctx.clip();
-  line('rec', P.accent, 'reconstruction');
+  line('rec', P.accent, t('reconstruction', 'ricostruzione'));
   if (vae) line('kl', P.gold, 'KL');
   ctx.restore();
   return { Yv, X };

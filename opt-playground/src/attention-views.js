@@ -4,6 +4,7 @@
 // themes work.
 
 import { SEP } from './attention-tasks.js';
+import { t } from './i18n.js';
 
 const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const hex = c => [1, 3, 5].map(i => parseInt(c.slice(i, i + 2), 16));
@@ -98,10 +99,10 @@ export function drawBig(cv, g, sel, P, pal) {
     ctx.fillText(label(g.tokens[i]), m - 10, m + (i + 0.5) * s);
     ctx.fillStyle = pal['ink-soft']; ctx.fillText(label(g.tokens[i]), m + (i + 0.5) * s, m - 10);
   }
-  ctx.textAlign = 'left'; ctx.fillText('keys →', m, 10);
-  ctx.save(); ctx.translate(10, m); ctx.rotate(Math.PI / 2); ctx.fillText('queries →', 0, 0); ctx.restore();
+  ctx.textAlign = 'left'; ctx.fillText(t('keys →', 'chiavi →'), m, 10);
+  ctx.save(); ctx.translate(10, m); ctx.rotate(Math.PI / 2); ctx.fillText(t('queries →', 'query →'), 0, 0); ctx.restore();
   ctx.textBaseline = 'alphabetic';
-  ctx.fillStyle = pal.accent; ctx.textAlign = 'right'; ctx.fillText(`layer ${sel.layer + 1}, head ${sel.head + 1}`, cv.width - 4, 14); ctx.textAlign = 'left';
+  ctx.fillStyle = pal.accent; ctx.textAlign = 'right'; ctx.fillText(t(`layer ${sel.layer + 1}, head ${sel.head + 1}`, `strato ${sel.layer + 1}, testa ${sel.head + 1}`), cv.width - 4, 14); ctx.textAlign = 'left';
 }
 
 export function thumbsLayout(cv, L, H) {
@@ -117,7 +118,7 @@ export function drawThumbs(cv, g, sel, P, pal) {
   ctx.font = FONT;
   for (let l = 0; l < L; l++) for (let h = 0; h < H; h++) {
     const x = h * (Lo.s + Lo.gap), y = l * (Lo.s + Lo.top + Lo.gap), on = l === sel.layer && h === sel.head, c = Lo.s / n;
-    ctx.fillStyle = on ? pal.accent : pal['ink-soft']; ctx.fillText(`L${l + 1} H${h + 1}`, x, y + 11);
+    ctx.fillStyle = on ? pal.accent : pal['ink-soft']; ctx.fillText(t(`L${l + 1} H${h + 1}`, `S${l + 1} T${h + 1}`), x, y + 11);
     heat(ctx, g.C.L[l].A[h], n, P, x, y + Lo.top, c, pal);
     if (on) { ctx.strokeStyle = pal.accent; ctx.lineWidth = 2; ctx.strokeRect(x - 2, y + Lo.top - 2, n * c + 3, n * c + 3); }
   }
@@ -126,8 +127,8 @@ export function drawThumbs(cv, g, sel, P, pal) {
 // ------------------------------------------------- inside the selected head
 const QKV = { head: 22, row: 17, lab: 34 };
 export function qkvLayout(cv, dk) {
-  const W = cv.width, cw = Math.max(2, Math.min(9, Math.floor((W - QKV.lab - 2 * 96 - 40) / (2 * dk)))), sw = cw * dk;
-  const xk = QKV.lab, xv = xk + sw + 14, xs = xv + sw + 14, bw = Math.floor((W - xs - 14) / 2), xa = xs + bw + 14;
+  const W = cv.width, cw = Math.max(2, Math.min(9, Math.floor((W - t(QKV.lab, QKV.lab + 12) - 2 * 96 - 40) / (2 * dk)))), sw = cw * dk;
+  const xk = t(QKV.lab, QKV.lab + 12), xv = xk + sw + 14, xs = xv + sw + 14, bw = Math.floor((W - xs - 14) / 2), xa = xs + bw + 14;
   return { cw, sw, xk, xv, xs, xa, bw, part: px => (px < xk ? null : px < xv - 7 ? 'k' : px < xs - 7 ? 'v' : px < xa - 7 ? 's' : 'a') };
 }
 export const qkvHeight = n => QKV.head + QKV.row + 8 + n * QKV.row + 8 + QKV.row + 4;
@@ -149,7 +150,7 @@ export function drawQKV(cv, g, sel, M, P, lit, pal) {
   const strip = (v, x, y) => v.forEach((u, e) => { ctx.fillStyle = mix(bg, u > 0 ? acc : gold, Math.abs(u) / mx); ctx.fillRect(x + e * Lo.cw, y, Lo.cw - (Lo.cw > 3 ? 1 : 0), QKV.row - 4); });
   const head = (s, x, part) => { ctx.fillStyle = lit === part || (lit === 'o' && part) ? pal.accent : pal['ink-soft']; ctx.fillText(s, x, 12); };
   ctx.font = FONT;
-  head('key', 0, null); head('k_j', Lo.xk, 'k'); head('v_j', Lo.xv, 'v'); head('score', Lo.xs, 's'); head('softmax', Lo.xa, 'a');
+  head(t('key', 'chiave'), 0, null); head('k_j', Lo.xk, 'k'); head('v_j', Lo.xv, 'v'); head(t('score', 'punteggio'), Lo.xs, 's'); head('softmax', Lo.xa, 'a');
   let y = QKV.head;
   ctx.fillStyle = lit === 'q' ? pal.accent : pal.ink; ctx.fillText(`q ${label(g.tokens[i])}`, 0, y + 10);
   strip(vec(c.Q, i), Lo.xk, y);
@@ -160,7 +161,7 @@ export function drawQKV(cv, g, sel, M, P, lit, pal) {
   for (let j = 0; j < n; j++, y += QKV.row) {
     const s = S[i * n + j];
     ctx.fillStyle = pal['ink-soft']; ctx.fillText(`${j} ${label(g.tokens[j])}`, 0, y + 10);
-    if (Number.isNaN(s)) { ctx.fillText('masked', Lo.xk, y + 10); continue; }
+    if (Number.isNaN(s)) { ctx.fillText(t('masked', 'mascherata'), Lo.xk, y + 10); continue; }
     strip(vec(c.K, j), Lo.xk, y); strip(vec(c.V, j), Lo.xv, y);
     // the score, signed, about the middle of its column; the weight from the left
     const mid = Lo.xs + Lo.bw / 2, w = s / smax * Lo.bw / 2;
@@ -170,7 +171,7 @@ export function drawQKV(cv, g, sel, M, P, lit, pal) {
     ctx.fillStyle = pal['ink-soft']; ctx.fillText(A[i * n + j].toFixed(2), Lo.xa + A[i * n + j] * (Lo.bw - 30) + 3, y + 10);
   }
   y += 8;
-  ctx.fillStyle = lit === 'o' ? pal.accent : pal.ink; ctx.fillText('out', 0, y + 10);
+  ctx.fillStyle = lit === 'o' ? pal.accent : pal.ink; ctx.fillText(t('out', 'uscita'), 0, y + 10);
   strip(vec(c.O, i), Lo.xv, y);
 }
 

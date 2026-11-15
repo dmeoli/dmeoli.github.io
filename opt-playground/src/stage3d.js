@@ -5,6 +5,7 @@
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { t, onLang } from './i18n.js';
 
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 export function palette() {
@@ -61,9 +62,15 @@ export function stage3d(box, opts = {}) {
   renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
   const bar = document.createElement('div');
   bar.className = 'view3d';
-  bar.innerHTML = '<label><input type="checkbox"> rotate</label><button type="button">Reset view</button><button type="button">Full screen</button>';
+  bar.innerHTML = '<label><input type="checkbox"> <span></span></label><button type="button"></button><button type="button"></button>';
   box.replaceChildren(renderer.domElement, bar);
   const [spin, resetB, fullB] = [bar.querySelector('input'), ...bar.querySelectorAll('button')];
+  const words = () => {
+    bar.querySelector('span').textContent = t('rotate', 'ruota');
+    resetB.textContent = t('Reset view', 'Ripristina vista');
+    fullB.textContent = document.fullscreenElement === box ? t('Exit full screen', 'Esci da schermo intero') : t('Full screen', 'Schermo intero');
+  };
+  words();
 
   const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(35, 1, 0.01, 100);
   camera.up.set(0, 0, 1);
@@ -83,7 +90,8 @@ export function stage3d(box, opts = {}) {
   };
   S.aim(opts.camera || [2.4, -2.2, 1.8], opts.target || [0.5, 0.5, 0.4]);
 
-  // axes from an origin, with an arrow head and a name at the end of each
+  // axes from an origin, with an arrow head and a name at the end of each (a
+  // name may be a function, called at every drawing, for a name in words)
   S.setAxes = ax => { S.axes = ax; drawAxes(); };
   function drawAxes() {
     clear(axesG);
@@ -96,7 +104,7 @@ export function stage3d(box, opts = {}) {
       const head = new THREE.Mesh(new THREE.ConeGeometry(0.018, 0.06, 12), mat);
       head.position.set(...e); head.quaternion.setFromUnitVectors(Y, d);
       axesG.add(head);
-      const l = label(names[i], col, size);
+      const l = label(typeof names[i] === 'function' ? names[i]() : names[i], col, size);
       l.position.set(...e).addScaledVector(d, 0.09);
       axesG.add(l);
     });
@@ -121,13 +129,15 @@ export function stage3d(box, opts = {}) {
     if (document.fullscreenElement || document.webkitFullscreenElement) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
     else req.call(box);
   };
-  const onFull = () => { fullB.textContent = document.fullscreenElement === box ? 'Exit full screen' : 'Full screen'; resize(); };
+  const onFull = () => { words(); resize(); };
   document.addEventListener('fullscreenchange', onFull);
   document.addEventListener('webkitfullscreenchange', onFull);
 
   // the theme: the system one, or the one chosen on the site (data-theme)
   const theme = () => { S.colors = palette(); drawAxes(); if (opts.onTheme) opts.onTheme(); };
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', theme);
+  // the language: the words of the bar and the names of the axes
+  onLang(() => { words(); drawAxes(); });
   new MutationObserver(theme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
   // render only while on screen

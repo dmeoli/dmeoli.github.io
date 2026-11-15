@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { ConvexHull } from 'three/addons/math/ConvexHull.js';
 import { setTex } from './tex.js';
+import { t, onLang } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const phi = (1 + Math.sqrt(5)) / 2;
@@ -20,13 +21,13 @@ const signs = v => {
 };
 
 const shapes = {
-  cube: { label: 'Cube (polar: octahedron)', v: signs([1, 1, 1]) },
-  octahedron: { label: 'Octahedron (polar: cube)', v: [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]].map(p => p.map(x => x * 1.5)) },
-  tetrahedron: { label: 'Tetrahedron (self-polar)', v: [[1, 1, 1], [1, -1, -1], [-1, 1, -1], [-1, -1, 1]] },
-  dodecahedron: { label: 'Dodecahedron (polar: icosahedron)', v: [...signs([1, 1, 1]), ...perms(0, 1 / phi, phi).flatMap(signs)] },
-  icosahedron: { label: 'Icosahedron (polar: dodecahedron)', v: perms(0, 1, phi).flatMap(signs).map(p => p.map(x => x * 0.85)) },
-  prism: { label: 'Hexagonal prism (polar: bipyramid)', v: [0, 1, 2, 3, 4, 5].flatMap(i => [[Math.cos(i * Math.PI / 3) * 1.2, Math.sin(i * Math.PI / 3) * 1.2, 0.9], [Math.cos(i * Math.PI / 3) * 1.2, Math.sin(i * Math.PI / 3) * 1.2, -0.9]]) },
-  random: { label: 'Random polytope', v: null },
+  cube: { label: 'Cube (polar: octahedron)', it: 'Cubo (polare: ottaedro)', v: signs([1, 1, 1]) },
+  octahedron: { label: 'Octahedron (polar: cube)', it: 'Ottaedro (polare: cubo)', v: [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]].map(p => p.map(x => x * 1.5)) },
+  tetrahedron: { label: 'Tetrahedron (self-polar)', it: 'Tetraedro (autopolare)', v: [[1, 1, 1], [1, -1, -1], [-1, 1, -1], [-1, -1, 1]] },
+  dodecahedron: { label: 'Dodecahedron (polar: icosahedron)', it: 'Dodecaedro (polare: icosaedro)', v: [...signs([1, 1, 1]), ...perms(0, 1 / phi, phi).flatMap(signs)] },
+  icosahedron: { label: 'Icosahedron (polar: dodecahedron)', it: 'Icosaedro (polare: dodecaedro)', v: perms(0, 1, phi).flatMap(signs).map(p => p.map(x => x * 0.85)) },
+  prism: { label: 'Hexagonal prism (polar: bipyramid)', it: 'Prisma esagonale (polare: bipiramide)', v: [0, 1, 2, 3, 4, 5].flatMap(i => [[Math.cos(i * Math.PI / 3) * 1.2, Math.sin(i * Math.PI / 3) * 1.2, 0.9], [Math.cos(i * Math.PI / 3) * 1.2, Math.sin(i * Math.PI / 3) * 1.2, -0.9]]) },
+  random: { label: 'Random polytope', it: 'Politopo casuale', v: null },
 };
 
 // the facets of the hull of points: planes n.x = d (n unit, d > 0) with their
@@ -118,7 +119,7 @@ function build() {
     const s = new THREE.Mesh(new THREE.SphereGeometry(0.045, 16, 12), new THREE.MeshLambertMaterial({ color: gold }));
     s.position.set(...p); group.add(s); return s;
   });
-  model = { Fo, dots, Vi };
+  model = { Fo, dots, Vi, counts: [Fo.length, Vo.length, Fi.length, Vi.length], outerP };
   // which inner vertex belongs to which outer face: the polar maps facet i of
   // the outer to the vertex n_i/d_i, i.e., Vi[i] when the outer is P; when the
   // outer is the polar, match the inner vertex with the facet normal
@@ -127,8 +128,14 @@ function build() {
     Vi.forEach((p, j) => { const q = new THREE.Vector3(...p).normalize(); const dd = q.distanceTo(f.n); if (dd < bd) { bd = dd; best = j; } });
     return best;
   });
-  const [po, pi] = outerP ? ['P', 'P^\\circ'] : ['P^\\circ', 'P'];
-  setTex($('explain'), `\\(${po}\\) has ${Fo.length} faces and ${Vo.length} vertices; \\(${pi}\\) has ${Fi.length} faces and ${Vi.length} vertices.`);
+  explain();
+}
+
+// the counts of faces and vertices, in the language of the page
+function explain() {
+  const [po, pi] = model.outerP ? ['P', 'P^\\circ'] : ['P^\\circ', 'P'], [fo, vo, fi, vi] = model.counts;
+  setTex($('explain'), t(`\\(${po}\\) has ${fo} faces and ${vo} vertices; \\(${pi}\\) has ${fi} faces and ${vi} vertices.`,
+    `\\(${po}\\) ha ${fo} facce e ${vo} vertici; \\(${pi}\\) ha ${fi} facce e ${vi} vertici.`));
 }
 
 function pick() {
@@ -143,6 +150,14 @@ function pick() {
 }
 
 for (const [k, s] of Object.entries(shapes)) $('shape').append(new Option(s.label, k));
+// the words that depend on the language: title and options
+function words() {
+  document.title = t('Polarity playground', 'Laboratorio di polarità');
+  for (const o of $('shape').options) o.textContent = t(shapes[o.value].label, shapes[o.value].it);
+  for (const o of $('outer').options) o.textContent = o.value === 'P' ? t('P (the primal)', 'P (il primale)') : t('P° (the polar)', 'P° (il polare)');
+}
+words();
+onLang(() => { words(); if (model) explain(); });
 $('shape').addEventListener('change', build);
 $('outer').addEventListener('change', build);
 $('scale').addEventListener('input', e => { $('scaleOut').textContent = e.target.value; build(); });

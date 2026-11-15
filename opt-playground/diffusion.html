@@ -32,64 +32,88 @@
 <body>
 <nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html" aria-current="page">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
-  <h1>Diffusion playground</h1>
-  <p class="lede">A cloud of points in the plane is turned into a standard gaussian by adding
+  <h1><span data-l="en">Diffusion playground</span><span data-l="it" lang="it">Laboratorio della diffusione</span></h1>
+  <p class="lede" data-l="en">A cloud of points in the plane is turned into a standard gaussian by adding
   noise in \(T\) small steps, and a small network is trained in the page to predict, from a
   noisy point and the time, the noise that was added; since that prediction is, up to a
   factor, the score \(\nabla \log p_t\) of the noisy data, running the steps backwards from
   pure noise and removing at each step the predicted noise carries the points back onto the
   shape. Hover the parts of the two formulas to see them in the planes below them.</p>
+  <p class="lede" data-l="it" lang="it">Una nuvola di punti nel piano è trasformata in una gaussiana
+  standard aggiungendo rumore in \(T\) piccoli passi, e una piccola rete è addestrata nella pagina a
+  prevedere, da un punto rumoroso e dal tempo, il rumore che è stato aggiunto; poiché quella
+  previsione è, a meno di un fattore, lo score \(\nabla \log p_t\) dei dati rumorosi, percorrendo
+  i passi all'indietro a partire da rumore puro e togliendo a ogni passo il rumore previsto si
+  riportano i punti sulla forma. Passando sulle parti delle due formule le si vede nei piani
+  sottostanti.</p>
 </header>
 <section class="controls">
   <div class="settings">
-    <label><span>data</span><select id="data"></select></label>
-    <label><span>schedule</span><select id="sched"><option value="linear">linear</option><option value="cosine">cosine</option></select></label>
-    <label><span>steps \(T\)</span><select id="T"><option>50</option><option>100</option><option>200</option></select></label>
-    <label><span>hidden layers</span><select id="depth"><option>2</option><option>3</option></select></label>
-    <label><span>width</span><select id="width"><option>64</option><option>128</option></select></label>
-    <label><span>step size of Adam</span><select id="lr"><option>0.001</option><option>0.003</option><option>0.01</option></select></label>
-    <label><span>sampler</span><select id="sampler"><option value="ddpm">DDPM, T steps</option><option value="ddim">DDIM, T steps</option><option value="ddim20">DDIM, 20 steps</option></select></label>
-    <label><span>seed</span><select id="seed"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
-    <div class="inline"><label><span>time \(t\) <output id="tv"></output></span><input id="t" type="range" min="0" max="100" step="1"></label><button id="anim" type="button">Animate</button></div>
+    <label><span><span data-l="en">data</span><span data-l="it" lang="it">dati</span></span><select id="data"></select></label>
+    <label><span><span data-l="en">schedule</span><span data-l="it" lang="it">schedule</span></span><select id="sched"><option value="linear">linear</option><option value="cosine">cosine</option></select></label>
+    <label><span><span data-l="en">steps</span><span data-l="it" lang="it">passi</span> \(T\)</span><select id="T"><option>50</option><option>100</option><option>200</option></select></label>
+    <label><span><span data-l="en">hidden layers</span><span data-l="it" lang="it">strati nascosti</span></span><select id="depth"><option>2</option><option>3</option></select></label>
+    <label><span><span data-l="en">width</span><span data-l="it" lang="it">larghezza</span></span><select id="width"><option>64</option><option>128</option></select></label>
+    <label><span><span data-l="en">step size of Adam</span><span data-l="it" lang="it">passo di Adam</span></span><select id="lr"><option>0.001</option><option>0.003</option><option>0.01</option></select></label>
+    <label><span><span data-l="en">sampler</span><span data-l="it" lang="it">campionatore</span></span><select id="sampler"><option value="ddpm">DDPM, T steps</option><option value="ddim">DDIM, T steps</option><option value="ddim20">DDIM, 20 steps</option></select></label>
+    <label><span><span data-l="en">seed</span><span data-l="it" lang="it">seme</span></span><select id="seed"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+    <div class="inline"><label><span><span data-l="en">time</span><span data-l="it" lang="it">tempo</span> \(t\) <output id="tv"></output></span><input id="t" type="range" min="0" max="100" step="1"></label><button id="anim" type="button">Animate</button></div>
   </div>
-  <div class="transport"><label class="counter"><span>step</span><output id="count"></output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="train" type="button">Play</button></div>
+  <div class="transport"><label class="counter"><span><span data-l="en">step</span><span data-l="it" lang="it">passo</span></span><output id="count"></output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="train" type="button">Play</button></div>
 </section>
 <p class="explain" id="explain"></p>
 <main>
-  <figure class="df" id="fig-fwd"><figcaption>The forward process at the time \(t\) of the
+  <figure class="df" id="fig-fwd"><figcaption><span data-l="en">The forward process at the time \(t\) of the
   slider: every point of the data (2000 of them) with its own fixed noise \(\varepsilon\), so
   that moving the slider moves each point along a line. Below, the two coefficients against
-  \(t\), violet \(\sqrt{\bar\alpha_t}\) and gold \(\sqrt{1-\bar\alpha_t}\).</figcaption>
+  \(t\), violet \(\sqrt{\bar\alpha_t}\) and gold \(\sqrt{1-\bar\alpha_t}\).</span><span data-l="it" lang="it">Il
+  processo in avanti al tempo \(t\) del cursore: ogni punto dei dati (2000 in tutto) con il proprio
+  rumore fisso \(\varepsilon\), così che spostando il cursore ogni punto si muove lungo una retta.
+  Sotto, i due coefficienti in funzione di \(t\), in viola \(\sqrt{\bar\alpha_t}\) e in oro
+  \(\sqrt{1-\bar\alpha_t}\).</span></figcaption>
   <p class="formula">\(x_t = \class{p-sig}{\sqrt{\bar\alpha_t}}\;\class{p-x0}{x_0} + \class{p-noi}{\sqrt{1-\bar\alpha_t}}\;\class{p-eps}{\varepsilon},\quad \varepsilon \sim \mathcal N(0, I)\)</p>
   <canvas id="fwd" width="460" height="460"></canvas>
   <canvas id="coef" width="460" height="96"></canvas></figure>
-  <figure class="df" id="fig-field"><figcaption>What the network has learnt at the time
+  <figure class="df" id="fig-field"><figcaption><span data-l="en">What the network has learnt at the time
   \(t\) of the slider: at each point of a grid the arrow is \(-\sqrt{1-\bar\alpha_t}\,
   \varepsilon_\theta(x, t) = (1-\bar\alpha_t)\,\nabla\log p_t(x)\), the move towards the
   expected \(\sqrt{\bar\alpha_t}\,x_0\), with the length compressed (square root of the
-  length, the longest arrow one cell); the data in grey underneath.</figcaption>
+  length, the longest arrow one cell); the data in grey underneath.</span><span data-l="it" lang="it">Ciò che
+  la rete ha imparato al tempo \(t\) del cursore: in ogni punto di una griglia la freccia è
+  \(-\sqrt{1-\bar\alpha_t}\, \varepsilon_\theta(x, t) = (1-\bar\alpha_t)\,\nabla\log p_t(x)\), lo
+  spostamento verso il valore atteso di \(\sqrt{\bar\alpha_t}\,x_0\), con la lunghezza compressa
+  (la radice quadrata della lunghezza, la freccia più lunga pari a una cella); sotto, i dati in
+  grigio.</span></figcaption>
   <canvas id="field" width="460" height="460"></canvas>
-  <div class="row"><label><input id="exact" type="checkbox">the exact field of the data, in gold</label></div>
+  <div class="row"><label><input id="exact" type="checkbox"><span data-l="en">the exact field of the data, in gold</span><span data-l="it" lang="it">il campo esatto dei dati, in oro</span></label></div>
   <p class="note" id="fieldNote"></p></figure>
-  <figure class="df" id="fig-rev"><figcaption>The reverse process: 600 points drawn from
+  <figure class="df" id="fig-rev"><figcaption><span data-l="en">The reverse process: 600 points drawn from
   \(\mathcal N(0, I)\) at \(t = T\) follow the steps of the sampler down to \(t = 0\), with the
   trails of 40 of them; the data in grey. Hover the formula to see, for the last step, where
   the points were, the move given by the network and the fresh noise; with DDIM there is no
   fresh noise, and \(s\) is the next time of the sampler (\(t-1\), or \(t - T/20\) with 20
-  steps).</figcaption>
+  steps).</span><span data-l="it" lang="it">Il processo inverso: 600 punti estratti da
+  \(\mathcal N(0, I)\) a \(t = T\) seguono i passi del campionatore fino a \(t = 0\), con le
+  tracce di 40 di essi; i dati in grigio. Passando sulla formula si vede, per l'ultimo passo, dove
+  si trovavano i punti, lo spostamento dato dalla rete e il rumore nuovo; con DDIM non c'è rumore
+  nuovo, e \(s\) è il tempo successivo del campionatore (\(t-1\), o \(t - T/20\) con 20
+  passi).</span></figcaption>
   <p class="formula" id="eqDDPM">\(x_{t-1} = \frac{1}{\sqrt{\alpha_t}}\Big(\class{p-xt}{x_t} - \class{p-drift}{\frac{\beta_t}{\sqrt{1-\bar\alpha_t}}\,\varepsilon_\theta(x_t, t)}\Big) + \class{p-z}{\sigma_t z}\)</p>
   <p class="formula" id="eqDDIM" hidden>\(x_{s} = \sqrt{\bar\alpha_{s}}\;\class{p-hat}{\frac{\class{p-xt}{x_t} - \sqrt{1-\bar\alpha_t}\,\varepsilon_\theta(x_t,t)}{\sqrt{\bar\alpha_t}}} + \class{p-drift}{\sqrt{1-\bar\alpha_{s}}\;\varepsilon_\theta(x_t, t)}\)</p>
   <canvas id="rev" width="460" height="460"></canvas>
   <div class="row"><button id="sample" type="button">Sample</button><span id="revNote"></span></div></figure>
-  <figure class="df" id="fig-loss"><figcaption>The loss \(\frac1B\sum_i \|\varepsilon_\theta(x_{t_i},
+  <figure class="df" id="fig-loss"><figcaption><span data-l="en">The loss \(\frac1B\sum_i \|\varepsilon_\theta(x_{t_i},
   t_i) - \varepsilon_i\|^2\) of every batch (\(B = 128\), \(t_i\) uniform in \(1, \dots, T\)),
   faint, and its moving average; it does not go to zero, since the noise cannot be told
   apart from the data at large \(t\). Below, the distance of the last samples from the
-  data.</figcaption>
+  data.</span><span data-l="it" lang="it">La loss \(\frac1B\sum_i \|\varepsilon_\theta(x_{t_i},
+  t_i) - \varepsilon_i\|^2\) di ogni batch (\(B = 128\), \(t_i\) uniforme in \(1, \dots, T\)),
+  tenue, e la sua media mobile; non va a zero, poiché a \(t\) grande il rumore non si può
+  distinguere dai dati. Sotto, la distanza degli ultimi campioni dai dati.</span></figcaption>
   <canvas id="lossc" width="460" height="230"></canvas>
   <p class="note" id="lossNote"></p></figure>
 </main>
-<footer>Scene P of opt-playground, after J. Sohl-Dickstein, E. Weiss, N. Maheswaranathan and
+<footer><span data-l="en">Scene P of opt-playground, after J. Sohl-Dickstein, E. Weiss, N. Maheswaranathan and
 S. Ganguli, <a href="https://arxiv.org/abs/1503.03585">Deep Unsupervised Learning using
 Nonequilibrium Thermodynamics</a> (2015), J. Ho, A. Jain and P. Abbeel,
 <a href="https://arxiv.org/abs/2006.11239">Denoising Diffusion Probabilistic Models</a> (2020),
@@ -98,7 +122,16 @@ Y. Song, J. Sohl-Dickstein, D. P. Kingma, A. Kumar, S. Ermon and B. Poole,
 Differential Equations</a> (2021), and J. Song, C. Meng and S. Ermon,
 <a href="https://arxiv.org/abs/2010.02502">Denoising Diffusion Implicit Models</a> (2021); the
 cosine schedule is that of A. Nichol and P. Dhariwal (2021). The ideas are theirs, rebuilt here
-from the equations.</footer>
+from the equations.</span><span data-l="it" lang="it">Scena P di opt-playground, da J. Sohl-Dickstein, E. Weiss, N. Maheswaranathan e
+S. Ganguli, <a href="https://arxiv.org/abs/1503.03585">Deep Unsupervised Learning using
+Nonequilibrium Thermodynamics</a> (2015), J. Ho, A. Jain e P. Abbeel,
+<a href="https://arxiv.org/abs/2006.11239">Denoising Diffusion Probabilistic Models</a> (2020),
+Y. Song, J. Sohl-Dickstein, D. P. Kingma, A. Kumar, S. Ermon e B. Poole,
+<a href="https://arxiv.org/abs/2011.13456">Score-Based Generative Modeling through Stochastic
+Differential Equations</a> (2021), e J. Song, C. Meng e S. Ermon,
+<a href="https://arxiv.org/abs/2010.02502">Denoising Diffusion Implicit Models</a> (2021); lo
+schedule a coseno è quello di A. Nichol e P. Dhariwal (2021). Le idee sono loro, ricostruite qui
+dalle equazioni.</span></footer>
 <script type="module" src="src/diffusion.js"></script>
 </body>
 </html>

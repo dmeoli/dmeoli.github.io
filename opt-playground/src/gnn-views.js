@@ -5,6 +5,7 @@
 // are the tokens of style.css, read at every draw so that both themes work.
 
 import { rng } from './nn.js';
+import { t } from './i18n.js';
 
 const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const hex = c => [1, 3, 5].map(i => parseInt(c.slice(i, i + 2), 16));
@@ -162,8 +163,8 @@ export function drawGraph(cv, o, pal) {
       ctx.fillText(nd.text, x, y + 0.5);
     }
     // the value of the hidden assignment, written on the positive literals only
-    if (nd.kind === 'lit' && nd.pos) { ctx.font = FONT; ctx.fillStyle = pal['ink-soft']; ctx.fillText(nd.value ? 'true' : 'false', x, y + rad + 9); }
-    if (nd.kind === 'clause' && nd.y === 0) { ctx.font = FONT; ctx.fillStyle = pal['ink-soft']; ctx.fillText('false', x, y + rad + 9); }
+    if (nd.kind === 'lit' && nd.pos) { ctx.font = FONT; ctx.fillStyle = pal['ink-soft']; ctx.fillText(nd.value ? t('true', 'vero') : t('false', 'falso'), x, y + rad + 9); }
+    if (nd.kind === 'clause' && nd.y === 0) { ctx.font = FONT; ctx.fillStyle = pal['ink-soft']; ctx.fillText(t('false', 'falsa'), x, y + rad + 9); }
   }
   ctx.font = '13px IBM Plex Mono, monospace'; ctx.fillStyle = pal.ink;
   for (const n of o.notes || []) ctx.fillText(n.text, n.x, cv.height - 12);
@@ -187,7 +188,7 @@ export function drawStrips(cv, rows, lit, pal) {
   ctx.font = FONT; ctx.textBaseline = 'middle';
   if (!rows.length) {
     ctx.fillStyle = pal['ink-soft']; ctx.textAlign = 'center';
-    ctx.fillText('hover a node of the graph (or tap it)', W / 2, cv.height / 2);
+    ctx.fillText(t('hover a node of the graph (or tap it)', 'passare su un nodo del grafo (o toccarlo)'), W / 2, cv.height / 2);
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; return;
   }
   rows.forEach((rw, i) => {

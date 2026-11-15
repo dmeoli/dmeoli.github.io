@@ -223,3 +223,5 @@ mjx-container { text-transform: none; letter-spacing: normal; }
 .scenebar button[aria-pressed="true"] { color: var(--accent); border-bottom-color: var(--accent); }
 .scenebar button:hover { color: var(--accent); }
 .scenebar .theme { font-size: 14px; margin-left: 6px; }
+/* bilingual text inside a button of the bar keeps the look of the button */
+.controls button span { text-transform: none; letter-spacing: normal; font-size: inherit; color: inherit; }

@@ -41,8 +41,8 @@
 <body>
 <nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html" aria-current="page">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
-  <h1>Attention playground</h1>
-  <p class="lede">A transformer of one or two layers, written here with its own backward
+  <h1><span data-l="en">Attention playground</span><span data-l="it" lang="it">Laboratorio dell'attention</span></h1>
+  <p class="lede" data-l="en">A transformer of one or two layers, written here with its own backward
   pass, is trained in the page to reverse, sort or recall a short sequence of digits, and
   one can watch its attention form. In every head each position emits a query \(q\) that
   is compared with the keys \(k\) of the positions it may see, and the softmax of the
@@ -50,51 +50,75 @@
   learns to look at its mirror image in the prompt, so that the matrix becomes
   anti-diagonal. The recall task (a b … a → b) needs two layers, since the token that
   follows the earlier copy of the query must first be found and then read.</p>
+  <p class="lede" data-l="it" lang="it">Un transformer di uno o due strati, scritto qui con il suo
+  passo all'indietro, è addestrato nella pagina a invertire, ordinare o richiamare una breve
+  sequenza di cifre, e si può osservare il formarsi della sua attention. In ogni testa ciascuna
+  posizione emette una query \(q\) che è confrontata con le chiavi \(k\) delle posizioni che può
+  vedere, e la softmax dei punteggi pesa i loro valori \(v\); nel compito di inversione ogni
+  posizione della risposta impara a guardare la sua immagine speculare nel prompt, così che la
+  matrice diventa antidiagonale. Il compito di richiamo (a b … a → b) richiede due strati,
+  poiché il token che segue la copia precedente della query deve prima essere trovato e poi
+  letto.</p>
 </header>
 <section class="controls">
   <div class="settings">
-    <label><span>task</span><select id="task"><option value="reverse">reverse</option><option value="sort">sort</option><option value="recall">recall</option></select></label>
-    <label><span>length \(n\)</span><select id="n"><option>3</option><option>4</option><option>5</option><option selected>6</option><option>7</option><option>8</option></select></label>
-    <label><span>layers</span><select id="layers"><option>1</option><option>2</option></select></label>
-    <label><span>heads</span><select id="heads"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></label>
-    <label><span>mask</span><select id="causal"><option value="1">causal</option><option value="0">open prompt</option></select></label>
+    <label><span><span data-l="en">task</span><span data-l="it" lang="it">compito</span></span><select id="task"><option value="reverse">reverse</option><option value="sort">sort</option><option value="recall">recall</option></select></label>
+    <label><span><span data-l="en">length</span><span data-l="it" lang="it">lunghezza</span> \(n\)</span><select id="n"><option>3</option><option>4</option><option>5</option><option selected>6</option><option>7</option><option>8</option></select></label>
+    <label><span><span data-l="en">layers</span><span data-l="it" lang="it">strati</span></span><select id="layers"><option>1</option><option>2</option></select></label>
+    <label><span><span data-l="en">heads</span><span data-l="it" lang="it">teste</span></span><select id="heads"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></label>
+    <label><span><span data-l="en">mask</span><span data-l="it" lang="it">maschera</span></span><select id="causal"><option value="1">causal</option><option value="0">open prompt</option></select></label>
     <label><span>layer norm</span><select id="ln"><option value="1">on</option><option value="0">off</option></select></label>
     <label><span>learning rate</span><select id="lr"><option>0.001</option><option selected>0.003</option><option>0.01</option></select></label>
   </div>
-  <div class="transport"><label class="counter"><span>step</span><output id="steps">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="train" type="button">Play</button></div>
+  <div class="transport"><label class="counter"><span><span data-l="en">step</span><span data-l="it" lang="it">passo</span></span><output id="steps">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="train" type="button">Play</button></div>
 </section>
 <p class="explain" id="status"></p>
 <main>
 <div class="col">
-  <figure id="fig-example"><figcaption>The sequence read by the model (top: the prompt, then
+  <figure id="fig-example"><figcaption><span data-l="en">The sequence read by the model (top: the prompt, then
   its own earlier answers, fainter) and its prediction at each position of the answer
   (bottom, gold when wrong). Hover a prediction: the lines show how much it attends to
-  each token in the selected head.</figcaption>
+  each token in the selected head.</span><span data-l="it" lang="it">La sequenza letta dal modello (in alto: il
+  prompt, poi le sue risposte precedenti, più tenui) e la sua previsione in ogni posizione della
+  risposta (in basso, in oro quando è sbagliata). Passando sopra una previsione, le linee mostrano
+  quanta attention essa rivolge a ciascun token nella testa selezionata.</span></figcaption>
   <div class="promptrow"><span>prompt</span><input id="prompt" type="text" inputmode="numeric" spellcheck="false" aria-label="prompt digits"><button id="random" type="button">Random</button></div>
   <canvas id="example" width="520" height="230"></canvas>
   <p class="readout" id="readout"></p></figure>
-  <figure id="fig-qkv"><figcaption>Inside the selected head for the selected query: its
+  <figure id="fig-qkv"><figcaption><span data-l="en">Inside the selected head for the selected query: its
   \(q\), then for every key it may see \(k_j\), \(v_j\), the score \(q\cdot k_j/\sqrt{d_k}\)
-  and its weight after the softmax; the last row is the output \(\sum_j a_j v_j\).</figcaption>
+  and its weight after the softmax; the last row is the output \(\sum_j a_j v_j\).</span><span data-l="it" lang="it">L'interno
+  della testa selezionata per la query selezionata: il suo \(q\), poi per ogni chiave che può
+  vedere \(k_j\), \(v_j\), il punteggio \(q\cdot k_j/\sqrt{d_k}\) e il suo peso dopo la softmax;
+  l'ultima riga è l'uscita \(\sum_j a_j v_j\).</span></figcaption>
   <p class="formula">\(\class{fo}{\class{fa}{\mathrm{softmax}\Big(\class{fs}{\frac{\class{fq}{Q}\,\class{fk}{K^\top}}{\sqrt{d_k}}}\Big)}\,\class{fv}{V}}\)</p>
   <canvas id="qkv" width="520" height="300"></canvas></figure>
 </div>
 <div class="col">
-  <figure id="fig-heads"><figcaption>The attention matrix of the selected head, queries as
+  <figure id="fig-heads"><figcaption><span data-l="en">The attention matrix of the selected head, queries as
   rows and keys as columns, darker for larger weights; the cells hidden by the mask are
   blank (with the open prompt the prompt sees itself in both directions) and the selected
   query is framed. Below, every head of every layer: click one to
-  select it.</figcaption>
+  select it.</span><span data-l="it" lang="it">La matrice di attention della testa selezionata, con le query
+  sulle righe e le chiavi sulle colonne, più scura per pesi maggiori; le celle nascoste dalla
+  maschera sono vuote (con il prompt aperto il prompt vede sé stesso in entrambe le direzioni) e
+  la query selezionata è incorniciata. Sotto, ogni testa di ogni strato: un clic la
+  seleziona.</span></figcaption>
   <canvas id="big" width="440" height="440"></canvas>
   <canvas id="thumbs" width="440" height="120"></canvas></figure>
-  <figure id="fig-curves"><figcaption>Token accuracy (violet) and loss (gold, log scale) on
-  200 held-out examples, against the steps of Adam.</figcaption>
+  <figure id="fig-curves"><figcaption><span data-l="en">Token accuracy (violet) and loss (gold, log scale) on
+  200 held-out examples, against the steps of Adam.</span><span data-l="it" lang="it">Accuratezza sui token
+  (viola) e loss (oro, scala logaritmica) su 200 esempi tenuti da parte, in funzione dei passi
+  di Adam.</span></figcaption>
   <canvas id="curves2" width="520" height="240"></canvas></figure>
 </div>
 </main>
-<footer>Scene K of opt-playground, after C. Olah and S. Carter,
+<footer><span data-l="en">Scene K of opt-playground, after C. Olah and S. Carter,
 <a href="https://distill.pub/2016/augmented-rnns/">Attention and Augmented Recurrent Neural Networks</a>
-(2016), and Vaswani et al. (2017): the ideas are theirs, rebuilt here from the equations.</footer>
+(2016), and Vaswani et al. (2017): the ideas are theirs, rebuilt here from the equations.</span><span data-l="it" lang="it">Scena K
+di opt-playground, da C. Olah e S. Carter,
+<a href="https://distill.pub/2016/augmented-rnns/">Attention and Augmented Recurrent Neural Networks</a>
+(2016), e Vaswani et al. (2017): le idee sono loro, ricostruite qui dalle equazioni.</span></footer>
 <script type="module" src="src/attention.js"></script>
 </body>
 </html>

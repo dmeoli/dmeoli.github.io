@@ -21,8 +21,8 @@
 <body>
 <nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html" aria-current="page">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
-  <h1>Superposition playground</h1>
-  <p class="lede">How a network stores more features than it has dimensions: \(n\) features
+  <h1><span data-l="en">Superposition playground</span><span data-l="it" lang="it">Laboratorio della sovrapposizione</span></h1>
+  <p class="lede" data-l="en">How a network stores more features than it has dimensions: \(n\) features
   are squeezed into \(m = 2\) or 3 dimensions, \(h = W x\), and read back as
   \(x' = \mathrm{ReLU}(W^\top W x + b)\), each weighted by its importance. When the
   features are dense only the \(m\) most important get a direction; as they become sparse
@@ -31,29 +31,44 @@
   packings are solids: with 6 sparse features, three antipodal pairs on three orthogonal
   axes make an octahedron; with 5, two pairs and one feature alone on the third axis.
   With a linear read-out this never happens: try it.</p>
+  <p class="lede" data-l="it" lang="it">Come una rete conserva più caratteristiche di quante dimensioni abbia: \(n\) caratteristiche
+  sono compresse in \(m = 2\) o 3 dimensioni, \(h = W x\), e rilette come
+  \(x' = \mathrm{ReLU}(W^\top W x + b)\), ciascuna pesata con la sua importanza. Quando le
+  caratteristiche sono dense, solo le \(m\) più importanti ottengono una direzione; man mano che diventano sparse
+  vi trovano posto anche le altre, prima a coppie antipodali, poi come un pentagono, perché
+  due caratteristiche raramente attive insieme raramente interferiscono. In 3 dimensioni le
+  disposizioni sono solidi: con 6 caratteristiche sparse, tre coppie antipodali su tre assi
+  ortogonali formano un ottaedro; con 5, due coppie e una caratteristica da sola sul terzo asse.
+  Con una lettura lineare questo non accade mai: si provi.</p>
 </header>
 <section class="controls">
   <div class="settings">
-    <label><span>features \(n\)</span><select id="n"><option>3</option><option>4</option><option selected>5</option><option>6</option><option>8</option><option>10</option></select></label>
-    <label><span>hidden dimensions \(m\)</span><select id="m"><option>2</option><option>3</option></select></label>
-    <label><span>sparsity (features active with probability <output id="dens"></output>)</span><input id="sparsity" type="range" min="0" max="2" step="0.05" value="0"></label>
-    <label><span>importance decay \(r\)</span><input id="decay" type="range" min="0.5" max="1" step="0.01" value="0.9"></label>
-    <div class="inline"><label><span>read-out</span><select id="out"><option value="relu">ReLU</option><option value="linear">linear</option></select></label><button id="seed" type="button">New weights</button></div>
+    <label><span><span data-l="en">features</span><span data-l="it" lang="it">feature</span> \(n\)</span><select id="n"><option>3</option><option>4</option><option selected>5</option><option>6</option><option>8</option><option>10</option></select></label>
+    <label><span><span data-l="en">hidden dimensions</span><span data-l="it" lang="it">dimensioni nascoste</span> \(m\)</span><select id="m"><option>2</option><option>3</option></select></label>
+    <label><span><span data-l="en">sparsity (features active with probability</span><span data-l="it" lang="it">sparsità (feature attive con probabilità</span> <output id="dens"></output>)</span><input id="sparsity" type="range" min="0" max="2" step="0.05" value="0"></label>
+    <label><span><span data-l="en">importance decay</span><span data-l="it" lang="it">decadimento dell'importanza</span> \(r\)</span><input id="decay" type="range" min="0.5" max="1" step="0.01" value="0.9"></label>
+    <div class="inline"><label><span><span data-l="en">read-out</span><span data-l="it" lang="it">lettura</span></span><select id="out"><option value="relu">ReLU</option><option value="linear">linear</option></select></label><button id="seed" type="button">New weights</button></div>
   </div>
   <div class="transport"><button id="reset" type="button">Reset</button><button id="step" type="button" title="20 steps of Adam">Step</button><button id="play" type="button">Play</button></div>
 </section>
-<p class="explain"><span id="rep"></span>, after <span id="steps"></span> steps of Adam.</p>
+<p class="explain"><span id="rep"></span><span data-l="en">, after</span><span data-l="it" lang="it">, dopo</span> <span id="steps"></span> <span data-l="en">steps of Adam.</span><span data-l="it" lang="it">passi di Adam.</span></p>
 <main>
-  <figure><figcaption>The columns \(W_i\) of \(W\) in the \(m\) hidden dimensions, darker
+  <figure><figcaption><span data-l="en">The columns \(W_i\) of \(W\) in the \(m\) hidden dimensions, darker
   for the more important features, and the unit circle (for \(m = 3\) the unit ball, with the
-  hull of the represented features).</figcaption><canvas id="arrows" width="420" height="420"></canvas><div id="arrows3d" hidden></div></figure>
-  <figure><figcaption>\(W^\top W\) (violet positive, gold negative) with \(b\) in the last column, and
+  hull of the represented features).</span><span data-l="it" lang="it">Le colonne \(W_i\) di \(W\) nelle \(m\) dimensioni nascoste, più scure
+  per le caratteristiche più importanti, e il cerchio unitario (per \(m = 3\) la palla unitaria, con
+  l'inviluppo delle caratteristiche rappresentate).</span></figcaption><canvas id="arrows" width="420" height="420"></canvas><div id="arrows3d" hidden></div></figure>
+  <figure><figcaption><span data-l="en">\(W^\top W\) (violet positive, gold negative) with \(b\) in the last column, and
   below the norm of each \(W_i\), violet when the feature has its own direction,
-  gold when it interferes with the others.</figcaption><canvas id="gram" width="420" height="320"></canvas><canvas id="bars" width="420" height="150"></canvas></figure>
+  gold when it interferes with the others.</span><span data-l="it" lang="it">\(W^\top W\) (viola positivo, oro negativo) con \(b\) nell'ultima colonna, e
+  sotto la norma di ogni \(W_i\), viola quando la caratteristica ha una direzione propria,
+  oro quando interferisce con le altre.</span></figcaption><canvas id="gram" width="420" height="320"></canvas><canvas id="bars" width="420" height="150"></canvas></figure>
 </main>
-<footer>Scene H of opt-playground, after N. Elhage et al.,
+<footer><span data-l="en">Scene H of opt-playground, after N. Elhage et al.,
 <a href="https://transformer-circuits.pub/2022/toy_model/index.html">Toy Models of Superposition</a>
-(2022): the model is theirs, rebuilt here from the equations.</footer>
+(2022): the model is theirs, rebuilt here from the equations.</span><span data-l="it" lang="it">Scena H di opt-playground, da N. Elhage et al.,
+<a href="https://transformer-circuits.pub/2022/toy_model/index.html">Toy Models of Superposition</a>
+(2022): il modello è loro, qui ricostruito dalle equazioni.</span></footer>
 <script type="module" src="src/superposition.js"></script>
 </body>
 </html>

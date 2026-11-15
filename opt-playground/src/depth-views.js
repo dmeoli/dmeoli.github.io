@@ -4,6 +4,8 @@
 // layer over the plane. The colours are the tokens of style.css, read at every
 // drawing so that both themes work.
 
+import { t as tr } from './i18n.js';
+
 const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 function rgb(c) {
   if (c[0] === '#') {
@@ -72,7 +74,7 @@ export function drawLoss(cv, hist) {
   ctx.beginPath(); ctx.moveTo(L, T); ctx.lineTo(L, H - Bm); ctx.lineTo(W - R, H - Bm); ctx.stroke();
   ctx.fillStyle = str(P['ink-soft']); ctx.font = `10px ${MONO}`; ctx.textAlign = 'right';
   ctx.fillText(hi.toFixed(1), L - 4, T + 8); ctx.fillText('0', L - 4, H - Bm);
-  ctx.textAlign = 'left'; ctx.fillText(`epoch ${hist.at(-1).epoch}`, L + 4, H - 4);
+  ctx.textAlign = 'left'; ctx.fillText(`${tr('epoch', 'epoca')} ${hist.at(-1).epoch}`, L + 4, H - 4);
   ctx.setLineDash([1, 3]); ctx.strokeStyle = str(P['ink-soft']);
   ctx.beginPath(); ctx.moveTo(L, Y(Math.LN2)); ctx.lineTo(W - R, Y(Math.LN2)); ctx.stroke();
   for (const [k, dash] of [['loss', []], ['testLoss', [4, 3]]]) {
@@ -101,7 +103,7 @@ export function drawLayers(cv, { acts, grads, gnorm, R, lo }) {
   const { ctx, W, P } = fit(cv, H, 280), lab = 24, gap = 14, pw = (W - lab - gap) / 2, NB = 40;
   const x0 = lab, x1 = lab + pw + gap;
   ctx.font = `10px ${MONO}`; ctx.fillStyle = str(P['ink-soft']);
-  ctx.textAlign = 'left'; ctx.fillText('activations h_l', x0, 10); ctx.fillText('log10 |∂L/∂W_l|', x1, 10);
+  ctx.textAlign = 'left'; ctx.fillText(tr('activations h_l', 'attivazioni h_l'), x0, 10); ctx.fillText('log10 |∂L/∂W_l|', x1, 10);
   const ticksA = lo === 0 ? [0, R / 2, R] : [-R, 0, R], fmt = v => (Math.abs(v) >= 1e4 || (v && Math.abs(v) < 1e-2) ? v.toExponential(0) : String(+v.toPrecision(2)));
   // the end ticks are aligned inwards, so that the two panels do not overlap
   const tick = (s, x, at) => { ctx.textAlign = at === 0 ? 'left' : at === 1 ? 'right' : 'center'; ctx.fillText(s, x, 24); };

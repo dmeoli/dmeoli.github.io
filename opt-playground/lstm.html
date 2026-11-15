@@ -33,8 +33,8 @@ main.lstm canvas { width: 100%; display: block; border-radius: 6px; }
 <body>
 <nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html" aria-current="page">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
-  <h1>LSTM playground</h1>
-  <p class="lede">A recurrent network reads a sequence one symbol at a time and has to
+  <h1><span data-l="en">LSTM playground</span><span data-l="it" lang="it">Laboratorio LSTM</span></h1>
+  <p class="lede" data-l="en">A recurrent network reads a sequence one symbol at a time and has to
   carry in its state whatever the answer will need. A network of LSTM cells and a plain
   \(\tanh\) network of the same size are trained side by side, with Adam, on tasks in which
   an early symbol decides a late answer. In the LSTM the cell state \(c_t\), kept by the
@@ -42,55 +42,77 @@ main.lstm canvas { width: 100%; display: block; border-radius: 6px; }
   the plain network the gradient with respect to the early states shrinks geometrically
   with the delay, so that at 20 steps the first bit is learnt only from some initial weights,
   and at 30 almost never.</p>
+  <p class="lede" data-l="it" lang="it">Una rete ricorrente legge una sequenza un simbolo alla volta e deve
+  portare nel suo stato tutto ciò che servirà alla risposta. Una rete di celle LSTM e una semplice
+  rete \(\tanh\) della stessa dimensione sono addestrate fianco a fianco, con Adam, su compiti in cui
+  un simbolo iniziale decide una risposta tardiva. Nella LSTM lo stato della cella \(c_t\), conservato dal
+  forget gate e scritto dall'input gate, porta il primo bit attraverso molti passi; nella
+  rete semplice il gradiente rispetto agli stati iniziali si riduce geometricamente
+  con il ritardo, così che a 20 passi il primo bit viene appreso solo da alcuni pesi iniziali,
+  e a 30 quasi mai.</p>
 </header>
 <section class="controls">
   <div class="settings">
-    <label><span>task</span><select id="task"><option value="first">Remember the first bit</option><option value="depth">Bracket depth</option><option value="count">Count the ones</option></select></label>
-    <label><span>length \(T\) <output id="Tv"></output></span><input id="T" type="range" min="5" max="40" step="1" value="20"></label>
-    <label><span>hidden units</span><select id="H"><option>4</option><option selected>6</option><option>8</option></select></label>
+    <label><span><span data-l="en">task</span><span data-l="it" lang="it">compito</span></span><select id="task"><option value="first">Remember the first bit</option><option value="depth">Bracket depth</option><option value="count">Count the ones</option></select></label>
+    <label><span><span data-l="en">length</span><span data-l="it" lang="it">lunghezza</span> \(T\) <output id="Tv"></output></span><input id="T" type="range" min="5" max="40" step="1" value="20"></label>
+    <label><span><span data-l="en">hidden units</span><span data-l="it" lang="it">unità nascoste</span></span><select id="H"><option>4</option><option selected>6</option><option>8</option></select></label>
     <label><span>learning rate</span><select id="lr"><option>0.002</option><option selected>0.005</option><option>0.01</option><option>0.02</option></select></label>
-    <label><span>network shown</span><select id="show"><option value="lstm">LSTM</option><option value="rnn">plain RNN</option></select></label>
+    <label><span><span data-l="en">network shown</span><span data-l="it" lang="it">rete mostrata</span></span><select id="show"><option value="lstm">LSTM</option><option value="rnn">plain RNN</option></select></label>
   </div>
-  <div class="transport"><label class="counter"><span>epoch</span><output id="epoch">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="train" type="button">Play</button></div>
+  <div class="transport"><label class="counter"><span><span data-l="en">epoch</span><span data-l="it" lang="it">epoca</span></span><output id="epoch">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="train" type="button">Play</button></div>
 </section>
 <p class="explain" id="rep"></p>
 <main class="lstm">
-  <figure><figcaption id="chaincap">The cell unrolled over the steps around \(t\), drawn from
+  <figure><figcaption id="chaincap"><span data-l="en">The cell unrolled over the steps around \(t\), drawn from
   the values of the sequence below: the lines along the top are the units of \(c_t\), those
   along the bottom the units of \(h_t\) (violet positive, gold negative, thicker when larger);
-  each gate is a column of bars, one per unit, filled as far as the gate is open.</figcaption>
+  each gate is a column of bars, one per unit, filled as far as the gate is open.</span><span data-l="it" lang="it">La cella srotolata sui passi intorno a \(t\), disegnata con
+  i valori della sequenza qui sotto: le linee in alto sono le unità di \(c_t\), quelle
+  in basso le unità di \(h_t\) (viola positivo, oro negativo, più spesse quando più grandi);
+  ogni gate è una colonna di barre, una per unità, riempita quanto il gate è aperto.</span></figcaption>
   <canvas id="chain" height="292"></canvas>
-  <div class="stepper"><span>step \(t\)</span><button id="prev" type="button" aria-label="previous step">&lsaquo;</button><input id="t" type="range" min="1" max="20" step="1" value="1"><button id="next" type="button" aria-label="next step">&rsaquo;</button><output id="tv"></output><button id="seq" type="button">New sequence</button></div>
+  <div class="stepper"><span><span data-l="en">step</span><span data-l="it" lang="it">passo</span> \(t\)</span><button id="prev" type="button" aria-label="previous step">&lsaquo;</button><input id="t" type="range" min="1" max="20" step="1" value="1"><button id="next" type="button" aria-label="next step">&rsaquo;</button><output id="tv"></output><button id="seq" type="button">New sequence</button></div>
   </figure>
   <aside class="eqs">
-    <h3>The cell at step <span id="eqt"></span></h3>
-    <div class="eq lstm-only" data-part="f">\(f_t = \sigma(W_f\,[h_{t-1}, x_t] + b_f)\)<small>forget gate: how much of \(c_{t-1}\) is kept; mean <b id="vf"></b></small></div>
-    <div class="eq lstm-only" data-part="i">\(i_t = \sigma(W_i\,[h_{t-1}, x_t] + b_i)\)<small>input gate: how much of the candidate is written; mean <b id="vi"></b></small></div>
-    <div class="eq lstm-only" data-part="g">\(\tilde c_t = \tanh(W_c\,[h_{t-1}, x_t] + b_c)\)<small>candidate values; mean <b id="vg"></b></small></div>
-    <div class="eq lstm-only" data-part="c">\(c_t = f_t \odot c_{t-1} + i_t \odot \tilde c_t\)<small>cell state; mean <b id="vc"></b></small></div>
-    <div class="eq lstm-only" data-part="o">\(o_t = \sigma(W_o\,[h_{t-1}, x_t] + b_o)\)<small>output gate; mean <b id="vo"></b></small></div>
-    <div class="eq lstm-only" data-part="h">\(h_t = o_t \odot \tanh(c_t)\)<small>hidden state; mean <b id="vh"></b></small></div>
-    <div class="eq rnn-only" data-part="h" hidden>\(h_t = \tanh(W\,[h_{t-1}, x_t] + b)\)<small>hidden state, the only memory of the plain network; mean <b id="vr"></b></small></div>
-    <div class="eq" data-part="y">\(\hat y_t = \operatorname{softmax}(W_y h_t + b_y)\)<small>the output, read <span id="where"></span></small></div>
+    <h3><span data-l="en">The cell at step</span><span data-l="it" lang="it">La cella al passo</span> <span id="eqt"></span></h3>
+    <div class="eq lstm-only" data-part="f">\(f_t = \sigma(W_f\,[h_{t-1}, x_t] + b_f)\)<small><span data-l="en">forget gate: how much of \(c_{t-1}\) is kept; mean</span><span data-l="it" lang="it">forget gate: quanto di \(c_{t-1}\) si conserva; media</span> <b id="vf"></b></small></div>
+    <div class="eq lstm-only" data-part="i">\(i_t = \sigma(W_i\,[h_{t-1}, x_t] + b_i)\)<small><span data-l="en">input gate: how much of the candidate is written; mean</span><span data-l="it" lang="it">input gate: quanto del candidato si scrive; media</span> <b id="vi"></b></small></div>
+    <div class="eq lstm-only" data-part="g">\(\tilde c_t = \tanh(W_c\,[h_{t-1}, x_t] + b_c)\)<small><span data-l="en">candidate values; mean</span><span data-l="it" lang="it">valori candidati; media</span> <b id="vg"></b></small></div>
+    <div class="eq lstm-only" data-part="c">\(c_t = f_t \odot c_{t-1} + i_t \odot \tilde c_t\)<small><span data-l="en">cell state; mean</span><span data-l="it" lang="it">stato della cella; media</span> <b id="vc"></b></small></div>
+    <div class="eq lstm-only" data-part="o">\(o_t = \sigma(W_o\,[h_{t-1}, x_t] + b_o)\)<small><span data-l="en">output gate; mean</span><span data-l="it" lang="it">output gate; media</span> <b id="vo"></b></small></div>
+    <div class="eq lstm-only" data-part="h">\(h_t = o_t \odot \tanh(c_t)\)<small><span data-l="en">hidden state; mean</span><span data-l="it" lang="it">stato nascosto; media</span> <b id="vh"></b></small></div>
+    <div class="eq rnn-only" data-part="h" hidden>\(h_t = \tanh(W\,[h_{t-1}, x_t] + b)\)<small><span data-l="en">hidden state, the only memory of the plain network; mean</span><span data-l="it" lang="it">stato nascosto, la sola memoria della rete semplice; media</span> <b id="vr"></b></small></div>
+    <div class="eq" data-part="y">\(\hat y_t = \operatorname{softmax}(W_y h_t + b_y)\)<small><span data-l="en">the output, read</span><span data-l="it" lang="it">l'uscita, letta</span> <span id="where"></span></small></div>
   </aside>
-  <figure class="across"><figcaption>The whole sequence, step by step (columns, the
+  <figure class="across"><figcaption><span data-l="en">The whole sequence, step by step (columns, the
   input on top) and unit by unit (rows): \(c_t\) (divided by 2 and clipped), \(h_t\), the
   gates from 0 (ground) to 1 (violet) and the candidate \(\tilde c_t\); the frame marks
-  step \(t\). Click a column to move there.</figcaption><canvas id="heat"></canvas></figure>
+  step \(t\). Click a column to move there.</span><span data-l="it" lang="it">L'intera sequenza, passo per passo (colonne, con
+  l'ingresso in alto) e unità per unità (righe): \(c_t\) (diviso per 2 e troncato), \(h_t\), i
+  gate da 0 (sfondo) a 1 (viola) e il candidato \(\tilde c_t\); il riquadro segna
+  il passo \(t\). Si clicchi una colonna per spostarsi lì.</span></figcaption><canvas id="heat"></canvas></figure>
   <div class="pair">
-    <figure><figcaption>The loss of the two networks, trained on the same sequences
-    (10 minibatches of 16 fresh sequences per epoch), and their accuracy.</figcaption><canvas id="loss"></canvas></figure>
-    <figure><figcaption>The norm of the gradient of the loss at the last step \(T\) with
+    <figure><figcaption><span data-l="en">The loss of the two networks, trained on the same sequences
+    (10 minibatches of 16 fresh sequences per epoch), and their accuracy.</span><span data-l="it" lang="it">La loss delle due reti, addestrate sulle stesse sequenze
+    (10 minibatch di 16 sequenze nuove per epoca), e la loro accuratezza.</span></figcaption><canvas id="loss"></canvas></figure>
+    <figure><figcaption><span data-l="en">The norm of the gradient of the loss at the last step \(T\) with
     respect to \(h_t\), averaged over 32 test sequences and divided by its value at
     \(t = T\), in log scale: for the plain RNN it falls by a roughly constant factor at
     every step back, while for the LSTM, before training, it stays nearly flat, carried by
     \(c_t\) through the forget gates. Once the LSTM has stored the bit it falls too in
-    the middle of the sequence, which the answer no longer depends on.</figcaption><canvas id="grad"></canvas></figure>
+    the middle of the sequence, which the answer no longer depends on.</span><span data-l="it" lang="it">La norma del gradiente della loss all'ultimo passo \(T\) rispetto
+    a \(h_t\), mediata su 32 sequenze di test e divisa per il suo valore in
+    \(t = T\), in scala logaritmica: per la RNN semplice cala di un fattore circa costante a
+    ogni passo all'indietro, mentre per la LSTM, prima dell'addestramento, resta quasi piatta, portata da
+    \(c_t\) attraverso i forget gate. Quando la LSTM ha memorizzato il bit, cala anch'essa
+    nel mezzo della sequenza, da cui la risposta non dipende più.</span></figcaption><canvas id="grad"></canvas></figure>
   </div>
 </main>
-<footer>Scene J of opt-playground, after C. Olah,
+<footer><span data-l="en">Scene J of opt-playground, after C. Olah,
 <a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">Understanding LSTM Networks</a>
-(2015): the idea is his, rebuilt here from the equations.</footer>
+(2015): the idea is his, rebuilt here from the equations.</span><span data-l="it" lang="it">Scena J di opt-playground, da C. Olah,
+<a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">Understanding LSTM Networks</a>
+(2015): l'idea è sua, qui ricostruita dalle equazioni.</span></footer>
 <script type="module" src="src/lstm.js"></script>
 </body>
 </html>

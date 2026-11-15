@@ -7,6 +7,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+import { t, onLang } from './i18n.js';
 
 export { THREE };
 export const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
@@ -17,6 +18,12 @@ export function onTheme(fn) {
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
   new MutationObserver(fn).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 }
+
+// a text given as a string or as a function of the language (() => t(en, it))
+const say = s => (typeof s === 'function' ? s() : s);
+// the names of the figures given by the scenes as plain English strings
+const FIG_IT = { figure: 'figura', 'hidden space': 'spazio nascosto', 'loss landscape': 'paesaggio della loss' };
+const figName = l => { const s = say(l); return t(s, FIG_IT[s] || s); };
 
 export function stage3d(box, { position = [2.2, -2.6, 1.8], target = [0, 0, 0], fov = 35, label = 'figure' } = {}) {
   box.classList.add('view3d');
@@ -38,14 +45,23 @@ export function stage3d(box, { position = [2.2, -2.6, 1.8], target = [0, 0, 0], 
 
   // the bar: auto-rotate, reset of the camera, full screen
   const bar = document.createElement('div'); bar.className = 'tools3d';
-  const btn = (t, title, f) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.title = title; b.onclick = f; bar.append(b); return b; };
-  const spin = btn('rotate', 'turn the figure by itself', () => { controls.autoRotate = !controls.autoRotate; spin.setAttribute('aria-pressed', controls.autoRotate); dirty = true; });
+  const btn = (f) => { const b = document.createElement('button'); b.type = 'button'; b.onclick = f; bar.append(b); return b; };
+  const spin = btn(() => { controls.autoRotate = !controls.autoRotate; spin.setAttribute('aria-pressed', controls.autoRotate); dirty = true; });
   spin.setAttribute('aria-pressed', 'false');
-  btn('reset', 'back to the first view', () => { controls.reset(); dirty = true; });
-  const full = btn('full screen', `the ${label} on the whole screen, to project it`, () => {
+  const back = btn(() => { controls.reset(); dirty = true; });
+  const full = btn(() => {
     if (document.fullscreenElement === box) document.exitFullscreen(); else box.requestFullscreen?.();
   });
-  document.addEventListener('fullscreenchange', () => { full.textContent = document.fullscreenElement === box ? 'exit' : 'full screen'; });
+  const words = () => {
+    spin.textContent = t('rotate', 'ruota'); spin.title = t('turn the figure by itself', 'fa girare la figura da sola');
+    back.textContent = t('reset', 'reset'); back.title = t('back to the first view', 'torna alla prima vista');
+    const L = figName(label);
+    full.textContent = document.fullscreenElement === box ? t('exit', 'esci') : t('full screen', 'schermo intero');
+    full.title = t(`the ${L} on the whole screen, to project it`, `${L[0].toUpperCase() + L.slice(1)} a schermo intero, da proiettare`);
+  };
+  words();
+  document.addEventListener('fullscreenchange', words);
+  onLang(() => { words(); dirty = true; });
   box.append(bar);
 
   let dirty = true;
@@ -74,11 +90,16 @@ export function stage3d(box, { position = [2.2, -2.6, 1.8], target = [0, 0, 0], 
   return st;
 }
 
-// a label at a point of space, coloured by the CSS (so by the theme)
+// a label at a point of space, coloured by the CSS (so by the theme); the text
+// may be a function of the language (() => t(en, it)), written again when the
+// language changes
 export function label(text, at, cls = '') {
-  const el = document.createElement('span'); el.className = 'lab3d ' + cls; el.textContent = text;
+  const el = document.createElement('span'); el.className = 'lab3d ' + cls; el.textContent = say(text);
+  if (typeof text === 'function') el.sayText = text;
   const o = new CSS2DObject(el); o.position.set(...at); return o;
 }
+
+onLang(() => document.querySelectorAll('.lab3d').forEach(el => { if (el.sayText) el.textContent = el.sayText(); }));
 
 // a line through points, with a colour and an opacity
 export function line(pts, color, opacity = 1) {
@@ -86,7 +107,8 @@ export function line(pts, color, opacity = 1) {
   return new THREE.Line(g, new THREE.LineBasicMaterial({ color, transparent: opacity < 1, opacity }));
 }
 
-// three axes from lo to hi in each coordinate, axes({ x: [lo, hi, 'name'], ... }),
+// three axes from lo to hi in each coordinate, axes({ x: [lo, hi, 'name'], ... })
+// (a name may be a function of the language, as for label),
 // with the names past their ends (written from there to the right, so that
 // they stay inside the figure); the axes meet at the corner of the lows, or at
 // the origin given

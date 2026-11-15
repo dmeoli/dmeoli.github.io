@@ -15,6 +15,7 @@ import { forward, rng } from './nn.js';
 import * as M from './manifolds-model.js';
 import { THREE, stage3d, axes, tok, onTheme } from './stage3d-b.js';
 import { setTex } from './tex.js';
+import { t, onLang } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const S = { data: 'curves', width: 2, layers: 2, act: 'tanh', seed: 3, T: 0 };
@@ -93,18 +94,21 @@ function draw() {
     }
   }
   const k = Math.min(Math.floor(S.T / 3), S.layers - 1), loc = S.T - 3 * k;
-  const phase = S.T >= 3 * S.layers ? `the last hidden layer, where the output unit draws a ${S.width === 3 ? 'plane (translucent)' : 'line (dashed)'}` :
-    `layer ${k + 1}, ${['the linear map \\(W\\)', 'the translation \\(b\\)', `the activation ${S.act === 'tanh' ? '\\(\\tanh\\)' : '\\(\\mathrm{ReLU}\\)'}`][Math.min(2, Math.floor(loc))]}`;
+  const actTex = S.act === 'tanh' ? '\\(\\tanh\\)' : '\\(\\mathrm{ReLU}\\)';
+  const phase = S.T >= 3 * S.layers ? t(`the last hidden layer, where the output unit draws a ${S.width === 3 ? 'plane (translucent)' : 'line (dashed)'}`,
+    `l'ultimo strato nascosto, dove l'unità di uscita traccia ${S.width === 3 ? 'un piano (traslucido)' : 'una retta (tratteggiata)'}`) :
+    `${t('layer', 'strato')} ${k + 1}, ${[t('the linear map \\(W\\)', 'la mappa lineare \\(W\\)'), t('the translation \\(b\\)', 'la traslazione \\(b\\)'), t(`the activation ${actTex}`, `l'attivazione ${actTex}`)][Math.min(2, Math.floor(loc))]}`;
   const { W } = layerParams(k), det = M.det(W);
   // the formulas are typeset only when they change, the number is plain text
   setTex($('phase'), phase);
   if (S.width === 3 && k === 0) {
-    setTex($('detW'), '\\(W_1\\) is \\(3 \\times 2\\): it maps the plane onto a plane in space');
+    setTex($('detW'), t('\\(W_1\\) is \\(3 \\times 2\\): it maps the plane onto a plane in space', '\\(W_1\\) è \\(3 \\times 2\\): manda il piano su un piano nello spazio'));
     $('det').textContent = ''; $('detNeg').textContent = '';
   } else {
     setTex($('detW'), `\\(\\det W_${k + 1} =\\) `);
     $('det').textContent = det.toFixed(3);
-    $('detNeg').textContent = det < 0 ? ` (negative: a reflection, not reachable by a continuous deformation of the ${S.width === 3 ? 'space' : 'plane'})` : '';
+    $('detNeg').textContent = det < 0 ? t(` (negative: a reflection, not reachable by a continuous deformation of the ${S.width === 3 ? 'space' : 'plane'})`,
+      ` (negativo: una riflessione, che nessuna deformazione continua ${S.width === 3 ? 'dello spazio' : 'del piano'} raggiunge)`) : '';
   }
   let ok = 0; for (const p of pts) if (Math.sign(forward(net, [p.x, p.y])) === p.label) ok++;
   $('acc').textContent = `${(100 * ok / pts.length).toFixed(1)}%`;
@@ -185,8 +189,8 @@ function draw3d(qs, end) {
 onTheme(() => { g3 = null; draw(); });
 
 function save() { history.replaceState(null, '', '#' + new URLSearchParams({ data: S.data, width: S.width, layers: S.layers, act: S.act, seed: S.seed, T: S.T.toFixed(2) })); }
-function stopTrain() { clearInterval(timer); timer = null; $('play').textContent = 'Play'; }
-function stopMorph() { clearInterval(morph); morph = null; $('morph').textContent = 'Animate'; }
+function stopTrain() { clearInterval(timer); timer = null; $('play').textContent = t('Play', 'Avvia'); }
+function stopMorph() { clearInterval(morph); morph = null; $('morph').textContent = t('Animate', 'Anima'); }
 
 $('data').value = S.data; $('width').value = S.width; $('layers').value = S.layers; $('act').value = S.act; $('T').max = 3 * S.layers; $('T').value = S.T;
 $('data').onchange = e => { S.data = e.target.value; reset(); };
@@ -199,12 +203,12 @@ $('reset').onclick = reset;
 $('step').onclick = () => { trainEpoch(); draw(); };
 $('play').onclick = () => {
   if (timer) return stopTrain();
-  $('play').textContent = 'Pause';
+  $('play').textContent = t('Pause', 'Pausa');
   timer = setInterval(() => { for (let i = 0; i < 5; i++) trainEpoch(); draw(); }, 60);
 };
 $('morph').onclick = () => {
   if (morph) return stopMorph();
-  $('morph').textContent = 'Pause';
+  $('morph').textContent = t('Pause', 'Pausa');
   if (S.T >= 3 * S.layers) S.T = 0;
   morph = setInterval(() => {
     S.T = Math.min(3 * S.layers, S.T + 0.04); $('T').value = S.T;
@@ -219,4 +223,19 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' && t.type !== 'range') $('step').click();
   if (e.key === ' ') { e.preventDefault(); $('play').click(); }
 });
+// the texts of the language: the title, the options of the selects, the buttons
+const OPTS = {
+  data: { curves: ['Two curves', 'Due curve'], spiral: ['Two spirals', 'Due spirali'], xor: ['XOR', 'XOR'], ring: ['Disc inside a ring', "Disco dentro un anello"] },
+  act: { tanh: ['tanh', 'tanh'], relu: ['ReLU (folds the plane)', 'ReLU (piega il piano)'] },
+};
+function words() {
+  document.title = t('Manifolds playground', 'Laboratorio delle varietà');
+  for (const [id, o] of Object.entries(OPTS)) for (const op of $(id).options) op.textContent = t(...o[op.value]);
+  $('seed').textContent = t('New weights', 'Nuovi pesi');
+  $('reset').textContent = t('Reset', 'Reset'); $('step').textContent = t('Step', 'Passo');
+  $('play').textContent = timer ? t('Pause', 'Pausa') : t('Play', 'Avvia');
+  $('morph').textContent = morph ? t('Pause', 'Pausa') : t('Animate', 'Anima');
+}
+onLang(() => { words(); draw(); });
+words();
 reset();

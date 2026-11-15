@@ -16,6 +16,7 @@ import { sqdist, distTo, condRows, symmetrize, TSNE, klDivergence, placeNew, mea
 import { makeSet } from './convdata.js';
 import { rng } from './nn.js';
 import { N } from './convnet.js';
+import { t, onLang } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const S = { view: 'tsne', perp: 30, hid: '64-32', lr: 0.003, seed: 1, marks: 'dots' };
@@ -25,7 +26,9 @@ new URLSearchParams(location.hash.slice(1)).forEach((v, k) => {
   else if (k in S && Number.isFinite(+v)) S[k] = +v;
 });
 const NS = 500, NP = 1000, NTRAIN = 3000, B = 32, NB = Math.floor(NTRAIN / B), KNB = 8, KNN = 5;
-const NAMES = ['input', 'hidden 1', 'hidden 2', 'logits'];
+let NAMES = [];
+const names = () => { NAMES = t(['input', 'hidden 1', 'hidden 2', 'logits'], ['ingresso', 'nascosto 1', 'nascosto 2', 'logit']); };
+names();
 const TRAIN_MS = 9, FRAME_MS = 26, SETTLE = 60;   // t-SNE iterations on a snapshot before the next epoch
 
 // ------------------------------------------------------------------ state
@@ -203,7 +206,7 @@ function buildMaps() {
   layers.forEach((L, l) => {
     const div = document.createElement('div'), h = document.createElement('h3'), o = document.createElement('output'), cv = document.createElement('canvas');
     h.textContent = `${NAMES[l]} · ${L.d}`; h.append(o);
-    cv.width = cv.height = 400; cv.setAttribute('aria-label', `map of the ${NAMES[l]} layer`);
+    cv.width = cv.height = 400; cv.setAttribute('aria-label', t(`map of the ${NAMES[l]} layer`, `mappa dello strato ${NAMES[l]}`));
     div.append(h, cv); box.append(div);
     maps.push({ cv, o, scr: new Float64Array(2 * NS), view: null });
     cv.addEventListener('pointermove', e => pointAt(l, e));
@@ -235,7 +238,7 @@ function drawMap(l, nb) {
   ctx.strokeStyle = P.rule; ctx.lineWidth = 1; ctx.strokeRect(0.5, 0.5, W - 1, W - 1);
   const Y = coords(l);
   M.o.textContent = L.knn === null ? '' : `5-NN ${(100 * L.knn).toFixed(1)}%`;
-  if (!Y) { ctx.fillStyle = P.soft; ctx.font = '13px IBM Plex Mono, monospace'; ctx.textAlign = 'center'; ctx.fillText('computing…', W / 2, W / 2); return; }
+  if (!Y) { ctx.fillStyle = P.soft; ctx.font = '13px IBM Plex Mono, monospace'; ctx.textAlign = 'center'; ctx.fillText(t('computing…', 'calcolo…'), W / 2, W / 2); return; }
   // an isotropic frame around the cloud (98% of the points), eased from frame to frame
   const xs = [], ys = [];
   for (let i = 0; i < NS; i++) { xs.push(Y[2 * i]); ys.push(Y[2 * i + 1]); }
@@ -309,9 +312,9 @@ function drawNeighbours(nb) {
   digitAt(ctx, sample.X[i], 0, 18, big);
   ctx.strokeStyle = P.accent; ctx.lineWidth = 3; ctx.strokeRect(1.5, 19.5, big - 3, big - 3);
   ctx.font = '12px IBM Plex Mono, monospace'; ctx.fillStyle = P.soft;
-  ctx.fillText(`a ${sample.Y[i]}, in ${NAMES[hover.l]}`, 0, 12);
+  ctx.fillText(t(`a ${sample.Y[i]}, in ${NAMES[hover.l]}`, `un ${sample.Y[i]}, in ${NAMES[hover.l]}`), 0, 12);
   const x0 = big + 18;
-  ctx.fillText('its 8 nearest neighbours', x0, 12);
+  ctx.fillText(t('its 8 nearest neighbours', 'i suoi 8 vicini più prossimi'), x0, 12);
   nb.forEach((j, k) => {
     const cx = x0 + (k % 4) * (th + gap + 12), cy = 18 + Math.floor(k / 4) * (th + 22);
     digitAt(ctx, sample.X[j], cx, cy, th);
@@ -320,7 +323,7 @@ function drawNeighbours(nb) {
   });
   // the same count in every layer
   const yb = 18 + 2 * (th + 22) + 20;
-  ctx.fillStyle = P.soft; ctx.fillText('same class among the 8 nearest:', 0, yb);
+  ctx.fillStyle = P.soft; ctx.fillText(t('same class among the 8 nearest:', 'stessa classe fra gli 8 più vicini:'), 0, yb);
   layers.forEach((L, l) => {
     if (!L.D) return;
     const c = neighbours(L.D, NS, i, KNB).filter(j => sample.Y[j] === sample.Y[i]).length;
@@ -349,8 +352,9 @@ function drawBars() {
   });
   if (netAcc !== null) {
     ctx.strokeStyle = P.ink; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.moveTo(left, y(netAcc)); ctx.lineTo(W, y(netAcc)); ctx.stroke(); ctx.setLineDash([]);
-    ctx.textAlign = 'end'; ctx.fillStyle = P.ink; ctx.fillText(`network itself ${(100 * netAcc).toFixed(1)}%`, W - 2, 10);
-    ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.moveTo(W - 2 - ctx.measureText(`network itself ${(100 * netAcc).toFixed(1)}%`).width - 34, 6); ctx.lineTo(W - 2 - ctx.measureText(`network itself ${(100 * netAcc).toFixed(1)}%`).width - 8, 6); ctx.stroke(); ctx.setLineDash([]);
+    const lab = t(`network itself ${(100 * netAcc).toFixed(1)}%`, `la rete stessa ${(100 * netAcc).toFixed(1)}%`);
+    ctx.textAlign = 'end'; ctx.fillStyle = P.ink; ctx.fillText(lab, W - 2, 10);
+    ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.moveTo(W - 2 - ctx.measureText(lab).width - 34, 6); ctx.lineTo(W - 2 - ctx.measureText(lab).width - 8, 6); ctx.stroke(); ctx.setLineDash([]);
   }
   ctx.textAlign = 'start';
 }
@@ -361,11 +365,12 @@ function drawPad() {
   ctx.strokeStyle = P.rule; ctx.lineWidth = 1; ctx.globalAlpha = 0.5;
   for (let k = 1; k < N; k++) { ctx.beginPath(); ctx.moveTo(k * c, 0); ctx.lineTo(k * c, cv.height); ctx.moveTo(0, k * c); ctx.lineTo(cv.width, k * c); ctx.stroke(); }
   ctx.globalAlpha = 1;
-  if (!snapNet || !inked) { $('padnote').textContent = inked ? '' : 'Draw a digit with the mouse or a finger.'; return; }
+  if (!snapNet || !inked) { $('padnote').textContent = inked ? '' : t('Draw a digit with the mouse or a finger.', 'Disegnare una cifra con il mouse o con un dito.'); return; }
   const f = forward(snapNet, x);
   const top = [...f.prob.keys()].sort((a, b) => f.prob[b] - f.prob[a]).slice(0, 3);
-  $('padnote').textContent = (truth === null ? '' : `A held-out ${truth}. `) +
-    `The network of epoch ${layers[1].epoch ?? 0} reads it as ${top[0]} (probability ${f.prob[top[0]].toFixed(2)}), then ${top[1]} (${f.prob[top[1]].toFixed(2)}) and ${top[2]} (${f.prob[top[2]].toFixed(2)}).`;
+  $('padnote').textContent = (truth === null ? '' : t(`A held-out ${truth}. `, `Un ${truth} tenuto da parte. `)) +
+    t(`The network of epoch ${layers[1].epoch ?? 0} reads it as ${top[0]} (probability ${f.prob[top[0]].toFixed(2)}), then ${top[1]} (${f.prob[top[1]].toFixed(2)}) and ${top[2]} (${f.prob[top[2]].toFixed(2)}).`,
+      `La rete dell'epoca ${layers[1].epoch ?? 0} la legge come ${top[0]} (probabilità ${f.prob[top[0]].toFixed(2)}), poi ${top[1]} (${f.prob[top[1]].toFixed(2)}) e ${top[2]} (${f.prob[top[2]].toFixed(2)}).`);
 }
 
 // ------------------------------------------------------------------ everything
@@ -377,17 +382,21 @@ function draw() {
   drawNeighbours(nb); drawBars(); drawPad();
   $('count').textContent = `${epoch}${bi && bi < NB ? '.' + String(Math.floor(100 * bi / NB)).padStart(2, '0') : ''}`;
   const T = layers[2] && layers[2].tsne, lossAvg = losses.length ? losses.reduce((s, v) => s + v, 0) / losses.length : null;
-  const what = { tsne: 't-SNE', pca: 'PCA', probe: 'the linear probe' }[S.view];
+  const what = { tsne: 't-SNE', pca: 'PCA', probe: t('the linear probe', 'la sonda lineare') }[S.view];
   let msg;
-  if (!sample) msg = 'Writing the digits…';
-  else if (train.X.length < NTRAIN) msg = `Writing the training digits: ${train.X.length} of ${NTRAIN}; the maps of the untrained network are being computed.`;
+  if (!sample) msg = t('Writing the digits…', 'Scrittura delle cifre…');
+  else if (train.X.length < NTRAIN) msg = t(`Writing the training digits: ${train.X.length} of ${NTRAIN}; the maps of the untrained network are being computed.`,
+    `Scrittura delle cifre di addestramento: ${train.X.length} su ${NTRAIN}; si calcolano le mappe della rete non addestrata.`);
   else {
-    msg = `Epoch ${epoch}: the network classifies ${netAcc === null ? '…' : (100 * netAcc).toFixed(1) + '%'} of the 500 held-out digits` +
-      (lossAvg === null ? '' : ` (training loss ${lossAvg.toFixed(3)})`) + `; the maps show the activations of epoch ${layers[1].epoch ?? 0}`;
-    if (S.view === 'tsne' && T) msg += `, t-SNE at iteration ${T.iter}` + (layers[2].kl === null ? '' : ` with KL ${layers[2].kl.toFixed(3)} in hidden 2`);
-    if (S.view === 'probe') msg += `, the probe classifying in 2D ${layers.map((L2, l) => `${NAMES[l]} ${!(L2.pAcc >= 0) ? '…' : (100 * L2.pAcc).toFixed(0) + '%'}`).join(', ')} of the 500`;
-    if (S.view === 'pca') msg += `, ${what} keeping ${layers.map(L2 => L2.pca ? (100 * (L2.pca.lambda[0] + L2.pca.lambda[1]) / L2.pca.tr).toFixed(0) + '%' : '…').join(', ')} of the variance`;
-    if (job) msg += ' (the new snapshot is being computed)';
+    msg = t(`Epoch ${epoch}: the network classifies ${netAcc === null ? '…' : (100 * netAcc).toFixed(1) + '%'} of the 500 held-out digits`,
+      `Epoca ${epoch}: la rete classifica ${netAcc === null ? '…' : (100 * netAcc).toFixed(1) + '%'} delle 500 cifre tenute da parte`) +
+      (lossAvg === null ? '' : t(` (training loss ${lossAvg.toFixed(3)})`, ` (loss di addestramento ${lossAvg.toFixed(3)})`)) +
+      t(`; the maps show the activations of epoch ${layers[1].epoch ?? 0}`, `; le mappe mostrano le attivazioni dell'epoca ${layers[1].epoch ?? 0}`);
+    if (S.view === 'tsne' && T) msg += t(`, t-SNE at iteration ${T.iter}`, `, t-SNE all'iterazione ${T.iter}`) + (layers[2].kl === null ? '' : t(` with KL ${layers[2].kl.toFixed(3)} in hidden 2`, ` con KL ${layers[2].kl.toFixed(3)} in nascosto 2`));
+    if (S.view === 'probe') msg += t(', the probe classifying in 2D ', ', la sonda che classifica in 2D ') + `${layers.map((L2, l) => `${NAMES[l]} ${!(L2.pAcc >= 0) ? '…' : (100 * L2.pAcc).toFixed(0) + '%'}`).join(', ')}` + t(' of the 500', ' dei 500');
+    if (S.view === 'pca') msg += t(`, ${what} keeping ${layers.map(L2 => L2.pca ? (100 * (L2.pca.lambda[0] + L2.pca.lambda[1]) / L2.pca.tr).toFixed(0) + '%' : '…').join(', ')} of the variance`,
+      `, con ${what} che conserva ${layers.map(L2 => L2.pca ? (100 * (L2.pca.lambda[0] + L2.pca.lambda[1]) / L2.pca.tr).toFixed(0) + '%' : '…').join(', ')} della varianza`);
+    if (job) msg += t(' (the new snapshot is being computed)', ' (si calcola la nuova istantanea)');
     msg += '.';
   }
   $('explain').textContent = msg;
@@ -396,7 +405,7 @@ function draw() {
 function refreshButtons() {
   const ok = train.X.length >= NTRAIN;
   $('step').disabled = $('train').disabled = !ok;
-  $('train').textContent = running ? 'Pause' : 'Play';
+  $('train').textContent = running ? t('Pause', 'Pausa') : t('Play', 'Avvia');
 }
 
 function save() { history.replaceState(null, '', '#' + new URLSearchParams(S)); }
@@ -448,5 +457,18 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { pa
 // the legend of the classes
 for (let k = 0; k < 10; k++) { const li = document.createElement('li'), i = document.createElement('i'); i.style.background = `var(--c${k})`; li.append(i, String(k)); $('classes').append(li); }
 
+// the texts that are not in the page twice: title, buttons, options
+function labels() {
+  document.title = t('Representations playground', 'Laboratorio delle rappresentazioni');
+  $('step').textContent = t('Step', 'Passo');
+  $('clear').textContent = t('Clear', 'Cancella');
+  $('sample').textContent = t('Held-out digit', 'Cifra tenuta da parte');
+  const O = { tsne: ['t-SNE', 't-SNE'], pca: ['PCA', 'PCA'], probe: ['linear probe', 'sonda lineare'], dots: ['dots', 'punti'], digits: ['numerals', 'numeri'] };
+  for (const id of ['view', 'marks']) for (const o of $(id).options) o.textContent = t(...O[o.value]);
+  refreshButtons();
+}
+onLang(() => { names(); labels(); maps.length = 0; dirty = true; });
+
+labels();
 reset();
 requestAnimationFrame(frame);
