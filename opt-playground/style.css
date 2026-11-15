@@ -136,7 +136,7 @@ nav.pages { font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); margi
 a { color: var(--accent); }
 nav.pages a { color: var(--ink-soft); text-decoration: none; }
 nav.pages a[aria-current] { color: var(--accent); border-bottom: 1px solid var(--accent); }
-nav.pages .group { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent-2); margin-right: 6px; }
+nav.pages .group { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); margin-right: 6px; }
 nav.pages { line-height: 1.8; }
 main.single { grid-template-columns: 1fr; }
 .stage canvas { width: 100%; height: auto; display: block; cursor: grab; }
