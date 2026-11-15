@@ -42,7 +42,98 @@ const functions = {
     g: ([x, y]) => [Math.sign(x) + (x + y > 1 ? 1 : 0), 3 * Math.sign(y) + (x + y > 1 ? 1 : 0)],
     h: null,
   },
+  // the instances of the notebooks of optiml (LineSearchMethods, StochasticMethods)
+  optimlQuadratic: {
+    label: 'Quadratic of optiml: Q = [[5, -3], [-3, 5]], q = [10, 5]', lr: 0.05,
+    box: [-5, 2, -5, 2], start: [-1, 1], minima: [[-65 / 16, -55 / 16]],
+    f: ([x, y]) => 0.5 * (5 * x * x - 6 * x * y + 5 * y * y) + 10 * x + 5 * y,
+    g: ([x, y]) => [5 * x - 3 * y + 10, -3 * x + 5 * y + 5],
+    h: () => [[5, -3], [-3, 5]],
+  },
+  rosenbrock2: {
+    label: 'Rosenbrock of optiml (b = 2)', lr: 0.05,
+    box: [-2, 2, -1, 3], start: [-1, 1], minima: [[1, 1]],
+    f: ([x, y]) => (1 - x) ** 2 + 2 * (y - x * x) ** 2,
+    g: ([x, y]) => [-2 * (1 - x) - 8 * x * (y - x * x), 4 * (y - x * x)],
+    h: ([x, y]) => [[2 - 8 * (y - 3 * x * x), -8 * x], [-8 * x, 4]],
+  },
+  sixhump: {
+    label: 'Six-Hump Camel (two global minima, four local)', lr: 0.02,
+    box: [-2, 2, -1, 1], start: [-1, 0], minima: [[0.0898, -0.7126], [-0.0898, 0.7126]],
+    f: ([x, y]) => (4 - 2.1 * x * x + x ** 4 / 3) * x * x + x * y + (-4 + 4 * y * y) * y * y,
+    g: ([x, y]) => [8 * x - 8.4 * x ** 3 + 2 * x ** 5 + y, x - 8 * y + 16 * y ** 3],
+    h: ([x, y]) => [[8 - 25.2 * x * x + 10 * x ** 4, 1], [1, -8 + 48 * y * y]],
+  },
+  ackley: {
+    label: 'Ackley (many local minima around a deep hole)', lr: 0.02,
+    box: [-4, 4, -4, 4], start: [2.6, 2.2], minima: [[0, 0]],
+    f: ([x, y]) => -20 * Math.exp(-0.2 * Math.sqrt((x * x + y * y) / 2)) - Math.exp((Math.cos(2 * Math.PI * x) + Math.cos(2 * Math.PI * y)) / 2) + Math.E + 20,
+    g: ([x, y]) => {
+      const r = Math.sqrt((x * x + y * y) / 2) || 1e-12, a = 2 * Math.exp(-0.2 * r) / r, c = Math.PI * Math.exp((Math.cos(2 * Math.PI * x) + Math.cos(2 * Math.PI * y)) / 2);
+      return [a * x + c * Math.sin(2 * Math.PI * x), a * y + c * Math.sin(2 * Math.PI * y)];
+    },
+  },
+  leastsquares: {
+    label: 'Least squares: a linear model on correlated features', lr: 0.05,
+    box: [7, 23, -25, -9], start: [8, -10], minima: [[15, -17]],
+    f: ([x, y]) => { const u = x - 15, v = y + 17; return 0.5 * (2 * u * u + 3.2 * u * v + 2 * v * v); },
+    g: ([x, y]) => { const u = x - 15, v = y + 17; return [2 * u + 1.6 * v, 1.6 * u + 2 * v]; },
+    h: () => [[2, 1.6], [1.6, 2]],
+  },
+  ridge: {
+    label: 'Least squares with L2 (ridge)', lr: 0.05,
+    box: [-10, 10, -10, 10], start: [7, 9], minima: [[9.76 / 8.0025, -3.82 / 8.0025]],
+    // 0.5 (w - w*)' A (w - w*) + 0.5 lambda |w|^2, w* = (4, -3), A as above, lambda = 1.25
+    f: ([x, y]) => { const u = x - 4, v = y + 3; return 0.5 * (2 * u * u + 3.2 * u * v + 2 * v * v) + 0.625 * (x * x + y * y); },
+    g: ([x, y]) => { const u = x - 4, v = y + 3; return [2 * u + 1.6 * v + 1.25 * x, 1.6 * u + 2 * v + 1.25 * y]; },
+    h: () => [[3.25, 1.6], [1.6, 3.25]],
+  },
+  // classics of the literature
+  beale: {
+    label: 'Beale (flat valleys, steep walls)', lr: 0.002,
+    box: [-4.5, 4.5, -4.5, 4.5], start: [1, 1.5], minima: [[3, 0.5]],
+    f: ([x, y]) => (1.5 - x + x * y) ** 2 + (2.25 - x + x * y * y) ** 2 + (2.625 - x + x * y ** 3) ** 2,
+    g: ([x, y]) => {
+      const a = 1.5 - x + x * y, b = 2.25 - x + x * y * y, c = 2.625 - x + x * y ** 3;
+      return [2 * a * (y - 1) + 2 * b * (y * y - 1) + 2 * c * (y ** 3 - 1), 2 * a * x + 4 * b * x * y + 6 * c * x * y * y];
+    },
+    log: true,
+  },
+  rastrigin: {
+    label: 'Rastrigin (a regular grid of local minima)', lr: 0.002,
+    box: [-5.12, 5.12, -5.12, 5.12], start: [3.3, -2.7], minima: [[0, 0]],
+    f: ([x, y]) => 20 + x * x - 10 * Math.cos(2 * Math.PI * x) + y * y - 10 * Math.cos(2 * Math.PI * y),
+    g: ([x, y]) => [2 * x + 20 * Math.PI * Math.sin(2 * Math.PI * x), 2 * y + 20 * Math.PI * Math.sin(2 * Math.PI * y)],
+    h: ([x, y]) => [[2 + 40 * Math.PI ** 2 * Math.cos(2 * Math.PI * x), 0], [0, 2 + 40 * Math.PI ** 2 * Math.cos(2 * Math.PI * y)]],
+  },
+  styblinski: {
+    label: 'Styblinski-Tang (four basins of different depth)', lr: 0.01,
+    box: [-5, 5, -5, 5], start: [4.5, 4.2], minima: [[-2.903534, -2.903534]],
+    f: ([x, y]) => 0.5 * (x ** 4 - 16 * x * x + 5 * x + y ** 4 - 16 * y * y + 5 * y),
+    g: ([x, y]) => [0.5 * (4 * x ** 3 - 32 * x + 5), 0.5 * (4 * y ** 3 - 32 * y + 5)],
+    h: ([x, y]) => [[6 * x * x - 16, 0], [0, 6 * y * y - 16]],
+  },
+  goldstein: {
+    label: 'Goldstein-Price (values from 3 to millions)', lr: 0.00002,
+    box: [-2, 2, -2, 2], start: [1, -0.5], minima: [[0, -1]],
+    f: ([x, y]) => (1 + (x + y + 1) ** 2 * (19 - 14 * x + 3 * x * x - 14 * y + 6 * x * y + 3 * y * y))
+      * (30 + (2 * x - 3 * y) ** 2 * (18 - 32 * x + 12 * x * x + 48 * y - 36 * x * y + 27 * y * y)),
+    log: true,
+  },
 };
+
+// the gradient by central differences where it is not written, and the
+// Hessian by central differences of the gradient where only the gradient is
+// (nonsmooth functions keep h: null, so Newton and BFGS are left out on them)
+for (const F of Object.values(functions)) {
+  const e = 1e-5;
+  if (!F.g) F.g = ([x, y]) => [(F.f([x + e, y]) - F.f([x - e, y])) / (2 * e), (F.f([x, y + e]) - F.f([x, y - e])) / (2 * e)];
+  if (F.h === undefined) F.h = ([x, y]) => {
+    const gx1 = F.g([x + e, y]), gx0 = F.g([x - e, y]), gy1 = F.g([x, y + e]), gy0 = F.g([x, y - e]);
+    const a = (gx1[0] - gx0[0]) / (2 * e), b = (gx1[1] - gx0[1] + gy1[0] - gy0[0]) / (4 * e), d = (gy1[1] - gy0[1]) / (2 * e);
+    return [[a, b], [b, d]];
+  };
+}
 
 // --------------------------------------------------------------- algorithms
 // each: step(F, s, p) moves the state s, whose point is s.x; the colours are

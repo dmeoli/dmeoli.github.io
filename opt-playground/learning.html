@@ -64,11 +64,11 @@
 <section class="controls">
   <div class="settings">
     <label><span>function</span><select id="fn"></select></label>
-    <label><span>learning rate</span><input id="lr" type="range" min="0.0002" max="0.1" step="0.0002" value="0.002"><output id="lrOut">0.002</output></label>
+    <label><span>learning rate</span><input id="lr" type="range" min="0.00001" max="0.1" step="0.00001" value="0.002"><output id="lrOut">0.002</output></label>
     <label><span>bundle \(t\)</span><input id="t" type="range" min="0.05" max="3" step="0.05" value="0.5"><output id="tOut">0.5</output></label>
     <label><span>log scale</span><input id="log" type="checkbox"></label>
     <label><span>levels on surface</span><input id="sc" type="checkbox"></label>
-    <label><span>replay a trace</span><select id="traceSel"><option value="">none</option><option value="traces/rosenbrock-optiml.json">optiml on Rosenbrock (real run)</option></select></label>
+    <label><span>replay a trace</span><select id="traceSel"><option value="">none</option><option value="traces/rosenbrock-optiml.json">optiml on Rosenbrock (real run)</option><option value="traces/rosenbrock2-optiml.json">optiml on Rosenbrock, b = 2 (real run)</option><option value="traces/optimlQuadratic-optiml.json">optiml on its quadratic (real run)</option><option value="traces/sixhump-optiml.json">optiml on Six-Hump Camel (real run)</option></select></label>
     <label><span>or load a file</span><input id="traceFile" type="file" accept=".json,application/json"></label>
   </div>
   <div class="transport"><label class="counter"><span>iteration</span><output id="iter">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
