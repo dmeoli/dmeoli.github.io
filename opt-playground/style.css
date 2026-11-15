@@ -210,3 +210,16 @@ canvas.neuron { width: 34px; height: 34px; border-radius: 4px; border: 1px solid
 /* the formulas (MathJax) keep their letters inside the uppercase labels */
 mjx-container { text-transform: none; letter-spacing: normal; }
 .stats dt mjx-container, .controls span mjx-container, .side label span mjx-container { font-size: 125%; }
+
+/* two languages, as on the site: the text not of the language chosen is hidden
+   (theme.js sets data-lang from the choice made on dmeoli.github.io) */
+:root:not([data-lang="it"]) [data-l="it"], :root[data-lang="it"] [data-l="en"] { display: none !important; }
+/* the bar of a scene opened on its own: back to the site, language, theme */
+.scenebar { display: flex; justify-content: flex-end; align-items: center; gap: 6px; margin: -8px 0 8px;
+  font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.scenebar .home { margin-right: auto; color: var(--ink-soft); text-decoration: none; }
+.scenebar .home:hover { color: var(--accent); }
+.scenebar button { font: inherit; color: var(--ink-soft); background: none; border: 0; border-bottom: 1px solid transparent; border-radius: 0; padding: 2px 3px; cursor: pointer; }
+.scenebar button[aria-pressed="true"] { color: var(--accent); border-bottom-color: var(--accent); }
+.scenebar button:hover { color: var(--accent); }
+.scenebar .theme { font-size: 14px; margin-left: 6px; }

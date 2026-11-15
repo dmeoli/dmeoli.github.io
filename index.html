@@ -451,6 +451,20 @@ footer {
 .sections .row2 { display: grid; grid-template-columns: repeat(3, 1fr); justify-items: center; }
 .sections a.side { font-size: var(--s-075); color: var(--heading); letter-spacing: .146em; }
 .sections a.side:hover, .sections a.side:focus-visible, .sections a.side[aria-current="true"] { color: var(--accent); }
+/* a scene of play opened over the page, as wide as the screen, with the
+   controls of the site above it; one scene at a time, unloaded when closed */
+#sceneview { width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: var(--ground); color: var(--ink); }
+#sceneview::backdrop { background: color-mix(in srgb, var(--ground) 70%, transparent); }
+#sceneview[open] { display: flex; flex-direction: column; animation: sv-in .25s ease-out; }
+@keyframes sv-in { from { opacity: 0; transform: translateY(12px); } }
+.sv-bar { display: flex; align-items: center; gap: var(--f13); padding: var(--f8) var(--f21); border-bottom: 1px solid var(--rule);
+  font-family: var(--mono); font-size: var(--s-075); letter-spacing: .12em; text-transform: uppercase; }
+.sv-title { margin-right: auto; color: var(--heading); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sv-bar a, .sv-bar .sv-close { color: var(--ink-soft); text-decoration: none; background: none; border: 0; font: inherit; letter-spacing: inherit; text-transform: inherit; cursor: pointer; }
+.sv-bar a:hover, .sv-bar .sv-close:hover { color: var(--accent); }
+.sv-bar .lang { position: static; margin: 0; }
+.sv-frame { flex: 1; width: 100%; border: 0; background: var(--ground); }
+@media (prefers-reduced-motion: reduce) { #sceneview[open] { animation: none; } }
 /* the thumbnails of play in the theme of the page */
 .th-dark { display: none !important; }
 :root[data-theme="dark"] .th-light { display: none !important; }
@@ -1529,6 +1543,80 @@ Decomposition methods and solvers for large-scale
     }, { threshold: 0.15 });
     var sc = document.querySelectorAll('.scene');
     for (var k = 0; k < sc.length; k++) ro.observe(sc[k]);
+  })();
+</script>
+<dialog id="sceneview" aria-label="Scene">
+  <div class="sv-bar">
+    <span class="sv-title"></span>
+    <a class="sv-tab" href="#" target="_blank" rel="noopener"><span data-l="en">new tab</span><span data-l="it" lang="it">nuova scheda</span> &#8599;</a>
+    <div class="lang sv-lang" role="group" aria-label="Language">
+      <button type="button" data-set="en" aria-pressed="false" title="English">EN</button>
+      <span aria-hidden="true">&middot;</span>
+      <button type="button" data-set="it" aria-pressed="false" title="Italiano">IT</button>
+      <span aria-hidden="true">&middot;</span>
+      <button type="button" class="sv-theme theme" aria-label="Light or dark theme" title="Light or dark theme">
+        <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+      </button>
+    </div>
+    <button type="button" class="sv-close" aria-label="Close"><span data-l="en">close</span><span data-l="it" lang="it">chiudi</span> &times;</button>
+  </div>
+  <iframe class="sv-frame" title="Scene" allow="fullscreen" allowfullscreen></iframe>
+</dialog>
+<script>
+  /* the scenes of play open over the page instead of leaving it: the language
+     and the theme are those of the site (its buttons are in the bar too), and
+     reach the scene through localStorage; Esc or the back button close it */
+  (function () {
+    var dlg = document.getElementById('sceneview'), frame = dlg.querySelector('.sv-frame'),
+        title = dlg.querySelector('.sv-title'), tab = dlg.querySelector('.sv-tab');
+    if (!dlg.showModal) return;
+    var base = 'https://dmeoli.github.io/opt-playground/';
+    function name() {
+      try { return frame.contentDocument.title || ''; } catch (e) { return ''; }
+    }
+    frame.addEventListener('load', function () {
+      var n = name(); if (n) title.textContent = n;
+      try { tab.href = frame.contentWindow.location.href; } catch (e) {}
+    });
+    function open(href, label) {
+      frame.src = href.replace(base, '/opt-playground/');
+      title.textContent = label || ''; tab.href = href;
+      document.querySelectorAll('video').forEach(function (v) { v.pause(); });
+      dlg.showModal(); document.documentElement.style.overflow = 'hidden';
+      history.pushState(Object.assign({}, history.state, { scene: href }), '');
+    }
+    function shut() {
+      if (!dlg.open) return;
+      dlg.close();
+    }
+    dlg.addEventListener('close', function () {
+      frame.src = 'about:blank'; document.documentElement.style.overflow = '';
+      if (history.state && history.state.scene) history.back();
+    });
+    dlg.addEventListener('cancel', function (e) { e.preventDefault(); shut(); });
+    dlg.querySelector('.sv-close').addEventListener('click', shut);
+    window.addEventListener('popstate', function () { if (dlg.open && !(history.state && history.state.scene)) { frame.src = 'about:blank'; dlg.close(); } });
+    // the buttons of the bar act as those of the page, which store the choice
+    var main = document.querySelector('.lang:not(.sv-lang)');
+    dlg.querySelector('.sv-theme').addEventListener('click', function () { main.querySelector('.theme').click(); });
+    dlg.querySelectorAll('.sv-lang [data-set]').forEach(function (b) {
+      b.addEventListener('click', function () { main.querySelector('[data-set="' + b.getAttribute('data-set') + '"]').click(); });
+    });
+    function mark() {
+      var l = document.documentElement.getAttribute('data-lang');
+      dlg.querySelectorAll('.sv-lang [data-set]').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-set') === l); });
+      var n = name(); if (n) title.textContent = n;
+    }
+    new MutationObserver(function () { setTimeout(mark, 400); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-lang'] });
+    mark();
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[href^="' + base + '"]');
+      if (!a || e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
+      e.preventDefault();
+      var card = a.closest('.scene'), h = card && card.querySelector('h3');
+      open(a.href, h ? h.innerText.trim() : a.innerText.trim());
+    });
   })();
 </script>
 </body>
