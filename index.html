@@ -110,6 +110,15 @@
   --line: calc(var(--s0) * var(--lead));
   --f3: 3px;  --f5: 5px;  --f8: 8px;  --f13: 13px;  --f21: 21px;  --f34: 34px;
   --f55: 55px;  --f89: 89px;  --f144: 144px;  --f233: 233px;
+
+  /* the tonal elevation of Material Design 3: a surface that stands higher
+     takes more of the accent over the ground (5, 8, 11 and 14 per cent), so
+     the zones are told apart by tone and not by lines; it follows the theme,
+     since ground and accent do */
+  --tone-1: color-mix(in srgb, var(--accent) 5%, var(--ground));
+  --tone-2: color-mix(in srgb, var(--accent) 8%, var(--ground));
+  --tone-3: color-mix(in srgb, var(--accent) 11%, var(--ground));
+  --tone-4: color-mix(in srgb, var(--accent) 14%, var(--ground));
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -284,9 +293,9 @@ h1 {
 .sections {
   position: sticky; top: 0; z-index: 2; margin: var(--f34) calc(-1 * var(--f21)) 0;
   padding: var(--f8) var(--f21); display: flex; flex-wrap: wrap; gap: var(--f5) var(--f21);
-  background: color-mix(in srgb, var(--ground) 88%, transparent);
-  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-  border-bottom: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--tone-2) 76%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid color-mix(in srgb, var(--rule) 60%, transparent);
   font-family: var(--mono); font-size: var(--s-05); letter-spacing: .12em; text-transform: uppercase;
 }
 .sections a { color: var(--ink); text-decoration: none; border-bottom: 1px solid transparent; padding-bottom: 1px; }
@@ -427,13 +436,13 @@ footer {
 .art .label, .play .label { margin: var(--f21) 0 var(--f8); }
 .translate form { display: grid; gap: var(--f8); max-width: 33em; }
 .translate textarea, .translate output {
-  font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--rule);
+  font: inherit; color: var(--ink); background: var(--tone-2); border: 1px solid var(--rule);
   border-radius: var(--f5); padding: var(--f8) var(--f13); min-height: 5.5em; display: block; width: 100%;
 }
 .translate output { color: var(--ink-soft); white-space: pre-wrap; }
 .translate .bar { display: flex; gap: var(--f13); align-items: center; flex-wrap: wrap; font-family: var(--mono); font-size: var(--s-05); }
 .translate select, .translate button {
-  font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--rule);
+  font: inherit; color: var(--ink); background: var(--tone-2); border: 1px solid var(--rule);
   border-radius: var(--f5); padding: var(--f5) var(--f8);
 }
 .translate button { cursor: pointer; color: var(--accent); }
@@ -479,7 +488,7 @@ footer {
 .subnav { display: flex; flex-wrap: wrap; gap: var(--f8); margin: var(--f13) 0 var(--f21); }
 .subnav button {
   font-family: var(--mono); font-size: var(--s-075); letter-spacing: .12em; text-transform: uppercase;
-  color: var(--heading); background: var(--accent-wash); border: 1px solid transparent;
+  color: var(--heading); background: var(--tone-3); border: 1px solid transparent;
   border-radius: 999px; padding: var(--f5) var(--f13); cursor: pointer;
 }
 .subnav button:hover, .subnav button:focus-visible { color: var(--accent); border-color: var(--accent); }
@@ -493,12 +502,16 @@ footer {
 }
 /* the scenes of play, one a row: the loop on one side, alternating, and what
    the scene shows on the other; each comes in when it reaches the screen */
-.scenes { display: flex; flex-direction: column; gap: var(--f55); }
-.scene { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--f34); align-items: center; }
+.scenes { display: flex; flex-direction: column; gap: var(--f21); }
+.scene {
+  display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--f34); align-items: center;
+  background: var(--tone-1); border-radius: 16px; padding: var(--f21); transition: background .3s ease-out;
+}
+.scene:hover { background: var(--tone-2); }
 .scene:nth-of-type(even) { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); }
 .scene:nth-of-type(even) .media { order: 2; }
 .scene .media {
-  display: block; overflow: hidden; border-radius: 10px; border: 1px solid var(--rule); background: var(--surface);
+  display: block; overflow: hidden; border-radius: 10px; background: var(--tone-3);
   box-shadow: 0 14px 34px -22px var(--accent); transition: box-shadow .3s ease-out, transform .3s ease-out;
 }
 .scene .media video, .scene .media img { display: block; width: 100%; height: auto; transition: transform .6s ease-out; }
@@ -512,7 +525,7 @@ footer {
 .scene .tags { display: flex; flex-wrap: wrap; gap: var(--f5); margin: 0 0 var(--f13); padding: 0; list-style: none; }
 .scene .tags li {
   font-family: var(--mono); font-size: var(--s-075); letter-spacing: .06em; color: var(--heading);
-  background: var(--accent-wash); border-radius: 999px; padding: 2px var(--f8);
+  background: var(--tone-3); border-radius: 999px; padding: 2px var(--f8);
 }
 .scene .go, .scenes .next {
   display: inline-flex; align-items: center; gap: var(--f5); font-family: var(--mono); font-size: var(--s-075);
