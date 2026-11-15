@@ -297,6 +297,12 @@ h1 {
 section { border-top: 1px solid var(--rule); padding: var(--f21) 0 var(--f5); scroll-margin-top: var(--f34); }
 /* one section at a time, when the script of the sections runs */
 .paged main > section:not(.on) { display: none; }
+/* and then the menu already names the section: its title leaves the left
+   column, kept only for screen readers, and the body takes the whole width */
+.paged main > section > .grid { grid-template-columns: minmax(0, 1fr); }
+.paged main > section > .grid > h2 {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
 .grid { display: grid; grid-template-columns: var(--f144) 1fr; gap: var(--f21); align-items: start; }
 h2 {
   font-family: var(--mono); font-size: var(--s-075); font-weight: 500; letter-spacing: .146em;
