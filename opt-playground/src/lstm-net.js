@@ -1,15 +1,19 @@
-// A tiny recurrent network in plain JavaScript, with LSTM cells or plain tanh
-// cells, forward pass, backpropagation through time and Adam.
+// A tiny recurrent network in plain JavaScript, with LSTM cells, GRU cells or
+// plain tanh cells, forward pass, backpropagation through time and Adam.
 // The inputs are symbols (one-hot vectors of size D, given by their index), the
 // outputs a softmax over K classes read at chosen steps. With z_t = [h_{t-1}, x_t]:
 //   LSTM  f = s(W_f z + b_f), i = s(W_i z + b_i), g = tanh(W_c z + b_c),
 //         o = s(W_o z + b_o), c_t = f c_{t-1} + i g, h_t = o tanh(c_t)
+//   GRU   u = s(W_z z + b_z), r = s(W_r z + b_r),
+//         n = tanh(W_h [r h_{t-1}, x_t] + b_h), h_t = (1 - u) h_{t-1} + u n
+//         (u, r, n are z_t, r_t and the candidate of the page)
 //   RNN   h_t = tanh(W z + b)
 // and y_t = softmax(W_y h_t + b_y). The parameters live in one flat array:
 // the gate rows (G H rows of H + D weights), their biases, W_y and b_y.
 // The weights start uniform in [-1/sqrt(H), 1/sqrt(H)], the biases at 0 except
-// those of the forget gates, at 3 (f = 0.95), so that c carries its content
-// over the first tens of steps before anything is learnt.
+// those of the forget gates of the LSTM, at 3 (f = 0.95), and those of the
+// update gates of the GRU, at -3 (u = 0.05), so that c, or h in the GRU, carries
+// its content over the first tens of steps before anything is learnt.
 
 export function rng(seed) {
   let a = seed >>> 0;
@@ -22,7 +26,7 @@ export function rng(seed) {
 }
 
 export function makeNet(kind, H, D, K, seed, forget = 3) {
-  const G = kind === 'lstm' ? 4 : 1, Z = H + D, R = G * H;
+  const G = kind === 'lstm' ? 4 : kind === 'gru' ? 3 : 1, Z = H + D, R = G * H;
   const n = R * Z + R + K * H + K;
   const net = { kind, H, D, K, G, Z, R, n,
     oW: 0, ob: R * Z, oWy: R * Z + R, oby: R * Z + R + K * H,
@@ -31,21 +35,24 @@ export function makeNet(kind, H, D, K, seed, forget = 3) {
   for (let k = 0; k < net.ob; k++) net.p[k] = (2 * r() - 1) * s;
   for (let k = net.oWy; k < net.oby; k++) net.p[k] = (2 * r() - 1) * s;
   if (G === 4) for (let j = 0; j < H; j++) net.p[net.ob + j] = forget;
+  if (G === 3) for (let j = 0; j < H; j++) net.p[net.ob + j] = -forget;
   return net;
 }
 
 const sig = x => 1 / (1 + Math.exp(-x));
 
 // the forward pass over the symbols xs; returns the states, the gates (LSTM:
-// f, i, g, o, each of H values, per step) and the probabilities at the outputs
+// f, i, g, o, each of H values, per step; GRU: u, r, n) and the probabilities
+// at the outputs
 export function forward(net, xs, outs) {
   const { H, Z, R, G, K, p, oW, ob, oWy, oby } = net, T = xs.length;
   const h = new Float64Array((T + 1) * H), c = new Float64Array((T + 1) * H);
   const a = new Float64Array(T * R), tc = new Float64Array(T * H);
-  const pre = new Float64Array(R);
+  const pre = new Float64Array(R), rh = new Float64Array(H);
   for (let t = 0; t < T; t++) {
     const hp = t * H, x = xs[t];
-    for (let r = 0; r < R; r++) {
+    // the rows of the candidate of the GRU read r h_{t-1}, computed below
+    for (let r = 0; r < (G === 3 ? 2 * H : R); r++) {
       let s = p[ob + r] + p[oW + r * Z + H + x];
       const w = oW + r * Z;
       for (let j = 0; j < H; j++) s += p[w + j] * h[hp + j];
@@ -58,6 +65,15 @@ export function forward(net, xs, outs) {
         a[at + j] = f; a[at + H + j] = i; a[at + 2 * H + j] = g; a[at + 3 * H + j] = o;
         const cc = f * c[hp + j] + i * g, th = Math.tanh(cc);
         c[hn + j] = cc; tc[t * H + j] = th; h[hn + j] = o * th;
+      }
+    } else if (G === 3) {
+      for (let j = 0; j < H; j++) { a[at + j] = sig(pre[j]); a[at + H + j] = sig(pre[H + j]); rh[j] = a[at + H + j] * h[hp + j]; }
+      for (let j = 0; j < H; j++) {
+        const r = 2 * H + j, w = oW + r * Z;
+        let s = p[ob + r] + p[w + H + x];
+        for (let k = 0; k < H; k++) s += p[w + k] * rh[k];
+        const u = a[at + j], n = Math.tanh(s);
+        a[at + 2 * H + j] = n; h[hn + j] = (1 - u) * h[hp + j] + u * n;
       }
     } else {
       for (let j = 0; j < H; j++) { const v = Math.tanh(pre[j]); a[at + j] = v; h[hn + j] = v; }
@@ -100,7 +116,7 @@ export function backward(net, xs, outs, F, lastOnly = false) {
   }
   const norms = new Float64Array(T);
   let dh = new Float64Array(H), dc = new Float64Array(H);
-  const dpre = new Float64Array(R);
+  const dpre = new Float64Array(R), drh = new Float64Array(H);
   for (let t = T - 1; t >= 0; t--) {
     const hp = t * H, at = t * R;
     let nn = 0;
@@ -116,11 +132,25 @@ export function backward(net, xs, outs, F, lastOnly = false) {
         dpre[3 * H + j] = dh[j] * th * o * (1 - o);
         dc[j] = dcj * f;
       }
+    } else if (G === 3) {
+      // the candidate first: its rows read r h_{t-1}, whose gradient gives
+      // that of r and part of that of h_{t-1}
+      for (let j = 0; j < H; j++) { const u = F.a[at + j], n = F.a[at + 2 * H + j]; dpre[j] = dh[j] * (n - F.h[hp + j]) * u * (1 - u); dpre[2 * H + j] = dh[j] * u * (1 - n * n); }
+      drh.fill(0);
+      const x = xs[t];
+      for (let j = 0; j < H; j++) {
+        const r = 2 * H + j, d = dpre[r], w = oW + r * Z;
+        if (d === 0) continue;
+        g[ob + r] += d; g[w + H + x] += d;
+        for (let k = 0; k < H; k++) { g[w + k] += d * F.a[at + H + k] * F.h[hp + k]; drh[k] += d * p[w + k]; }
+      }
+      for (let j = 0; j < H; j++) { const r = F.a[at + H + j]; dpre[H + j] = drh[j] * F.h[hp + j] * r * (1 - r); }
     } else {
       for (let j = 0; j < H; j++) { const v = F.a[at + j]; dpre[j] = dh[j] * (1 - v * v); }
     }
     const nh = new Float64Array(H), x = xs[t];
-    for (let r = 0; r < R; r++) {
+    if (G === 3) for (let j = 0; j < H; j++) nh[j] = dh[j] * (1 - F.a[at + j]) + drh[j] * F.a[at + H + j];
+    for (let r = 0; r < (G === 3 ? 2 * H : R); r++) {
       const d = dpre[r], w = oW + r * Z;
       if (d === 0) continue;
       g[ob + r] += d; g[w + H + x] += d;

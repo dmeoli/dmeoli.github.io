@@ -1,4 +1,4 @@
-// A run of the LSTM scene: an LSTM and a plain RNN of the same size, from the
+// A run of the LSTM scene: an LSTM, a GRU and a plain RNN of the same size, from the
 // same seed, trained with Adam on the same minibatches of fresh sequences, and
 // measured on a fixed set of test sequences. Shared by the page and its test.
 
@@ -11,9 +11,9 @@ export function createRun({ task, T, H, lr, seed }) {
   const K = TASKS[task].K, w = seed * 7 + 1, tr = rng(seed * 977 + 3), br = rng(seed * 131 + 5);
   const run = {
     task, T, H, lr, K, epoch: 0,
-    nets: { lstm: makeNet('lstm', H, 2, K, w), rnn: makeNet('rnn', H, 2, K, w) },
+    nets: { lstm: makeNet('lstm', H, 2, K, w), gru: makeNet('gru', H, 2, K, w), rnn: makeNet('rnn', H, 2, K, w) },
     test: Array.from({ length: NTEST }, () => sample(task, T, tr)),
-    hist: { lstm: [], rnn: [] }, grads: null,
+    hist: { lstm: [], gru: [], rnn: [] }, grads: null,
   };
   // one epoch: PER_EPOCH minibatches of BATCH fresh sequences
   run.trainEpoch = () => {

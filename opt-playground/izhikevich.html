@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Izhikevich Neurons</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<style>
+/* izhikevich.html: the twenty behaviours to pick, the potential and the input
+   in time, the phase plane, the parameters with the equations, the f-I curve */
+main.izh { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+main.izh figcaption { min-height: 0; }
+main.izh canvas { width: 100%; display: block; border-radius: 6px; }
+.across { grid-column: 1 / -1; }
+.picker { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px 14px; }
+.fam h3 { margin: 0 0 4px; font: 500 11px 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.fam .cards { display: grid; gap: 4px; }
+.card { display: grid; grid-template-columns: 1.6em minmax(0, 1fr) 84px; align-items: center; gap: 6px; text-align: left;
+  padding: 3px 6px; font: 12px/1.25 'IBM Plex Mono', monospace; color: var(--ink-soft); background: var(--panel); }
+.card b { font-weight: 500; color: var(--accent); }
+.card[aria-pressed="true"] { border-color: var(--accent); color: var(--ink); box-shadow: inset 0 0 0 1px var(--accent); }
+main.izh .card canvas { width: 84px; height: 26px; border-radius: 3px; }
+#note { margin: 0; min-height: 4.5em; }
+#note b { font-style: normal; font-weight: 600; color: var(--ink); }
+#phase { max-width: 520px; }
+.knobs { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: end; margin-top: 8px; font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.knobs label { display: grid; grid-template-columns: auto auto; align-items: center; column-gap: 8px; }
+.knobs label > span { grid-column: 1 / -1; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+.knobs label > output { min-width: 5ch; color: var(--ink); }
+.knobs input[type=range] { width: 110px; }
+.knobs button { font-size: 12px; padding: 3px 8px; }
+.knobs mjx-container, .key mjx-container { font-size: 120%; text-transform: none; }
+.key { list-style: none; padding: 0; margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 4px 16px; font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.key li { display: flex; align-items: center; gap: 6px; }
+.key i { display: inline-block; width: 16px; height: 0; border-top: 2px solid currentColor; }
+.key i.dash { border-top-style: dashed; }
+.key i.dot { width: 9px; height: 9px; border: 0; border-radius: 50%; background: currentColor; }
+.key i.ring { width: 9px; height: 9px; border: 2px solid currentColor; border-radius: 50%; }
+.eqs { display: grid; gap: 4px; font-size: 15px; }
+.eqs h3 { margin: 0 0 4px; font: 500 11px 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.eq { padding: 5px 8px; border-radius: 6px; overflow-x: auto; overflow-y: hidden; }
+.eq small { display: block; font: 12px/1.35 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.fpnote { font: 12px/1.45 'IBM Plex Mono', monospace; color: var(--ink-soft); margin: 6px 0 0; min-height: 3em; }
+.fpnote b { font-weight: 500; color: var(--ink); }
+</style>
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="ssm.html">State space</a> · <a href="gnn.html">Graphs</a> · <a href="moe.html">Mixture of experts</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html" aria-current="page">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1><span data-l="en">Izhikevich Neurons</span><span data-l="it" lang="it">Neuroni di Izhikevich</span></h1>
+  <p class="lede" data-l="en">The neuron of Izhikevich is a system of two differential equations, one
+  for the membrane potential \(v\), quadratic, and one for a slow recovery variable \(u\), linear,
+  with a reset that brings \(v\) back to \(c\) and raises \(u\) by \(d\) at every spike; with only
+  the four numbers \(a, b, c, d\) it reproduces the twenty firing patterns of cortical neurons that
+  Izhikevich collected in 2004, from tonic spiking to bursts, rebound and bistability, each of which
+  can be read in the plane \((v, u)\) as the way the trajectory meets the two nullclines and their
+  fixed points. The page reruns, step by step and with the same parameters, currents, time steps and
+  initial states, the twenty scripts of the first lab of a course of computational neuroscience; the
+  sliders change the neuron while it runs. Its counterpart, a neuron simple enough to be trained by
+  gradient descent in a network, is the leaky integrate-and-fire neuron of the scene on
+  <a href="spiking.html">spiking networks</a>.</p>
+  <p class="lede" data-l="it" lang="it">Il neurone di Izhikevich è un sistema di due equazioni
+  differenziali, una per il potenziale di membrana \(v\), quadratica, e una per una variabile lenta di
+  recupero \(u\), lineare, con un reset che a ogni impulso riporta \(v\) a \(c\) e alza \(u\) di
+  \(d\); con i soli quattro numeri \(a, b, c, d\) riproduce i venti tipi di scarica dei neuroni
+  corticali che Izhikevich raccolse nel 2004, dalla scarica tonica ai burst, al rimbalzo e alla
+  bistabilità, ciascuno dei quali si legge nel piano \((v, u)\) come il modo in cui la traiettoria
+  incontra le due isocline e i loro punti fissi. La pagina riesegue, passo per passo e con gli stessi
+  parametri, correnti, passi di integrazione e stati iniziali, i venti script del primo laboratorio di
+  un corso di neuroscienze computazionali; i cursori cambiano il neurone mentre gira. La sua
+  controparte, un neurone abbastanza semplice da essere addestrato con la discesa del gradiente in una
+  rete, è il neurone leaky integrate-and-fire della scena sulle
+  <a href="spiking.html">reti a impulsi</a>.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span><span data-l="en">speed</span><span data-l="it" lang="it">velocità</span></span><select id="speed"><option value="10">10 ms/s</option><option value="25">25 ms/s</option><option value="50">50 ms/s</option><option value="100">100 ms/s</option><option value="250">250 ms/s</option></select></label>
+    <label><span><span data-l="en">vector field</span><span data-l="it" lang="it">campo vettoriale</span></span><select id="field"><option value="on">shown</option><option value="off">hidden</option></select></label>
+  </div>
+  <div class="transport"><label class="counter"><span><span data-l="en">time (ms)</span><span data-l="it" lang="it">tempo (ms)</span></span><output id="clock">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+</section>
+<main class="izh">
+  <div class="picker across" id="picker"></div>
+  <p class="explain across" id="note"></p>
+  <figure><figcaption><span data-l="en">The membrane potential \(v(t)\) in mV, recorded as 30 at
+  each spike as the lab plots it, with the spikes marked above, and under it the input
+  \(I(t)\) of the protocol; time in ms, integrated with the step \(\tau\) of the lab, which the
+  equations below give.</span><span data-l="it" lang="it">Il potenziale di membrana \(v(t)\) in mV,
+  registrato come 30 a ogni impulso come lo disegna il laboratorio, con gli impulsi segnati sopra, e
+  sotto la corrente \(I(t)\) del protocollo; tempo in ms, integrato con il passo \(\tau\) del
+  laboratorio, che le equazioni sotto riportano.</span></figcaption>
+  <canvas id="scope"></canvas>
+  <div class="knobs">
+    <label><span>\(a\)</span><input id="a" type="range" min="-0.05" max="1" step="0.001"><output id="av"></output></label>
+    <label><span>\(b\)</span><input id="b" type="range" min="-1.2" max="1.2" step="0.01"><output id="bv"></output></label>
+    <label><span>\(c\)</span><input id="c" type="range" min="-80" max="-40" step="0.5"><output id="cv"></output></label>
+    <label><span>\(d\)</span><input id="d" type="range" min="-25" max="12" step="0.05"><output id="dv"></output></label>
+    <label><span>\(I\) <span data-l="en">of the protocol</span><span data-l="it" lang="it">del protocollo</span></span><input id="P" type="range"><output id="Pv"></output></label>
+    <button id="lab" type="button"><span data-l="en">Lab values</span><span data-l="it" lang="it">Valori del laboratorio</span></button>
+  </div>
+  <p class="fpnote"><span data-l="en">The slider \(I\) sets the amplitude of the protocol, the level
+  of its step or pulse or the top of its ramp, and the rest of \(I(t)\) scales with it around its
+  base.</span><span data-l="it" lang="it">Il cursore \(I\) fissa l'ampiezza del protocollo, il livello del
+  suo gradino o del suo impulso o la cima della sua rampa, e il resto di \(I(t)\) si scala con essa
+  attorno alla sua base.</span></p>
+  </figure>
+  <figure><figcaption><span data-l="en">The phase plane \((v, u)\): the \(v\)-nullcline, the
+  parabola where \(v' = 0\), which rises and falls with \(I(t)\), the \(u\)-nullcline \(u = b v\),
+  where \(u' = 0\), the vector field, faint, and the trajectory, with the reset of each spike, from
+  \((30, u)\) to \((c, u + d)\), dashed. Where the nullclines cross lie the fixed points under the
+  current input, filled when stable and hollow when not; when they do not cross, there is no rest to
+  go to and the neuron fires.</span><span data-l="it" lang="it">Il piano delle fasi \((v, u)\): l'isoclina di
+  \(v\), la parabola dove \(v' = 0\), che sale e scende con \(I(t)\), l'isoclina di \(u\),
+  \(u = b v\), dove \(u' = 0\), il campo vettoriale, tenue, e la traiettoria, con il reset di ogni
+  impulso, da \((30, u)\) a \((c, u + d)\), tratteggiato. Dove le isocline si incontrano stanno i punti
+  fissi sotto la corrente del momento, pieni se stabili e vuoti se no; quando non si incontrano, non
+  c'è un riposo a cui tornare e il neurone spara.</span></figcaption>
+  <canvas id="phase"></canvas>
+  <ul class="key" id="phasekey"></ul>
+  <p class="fpnote" id="fp"></p>
+  </figure>
+  <aside class="eqs">
+    <h3><span data-l="en">The model</span><span data-l="it" lang="it">Il modello</span></h3>
+    <div class="eq" id="eqv"></div>
+    <div class="eq" id="equ"></div>
+    <div class="eq">\(\text{if } v > 30 \text{ mV:}\quad v \leftarrow c, \quad u \leftarrow u + d\)<small><span data-l="en">the reset: 30 is the peak of the spike, not a threshold; the threshold is where the trajectory can no longer return to the rest</span><span data-l="it" lang="it">il reset: 30 è il picco dell'impulso, non una soglia; la soglia è dove la traiettoria non può più tornare al riposo</span></small></div>
+    <div class="eq" id="eqstep"></div>
+    <div class="eq" id="eqnull"></div>
+  </aside>
+  <figure><figcaption><span data-l="en">The f-I curve of the neuron with the parameters of the
+  sliders: the rate, in Hz, under a constant input \(I\), counted over the second half of 1 s from
+  the initial state of the behaviour, with the instantaneous rates \(1000/\Delta t\) of the run on
+  the left (\(\Delta t\) the interval in ms from the previous spike) as dots at the input of their
+  spike. In class 1 (behaviour G) the curve rises continuously from zero, since the rest disappears
+  in a saddle-node bifurcation on the cycle and the passage near the vanished fixed points can be as
+  slow as one likes; in class 2 (behaviour H) it jumps from zero to a positive rate, since the rest
+  loses its stability in an Andronov-Hopf bifurcation, whose oscillation has a frequency of its
+  own.</span><span data-l="it" lang="it">La curva f-I del neurone con i parametri dei cursori: la frequenza,
+  in Hz, sotto una corrente costante \(I\), contata sulla seconda metà di 1 s a partire dallo stato
+  iniziale del comportamento, con le frequenze istantanee \(1000/\Delta t\) della corsa a sinistra
+  (\(\Delta t\) l'intervallo in ms dall'impulso precedente) come punti alla corrente del loro impulso.
+  Nella classe 1 (comportamento G) la curva sale con continuità da zero, poiché il riposo scompare in
+  una biforcazione sella-nodo sul ciclo e il passaggio vicino ai punti fissi scomparsi può essere
+  lento quanto si vuole; nella classe 2 (comportamento H) salta da zero a una frequenza positiva,
+  poiché il riposo perde la stabilità in una biforcazione di Andronov-Hopf, la cui oscillazione ha già
+  una frequenza propria.</span></figcaption>
+  <canvas id="fi"></canvas>
+  <ul class="key" id="fikey"></ul>
+  </figure>
+</main>
+<footer><span data-l="en">Scene U of opt-playground, after E. M. Izhikevich,
+<a href="https://doi.org/10.1109/TNN.2003.820440">Simple Model of Spiking Neurons</a> (2003), and
+<a href="https://doi.org/10.1109/TNN.2004.832719">Which Model to Use for Cortical Spiking
+Neurons?</a> (2004); the twenty protocols, with their parameters, currents, time steps and initial
+states, are those of the first lab of the course of Computational Neuroscience in
+<a href="https://github.com/dmeoli/ComputationalNeuroscience">dmeoli/ComputationalNeuroscience</a>,
+ported here from MATLAB.</span><span data-l="it" lang="it">Scena U di opt-playground, da E. M. Izhikevich,
+<a href="https://doi.org/10.1109/TNN.2003.820440">Simple Model of Spiking Neurons</a> (2003), e
+<a href="https://doi.org/10.1109/TNN.2004.832719">Which Model to Use for Cortical Spiking
+Neurons?</a> (2004); i venti protocolli, con i loro parametri, correnti, passi di integrazione e stati
+iniziali, sono quelli del primo laboratorio del corso di Computational Neuroscience in
+<a href="https://github.com/dmeoli/ComputationalNeuroscience">dmeoli/ComputationalNeuroscience</a>,
+qui portati da MATLAB.</span></footer>
+<script type="module" src="src/izhikevich.js"></script>
+</body>
+</html>

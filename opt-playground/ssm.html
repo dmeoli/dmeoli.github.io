@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>State-Space Models</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<style>
+main.ssm { margin-bottom: 26px; }
+main.ssm figcaption { min-height: 0; }
+main.ssm canvas { width: 100%; display: block; border-radius: 6px; }
+#poles, #hist { cursor: crosshair; }
+.part { margin: 30px 0 8px; font: 500 13px 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.part + .lede { margin-bottom: 12px; }
+.across { grid-column: 1 / -1; }
+.eqrow { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px 34px; justify-content: center; font-size: 16px; margin: -6px 0 -4px; }
+.readout { font: 13px 'IBM Plex Mono', monospace; color: var(--ink-soft); margin: 6px 0 0; min-height: 1.4em; }
+.readout b { font-weight: 500; color: var(--ink); }
+.controls output { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="ssm.html" aria-current="page">State space</a> · <a href="gnn.html">Graphs</a> · <a href="moe.html">Mixture of experts</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="hopfield.html">Hopfield</a> · <a href="spiking.html">Spiking</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1><span data-l="en">State-Space Models</span><span data-l="it" lang="it">Modelli a spazio di stato</span></h1>
+  <p class="lede" data-l="en">A linear system \(x'(t) = A\,x(t) + B\,u(t)\), \(y(t) = C\,x(t)\), sampled
+  with step \(\Delta\) while the input is held constant between samples, becomes the recurrence
+  \(x_k = \bar A\,x_{k-1} + \bar B\,u_k\), and the recurrence, unrolled, is the convolution of the
+  input with the kernel \(\bar K = (C\bar B, C\bar A\bar B, C\bar A^2\bar B, \dots)\); S4 and its
+  successors train such a layer as a convolution, which is parallel over the sequence, and run it
+  as a recurrence, which costs one step per token. The first part computes the same model in both
+  ways, the second shows the matrix \(A\) of HiPPO, whose state is a compressed memory of the
+  whole past input, and the third lets \(\Delta\), \(B\) and \(C\) depend on the token, as in
+  Mamba, so that the model may decide what to write and what to forget, which no convolution
+  with a fixed kernel can do.</p>
+  <p class="lede" data-l="it" lang="it">Un sistema lineare \(x'(t) = A\,x(t) + B\,u(t)\), \(y(t) = C\,x(t)\),
+  campionato con passo \(\Delta\) tenendo l'ingresso costante fra un campione e l'altro, diventa la
+  ricorrenza \(x_k = \bar A\,x_{k-1} + \bar B\,u_k\), e la ricorrenza, srotolata, è la convoluzione
+  dell'ingresso con il nucleo \(\bar K = (C\bar B, C\bar A\bar B, C\bar A^2\bar B, \dots)\); S4 e i suoi
+  successori addestrano uno strato di questo tipo come una convoluzione, che è parallela lungo la
+  sequenza, e lo eseguono come una ricorrenza, che costa un passo per token. La prima parte calcola
+  lo stesso modello nei due modi, la seconda mostra la matrice \(A\) di HiPPO, il cui stato è una
+  memoria compressa di tutto l'ingresso passato, e la terza fa dipendere \(\Delta\), \(B\) e \(C\) dal
+  token, come in Mamba, così che il modello possa decidere che cosa scrivere e che cosa dimenticare,
+  cosa che nessuna convoluzione con un nucleo fisso può fare.</p>
+</header>
+
+<h2 class="part"><span data-l="en">1. Recurrence and convolution</span><span data-l="it" lang="it">1. Ricorrenza e convoluzione</span></h2>
+<p class="lede" data-l="en">The matrix \(A\) is diagonal, as in S4D, with complex poles
+\(\lambda_n\) in conjugate pairs and \(B = C = 1\), so that every pair adds to the output a damped
+oscillation; the zero-order hold gives \(\bar A = e^{\Delta\lambda}\) and
+\(\bar B = (e^{\Delta\lambda} - 1)/\lambda\), which maps the left half-plane into the unit disc.
+Drag a pole in either plane, or move \(\Delta\): a small step leaves the poles near 1 and the
+kernel long and slow, a large one shrinks them toward 0 and folds the oscillations beyond
+\(\pi/\Delta\) back onto slower ones.</p>
+<p class="lede" data-l="it" lang="it">La matrice \(A\) è diagonale, come in S4D, con poli complessi
+\(\lambda_n\) in coppie coniugate e \(B = C = 1\), così che ogni coppia aggiunge all'uscita
+un'oscillazione smorzata; il mantenimento di ordine zero dà \(\bar A = e^{\Delta\lambda}\) e
+\(\bar B = (e^{\Delta\lambda} - 1)/\lambda\), che manda il semipiano sinistro nel disco unitario.
+Si trascini un polo in uno dei due piani, o si muova \(\Delta\): un passo piccolo lascia i poli
+vicino a 1 e il nucleo lungo e lento, uno grande li stringe verso 0 e ripiega le oscillazioni oltre
+\(\pi/\Delta\) su altre più lente.</p>
+<section class="controls">
+  <div class="settings">
+    <label><span><span data-l="en">pole pairs</span><span data-l="it" lang="it">coppie di poli</span></span><select id="modes"><option>1</option><option selected>2</option><option>3</option></select></label>
+    <label><span><span data-l="en">step</span><span data-l="it" lang="it">passo</span> \(\Delta\)</span><input id="dt" type="range" min="-1.7" max="0.3" step="0.01" value="-0.7"><output id="dtv"></output></label>
+    <label><span><span data-l="en">input</span><span data-l="it" lang="it">ingresso</span></span><select id="input"><option value="pulses">pulses</option><option value="impulse">impulse</option><option value="step">step</option><option value="noise">noise</option></select></label>
+  </div>
+  <div class="transport"><label class="counter"><span><span data-l="en">step</span><span data-l="it" lang="it">passo</span> \(k\)</span><output id="k1">0</output></label><button id="reset1" type="button">Reset</button><button id="step1" type="button">Step</button><button id="play1" type="button">Play</button></div>
+</section>
+<main class="ssm">
+  <figure><figcaption><span data-l="en">The poles \(\lambda_n\) of the continuous system (left,
+  the dashed line is \(|\mathrm{Im}\,\lambda| = \pi/\Delta\)) and their images
+  \(\bar A_n = e^{\Delta\lambda_n}\) in the unit disc (right); the conjugates, fainter, follow.</span><span data-l="it" lang="it">I poli \(\lambda_n\) del sistema continuo (a sinistra,
+  la linea tratteggiata è \(|\mathrm{Im}\,\lambda| = \pi/\Delta\)) e le loro immagini
+  \(\bar A_n = e^{\Delta\lambda_n}\) nel disco unitario (a destra); i coniugati, più tenui, seguono.</span></figcaption>
+  <canvas id="poles"></canvas></figure>
+  <figure><figcaption><span data-l="en">The kernel \(\bar K_j = \sum_n 2\,\mathrm{Re}\,(\bar A_n^{\,j}\bar B_n)\),
+  which is also the output of the model to an impulse; in gold the contribution of each pair.</span><span data-l="it" lang="it">Il nucleo \(\bar K_j = \sum_n 2\,\mathrm{Re}\,(\bar A_n^{\,j}\bar B_n)\),
+  che è anche l'uscita del modello a un impulso; in oro il contributo di ciascuna coppia.</span></figcaption>
+  <canvas id="kern"></canvas></figure>
+  <p class="eqrow"><span>\(x_k = \bar A\,x_{k-1} + \bar B\,u_k,\quad y_k = C\,x_k\)</span><span>\(y_k = \sum_{j \le k} \bar K_{k-j}\,u_j\)</span></p>
+  <figure><figcaption><span data-l="en">The recurrent scan: the input, the state of every pair as a
+  point of the complex plane (each step turns it by \(\arg \bar A_n\), shrinks it by \(|\bar A_n|\)
+  and adds \(\bar B_n u_k\)) and the output, built one step at a time.</span><span data-l="it" lang="it">La scansione ricorrente: l'ingresso, lo stato di ogni coppia come
+  punto del piano complesso (ogni passo lo ruota di \(\arg \bar A_n\), lo riduce di \(|\bar A_n|\)
+  e aggiunge \(\bar B_n u_k\)) e l'uscita, costruita un passo alla volta.</span></figcaption>
+  <canvas id="scan"></canvas></figure>
+  <figure><figcaption><span data-l="en">The convolution: the kernel, reversed, slides under the input
+  so that \(\bar K_{k-j}\) sits under \(u_j\); the products, summed, give \(y_k\) without any state.</span><span data-l="it" lang="it">La convoluzione: il nucleo, rovesciato, scorre sotto l'ingresso
+  così che \(\bar K_{k-j}\) stia sotto \(u_j\); i prodotti, sommati, danno \(y_k\) senza alcuno stato.</span></figcaption>
+  <canvas id="conv"></canvas></figure>
+  <p class="readout across" id="same"></p>
+</main>
+
+<h2 class="part"><span data-l="en">2. HiPPO: the state as a memory</span><span data-l="it" lang="it">2. HiPPO: lo stato come memoria</span></h2>
+<p class="lede" data-l="en">With the HiPPO-LegS matrix, \(A_{nk} = \sqrt{2n+1}\sqrt{2k+1}\) below the
+diagonal, \(A_{nn} = n+1\) and \(B_n = \sqrt{2n+1}\), the system
+\(x'(t) = -\tfrac1t A\,x(t) + \tfrac1t B\,u(t)\) keeps in its \(N\) numbers the coefficients of
+the best approximation of the whole input seen so far by polynomials of degree below \(N\), so that
+the past is read back as \(u(s) \approx \sum_n x_n(t)\sqrt{2n+1}\,P_n(2s/t - 1)\) for
+\(0 \le s \le t\). The input can be drawn with the mouse; as \(t\) grows the same \(N\) numbers
+cover a longer past, and the detail of the remote input is lost first. S4 starts from this
+\(A\) with a fixed step instead of \(1/t\), so that its memory fades instead of stretching.</p>
+<p class="lede" data-l="it" lang="it">Con la matrice HiPPO-LegS, \(A_{nk} = \sqrt{2n+1}\sqrt{2k+1}\) sotto la
+diagonale, \(A_{nn} = n+1\) e \(B_n = \sqrt{2n+1}\), il sistema
+\(x'(t) = -\tfrac1t A\,x(t) + \tfrac1t B\,u(t)\) tiene nei suoi \(N\) numeri i coefficienti della
+migliore approssimazione di tutto l'ingresso visto finora con polinomi di grado minore di \(N\),
+così che il passato si rilegge come \(u(s) \approx \sum_n x_n(t)\sqrt{2n+1}\,P_n(2s/t - 1)\) per
+\(0 \le s \le t\). L'ingresso si può disegnare con il mouse; al crescere di \(t\) gli stessi \(N\)
+numeri coprono un passato più lungo, e il dettaglio dell'ingresso lontano si perde per primo. S4
+parte da questa \(A\) con un passo fisso invece di \(1/t\), così che la sua memoria svanisce invece
+di allungarsi.</p>
+<section class="controls">
+  <div class="settings">
+    <label><span><span data-l="en">state size</span><span data-l="it" lang="it">dimensione dello stato</span> \(N\)</span><input id="N" type="range" min="2" max="32" step="1" value="8"><output id="Nv"></output></label>
+    <label><span><span data-l="en">input</span><span data-l="it" lang="it">ingresso</span></span><select id="hkind"><option value="smooth">smooth</option><option value="steps">steps</option></select></label>
+    <label><span>&nbsp;</span><button id="hnew" type="button">New input</button></label>
+  </div>
+  <div class="transport"><label class="counter"><span><span data-l="en">time</span><span data-l="it" lang="it">tempo</span> \(t\)</span><output id="tt">0</output></label><button id="reset2" type="button">Reset</button><button id="step2" type="button">Step</button><button id="play2" type="button">Play</button></div>
+</section>
+<main class="ssm">
+  <figure class="across"><figcaption><span data-l="en">The input \(u\) over \([0, 1]\) (fainter after
+  \(t\), not yet read), and in violet the past read back from the \(N\) numbers of the state at
+  time \(t\); the error of the reconstruction is given below.</span><span data-l="it" lang="it">L'ingresso \(u\) su \([0, 1]\) (più tenue dopo
+  \(t\), non ancora letto), e in viola il passato riletto dagli \(N\) numeri dello stato al tempo
+  \(t\); l'errore della ricostruzione è dato sotto.</span></figcaption>
+  <canvas id="hist"></canvas><p class="readout" id="herr"></p></figure>
+  <figure><figcaption><span data-l="en">The state \(x(t)\), one bar per Legendre coefficient.</span><span data-l="it" lang="it">Lo stato \(x(t)\), una barra per coefficiente di Legendre.</span></figcaption>
+  <canvas id="coef"></canvas></figure>
+  <figure><figcaption><span data-l="en">The first basis functions \(\sqrt{2n+1}\,P_n(2s/t-1)\) on
+  \([0, t]\): they stretch with \(t\), which is why the memory keeps the whole past.</span><span data-l="it" lang="it">Le prime funzioni di base \(\sqrt{2n+1}\,P_n(2s/t-1)\) su
+  \([0, t]\): si allungano con \(t\), ed è per questo che la memoria tiene tutto il passato.</span></figcaption>
+  <canvas id="basis"></canvas></figure>
+</main>
+
+<h2 class="part"><span data-l="en">3. Selectivity</span><span data-l="it" lang="it">3. Selettività</span></h2>
+<p class="lede" data-l="en">The task: a random sequence of the colours A, B, C, D holds one marker
+\(\star\), and at the end the model must name the colour that came right after the marker. Two
+one-layer models with \(D\) channels of \(N\) real diagonal states each are trained side by side
+with Adam on the same minibatches; both read \(x_k\), a mix of the token and of the one before it,
+and in the selective one \(\Delta_k = \mathrm{softplus}(W_\Delta x_k + b_\Delta)\),
+\(B_k = W_B x_k + b_B\) and \(C_k = W_C x_k + b_C\) depend on it, while in the time-invariant one
+only the biases are there. The selective model learns a large \(\Delta\) after the marker, which
+sets \(\bar A = e^{\Delta A}\) near 0 and \(\bar B\) large (the state is reset and the token
+written), and a small one elsewhere, which sets \(\bar A\) near 1 and \(\bar B\) near 0 (the
+state is kept and the token ignored); the time-invariant model is a fixed convolution followed
+by a linear readout, so that its answer is a sum of terms each of which depends on one position
+alone, and the most it learns is that the answer is often the colour seen most often (about 40% of
+the sequences at \(L = 16\), against the 25% of chance).</p>
+<p class="lede" data-l="it" lang="it">Il compito: una sequenza casuale dei colori A, B, C, D contiene un
+marcatore \(\star\), e alla fine il modello deve dire il colore venuto subito dopo il marcatore. Due
+modelli di uno strato, con \(D\) canali di \(N\) stati reali diagonali ciascuno, sono addestrati
+fianco a fianco con Adam sugli stessi minibatch; entrambi leggono \(x_k\), una combinazione del
+token e di quello precedente, e in quello selettivo
+\(\Delta_k = \mathrm{softplus}(W_\Delta x_k + b_\Delta)\), \(B_k = W_B x_k + b_B\) e
+\(C_k = W_C x_k + b_C\) ne dipendono, mentre in quello tempo-invariante ci sono solo i bias. Il
+modello selettivo impara un \(\Delta\) grande dopo il marcatore, che porta \(\bar A = e^{\Delta A}\)
+vicino a 0 e \(\bar B\) grande (lo stato si azzera e il token si scrive), e uno piccolo altrove, che
+porta \(\bar A\) vicino a 1 e \(\bar B\) vicino a 0 (lo stato si conserva e il token si ignora); il
+modello tempo-invariante è una convoluzione fissa seguita da una lettura lineare, così che la sua
+risposta è una somma di termini ciascuno dei quali dipende da una sola posizione, e il massimo che
+impara è che la risposta è spesso il colore visto più spesso (circa il 40% delle sequenze con
+\(L = 16\), contro il 25% del caso).</p>
+<section class="controls">
+  <div class="settings">
+    <label><span><span data-l="en">length</span><span data-l="it" lang="it">lunghezza</span> \(L\)</span><select id="L"><option>8</option><option>12</option><option selected>16</option><option>24</option></select></label>
+    <label><span><span data-l="en">channels</span><span data-l="it" lang="it">canali</span> \(D\) · <span data-l="en">states</span><span data-l="it" lang="it">stati</span> \(N\)</span><select id="DN"><option value="2,4">2 · 4</option><option value="4,4" selected>4 · 4</option><option value="4,8">4 · 8</option></select></label>
+    <label><span>learning rate</span><select id="lr"><option>0.003</option><option selected>0.01</option><option>0.03</option></select></label>
+    <label><span><span data-l="en">seed</span><span data-l="it" lang="it">seme</span></span><select id="seed"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
+  </div>
+  <div class="transport"><label class="counter"><span><span data-l="en">step</span><span data-l="it" lang="it">passo</span></span><output id="ep">0</output></label><button id="reset3" type="button">Reset</button><button id="step3" type="button">Step</button><button id="play3" type="button">Play</button></div>
+</section>
+<p class="explain" id="rep"></p>
+<main class="ssm">
+  <figure class="across"><figcaption><span data-l="en">A test sequence and, under each token, the step
+  \(\Delta_k\) of the two models (one bar per channel, log scale; violet the selective model,
+  gold the time-invariant one) and how much of what the token wrote is still in the state at the
+  end, \(\bar B_k \prod_{j>k} \bar A_j\), relative to the largest; then the probabilities
+  of the four answers. Click the sequence for another one.</span><span data-l="it" lang="it">Una sequenza di test e, sotto ogni token, il passo
+  \(\Delta_k\) dei due modelli (una barra per canale, scala logaritmica; in viola il modello selettivo,
+  in oro quello tempo-invariante) e quanto di ciò che il token ha scritto è ancora nello stato alla
+  fine, \(\bar B_k \prod_{j>k} \bar A_j\), relativo al massimo; poi le probabilità delle quattro
+  risposte. Un clic sulla sequenza ne mostra un'altra.</span></figcaption>
+  <canvas id="seqv"></canvas></figure>
+  <figure><figcaption><span data-l="en">The accuracy of the two models on 256 test sequences; the
+  dashed line is chance, 25%.</span><span data-l="it" lang="it">L'accuratezza dei due modelli su 256 sequenze di test; la
+  linea tratteggiata è il caso, 25%.</span></figcaption><canvas id="acc3"></canvas></figure>
+  <figure><figcaption><span data-l="en">Their loss (cross-entropy on the same sequences); the dashed
+  line is \(\ln 4\), the loss of the uniform guess.</span><span data-l="it" lang="it">La loro loss (entropia incrociata sulle stesse sequenze); la
+  linea tratteggiata è \(\ln 4\), la loss della risposta uniforme.</span></figcaption><canvas id="loss3"></canvas></figure>
+</main>
+<footer><span data-l="en">Scene T of opt-playground, after A. Gu, K. Goel and C. Ré,
+<a href="https://arxiv.org/abs/2111.00396">Efficiently Modeling Long Sequences with Structured State Spaces</a> (2022),
+A. Gu, T. Dao, S. Ermon, A. Rudra and C. Ré, <a href="https://arxiv.org/abs/2008.07669">HiPPO: Recurrent Memory with Optimal Polynomial Projections</a> (2020),
+and A. Gu and T. Dao, <a href="https://arxiv.org/abs/2312.00752">Mamba: Linear-Time Sequence Modeling with Selective State Spaces</a> (2023):
+the ideas are theirs, rebuilt here from the equations.</span><span data-l="it" lang="it">Scena T di opt-playground, da A. Gu, K. Goel e C. Ré,
+<a href="https://arxiv.org/abs/2111.00396">Efficiently Modeling Long Sequences with Structured State Spaces</a> (2022),
+A. Gu, T. Dao, S. Ermon, A. Rudra e C. Ré, <a href="https://arxiv.org/abs/2008.07669">HiPPO: Recurrent Memory with Optimal Polynomial Projections</a> (2020),
+e A. Gu e T. Dao, <a href="https://arxiv.org/abs/2312.00752">Mamba: Linear-Time Sequence Modeling with Selective State Spaces</a> (2023):
+le idee sono loro, ricostruite qui dalle equazioni.</span></footer>
+<script type="module" src="src/ssm.js"></script>
+</body>
+</html>

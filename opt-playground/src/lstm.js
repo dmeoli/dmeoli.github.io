@@ -2,15 +2,15 @@
 // "Understanding LSTM Networks" (2015),
 // https://colah.github.io/posts/2015-08-Understanding-LSTMs/ (the idea, rebuilt
 // from the equations; no figure or code of the post is used).
-// An LSTM and a plain tanh RNN of the same size are trained together, with
-// Adam on the same minibatches, on toy tasks generated in the page; the chain
+// An LSTM, a GRU (K. Cho et al., 2014) and a plain tanh RNN of the same size
+// are trained together, with Adam on the same minibatches, on toy tasks generated in the page; the chain
 // of cells, the heat maps and the gradients are drawn from the real values.
 
 import { forward, rng, argmax } from './lstm-net.js';
 import { createRun } from './lstm-run.js';
 import { TASKS, sample } from './lstm-tasks.js';
 import { drawChain, drawHeat, drawLoss, drawGrad } from './lstm-views.js';
-import { t as tx, onLang } from './i18n.js';
+import { t as tx, onLang, onTheme } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const S = { task: 'first', T: 20, H: 6, lr: 0.005, show: 'lstm', seed: 2, seq: 1, t: 20 };
@@ -18,7 +18,7 @@ new URLSearchParams(location.hash.slice(1)).forEach((v, k) => { if (k in S) S[k]
 if (!TASKS[S.task]) S.task = 'first';
 S.T = Math.max(5, Math.min(40, Math.round(S.T) || 20));
 if (![4, 6, 8].includes(S.H)) S.H = 6;
-if (S.show !== 'rnn') S.show = 'lstm';
+if (!['gru', 'rnn'].includes(S.show)) S.show = 'lstm';
 
 // the names of the tasks in Italian (src/lstm-tasks.js has the English ones)
 const NAME_IT = { first: 'il primo bit', depth: 'la profondità di annidamento', count: 'il numero di uni' };
@@ -41,24 +41,26 @@ function draw() {
   drawLoss($('loss'), run.hist, Math.log(run.K), run.epoch);
   drawGrad($('grad'), run.grads, t);
   // the means of the gates and states at step t, beside the equations
-  const R = kind === 'lstm' ? 4 * H : H, mean = f => { let s = 0; for (let j = 0; j < H; j++) s += f(j); return (s / H).toFixed(2); };
+  const R = net.R, mean = f => { let s = 0; for (let j = 0; j < H; j++) s += f(j); return (s / H).toFixed(2); };
   if (kind === 'lstm') {
     ['f', 'i', 'g', 'o'].forEach((p, k) => { $('v' + p).textContent = mean(j => F.a[t * R + k * H + j]); });
     $('vc').textContent = mean(j => F.c[(t + 1) * H + j]);
     $('vh').textContent = mean(j => F.h[(t + 1) * H + j]);
+  } else if (kind === 'gru') {
+    ['z', 'rs', 'n'].forEach((p, k) => { $('v' + p).textContent = mean(j => F.a[t * R + k * H + j]); });
+    $('vgh').textContent = mean(j => F.h[(t + 1) * H + j]);
   } else $('vr').textContent = mean(j => F.h[(t + 1) * H + j]);
-  for (const e of document.querySelectorAll('.lstm-only')) e.hidden = kind !== 'lstm';
-  for (const e of document.querySelectorAll('.rnn-only')) e.hidden = kind !== 'rnn';
+  for (const k of ['lstm', 'gru', 'rnn']) for (const e of document.querySelectorAll(`.${k}-only`)) e.hidden = kind !== k;
   for (const e of document.querySelectorAll('.eq')) e.classList.toggle('lit', !!part && e.dataset.part === part && !e.hidden);
   $('eqt').textContent = S.t;
   $('where').textContent = S.task === 'depth' ? tx('at every step', 'a ogni passo') : tx('at the last step only', "solo all'ultimo passo");
-  const L = run.hist.lstm.at(-1), Rn = run.hist.rnn.at(-1), pct = v => `${(100 * v).toFixed(0)}%`;
+  const L = run.hist.lstm.at(-1), Gr = run.hist.gru.at(-1), Rn = run.hist.rnn.at(-1), pct = v => `${(100 * v).toFixed(0)}%`;
   const name = tx(TASKS[S.task].name, NAME_IT[S.task]);
   $('rep').textContent = `${name[0].toUpperCase() + name.slice(1)}` + tx(
     `${S.task === 'depth' ? ' at every step' : ` after ${S.T} steps`}: the LSTM answers ${pct(L.acc)} of the test outputs right, ` +
-    `the plain RNN ${pct(Rn.acc)}, a constant answer ${pct(run.baseline)}.`,
+    `the GRU ${pct(Gr.acc)}, the plain RNN ${pct(Rn.acc)}, a constant answer ${pct(run.baseline)}.`,
     `${S.task === 'depth' ? ' a ogni passo' : ` dopo ${S.T} passi`}: la LSTM risponde giusto sul ${pct(L.acc)} delle uscite di test, ` +
-    `la RNN semplice sul ${pct(Rn.acc)}, una risposta costante sul ${pct(run.baseline)}.`);
+    `la GRU sul ${pct(Gr.acc)}, la RNN semplice sul ${pct(Rn.acc)}, una risposta costante sul ${pct(run.baseline)}.`);
   $('epoch').textContent = run.epoch;
   $('Tv').textContent = S.T;
   $('t').max = S.T; $('t').value = S.t; $('tv').textContent = `${S.t} / ${S.T}`;
@@ -110,11 +112,11 @@ $('heat').onclick = e => { const s = heat.step(at($('heat'), e)[0]); if (s >= 0 
 for (const cv of [$('chain'), $('heat')]) cv.onmouseleave = () => point(null);
 for (const e of document.querySelectorAll('.eq')) { e.onmouseenter = () => point(e.dataset.part); e.onmouseleave = () => point(null); }
 let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(draw, 100); });
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+onTheme(() => { if (run) draw(); });
 // the texts of the language: the title, the options of the selects, the buttons
 const OPTS = {
   task: { first: ['Remember the first bit', 'Ricorda il primo bit'], depth: ['Bracket depth', 'Profondità delle parentesi'], count: ['Count the ones', 'Conta gli uni'] },
-  show: { lstm: ['LSTM', 'LSTM'], rnn: ['plain RNN', 'RNN semplice'] },
+  show: { lstm: ['LSTM', 'LSTM'], gru: ['GRU', 'GRU'], rnn: ['plain RNN', 'RNN semplice'] },
 };
 function words() {
   document.title = tx('LSTM playground', 'Laboratorio LSTM');

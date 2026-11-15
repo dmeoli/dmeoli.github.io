@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spiking Networks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<style>
+/* spiking.html: the neuron and its f-I curve, the surrogate and the equations,
+   then the network (plane and raster, loss and firing rate) */
+main.spk { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+main.spk figcaption { min-height: 0; }
+main.spk canvas { width: 100%; display: block; border-radius: 6px; }
+#plane { cursor: crosshair; max-width: 420px; }
+main.spk #loss { max-width: none; }
+.knobs { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: end; margin-top: 8px; font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.knobs label { display: grid; grid-template-columns: auto auto; align-items: center; column-gap: 8px; }
+.knobs label > span { grid-column: 1 / -1; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+.knobs label > output { min-width: 4ch; color: var(--ink); }
+.knobs input[type=range] { width: 110px; }
+.knobs mjx-container, .key mjx-container { font-size: 120%; }
+.key { list-style: none; padding: 0; margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 4px 16px; font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.key li { display: flex; align-items: center; gap: 6px; }
+.key i { display: inline-block; width: 16px; height: 0; border-top: 2px solid currentColor; }
+.key i.dash { border-top-style: dashed; }
+.key i.box { height: 10px; border: 0; background: currentColor; opacity: .5; }
+.key i.dot { width: 9px; height: 9px; border: 0; border-radius: 50%; background: currentColor; }
+.eqs { display: grid; gap: 4px; font-size: 15px; }
+.eqs h3 { margin: 0 0 4px; font: 500 11px 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.eq { padding: 5px 8px; border-radius: 6px; overflow-x: auto; overflow-y: hidden; }
+.eq small { display: block; font: 12px/1.35 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.note { font: 12px/1.45 'IBM Plex Mono', monospace; color: var(--ink-soft); margin: 6px 0 0; min-height: 1.5em; }
+.note b { font-weight: 500; color: var(--ink); }
+</style>
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="ssm.html">State space</a> · <a href="gnn.html">Graphs</a> · <a href="moe.html">Mixture of experts</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="hopfield.html">Hopfield</a> · <a href="spiking.html" aria-current="page">Spiking</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1><span data-l="en">Spiking Networks</span><span data-l="it" lang="it">Reti a impulsi</span></h1>
+  <p class="lede" data-l="en">A spiking neuron keeps a membrane potential that leaks at every step, adds the
+  current it receives and, when it crosses a threshold, emits a spike and drops by the threshold,
+  so that what it passes on is a train of zeros and ones rather than a number. Since the spike is
+  a step of the potential, its derivative is zero almost everywhere, and backpropagation through
+  time applied as it is would move no weight; replacing, in the backward pass only, the derivative
+  of the step with that of a smooth function (the surrogate gradient), a small network of such
+  neurons is trained in the page, with Adam, to classify points of the plane coded as trains of
+  spikes, and one can watch how few spikes its hidden layer needs to answer.</p>
+  <p class="lede" data-l="it" lang="it">Un neurone a impulsi tiene un potenziale di membrana che a ogni
+  passo si scarica in parte, somma la corrente che riceve e, quando supera una soglia, emette un
+  impulso e scende della soglia, così che ciò che trasmette è un treno di zeri e di uni anziché un
+  numero. Poiché l'impulso è un gradino del potenziale, la sua derivata è nulla quasi ovunque, e la
+  backpropagation nel tempo applicata così com'è non sposterebbe alcun peso; sostituendo, nel solo
+  passo all'indietro, la derivata del gradino con quella di una funzione liscia (il gradiente
+  surrogato), una piccola rete di questi neuroni è addestrata nella pagina, con Adam, a classificare
+  punti del piano codificati come treni di impulsi, e si può vedere con quanti pochi impulsi lo
+  strato nascosto riesce a rispondere.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span><span data-l="en">data</span><span data-l="it" lang="it">dati</span></span><select id="data"><option value="circle">circle</option><option value="xor">exclusive or</option><option value="gauss">two gaussians</option><option value="spiral">spiral</option></select></label>
+    <label><span><span data-l="en">coding</span><span data-l="it" lang="it">codifica</span></span><select id="code"><option value="rate">rate, Poisson</option><option value="regular">rate, regular</option><option value="latency">latency</option></select></label>
+    <label><span><span data-l="en">steps</span><span data-l="it" lang="it">passi</span> \(T\)</span><select id="T"><option>25</option><option>50</option><option>100</option></select></label>
+    <label><span><span data-l="en">hidden neurons</span><span data-l="it" lang="it">neuroni nascosti</span></span><select id="H"><option>8</option><option>16</option><option>32</option></select></label>
+    <label><span><span data-l="en">readout</span><span data-l="it" lang="it">lettura</span></span><select id="read"><option value="count">spike count</option><option value="membrane">membrane</option></select></label>
+    <label><span><span data-l="en">rate penalty</span><span data-l="it" lang="it">penalità sul tasso</span> \(\lambda\)</span><select id="lam"><option>0</option><option>0.3</option><option>1</option><option>3</option></select></label>
+    <label><span><span data-l="en">step size of Adam</span><span data-l="it" lang="it">passo di Adam</span></span><select id="lr"><option>0.003</option><option>0.01</option><option>0.03</option></select></label>
+    <label><span><span data-l="en">seed</span><span data-l="it" lang="it">seme</span></span><select id="seed"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+  </div>
+  <div class="transport"><label class="counter"><span><span data-l="en">epoch</span><span data-l="it" lang="it">epoca</span></span><output id="epoch">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+</section>
+<p class="explain" id="rep"></p>
+<main class="spk">
+  <figure><figcaption><span data-l="en">One leaky integrate-and-fire neuron, live: on top the input
+  current \(I_t = I + \sigma\,\varepsilon_t\) (\(\varepsilon_t\) a standard gaussian), in the middle
+  the membrane potential \(v_t\) with the threshold \(\theta\) dashed, at the bottom the spikes
+  \(s_t\). Between two spikes \(v_t\) climbs towards \(I/(1-\beta)\), and it fires only if that
+  value lies above \(\theta\) or the noise carries it there.</span><span data-l="it" lang="it">Un neurone leaky
+  integrate-and-fire, dal vivo: in alto la corrente d'ingresso \(I_t = I + \sigma\,\varepsilon_t\)
+  (\(\varepsilon_t\) una gaussiana standard), al centro il potenziale di membrana \(v_t\) con la
+  soglia \(\theta\) tratteggiata, in basso gli impulsi \(s_t\). Fra due impulsi \(v_t\) sale verso
+  \(I/(1-\beta)\), e il neurone spara solo se quel valore sta sopra \(\theta\) o se il rumore lo
+  porta lì.</span></figcaption>
+  <canvas id="scope"></canvas>
+  <div class="knobs">
+    <label><span><span data-l="en">leak</span><span data-l="it" lang="it">perdita</span> \(\beta\)</span><input id="beta" type="range" min="0.5" max="0.99" step="0.01"><output id="betav"></output></label>
+    <label><span><span data-l="en">threshold</span><span data-l="it" lang="it">soglia</span> \(\theta\)</span><input id="theta" type="range" min="0.2" max="2" step="0.05"><output id="thetav"></output></label>
+    <label><span><span data-l="en">input</span><span data-l="it" lang="it">ingresso</span> \(I\)</span><input id="I" type="range" min="0" max="1.5" step="0.01"><output id="Iv"></output></label>
+    <label><span><span data-l="en">noise</span><span data-l="it" lang="it">rumore</span> \(\sigma\)</span><input id="sigma" type="range" min="0" max="0.5" step="0.01"><output id="sigmav"></output></label>
+  </div>
+  </figure>
+  <figure><figcaption><span data-l="en">The f-I curve: the rate, in spikes per step, under a
+  constant input \(I\) (with the noise \(\sigma\) of the neuron on the left), against the ReLU
+  \(\max(0, I - (1-\beta)\theta)/\theta\), which starts at the same current, the smallest that
+  can lift \(v_t\) to \(\theta\), and has the same slope for large \(I\), since each spike takes
+  away \(\theta\) of charge; the rate stops at 1, one spike per step. This is why a trained ReLU
+  network can be converted into a spiking one by reading its activations as rates.</span><span data-l="it" lang="it">La
+  curva f-I: il tasso, in impulsi per passo, sotto un ingresso costante \(I\) (con il rumore
+  \(\sigma\) del neurone a sinistra), confrontato con la ReLU \(\max(0, I - (1-\beta)\theta)/\theta\),
+  che parte dalla stessa corrente, la più piccola che possa portare \(v_t\) a \(\theta\), e ha la
+  stessa pendenza per \(I\) grande, poiché ogni impulso toglie \(\theta\) di carica; il tasso si
+  ferma a 1, un impulso per passo. Per questo una rete ReLU addestrata si può convertire in una
+  rete a impulsi leggendo le sue attivazioni come tassi.</span></figcaption>
+  <canvas id="fi"></canvas>
+  <ul class="key" id="fikey"></ul>
+  </figure>
+  <figure><figcaption><span data-l="en">The spike as a function of \(u = v - \theta\): the step
+  \(H(u)\), whose derivative is zero except at \(u = 0\), the fast sigmoid \(\tilde H(u)\) and its
+  derivative \(\tilde H'(u)\), which the backward pass uses in place of that of \(H\); under them,
+  the histogram of \(v_t - \theta\) of the hidden neurons on the test points. Only the potentials
+  that fall where \(\tilde H'\) is not small carry a gradient, so a steep surrogate sees few of
+  them and a flat one sees neurons far from firing. The steepness \(k\) is the one used in
+  training.</span><span data-l="it" lang="it">L'impulso come funzione di \(u = v - \theta\): il gradino
+  \(H(u)\), la cui derivata è nulla tranne in \(u = 0\), la sigmoide veloce \(\tilde H(u)\) e la sua
+  derivata \(\tilde H'(u)\), che il passo all'indietro usa al posto di quella di \(H\); sotto, l'istogramma
+  di \(v_t - \theta\) dei neuroni nascosti sui punti di test. Solo i potenziali che cadono dove
+  \(\tilde H'\) non è piccola portano un gradiente, così un surrogato ripido ne vede pochi e uno
+  piatto vede anche neuroni lontani dallo sparare. La ripidità \(k\) è quella usata
+  nell'addestramento.</span></figcaption>
+  <canvas id="surr"></canvas>
+  <div class="knobs">
+    <label><span><span data-l="en">steepness</span><span data-l="it" lang="it">ripidità</span> \(k\)</span><input id="k" type="range" min="0.5" max="20" step="0.5"><output id="kv"></output></label>
+  </div>
+  <ul class="key" id="surrkey"></ul>
+  </figure>
+  <aside class="eqs">
+    <h3><span data-l="en">The network</span><span data-l="it" lang="it">La rete</span></h3>
+    <div class="eq">\(v_t = \beta\, v_{t-1} + W x_t + b - \theta\, s_{t-1}\)<small><span data-l="en">membrane of the hidden neurons: leak, input spikes \(x_t\), reset by subtraction; \(\beta = 0.9\), \(\theta = 1\)</span><span data-l="it" lang="it">membrana dei neuroni nascosti: perdita, impulsi d'ingresso \(x_t\), reset per sottrazione; \(\beta = 0.9\), \(\theta = 1\)</span></small></div>
+    <div class="eq">\(s_t = H(v_t - \theta)\)<small><span data-l="en">the spikes, a step of the potential</span><span data-l="it" lang="it">gli impulsi, un gradino del potenziale</span></small></div>
+    <div class="eq">\(o = \sum_t s^o_t \;\text{ or }\; o = \frac1T \sum_t v^o_t\)<small><span data-l="en">the two outputs: the spike counts of two LIF neurons, or the mean potential of two leaky integrators without threshold</span><span data-l="it" lang="it">le due uscite: i conteggi degli impulsi di due neuroni LIF, o il potenziale medio di due integratori senza soglia</span></small></div>
+    <div class="eq">\(L = -\log \operatorname{softmax}(o)_y + \lambda\, \bar r\)<small><span data-l="en">cross-entropy plus the mean firing rate \(\bar r\) of the hidden layer, in spikes per neuron per step</span><span data-l="it" lang="it">entropia incrociata più il tasso medio \(\bar r\) dello strato nascosto, in impulsi per neurone per passo</span></small></div>
+    <div class="eq">\(\tilde H'(u) = \dfrac{k/2}{(1 + k\,|u|)^2}\)<small><span data-l="en">the surrogate of \(\partial s_t / \partial v_t\) (SuperSpike)</span><span data-l="it" lang="it">il surrogato di \(\partial s_t / \partial v_t\) (SuperSpike)</span></small></div>
+    <div class="eq">\(\delta_t = \Bigl(W_o^\top \delta^o_t + \dfrac{\lambda}{T N}\Bigr)\, \tilde H'(v_t - \theta) + \beta\, \delta_{t+1}\)<small><span data-l="en">backpropagation through time, from \(t = T\) down to 1, with the reset detached; then \(\nabla_W L = \sum_t \delta_t\, x_t^\top\)</span><span data-l="it" lang="it">backpropagation nel tempo, da \(t = T\) fino a 1, con il reset staccato; poi \(\nabla_W L = \sum_t \delta_t\, x_t^\top\)</span></small></div>
+  </aside>
+  <figure><figcaption><span data-l="en">The plane, coloured by the probability of the violet class
+  for a point coded as the network sees it (with Poisson coding one draw per pixel, hence the
+  grain), with the training points; each coordinate drives two input neurons, one more active as
+  it grows and one as it falls. Click to choose the point whose spikes are shown on the
+  right.</span><span data-l="it" lang="it">Il piano, colorato dalla probabilità della classe viola per un
+  punto codificato come lo vede la rete (con la codifica di Poisson un'estrazione per pixel, da cui
+  la grana), con i punti di addestramento; ogni coordinata pilota due neuroni d'ingresso, uno più
+  attivo quando cresce e uno quando cala. Si clicchi per scegliere il punto i cui impulsi sono
+  mostrati a destra.</span></figcaption>
+  <canvas id="plane"></canvas>
+  </figure>
+  <figure><figcaption><span data-l="en">The raster of the chosen point, step by step (columns):
+  the four input neurons in gold, the hidden ones in violet (ordered by their weight to the violet
+  output, the silent ones dimmed), then the two outputs, as spikes or as membrane
+  potentials.</span><span data-l="it" lang="it">Il raster del punto scelto, passo per passo (colonne):
+  i quattro neuroni d'ingresso in oro, quelli nascosti in viola (ordinati per il loro peso verso
+  l'uscita viola, quelli silenti attenuati), poi le due uscite, come impulsi o come potenziali di
+  membrana.</span></figcaption>
+  <canvas id="raster"></canvas>
+  <p class="note" id="rasnote"></p>
+  </figure>
+  <figure><figcaption><span data-l="en">The cross-entropy and the accuracy on 200 test points,
+  each with a coding fixed once (the training points are coded anew at every
+  epoch).</span><span data-l="it" lang="it">L'entropia incrociata e l'accuratezza su 200 punti di test,
+  ciascuno con una codifica fissata una volta per tutte (i punti di addestramento sono codificati di
+  nuovo a ogni epoca).</span></figcaption>
+  <canvas id="loss"></canvas>
+  </figure>
+  <figure><figcaption><span data-l="en">The mean firing rate \(\bar r\) of the hidden layer on the
+  test points, and the share of hidden neurons that never fire on them; the penalty \(\lambda\)
+  pushes the first down, at some cost in loss, and with it the energy that a neuromorphic chip
+  would spend, which grows with the number of spikes.</span><span data-l="it" lang="it">Il tasso medio
+  \(\bar r\) dello strato nascosto sui punti di test, e la quota di neuroni nascosti che su di essi
+  non sparano mai; la penalità \(\lambda\) spinge in basso il primo, a un certo costo nella loss, e
+  con esso l'energia che spenderebbe un chip neuromorfico, che cresce con il numero di
+  impulsi.</span></figcaption>
+  <canvas id="rate"></canvas>
+  </figure>
+</main>
+<footer><span data-l="en">Scene R of opt-playground, after F. Zenke and S. Ganguli,
+<a href="https://arxiv.org/abs/1705.11146">SuperSpike: Supervised Learning in Multilayer Spiking
+Neural Networks</a> (2018), and E. O. Neftci, H. Mostafa and F. Zenke,
+<a href="https://arxiv.org/abs/1901.09948">Surrogate Gradient Learning in Spiking Neural
+Networks</a> (2019); the neuron in discrete time with reset by subtraction and the detached reset
+follow J. K. Eshraghian et al., <a href="https://arxiv.org/abs/2109.12894">Training Spiking Neural
+Networks Using Lessons From Deep Learning</a> (2023), and the data sets are those of the
+TensorFlow Playground. The ideas are theirs, rebuilt here from the equations.</span><span data-l="it" lang="it">Scena R
+di opt-playground, da F. Zenke e S. Ganguli, <a href="https://arxiv.org/abs/1705.11146">SuperSpike:
+Supervised Learning in Multilayer Spiking Neural Networks</a> (2018), ed E. O. Neftci, H. Mostafa e
+F. Zenke, <a href="https://arxiv.org/abs/1901.09948">Surrogate Gradient Learning in Spiking Neural
+Networks</a> (2019); il neurone a tempo discreto con reset per sottrazione e il reset staccato dal
+gradiente seguono J. K. Eshraghian et al., <a href="https://arxiv.org/abs/2109.12894">Training
+Spiking Neural Networks Using Lessons From Deep Learning</a> (2023), e i dati sono quelli del
+TensorFlow Playground. Le idee sono loro, qui ricostruite dalle equazioni.</span></footer>
+<script type="module" src="src/spiking.js"></script>
+</body>
+</html>

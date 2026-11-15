@@ -8,15 +8,15 @@
    copies that choice into data-theme, since the pages share its origin) */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --ground: #231f30; --ink: #f6effc; --ink-soft: #c9bdd7; --rule: #47415e;
+    --ground: #262235; --ink: #f6effc; --ink-soft: #c9bdd7; --rule: #4a4463;
     --accent: #d4b9eb; --accent-2: #b98ee6; --lilac: #4e2c72; --gold: #b59a45;
-    --panel: #2d283f;
+    --panel: #302c44;
   }
 }
 :root[data-theme="dark"] {
-  --ground: #231f30; --ink: #f6effc; --ink-soft: #c9bdd7; --rule: #47415e;
+  --ground: #262235; --ink: #f6effc; --ink-soft: #c9bdd7; --rule: #4a4463;
   --accent: #d4b9eb; --accent-2: #b98ee6; --lilac: #4e2c72; --gold: #b59a45;
-  --panel: #2d283f;
+  --panel: #302c44;
 }
 * { box-sizing: border-box; }
 body {
@@ -136,6 +136,8 @@ nav.pages { font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); margi
 a { color: var(--accent); }
 nav.pages a { color: var(--ink-soft); text-decoration: none; }
 nav.pages a[aria-current] { color: var(--accent); border-bottom: 1px solid var(--accent); }
+nav.pages .group { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent-2); margin-right: 6px; }
+nav.pages { line-height: 1.8; }
 main.single { grid-template-columns: 1fr; }
 .stage canvas { width: 100%; height: auto; display: block; cursor: grab; }
 /* the learning scene */

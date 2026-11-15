@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mixture of Experts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<style>
+/* the colours of the experts, one per expert, the first two the accent and the gold */
+:root { --x0: #7338a8; --x1: #8a6d1c; --x2: #b4457a; --x3: #2c7a80; --x4: #3f5fae; --x5: #63802a; --x6: #b0602a; --x7: #6a5a82; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --x0: #c39be8; --x1: #d2b25a; --x2: #e78ab4; --x3: #6cc2c9; --x4: #93acec; --x5: #a9c46a; --x6: #e39a63; --x7: #bcaed2; }
+}
+:root[data-theme="dark"] { --x0: #c39be8; --x1: #d2b25a; --x2: #e78ab4; --x3: #6cc2c9; --x4: #93acec; --x5: #a9c46a; --x6: #e39a63; --x7: #bcaed2; }
+main.moe { grid-template-columns: 200px minmax(0, 1fr) 280px; align-items: start; margin-top: 6px; }
+@media (max-width: 1100px) { main.moe { grid-template-columns: minmax(0, 1fr) 280px; } main.moe .moedata { grid-column: 1 / -1; } }
+@media (max-width: 700px) { main.moe { grid-template-columns: minmax(0, 1fr); } }
+main.moe figcaption { min-height: 0; }
+main.moe canvas { width: 100%; height: auto; display: block; border-radius: 6px; }
+#regions { max-width: 560px; cursor: crosshair; }
+.moedata .datas { grid-template-columns: repeat(3, 1fr); max-width: 200px; }
+.across { grid-column: 1 / -1; }
+.experts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+.expert { margin: 0; }
+.expert canvas { border: 2px solid var(--rule); box-sizing: border-box; }
+.expert p { margin: 4px 0 0; font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.expert p i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; vertical-align: -1px; margin-right: 5px; }
+.expert p b { font-weight: 500; color: var(--ink); }
+.eqs { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 6px 24px; font-size: 15px; }
+@media (max-width: 860px) { .eqs { grid-template-columns: minmax(0, 1fr); } }
+.eqs h3 { grid-column: 1 / -1; }
+.eq { padding: 5px 8px; border: 1px solid transparent; border-radius: 6px; overflow-x: auto; }
+.eq.lit { background: var(--lilac); border-color: var(--accent-2); }
+.eq small { display: block; font: 12px/1.35 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.readout { font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); margin: 6px 0 0; min-height: 1.4em; }
+.readout b { font-weight: 500; color: var(--ink); }
+.controls select#preset { max-width: 16em; }
+h3.sub { margin: 6px 0 4px; font: 500 11px 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+</style>
+</head>
+<body class="wide">
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="ssm.html">State space</a> · <a href="gnn.html">Graphs</a> · <a href="moe.html" aria-current="page">Mixture of experts</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="hopfield.html">Hopfield</a> · <a href="spiking.html">Spiking</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1><span data-l="en">Mixture of Experts</span><span data-l="it" lang="it">Mixture of experts</span></h1>
+  <p class="lede" data-l="en">A few small experts, each a linear model or a network with one hidden
+  layer of four units, and a router that reads the same point and gives, through a softmax,
+  the weight of every expert in the answer, are trained together with Adam on a data set in
+  the plane. Since a single expert is too weak for the whole problem, the router learns to
+  carve the plane into regions and to send each one to the expert that solves it, so that
+  the large map below is coloured by the expert the router picks and each expert, in its own
+  panel, is faded wherever it receives no points. With top-1 routing every point is sent to
+  one expert only, the only one that then learns from it, and without the balancing loss
+  the experts that win early keep winning until a few of them hold almost all the data; the
+  loss of the Switch Transformer penalizes this and the load evens out.</p>
+  <p class="lede" data-l="it" lang="it">Alcuni piccoli esperti, ciascuno un modello lineare o una rete con
+  uno strato nascosto di quattro unità, e un router che legge lo stesso punto e dà, attraverso
+  una softmax, il peso di ogni esperto nella risposta, sono addestrati insieme con Adam su un
+  insieme di dati nel piano. Poiché un solo esperto è troppo debole per l'intero problema, il
+  router impara a ritagliare il piano in regioni e a mandare ciascuna all'esperto che la
+  risolve, così che la grande mappa qui sotto è colorata secondo l'esperto scelto dal router e
+  ogni esperto, nel suo riquadro, è sbiadito dove non riceve punti. Con il routing top-1 ogni
+  punto va a un solo esperto, il solo che poi impara da esso, e senza la loss di
+  bilanciamento gli esperti che vincono all'inizio continuano a vincere finché pochi di loro
+  tengono quasi tutti i dati; la loss dello Switch Transformer penalizza questo squilibrio e il
+  carico si livella.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span>preset</span><select id="preset"></select></label>
+    <label><span><span data-l="en">experts</span><span data-l="it" lang="it">esperti</span> \(K\)</span><select id="K"><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></label>
+    <label><span><span data-l="en">expert</span><span data-l="it" lang="it">esperto</span></span><select id="expert"><option value="linear"></option><option value="mlp"></option></select></label>
+    <label><span>router</span><select id="router"><option value="linear"></option><option value="mlp"></option></select></label>
+    <label><span>routing</span><select id="route"><option value="soft"></option><option value="2"></option><option value="1"></option></select></label>
+    <label class="check"><span><span data-l="en">balancing loss</span><span data-l="it" lang="it">loss di bilanciamento</span></span><input id="bal" type="checkbox"></label>
+    <label><span><span data-l="en">weight</span><span data-l="it" lang="it">peso</span> \(\alpha\)</span><select id="alpha"><option>0.01</option><option>0.03</option><option>0.1</option><option>0.3</option><option>1</option></select></label>
+    <label><span>learning rate</span><select id="lr"><option>0.003</option><option>0.01</option><option>0.03</option><option>0.1</option></select></label>
+  </div>
+  <div class="transport"><label class="counter"><span><span data-l="en">epoch</span><span data-l="it" lang="it">epoca</span></span><output id="epoch"></output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+</section>
+<p class="explain" id="rep"></p>
+<main class="moe">
+  <section class="side moedata">
+    <h3><span data-l="en">Data</span><span data-l="it" lang="it">Dati</span></h3>
+    <div id="datas" class="datas" role="radiogroup"></div>
+    <label><span><span data-l="en">noise</span><span data-l="it" lang="it">rumore</span>: <output id="noiseOut"></output></span><input id="noise" type="range" min="0" max="50" step="5"></label>
+    <button id="regen" type="button"><span data-l="en">Regenerate</span><span data-l="it" lang="it">Rigenera</span></button>
+    <p class="readout"><span data-l="en">500 points, 350 for training in minibatches of 20 and 150 for the test.</span><span data-l="it" lang="it">500 punti, 350 per l'addestramento in minibatch da 20 e 150 per il test.</span></p>
+  </section>
+  <figure>
+    <figcaption><span data-l="en">The plane coloured by the expert of largest gate, paler where the
+    router is less sure of its choice (soft routing mixes the experts near the borders), with
+    the training points and, as a thick line, the decision boundary \(y(x) = 0\) of the mixture
+    (for a regression, its level lines). Point at the map to read the gates there.</span><span data-l="it" lang="it">Il piano colorato secondo l'esperto con il gate
+    più grande, più chiaro dove il router è meno sicuro della sua scelta (il routing soft mescola
+    gli esperti vicino ai confini), con i punti di addestramento e, come linea spessa, la frontiera
+    di decisione \(y(x) = 0\) della miscela (per una regressione, le sue linee di livello). Puntando
+    la mappa si leggono lì i gate.</span></figcaption>
+    <canvas id="regions" width="560" height="560"></canvas>
+    <p class="readout" id="probe"></p>
+  </figure>
+  <section class="side">
+    <h3><span data-l="en">Mixture output</span><span data-l="it" lang="it">Uscita della miscela</span></h3>
+    <canvas id="mix" width="280" height="280"></canvas>
+    <dl class="stats"><div><dt><span data-l="en">test loss</span><span data-l="it" lang="it">loss di test</span></dt><dd id="testLoss"></dd></div><div><dt><span data-l="en">training loss</span><span data-l="it" lang="it">loss di addestramento</span></dt><dd id="trainLoss"></dd></div><div id="accBox"><dt><span data-l="en">test accuracy</span><span data-l="it" lang="it">accuratezza di test</span></dt><dd id="acc"></dd></div></dl>
+    <h3><span data-l="en">Loss</span><span data-l="it" lang="it">Loss</span></h3>
+    <canvas id="loss" width="280" height="130"></canvas>
+    <p class="readout"><span data-l="en">square loss, solid training and dashed test; gold the balancing loss; log scale</span><span data-l="it" lang="it">loss quadratica, continua l'addestramento e tratteggiata il test; in oro la loss di bilanciamento; scala logaritmica</span></p>
+    <h3><span data-l="en">Expert load</span><span data-l="it" lang="it">Carico degli esperti</span></h3>
+    <canvas id="loadnow" width="280" height="110"></canvas>
+    <canvas id="loadhist" width="280" height="110"></canvas>
+    <p class="readout"><span data-l="en">the share \(f_i\) of the training points sent to each expert, now (the dashed line is \(1/K\)) and over the epochs</span><span data-l="it" lang="it">la quota \(f_i\) dei punti di addestramento mandati a ciascun esperto, ora (la linea tratteggiata è \(1/K\)) e lungo le epoche</span></p>
+  </section>
+  <section class="across">
+    <h3 class="sub"><span data-l="en">The experts</span><span data-l="it" lang="it">Gli esperti</span></h3>
+    <p class="readout"><span data-l="en">The output \(E_i(x)\) of every expert over the whole plane (violet positive, gold negative), faded as its gate \(g_i(x)\) goes to zero, with the border of the region the router gives it.</span><span data-l="it" lang="it">L'uscita \(E_i(x)\) di ogni esperto sull'intero piano (viola positivo, oro negativo), sbiadita quando il suo gate \(g_i(x)\) tende a zero, con il bordo della regione che il router gli assegna.</span></p>
+    <div id="experts" class="experts"></div>
+  </section>
+  <aside class="across eqs">
+    <h3 class="sub"><span data-l="en">The model</span><span data-l="it" lang="it">Il modello</span></h3>
+    <div class="eq" data-part="gate">\(h(x) = W_g\,x + b_g,\quad p(x) = \operatorname{softmax}\big(h(x)\big)\)<small><span data-l="en">the logits and the probabilities of the router; with the MLP router \(W_g\,x\) becomes \(W_g \tanh(V x + c)\), with 8 hidden units</span><span data-l="it" lang="it">i logit e le probabilità del router; con il router MLP \(W_g\,x\) diventa \(W_g \tanh(V x + c)\), con 8 unità nascoste</span></small></div>
+    <div class="eq" data-part="mix">\(y(x) = \sum_{i=1}^{K} g_i(x)\,E_i(x)\)<small><span data-l="en">the answer, the experts weighed by their gates; \(E_i\) ends with \(\tanh\) for a classification (labels \(\pm 1\)) and is linear for a regression</span><span data-l="it" lang="it">la risposta, gli esperti pesati dai loro gate; \(E_i\) termina con \(\tanh\) per una classificazione (etichette \(\pm 1\)) ed è lineare per una regressione</span></small></div>
+    <div class="eq" data-part="soft">\(g(x) = p(x)\)<small><span data-l="en">soft routing: every expert answers every point</span><span data-l="it" lang="it">routing soft: ogni esperto risponde a ogni punto</span></small></div>
+    <div class="eq" data-part="2">\(g(x) = \operatorname{softmax}\big(\operatorname{KeepTopK}(h(x), k)\big)\)<small><span data-l="en">top-\(k\) routing (Shazeer et al.): KeepTopK leaves the \(k\) largest logits and sets the others to \(-\infty\), so that only \(k\) experts are evaluated</span><span data-l="it" lang="it">routing top-\(k\) (Shazeer et al.): KeepTopK lascia i \(k\) logit più grandi e porta gli altri a \(-\infty\), così che si valutano solo \(k\) esperti</span></small></div>
+    <div class="eq" data-part="1">\(g_i(x) = p_i(x)\ \text{if}\ i = \arg\max_j p_j(x),\ \text{else}\ 0\)<small><span data-l="en">top-1 routing (Switch Transformer): the chosen expert is weighed by its probability, so that the router still gets a gradient</span><span data-l="it" lang="it">routing top-1 (Switch Transformer): l'esperto scelto è pesato dalla sua probabilità, così che il router riceve ancora un gradiente</span></small></div>
+    <div class="eq" data-part="bal">\(L = \frac{1}{2N}\sum_{x} \big(y(x) - t(x)\big)^2 + \alpha K \sum_{i=1}^{K} f_i P_i\)<small><span data-l="en">with \(f_i\) the share of the \(N\) points of the minibatch whose largest gate is \(i\) and \(P_i = \frac1N \sum_x p_i(x)\); the second term, at least \(\alpha\) and equal to it when the load is even, is the balancing loss</span><span data-l="it" lang="it">con \(f_i\) la quota degli \(N\) punti del minibatch il cui gate più grande è \(i\) e \(P_i = \frac1N \sum_x p_i(x)\); il secondo termine, almeno \(\alpha\) e pari ad \(\alpha\) quando il carico è uniforme, è la loss di bilanciamento</span></small></div>
+  </aside>
+</main>
+<footer><span data-l="en">Scene S of opt-playground, after R. A. Jacobs, M. I. Jordan, S. J. Nowlan and G. E. Hinton,
+<a href="https://doi.org/10.1162/neco.1991.3.1.79">Adaptive Mixtures of Local Experts</a> (1991), N. Shazeer et al.,
+<a href="https://arxiv.org/abs/1701.06538">Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer</a> (2017),
+and W. Fedus, B. Zoph and N. Shazeer, <a href="https://arxiv.org/abs/2101.03961">Switch Transformers</a> (2021), rebuilt here
+from the equations in the frame of the TensorFlow Playground. The configuration is kept in the address.</span><span data-l="it" lang="it">Scena S
+di opt-playground, da R. A. Jacobs, M. I. Jordan, S. J. Nowlan e G. E. Hinton,
+<a href="https://doi.org/10.1162/neco.1991.3.1.79">Adaptive Mixtures of Local Experts</a> (1991), N. Shazeer et al.,
+<a href="https://arxiv.org/abs/1701.06538">Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer</a> (2017),
+e W. Fedus, B. Zoph e N. Shazeer, <a href="https://arxiv.org/abs/2101.03961">Switch Transformers</a> (2021), ricostruiti qui
+dalle equazioni nella cornice del TensorFlow Playground. La configurazione è conservata nell'indirizzo.</span></footer>
+<script type="module" src="src/moe.js"></script>
+</body>
+</html>

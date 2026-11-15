@@ -1,5 +1,5 @@
 // The drawings of the LSTM scene, on canvases sized to their box: the chain of
-// cells unrolled over a window of steps, the heat maps step x unit, the loss
+// cells (LSTM, GRU or plain RNN) unrolled over a window of steps, the heat maps step x unit, the loss
 // curves and the norms of the gradient with respect to h_t. The colours are the
 // tokens of style.css, read at every drawing so that both themes work.
 
@@ -39,6 +39,8 @@ function fit(cv, h) {
   return { ctx, W: w, P };
 }
 
+// the rows of gates per unit of each cell, as in src/lstm-net.js
+const G = { lstm: 4, gru: 3, rnn: 1 };
 // the values of the cell at step s (s = -1 is the initial state)
 const val = (F, H, R) => ({
   c: (s, j) => s < 0 ? 0 : F.c[(s + 1) * H + j],
@@ -50,13 +52,13 @@ const val = (F, H, R) => ({
 // o = { kind, F, H, seq, t, part, preds }: preds[s] = { y, p } at the steps
 // with an output. Returns the regions under the mouse: { x, y, w, h, part, step }.
 export function drawChain(cv, o) {
-  const { kind, F, H, seq, t, part, preds } = o, T = seq.xs.length, lstm = kind === 'lstm';
+  const { kind, F, H, seq, t, part, preds } = o, T = seq.xs.length, lstm = kind === 'lstm', gru = kind === 'gru';
   const { ctx, W, P } = fit(cv, 292);
-  const V = val(F, H, lstm ? 4 * H : H), hits = [];
+  const V = val(F, H, G[kind] * H), hits = [];
   const n = Math.min(T, clamp(Math.floor(W / 118), 3, 7));
   const s0 = clamp(t - Math.floor(n / 2), 0, T - n), pitch = W / n, cw = pitch * 0.8, gap = pitch - cw;
   const yTop = 36, yBot = 264, uh = Math.min(5, 32 / H);
-  const cb = yTop + 10, cMid = cb + (H - 1) * uh / 2;        // the band of c
+  const cb = yTop + 10, cMid = cb + (H - 1) * uh / 2;        // the band of c (of h in the GRU)
   const gy0 = 128, gy1 = 204, bus = 213;                       // the gates, the bus [h_{t-1}, x_t]
   const hb = 224, hMid = hb + (H - 1) * uh / 2;                // the band of h
   const lineOf = v => ({ col: signed(P, Math.tanh(v), P.rule), w: 0.8 + 2.2 * clamp(Math.abs(v), 0, 1.5) / 1.5 });
@@ -72,7 +74,8 @@ export function drawChain(cv, o) {
     ctx.beginPath(); pts.forEach(([x, y], k) => k ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.stroke();
   }
   function node(x, y, s) {                // a pointwise operation, as in the diagrams of the post
-    const r = s.length > 1 ? 15 : 7;
+    ctx.font = `11px ${MONO}`;
+    const r = s.length > 1 ? Math.max(15, ctx.measureText(s).width / 2 + 6) : 7;
     ctx.fillStyle = mix(P.panel, P.panel, 0); ctx.strokeStyle = mix(P['ink-soft'], P.ground, 0.2); ctx.lineWidth = 1;
     ctx.beginPath(); ctx.roundRect(x - r, y - 7, 2 * r, 14, 7); ctx.fill(); ctx.stroke();
     ctx.fillStyle = mix(P.ink, P.ink, 0); ctx.font = `11px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -103,10 +106,13 @@ export function drawChain(cv, o) {
   for (let s = s0; s < s0 + n; s++) {
     const x0 = (s - s0) * pitch + gap / 2, X = f => x0 + f * cw, cur = s === t, first = hits.length;
     ctx.globalAlpha = cur ? 1 : 0.55;
-    // h_{t-1} enters at the bottom left, h_t leaves at the bottom right
-    band(hb, x0 - gap / 2, X(0.06), j => V.h(s - 1, j));
-    band(hb, X(0.94), x0 + cw + gap / 2, j => V.h(s, j));
-    wire([[X(0.06), hMid], [X(0.06), bus], [X(lstm ? 0.92 : 0.7), bus]]);
+    // h_{t-1} enters at the bottom left, h_t leaves at the bottom right (in
+    // the GRU both run along the top, where the state is carried)
+    if (!gru) {
+      band(hb, x0 - gap / 2, X(0.06), j => V.h(s - 1, j));
+      band(hb, X(0.94), x0 + cw + gap / 2, j => V.h(s, j));
+    }
+    wire([[X(0.06), gru ? cMid : hMid], [X(0.06), bus], [X(lstm ? 0.92 : gru ? 0.84 : 0.7), bus]]);
     // x_t enters from below
     wire([[X(0.06), yBot + 4], [X(0.06), bus]]);
     ctx.font = `12px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
@@ -131,13 +137,30 @@ export function drawChain(cv, o) {
       node(mid(0), cMid, '×'); node(ig, cMid, '+'); node(ig, 104, '×');
       node(X(0.94) - 8, 80, 'tanh'); node(X(0.94), 104, '×');
       hits.push({ x: X(0.88), y: 70, w: cw * 0.12 + gap / 2, h: hMid - 70 + 16, part: 'h' });
+    } else if (gru) {
+      const cx = [0.14, 0.4, 0.66], w = cw * 0.18, lab = ['z', 'r', 'h̃'], parts = ['z', 'r', 'n'];
+      const mid = k => X(cx[k]) + w / 2, rx = (X(cx[1]) + w + X(cx[2])) / 2;
+      // the band of h: h_{t-1}, times 1 - z, plus z * h~, then h_t
+      band(cb, x0 - gap / 2, mid(0), j => V.h(s - 1, j));
+      band(cb, mid(0), mid(2), j => (1 - V.a(s, 0, j)) * V.h(s - 1, j));
+      band(cb, mid(2), x0 + cw + gap / 2, j => V.h(s, j));
+      hits.push({ x: x0 - gap / 2, y: cb - 8, w: pitch, h: (H - 1) * uh + 16, part: 'h' });
+      for (let k = 0; k < 3; k++) wire([[mid(k), bus], [mid(k), gy1]]);
+      wire([[mid(0), gy0 - 18], [mid(0), cMid]]);
+      wire([[mid(0), 92], [mid(2), 92]]);
+      wire([[mid(2), gy0 - 18], [mid(2), cMid]]);
+      // r h_{t-1} goes into the candidate, with x_t
+      wire([[X(0.06), 104], [mid(1), 104]]);
+      wire([[mid(1), gy0 - 18], [mid(1), 104], [rx, 104], [rx, bus]]);
+      for (let k = 0; k < 3; k++) column(X(cx[k]), w, j => V.a(s, k, j), lab[k], k === 2, parts[k]);
+      node(mid(0), cMid, '×'); node(mid(0), 76, '1−'); node(mid(2), cMid, '+'); node(mid(2), 92, '×'); node(mid(1), 104, '×');
     } else {
       const w = cw * 0.4;
       wire([[X(0.5), bus], [X(0.5), gy1]]);
       wire([[X(0.5), gy0 - 18], [X(0.5), 104], [X(0.94), 104], [X(0.94), hMid]]);
       column(X(0.3), w, j => V.h(s, j), 'tanh', true, 'h');
     }
-    hits.push({ x: x0 - gap / 2, y: hb - 8, w: pitch, h: (H - 1) * uh + 16, part: 'h' });
+    if (!gru) hits.push({ x: x0 - gap / 2, y: hb - 8, w: pitch, h: (H - 1) * uh + 16, part: 'h' });
     // the output read at this step
     const pr = preds[s];
     if (pr) {
@@ -159,10 +182,14 @@ export function drawChain(cv, o) {
 }
 
 // ------------------------------------------------------------------ heat maps
-const ROWS = { lstm: [['c', 'c'], ['h', 'h'], ['f', 'f'], ['i', 'i'], ['g', 'c̃'], ['o', 'o']], rnn: [['h', 'h']] };
+const ROWS = {
+  lstm: [['c', 'c'], ['h', 'h'], ['f', 'f'], ['i', 'i'], ['g', 'c̃'], ['o', 'o']],
+  gru: [['h', 'h'], ['z', 'z'], ['r', 'r'], ['n', 'h̃']],
+  rnn: [['h', 'h']],
+};
 export function drawHeat(cv, o) {
-  const { kind, F, H, seq, t, part } = o, T = seq.xs.length, lstm = kind === 'lstm';
-  const V = val(F, H, lstm ? 4 * H : H), rows = ROWS[kind];
+  const { kind, F, H, seq, t, part } = o, T = seq.xs.length, gru = kind === 'gru';
+  const V = val(F, H, G[kind] * H), rows = ROWS[kind];
   const ch = H <= 4 ? 8 : 6, sep = 10, top = 18, left = 30;
   const height = top + rows.length * (H * ch + sep) + 4;
   const { ctx, W, P } = fit(cv, height), cwid = (W - left - 4) / T, hits = [];
@@ -179,8 +206,8 @@ export function drawHeat(cv, o) {
       let c;
       if (p === 'c') c = signed(P, V.c(s, j) / 2);
       else if (p === 'h') c = signed(P, V.h(s, j));
-      else if (p === 'g') c = signed(P, V.a(s, 2, j));
-      else c = unsigned(P, V.a(s, { f: 0, i: 1, o: 3 }[p], j));
+      else if (p === 'g' || p === 'n') c = signed(P, V.a(s, 2, j));
+      else c = unsigned(P, V.a(s, gru ? { z: 0, r: 1 }[p] : { f: 0, i: 1, o: 3 }[p], j));
       ctx.fillStyle = c; ctx.fillRect(left + s * cwid, y0 + j * ch, Math.ceil(cwid), ch);
     }
     ctx.strokeStyle = mix(part === p ? P['accent-2'] : P.rule, P.rule, 0); ctx.lineWidth = part === p ? 2 : 1;
@@ -220,30 +247,35 @@ function legend(ctx, P, x, y, items) {
   });
 }
 
-// hist = { lstm: [{ epoch, loss, acc }], rnn: [...] }, chance = the loss of the uniform guess
+// the three networks, each with its colour token, its dash and its name (the
+// GRU is dashed too, since in the dark theme ink and accent are both light)
+const NETS = [['rnn', 'gold', [], ['plain RNN', 'RNN semplice']], ['gru', 'ink', [6, 3], ['GRU', 'GRU']], ['lstm', 'accent', [], ['LSTM', 'LSTM']]];
+const shown = (P, f) => NETS.map(([k, c, d, n]) => [mix(P[c], P[c], 0), tx(...n) + f(k), d]).reverse();
+
+// hist = { lstm: [{ epoch, loss, acc }], gru: [...], rnn: [...] }, chance = the loss of the uniform guess
 export function drawLoss(cv, hist, chance, epoch) {
   const { ctx, W, P } = fit(cv, 230), box = [40, 24, W - 10, 196];
-  const all = [...hist.lstm, ...hist.rnn], ymax = Math.max(chance * 1.15, ...all.map(q => Math.min(q.loss, 3 * chance)));
+  const all = [...hist.lstm, ...hist.gru, ...hist.rnn], ymax = Math.max(chance * 1.15, ...all.map(q => Math.min(q.loss, 3 * chance)));
   const xmax = Math.max(20, epoch), X = e => box[0] + e / xmax * (box[2] - box[0]), Y = l => box[3] - Math.min(l, ymax) / ymax * (box[3] - box[1]);
   axes(ctx, P, box, ticks(0, xmax, 5).map(v => [v, X(v)]), ticks(0, ymax, 4).map(v => [v, Y(v), String(v)]), tx('epoch', 'epoca'), tx('loss (cross-entropy on 200 test sequences)', 'loss (entropia incrociata, 200 seq. di test)'));
   ctx.strokeStyle = mix(P['ink-soft'], P.ground, 0.3); ctx.setLineDash([4, 4]); ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(box[0], Y(chance)); ctx.lineTo(box[2], Y(chance)); ctx.stroke(); ctx.setLineDash([]);
-  for (const [k, col] of [['rnn', P.gold], ['lstm', P.accent]]) {
-    ctx.strokeStyle = mix(col, col, 0); ctx.lineWidth = 2; ctx.beginPath();
-    hist[k].forEach((q, i) => i ? ctx.lineTo(X(q.epoch), Y(q.loss)) : ctx.moveTo(X(q.epoch), Y(q.loss))); ctx.stroke();
+  for (const [k, c, d] of NETS) {
+    ctx.strokeStyle = mix(P[c], P[c], 0); ctx.lineWidth = 2; ctx.setLineDash(d); ctx.beginPath();
+    hist[k].forEach((q, i) => i ? ctx.lineTo(X(q.epoch), Y(q.loss)) : ctx.moveTo(X(q.epoch), Y(q.loss))); ctx.stroke(); ctx.setLineDash([]);
   }
   const last = k => hist[k].length ? ` ${(100 * hist[k].at(-1).acc).toFixed(0)}%` : '';
-  legend(ctx, P, Math.max(box[0] + 8, box[2] - 190), box[1] + 0.35 * (box[3] - box[1]), [[mix(P.accent, P.accent, 0), 'LSTM' + last('lstm')], [mix(P.gold, P.gold, 0), tx('plain RNN', 'RNN semplice') + last('rnn')],
+  legend(ctx, P, Math.max(box[0] + 8, box[2] - 190), box[1] + 0.3 * (box[3] - box[1]), [...shown(P, last),
     [mix(P['ink-soft'], P.ground, 0.3), tx('uniform guess, ln K', 'risposta uniforme, ln K'), [4, 4]]]);
 }
 
-// g = { lstm: Float64Array(T), rnn: ... }: the mean of |dL/dh_t| over the test sequences
+// g = { lstm: Float64Array(T), gru: ..., rnn: ... }: the mean of |dL/dh_t| over the test sequences
 // divided by its value at the last step, so that only the decay backwards is compared
 export function drawGrad(cv, g0, t) {
   const rel = a => { const e = a.at(-1) || 1; return a.map(v => v / e); };
-  const g = { lstm: rel(g0.lstm), rnn: rel(g0.rnn) };
+  const g = { lstm: rel(g0.lstm), gru: rel(g0.gru), rnn: rel(g0.rnn) };
   const { ctx, W, P } = fit(cv, 230), box = [40, 24, W - 10, 196], T = g.lstm.length;
-  const logs = [...g.lstm, ...g.rnn].filter(v => v > 0).map(Math.log10);
+  const logs = [...g.lstm, ...g.gru, ...g.rnn].filter(v => v > 0).map(Math.log10);
   let hi = Math.ceil(Math.max(...logs, 0)), lo = Math.floor(Math.min(...logs, hi - 2));
   lo = Math.max(lo, hi - 16);
   const X = s => box[0] + (T > 1 ? s / (T - 1) : 0.5) * (box[2] - box[0]), Y = v => box[3] - (clamp(Math.log10(Math.max(v, 1e-300)), lo, hi) - lo) / (hi - lo) * (box[3] - box[1]);
@@ -252,10 +284,10 @@ export function drawGrad(cv, g0, t) {
   axes(ctx, P, box, ticks(1, T, 6).filter(v => Number.isInteger(v)).map(v => [v, X(v - 1)]), ys, tx('step t', 'passo t'), '|∂L/∂h_t| / |∂L/∂h_T|');
   ctx.strokeStyle = mix(P.ink, P.ink, 0); ctx.globalAlpha = 0.25; ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(X(t), box[1]); ctx.lineTo(X(t), box[3]); ctx.stroke(); ctx.globalAlpha = 1;
-  for (const [k, col] of [['rnn', P.gold], ['lstm', P.accent]]) {
-    ctx.strokeStyle = ctx.fillStyle = mix(col, col, 0); ctx.lineWidth = 2; ctx.beginPath();
-    g[k].forEach((v, s) => s ? ctx.lineTo(X(s), Y(v)) : ctx.moveTo(X(s), Y(v))); ctx.stroke();
+  for (const [k, c, d] of NETS) {
+    ctx.strokeStyle = ctx.fillStyle = mix(P[c], P[c], 0); ctx.lineWidth = 2; ctx.setLineDash(d); ctx.beginPath();
+    g[k].forEach((v, s) => s ? ctx.lineTo(X(s), Y(v)) : ctx.moveTo(X(s), Y(v))); ctx.stroke(); ctx.setLineDash([]);
     g[k].forEach((v, s) => { ctx.beginPath(); ctx.arc(X(s), Y(v), 2.2, 0, 2 * Math.PI); ctx.fill(); });
   }
-  legend(ctx, P, box[0] + 8, box[1] + 10, [[mix(P.accent, P.accent, 0), 'LSTM'], [mix(P.gold, P.gold, 0), tx('plain RNN', 'RNN semplice')]]);
+  legend(ctx, P, box[0] + 8, box[1] + 10, shown(P, () => ''));
 }

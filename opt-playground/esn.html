@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Echo State Networks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<style>
+main.esn { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+main.esn figcaption { min-height: 0; }
+main.esn canvas { width: 100%; display: block; border-radius: 6px; }
+.across { grid-column: 1 / -1; }
+.pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+@media (max-width: 860px) { main.esn, .pair { grid-template-columns: minmax(0, 1fr); } }
+#series { cursor: pointer; }
+#eig { max-width: 320px; margin: 0 auto; }
+.note { font-size: 14px; color: var(--ink-soft); margin: 6px 0 0; }
+.eqs { display: grid; gap: 4px; font-size: 15px; align-content: start; }
+.eqs h3, .cmphead h3 { margin: 0 0 4px; font: 500 11px 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.eqs h3 + .eq { margin-top: 0; }
+.eqs h3:not(:first-child) { margin-top: 10px; }
+.eq { padding: 5px 8px; border: 1px solid transparent; border-radius: 6px; overflow-x: auto; }
+.eq.lit { background: var(--lilac); border-color: var(--accent-2); }
+.eq small { display: block; font: 12px/1.35 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.minibar { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin: 4px 0 10px; font: 13px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.minibar label { display: flex; gap: 8px; align-items: center; }
+.minibar .grow { margin-left: auto; }
+.minibar output { min-width: 2ch; }
+.minibar b { font: 500 16px 'IBM Plex Mono', monospace; color: var(--ink); min-width: 3ch; display: inline-block; }
+table.lab { border-collapse: collapse; font: 12px 'IBM Plex Mono', monospace; margin: 10px 0 4px; }
+table.lab th, table.lab td { padding: 3px 12px; border-bottom: 1px solid var(--rule); text-align: right; }
+table.lab th:first-child, table.lab td:first-child { text-align: left; }
+table.lab th { font-weight: 500; color: var(--ink-soft); }
+table.lab td.best { color: var(--accent); font-weight: 500; }
+.tablewrap { overflow-x: auto; }
+.prose { font-size: 15px; max-width: 80ch; margin: 8px 0; }
+.k.esn { background: var(--accent); } .k.idnn { background: var(--gold); } .k.rnn { background: var(--ink-soft); }
+</style>
+</head>
+<body>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="esn.html" aria-current="page">Echo state</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1><span data-l="en">Echo State Networks</span><span data-l="it" lang="it">Echo state network</span></h1>
+  <p class="lede" data-l="en">An echo state network is a recurrent network in which only the output
+  is learnt: a reservoir of \(N\) tanh units, whose input and recurrent weights are drawn at random
+  and never trained, is driven by the input series, and its state \(x(t)\), a nonlinear echo of the
+  recent inputs, is read by a linear readout \(\hat y(t) = W_{\text{out}}\,[1; x(t)]\). Fitting the
+  readout on the states collected after a washout is a ridge regression, a strictly convex
+  quadratic problem whose minimizer the normal equations give in closed form, while training all
+  the weights of a recurrent network by backpropagation through time is a nonconvex problem, solved
+  by a descent method that stops wherever its iterates settle. The reservoir is of use only if its
+  state forgets where it started (the echo state property), which for a spectral radius \(\rho\)
+  of \(W\) below 1 is usually the case; the scene runs the benchmarks of the course labs, NARMA10
+  and Mackey-Glass, with the hyperparameters the lab selected by grid search, and trains beside
+  the reservoir the input delayed network and the Elman network of the previous lab.</p>
+  <p class="lede" data-l="it" lang="it">Una echo state network è una rete ricorrente in cui si apprende
+  solo l'uscita: un serbatoio di \(N\) unità tanh, i cui pesi d'ingresso e ricorrenti sono estratti a
+  caso e mai addestrati, è guidato dalla serie d'ingresso, e il suo stato \(x(t)\), un'eco non lineare
+  degli ingressi recenti, è letto da un readout lineare \(\hat y(t) = W_{\text{out}}\,[1; x(t)]\).
+  Stimare il readout sugli stati raccolti dopo un washout è una regressione ridge, un problema
+  quadratico strettamente convesso il cui minimo è dato in forma chiusa dalle equazioni normali,
+  mentre addestrare tutti i pesi di una rete ricorrente con la backpropagation through time è un
+  problema non convesso, risolto da un metodo di discesa che si ferma dove i suoi iterati si
+  assestano. Il serbatoio serve solo se il suo stato dimentica da dove è partito (la proprietà
+  dell'eco), cosa che per un raggio spettrale \(\rho\) di \(W\) minore di 1 di solito accade; la scena
+  usa i benchmark dei laboratori del corso, NARMA10 e Mackey-Glass, con gli iperparametri scelti
+  dal lab per grid search, e addestra accanto al serbatoio la rete con ingressi ritardati e la rete
+  di Elman del laboratorio precedente.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span><span data-l="en">benchmark</span><span data-l="it" lang="it">benchmark</span></span><span class="inline"><select id="bench"><option value="narma">NARMA10 (course file)</option><option value="narmafull">NARMA10 (Atiya and Parlos)</option><option value="mg">Mackey-Glass</option></select><button id="lab" type="button">Lab settings</button></span></label>
+    <label><span><span data-l="en">units</span><span data-l="it" lang="it">unità</span> \(N\)</span><span class="inline"><select id="N"><option>50</option><option>100</option><option selected>200</option><option>300</option><option>500</option></select><button id="seed" type="button">New reservoir</button></span></label>
+    <label><span><span data-l="en">connectivity</span><span data-l="it" lang="it">connettività</span></span><select id="conn"><option value="1">1</option><option value="0.5">0.5</option><option value="0.2">0.2</option><option value="0.1">0.1</option><option value="0.05">0.05</option></select></label>
+    <label><span><span data-l="en">spectral radius</span><span data-l="it" lang="it">raggio spettrale</span> \(\rho\)</span><input id="rho" type="range" min="0.05" max="2" step="0.05" value="0.9"><output id="rhov"></output></label>
+    <label><span><span data-l="en">input scaling</span><span data-l="it" lang="it">scala d'ingresso</span> \(\omega\)</span><input id="om" type="range" min="0.1" max="3" step="0.1" value="0.5"><output id="omv"></output></label>
+    <label><span><span data-l="en">leak rate</span><span data-l="it" lang="it">tasso di perdita</span> \(a\)</span><input id="leak" type="range" min="0.05" max="1" step="0.05" value="1"><output id="leakv"></output></label>
+    <label><span>washout</span><input id="wash" type="range" min="0" max="1000" step="10" value="200"><output id="washv"></output></label>
+    <label><span>\(\lambda\)</span><input id="lam" type="range" min="-10" max="0" step="0.5" value="-1"><output id="lamv"></output></label>
+  </div>
+  <div class="transport"><label class="counter"><span><span data-l="en">step</span><span data-l="it" lang="it">passo</span> \(t\)</span><output id="count">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+</section>
+<p class="explain" id="rep"></p>
+<main class="esn">
+  <figure class="across"><figcaption><span data-l="en">The whole series in the strip on top (grey the washout,
+  white the design set on which the readout is fitted, lilac the test set; a click moves there), and
+  below it a window of 240 steps around \(t\): the input \(u(t)\) in gold, the target \(y(t)\) and,
+  dashed, the output \(\hat y(t)\) of the readout, which on the test set has never seen the target.</span><span data-l="it" lang="it">L'intera serie nella striscia in alto (in grigio il washout,
+  in bianco l'insieme di progetto su cui si stima il readout, in lilla quello di test; un clic porta
+  lì), e sotto una finestra di 240 passi intorno a \(t\): l'ingresso \(u(t)\) in oro, il bersaglio
+  \(y(t)\) e, tratteggiata, l'uscita \(\hat y(t)\) del readout, che sull'insieme di test non ha mai
+  visto il bersaglio.</span></figcaption>
+  <canvas id="series"></canvas>
+  <dl class="stats">
+    <div><dt><span data-l="en">design MSE</span><span data-l="it" lang="it">MSE di progetto</span></dt><dd id="trmse"></dd></div>
+    <div><dt><span data-l="en">design NMSE</span><span data-l="it" lang="it">NMSE di progetto</span></dt><dd id="trnmse"></dd></div>
+    <div><dt><span data-l="en">test MSE</span><span data-l="it" lang="it">MSE di test</span></dt><dd id="temse"></dd></div>
+    <div><dt><span data-l="en">test NMSE</span><span data-l="it" lang="it">NMSE di test</span></dt><dd id="tenmse"></dd></div>
+  </dl>
+  </figure>
+  <figure><figcaption><span data-l="en">The reservoir at step \(t\): each dot is a unit, violet when
+  \(x_i(t) > 0\) and gold when negative, the chords the strongest entries of \(W\), and the bars
+  outside the ring the terms \(W_{\text{out},i}\,x_i(t)\) that the readout adds up into
+  \(\hat y(t)\), outwards when positive.</span><span data-l="it" lang="it">Il serbatoio al passo \(t\): ogni punto è un'unità, viola
+  quando \(x_i(t) > 0\) e oro quando negativa, le corde i termini più forti di \(W\), e le barre
+  fuori dall'anello i termini \(W_{\text{out},i}\,x_i(t)\) che il readout somma in \(\hat y(t)\),
+  verso l'esterno quando positivi.</span></figcaption><canvas id="ring"></canvas></figure>
+  <aside class="eqs">
+    <h3><span data-l="en">The reservoir and its readout</span><span data-l="it" lang="it">Il serbatoio e il suo readout</span></h3>
+    <div class="eq">\(x(t) = (1-a)\,x(t-1) + a \tanh\big(W_{\text{in}}\,[1; u(t)] + W x(t-1)\big)\)<small><span data-l="en">the state, with the leak rate \(a\); \(W_{\text{in}}\) is uniform in \([-\omega, \omega]\), and \(W\), uniform in \([-1, 1]\) on a fraction of its entries, is scaled to the spectral radius \(\rho\)</span><span data-l="it" lang="it">lo stato, con il tasso di perdita \(a\); \(W_{\text{in}}\) è uniforme in \([-\omega, \omega]\), e \(W\), uniforme in \([-1, 1]\) su una frazione dei suoi termini, è scalata al raggio spettrale \(\rho\)</span></small></div>
+    <div class="eq">\(\hat y(t) = W_{\text{out}}\,[1; x(t)]\)<small><span data-l="en">the readout, the only part that is learnt</span><span data-l="it" lang="it">il readout, la sola parte che si apprende</span></small></div>
+    <div class="eq">\(W_{\text{out}} = Y X^\top (X X^\top + \lambda I)^{-1}\)<small><span data-l="en">the minimizer of \(\|Y - W_{\text{out}} X\|^2 + \lambda \|W_{\text{out}}\|^2\), where the columns of \(X\) are the \([1; x(t)]\) after the washout and \(Y\) holds the targets; the Gram matrix is computed once and \(\lambda\) changes only a Cholesky solve</span><span data-l="it" lang="it">il minimo di \(\|Y - W_{\text{out}} X\|^2 + \lambda \|W_{\text{out}}\|^2\), dove le colonne di \(X\) sono i \([1; x(t)]\) dopo il washout e \(Y\) contiene i bersagli; la matrice di Gram si calcola una volta e \(\lambda\) cambia solo una risoluzione con Cholesky</span></small></div>
+    <h3><span data-l="en">The benchmarks</span><span data-l="it" lang="it">I benchmark</span></h3>
+    <div class="eq" data-bench="narma">\(y(t) = 0.3\,y(t-1) + 1.5\,u(t-1)\,u(t-10) + 0.1\)<small><span data-l="en">NARMA10 of the course file, with \(u(t)\) uniform in \([0, 0.5]\): the file satisfies this recurrence to the last digit, without the sum term of Atiya and Parlos</span><span data-l="it" lang="it">NARMA10 del file del corso, con \(u(t)\) uniforme in \([0, 0.5]\): il file soddisfa questa ricorrenza fino all'ultima cifra, senza il termine con la somma di Atiya e Parlos</span></small></div>
+    <div class="eq" data-bench="narmafull">\(\begin{aligned} y(t) = {} &amp; 0.3\,y(t-1) + 0.05\,y(t-1) \textstyle\sum_{i=1}^{10} y(t-i) \\ &amp; + 1.5\,u(t-1)\,u(t-10) + 0.1 \end{aligned}\)<small><span data-l="en">NARMA10 of Atiya and Parlos (2000), on the same input</span><span data-l="it" lang="it">NARMA10 di Atiya e Parlos (2000), sullo stesso ingresso</span></small></div>
+    <div class="eq" data-bench="mg">\(\dot z(t) = \dfrac{0.2\,z(t-17)}{1 + z(t-17)^{10}} - 0.1\,z(t)\)<small><span data-l="en">Mackey-Glass with delay 17, integrated by Euler with step \(0.1\) and sampled at every unit of time as \(s(t) = \tanh(z(t) - 1)\), the form of the course file; the task is to predict \(y(t) = s(t+1)\) from \(u(t) = s(t)\)</span><span data-l="it" lang="it">Mackey-Glass con ritardo 17, integrata con Eulero a passo \(0.1\) e campionata a ogni unità di tempo come \(s(t) = \tanh(z(t) - 1)\), la forma del file del corso; il compito è prevedere \(y(t) = s(t+1)\) da \(u(t) = s(t)\)</span></small></div>
+  </aside>
+  <figure><figcaption><span data-l="en">The eigenvalues of \(W\) in the complex plane, after the
+  scaling: the violet circle has radius \(\rho\), the dashed one radius 1. A new reservoir, a
+  different \(N\) or connectivity draw a new \(W\); \(\rho\) only stretches the cloud.</span><span data-l="it" lang="it">Gli autovalori di \(W\) nel piano complesso, dopo la
+  scalatura: il cerchio viola ha raggio \(\rho\), quello tratteggiato raggio 1. Un nuovo serbatoio,
+  un altro \(N\) o un'altra connettività estraggono una nuova \(W\); \(\rho\) dilata soltanto la
+  nuvola.</span></figcaption><canvas id="eig"></canvas></figure>
+  <figure><figcaption><span data-l="en">The echo state property: two runs of the same reservoir on the
+  same input, one from \(x(0) = 0\) and one from a random \(x'(0)\), and their distance, in log
+  scale, over the first 300 steps. The condition usually quoted, \(\rho < 1\), is neither necessary
+  nor sufficient: Jaeger's sufficient condition asks the largest singular value of \(W\) below 1,
+  and a strong input drives the units into saturation, where \(\tanh\) contracts, so that a larger
+  \(\omega\) restores the forgetting for \(\rho\) somewhat above 1.</span><span data-l="it" lang="it">La proprietà dell'eco: due corse dello stesso serbatoio sullo
+  stesso ingresso, una da \(x(0) = 0\) e una da un \(x'(0)\) casuale, e la loro distanza, in scala
+  logaritmica, nei primi 300 passi. La condizione citata di solito, \(\rho < 1\), non è né necessaria
+  né sufficiente: la condizione sufficiente di Jaeger chiede il massimo valore singolare di \(W\)
+  minore di 1, e un ingresso forte porta le unità in saturazione, dove \(\tanh\) contrae, così che un
+  \(\omega\) più grande ripristina l'oblio per \(\rho\) di poco sopra 1.</span></figcaption><canvas id="echo"></canvas><p class="note" id="echotxt"></p></figure>
+  <figure><figcaption><span data-l="en">The readout \(W_{\text{out}}\), the bias first and then one
+  bar per unit. With a small \(\lambda\) the weights grow large and of alternating sign, fitting the
+  design set more closely than the test set allows.</span><span data-l="it" lang="it">Il readout \(W_{\text{out}}\), prima il bias e poi una barra
+  per unità. Con un \(\lambda\) piccolo i pesi crescono e alternano il segno, adattandosi all'insieme
+  di progetto più di quanto l'insieme di test consenta.</span></figcaption><canvas id="wout"></canvas></figure>
+  <figure><figcaption><span data-l="en">The memory capacity of Jaeger (2002): on an input uniform in
+  \([-0.8, 0.8]\), a readout for each delay \(k\) is trained to give back \(u(t-k)\), and
+  \(\mathrm{MC}_k = r^2\big(u(t-k), y_k(t)\big)\) is the squared correlation on 1000 further steps;
+  the sum over \(k\) is at most \(N\). A small \(\omega\) keeps the units nearly linear and the
+  memory long, a \(\rho\) near 1 makes it longer.</span><span data-l="it" lang="it">La capacità di memoria di Jaeger (2002): su un ingresso
+  uniforme in \([-0.8, 0.8]\), per ogni ritardo \(k\) si addestra un readout a restituire \(u(t-k)\),
+  e \(\mathrm{MC}_k = r^2\big(u(t-k), y_k(t)\big)\) è la correlazione al quadrato su altri 1000 passi;
+  la somma su \(k\) non supera \(N\). Un \(\omega\) piccolo tiene le unità quasi lineari e la memoria
+  lunga, un \(\rho\) vicino a 1 la allunga.</span></figcaption><canvas id="mc"></canvas><p class="note" id="mctxt"></p></figure>
+  <section class="across">
+    <div class="cmphead"><h3><span data-l="en">Against the networks of LAB3_1</span><span data-l="it" lang="it">Contro le reti di LAB3_1</span></h3></div>
+    <p class="prose"><span data-l="en">The input delayed network (IDNN) reads a window of the last \(d\)
+    inputs, \(\hat y(t) = v^\top \tanh(A\,[u(t), \dots, u(t-d+1)] + b) + c\), and the Elman network keeps
+    a state, \(h(t) = \tanh(a\,u(t) + W h(t-1) + b)\), \(\hat y(t) = v^\top h(t) + c\), whose weights are
+    all trained, by backpropagation through time on chunks of 40 steps. Both are trained here with
+    Adam on the same design set as the readout, with the sizes the lab selected, on standardized
+    input and target; their test MSE is drawn at every epoch beside that of the reservoir.</span><span data-l="it" lang="it">La rete con ingressi ritardati (IDNN) legge una finestra degli
+    ultimi \(d\) ingressi, \(\hat y(t) = v^\top \tanh(A\,[u(t), \dots, u(t-d+1)] + b) + c\), e la rete di
+    Elman tiene uno stato, \(h(t) = \tanh(a\,u(t) + W h(t-1) + b)\), \(\hat y(t) = v^\top h(t) + c\), i
+    cui pesi sono tutti addestrati, con la backpropagation through time su tratti di 40 passi.
+    Entrambe sono addestrate qui con Adam sullo stesso insieme di progetto del readout, con le
+    dimensioni scelte dal lab, su ingresso e bersaglio standardizzati; il loro MSE di test è
+    disegnato a ogni epoca accanto a quello del serbatoio.</span></p>
+    <div class="minibar"><label><span data-l="en">IDNN window</span><span data-l="it" lang="it">finestra IDNN</span> \(d\) <input id="d" type="range" min="1" max="12" step="1" value="3"><output id="dv"></output></label>
+    <span class="grow"><span data-l="en">epoch</span><span data-l="it" lang="it">epoca</span> <b id="epoch">0</b></span><button id="netreset" type="button">New networks</button><button id="train" type="button">Train</button></div>
+    <div class="pair">
+      <figure><figcaption><span data-l="en">The test MSE of the three models, in log scale: filled the
+      runs of this page, dashed those the lab reports for the same task.</span><span data-l="it" lang="it">L'MSE di test dei tre modelli, in scala logaritmica:
+      pieni i valori di questa pagina, tratteggiati quelli che il lab riporta per lo stesso
+      compito.</span></figcaption><canvas id="cmp"></canvas></figure>
+      <figure><figcaption><span data-l="en">The test MSE of the IDNN and of the RNN along the epochs;
+      the dashed line is the reservoir, whose readout needs no epochs.</span><span data-l="it" lang="it">L'MSE di test della IDNN e della RNN lungo le epoche; la
+      linea tratteggiata è il serbatoio, il cui readout non ha bisogno di epoche.</span></figcaption><canvas id="curves"></canvas></figure>
+    </div>
+    <p class="note" id="nets"></p>
+    <div class="tablewrap"><table class="lab">
+      <thead><tr><th><span data-l="en">test MSE in the lab</span><span data-l="it" lang="it">MSE di test nel lab</span></th><th>ESN</th><th>IDNN</th><th>RNN</th></tr></thead>
+      <tbody>
+        <tr><td>NARMA10</td><td class="best">1.81e-3</td><td>4.22e-3</td><td>2.39e-3</td></tr>
+        <tr><td>Mackey-Glass</td><td class="best">3.82e-5</td><td>1.36e-3</td><td>3.74e-4</td></tr>
+        <tr><td><span data-l="en">Santa Fe laser</span><span data-l="it" lang="it">laser di Santa Fe</span></td><td class="best">2.85e-3</td><td>1.98e-2</td><td>5.57e-3</td></tr>
+      </tbody>
+    </table></div>
+    <p class="prose" id="verdict"><span data-l="en">With the hyperparameters it selected, the lab found the
+    reservoir best on all three benchmarks: on NARMA10 by a factor of 1.3 over the RNN and 2.3 over
+    the IDNN, on Mackey-Glass by factors of 10 and 36, and on the laser series by 2 and 7 (the laser
+    data come with MATLAB as <code>laser_dataset</code> and are not in the course repository, so the
+    scene reports them without running them). In this page the ranking does not survive as it stands:
+    trained with Adam instead of the gradient descent with adaptive step and weight decay of MATLAB,
+    the RNN of the lab sizes reaches in 30 epochs a test MSE of about \(8 \cdot 10^{-4}\) on NARMA10 and
+    \(10^{-5}\) on Mackey-Glass, below the reservoir with the settings of the lab (about \(10^{-3}\) and
+    \(2.5 \cdot 10^{-5}\)), and the IDNN gets about \(3 \cdot 10^{-5}\) on Mackey-Glass, since its window
+    here starts from \(u(t)\), while the <code>timedelaynet(1:d)</code> of the lab starts from
+    \(u(t-1)\). The reservoir is held back mostly by its readout: the grid of the lab stopped at
+    \(\lambda = 10^{-4}\) from below and selected \(\lambda = 0.1\) for NARMA10, and with
+    \(\lambda = 10^{-6}\) the test MSE of the reservoir on NARMA10 falls here to between \(5 \cdot 10^{-5}\)
+    and \(9 \cdot 10^{-5}\) (depending on the draw of the reservoir), an order of magnitude below the
+    RNN, while on Mackey-Glass, with \(N = 200\), \(\rho = 0.9\), \(\omega = 1\) and
+    \(\lambda = 10^{-8}\), it falls below \(10^{-8}\). Of course, the IDNN gains from a different
+    setting too: a window of \(d = 11\) inputs lets it see \(u(t-10)\), which NARMA10 multiplies by
+    \(u(t-1)\) and the window of 3 selected by the lab cannot reach, and its test MSE falls to about
+    \(5 \cdot 10^{-4}\), still above the reservoir with a small \(\lambda\).</span><span data-l="it" lang="it">Con gli iperparametri che ha scelto, il lab ha trovato il
+    serbatoio migliore su tutti e tre i benchmark: su NARMA10 di un fattore 1.3 sulla RNN e 2.3 sulla
+    IDNN, su Mackey-Glass di fattori 10 e 36, e sulla serie del laser di 2 e 7 (i dati del laser vengono
+    con MATLAB come <code>laser_dataset</code> e non sono nel repository del corso, quindi la scena ne
+    riporta i risultati senza eseguirli). In questa pagina la classifica non regge così com'è:
+    addestrata con Adam invece che con la discesa del gradiente a passo adattivo e weight decay di
+    MATLAB, la RNN con le dimensioni del lab arriva in 30 epoche a un MSE di test di circa
+    \(8 \cdot 10^{-4}\) su NARMA10 e \(10^{-5}\) su Mackey-Glass, sotto il serbatoio con i valori del lab
+    (circa \(10^{-3}\) e \(2.5 \cdot 10^{-5}\)), e la IDNN ottiene circa \(3 \cdot 10^{-5}\) su
+    Mackey-Glass, perché la sua finestra qui parte da \(u(t)\), mentre la <code>timedelaynet(1:d)</code>
+    del lab parte da \(u(t-1)\). Il serbatoio è frenato soprattutto dal suo readout: la griglia del lab
+    si fermava in basso a \(\lambda = 10^{-4}\) e per NARMA10 ha scelto \(\lambda = 0.1\), e con
+    \(\lambda = 10^{-6}\) l'MSE di test del serbatoio su NARMA10 scende qui fra \(5 \cdot 10^{-5}\) e
+    \(9 \cdot 10^{-5}\) (secondo l'estrazione del serbatoio), un ordine di grandezza sotto la RNN, mentre
+    su Mackey-Glass, con \(N = 200\), \(\rho = 0.9\), \(\omega = 1\) e \(\lambda = 10^{-8}\), scende sotto
+    \(10^{-8}\). Naturalmente anche la IDNN guadagna da un'altra scelta: una finestra di \(d = 11\)
+    ingressi le permette di vedere \(u(t-10)\), che NARMA10 moltiplica per \(u(t-1)\) e che la finestra
+    di 3 scelta dal lab non raggiunge, e il suo MSE di test scende a circa \(5 \cdot 10^{-4}\), ancora
+    sopra il serbatoio con un \(\lambda\) piccolo.</span></p>
+  </section>
+</main>
+<footer><span data-l="en">Scene W of opt-playground, after the labs LAB3_1 and LAB3_2 of the course
+repository <a href="https://github.com/dmeoli/ComputationalNeuroscience">dmeoli/ComputationalNeuroscience</a>
+(benchmarks, splits, hyperparameters and reported errors), H. Jaeger,
+<a href="https://www.ai.rug.nl/minds/uploads/EchoStatesTechRep.pdf">The "echo state" approach to analysing
+and training recurrent neural networks</a> (GMD Report 148, 2001), M. Lukoševičius,
+<a href="https://doi.org/10.1007/978-3-642-35289-8_36">A practical guide to applying echo state networks</a>
+(Neural Networks: Tricks of the Trade, 2012), and H. Jaeger and H. Haas,
+<a href="https://doi.org/10.1126/science.1091277">Harnessing nonlinearity: predicting chaotic systems and
+saving energy in wireless communication</a> (Science, 2004).</span><span data-l="it" lang="it">Scena W di opt-playground, dai laboratori LAB3_1 e LAB3_2 del
+repository del corso <a href="https://github.com/dmeoli/ComputationalNeuroscience">dmeoli/ComputationalNeuroscience</a>
+(benchmark, suddivisioni, iperparametri ed errori riportati), H. Jaeger,
+<a href="https://www.ai.rug.nl/minds/uploads/EchoStatesTechRep.pdf">The "echo state" approach to analysing
+and training recurrent neural networks</a> (GMD Report 148, 2001), M. Lukoševičius,
+<a href="https://doi.org/10.1007/978-3-642-35289-8_36">A practical guide to applying echo state networks</a>
+(Neural Networks: Tricks of the Trade, 2012), e H. Jaeger e H. Haas,
+<a href="https://doi.org/10.1126/science.1091277">Harnessing nonlinearity: predicting chaotic systems and
+saving energy in wireless communication</a> (Science, 2004).</span></footer>
+<script type="module" src="src/esn.js"></script>
+</body>
+</html>

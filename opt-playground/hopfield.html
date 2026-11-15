@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hopfield Networks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="stage3d.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<style>
+main.hop { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+main.hop figcaption { min-height: 0; }
+main.hop canvas { display: block; border-radius: 6px; }
+#state { cursor: crosshair; touch-action: none; margin-bottom: 12px; }
+#glyphs { cursor: pointer; }
+.across { grid-column: 1 / -1; }
+.stack { display: grid; gap: 18px; }
+@media (max-width: 860px) { main.hop { grid-template-columns: minmax(0, 1fr); } }
+.eqs { display: grid; gap: 4px; font-size: 15px; }
+.eqs h3 { margin: 0 0 4px; font: 500 11px 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.eq { padding: 5px 8px; border: 1px solid var(--rule); border-radius: 6px; overflow-x: auto; }
+.eq small { display: block; font: 12px/1.35 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.eq small b { font-weight: 500; color: var(--ink); }
+h2.part { margin: 34px 0 6px; font: 500 13px 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+p.prose { margin: 0 0 14px; max-width: 72ch; }
+.stepper { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-top: 8px; font: 13px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.stepper button { padding: 3px 9px; }
+.stepper output { font: 500 16px 'IBM Plex Mono', monospace; color: var(--ink); min-width: 3ch; }
+#caprep { color: var(--ink-soft); font-style: italic; margin: 8px 0 0; min-height: 3em; }
+figure.land { max-width: 820px; justify-self: center; width: 100%; }
+.legend3 { font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); margin-top: 6px; }
+.legend3 i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: middle; margin: 0 4px 0 10px; }
+</style>
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="ssm.html">State space</a> · <a href="gnn.html">Graphs</a> · <a href="moe.html">Mixture of experts</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="hopfield.html" aria-current="page">Hopfield</a> · <a href="spiking.html">Spiking</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1><span data-l="en">Hopfield Networks</span><span data-l="it" lang="it">Reti di Hopfield</span></h1>
+  <p class="lede" data-l="en">A Hopfield network keeps a few binary patterns in the symmetric weights
+  \(W\) of a fully connected network of \(N\) neurons with states \(s_i = \pm 1\), and recalls one of
+  them from a corrupted copy by updating its neurons one at a time, each to the sign of its local field
+  \(h_i = \sum_j w_{ij} s_j\). Every such update leaves the energy \(E(s) = -\tfrac12\, s^\top W s\)
+  unchanged or lower, so that the dynamics is a descent method for a quadratic function on the vertices
+  of the hypercube \(\{-1, 1\}^N\), which stops at a local minimum; the stored patterns are, as long as
+  there are not too many of them, among these minima. Here \(N = 144\), the pixels of a glyph of
+  \(12 \times 12\): a click on a glyph stores it or forgets it, a stroke on the state draws on it, and
+  the figures follow the recall, the energy and the landscape on the plane of the first two principal
+  directions of the stored glyphs.</p>
+  <p class="lede" data-l="it" lang="it">Una rete di Hopfield conserva alcuni pattern binari nei pesi
+  simmetrici \(W\) di una rete completamente connessa di \(N\) neuroni con stati \(s_i = \pm 1\), e ne
+  richiama uno da una copia corrotta aggiornando i neuroni uno alla volta, ciascuno al segno del suo campo
+  locale \(h_i = \sum_j w_{ij} s_j\). Ogni aggiornamento di questo tipo lascia l'energia
+  \(E(s) = -\tfrac12\, s^\top W s\) invariata o più bassa, così che la dinamica è un metodo di discesa per
+  una funzione quadratica sui vertici dell'ipercubo \(\{-1, 1\}^N\), che si ferma in un minimo locale; i
+  pattern memorizzati sono, finché non sono troppi, fra questi minimi. Qui \(N = 144\), i pixel di un glifo
+  di \(12 \times 12\): un clic su un glifo lo memorizza o lo dimentica, un tratto sullo stato vi disegna
+  sopra, e le figure seguono il richiamo, l'energia e il paesaggio sul piano delle prime due direzioni
+  principali dei glifi memorizzati.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span><span data-l="en">network</span><span data-l="it" lang="it">rete</span></span><select id="net"><option value="hebb">classical, Hebbian rule</option><option value="proj">classical, projection rule</option><option value="dense">dense (modern)</option></select></label>
+    <label><span><span data-l="en">cue</span><span data-l="it" lang="it">indizio</span></span><select id="cue"></select></label>
+    <div class="inline"><label><span><span data-l="en">flipped pixels</span><span data-l="it" lang="it">pixel invertiti</span></span><input id="noise" type="range" min="0" max="0.5" step="0.01" value="0.1"><output id="noisev"></output></label><button id="newcue" type="button">New cue</button></div>
+    <label><span>\(\beta\) <span data-l="en">(dense)</span><span data-l="it" lang="it">(densa)</span></span><input id="lb" type="range" min="-2.5" max="0" step="0.05" value="-0.7" aria-label="log10 beta"><output id="betav"></output></label>
+  </div>
+  <div class="transport"><label class="counter"><span><span data-l="en">updates</span><span data-l="it" lang="it">aggiornamenti</span></span><output id="count">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+</section>
+<p class="explain" id="rep"></p>
+<main class="hop">
+  <figure><figcaption><span data-l="en">The state of the network, ink for \(+1\) and ground for \(-1\)
+  (grey in between, for the continuous states of the dense network); the gold frame is the neuron just
+  updated, thicker when it flipped. Draw on it to make a cue of your own. Below, the 36 glyphs: the
+  violet ones are stored, a click stores or forgets one, and the cue comes from the one framed in
+  gold.</span><span data-l="it" lang="it">Lo stato della rete, inchiostro per \(+1\) e sfondo per \(-1\)
+  (grigio nel mezzo, per gli stati continui della rete densa); il riquadro d'oro è il neurone appena
+  aggiornato, più spesso quando si è invertito. Disegnandoci sopra si costruisce un proprio indizio. Sotto,
+  i 36 glifi: quelli viola sono memorizzati, un clic ne memorizza o ne dimentica uno, e l'indizio viene da
+  quello incorniciato in oro.</span></figcaption>
+  <canvas id="state"></canvas>
+  <canvas id="glyphs"></canvas></figure>
+  <div class="stack">
+    <aside class="eqs">
+      <h3><span data-l="en">The network</span><span data-l="it" lang="it">La rete</span></h3>
+      <div class="eq" data-net="hebb">\(W = \frac1N \sum_{\mu=1}^p \xi^\mu \xi^{\mu\top}\), \(w_{ii} = 0\)<small><span data-l="en">Hebbian rule (Hopfield 1982), the patterns \(\xi^\mu\) as the columns of \(X\)</span><span data-l="it" lang="it">regola di Hebb (Hopfield 1982), con i pattern \(\xi^\mu\) come colonne di \(X\)</span></small></div>
+      <div class="eq" data-net="proj">\(W = X\,(X^\top X)^{-1} X^\top\), \(w_{ii} = 0\)<small><span data-l="en">projection rule: every linearly independent pattern is a fixed point</span><span data-l="it" lang="it">regola di proiezione: ogni pattern linearmente indipendente è un punto fisso</span></small></div>
+      <div class="eq" data-net="hebb proj">\(s_i \leftarrow \operatorname{sign}(h_i),\ h_i = \sum_j w_{ij} s_j\)<small><span data-l="en">one neuron at a time, in random order;</span><span data-l="it" lang="it">un neurone alla volta, in ordine casuale;</span> <b id="vh"></b></small></div>
+      <div class="eq" data-net="hebb proj">\(\Delta E = -(s_i^{\text{new}} - s_i)\, h_i \le 0\)<small><span data-l="en">the change of the energy at every update, since \(W\) is symmetric with zero diagonal;</span><span data-l="it" lang="it">la variazione dell'energia a ogni aggiornamento, poiché \(W\) è simmetrica con diagonale nulla;</span> <b id="vdE"></b></small></div>
+      <div class="eq" data-net="dense">\(\xi \leftarrow X \operatorname{softmax}(\beta X^\top \xi)\)<small><span data-l="en">the whole state at once: attention with query \(\xi\) and keys and values \(X\);</span><span data-l="it" lang="it">tutto lo stato insieme: attention con query \(\xi\) e chiavi e valori \(X\);</span> <b id="vp"></b></small></div>
+      <div class="eq" data-net="hebb proj">\(E(s) = -\tfrac12\, s^\top W s\)<small><span data-l="en">energy now</span><span data-l="it" lang="it">energia ora</span> <b id="vE"></b></small></div>
+      <div class="eq" data-net="dense">\(E(\xi) = -\beta^{-1} \log \sum_\mu e^{\beta \xi^{\mu\top} \xi} + \tfrac12 \xi^\top \xi + c\)<small><span data-l="en">energy now</span><span data-l="it" lang="it">energia ora</span> <b id="vE2"></b></small></div>
+    </aside>
+    <figure><figcaption><span data-l="en">The energy after every update: it never goes up, and for the classical networks it stays
+    flat when the updated neuron agrees with its field.</span><span data-l="it" lang="it">L'energia dopo ogni
+    aggiornamento: non sale mai, e per le reti classiche resta piatta quando il neurone aggiornato concorda con il suo
+    campo.</span></figcaption><canvas id="energy"></canvas></figure>
+    <figure><figcaption><span data-l="en">For the classical networks, the overlap
+    \(m_\mu = \xi^{\mu\top} s / N\) of the state with every stored glyph (1 when equal, \(-1\) when
+    opposite); for the dense one, the weights of the softmax, i.e., the attention that the state pays to
+    each glyph. Gold is the glyph of the cue.</span><span data-l="it" lang="it">Per le reti classiche, la
+    sovrapposizione \(m_\mu = \xi^{\mu\top} s / N\) dello stato con ogni glifo memorizzato (1 se uguali,
+    \(-1\) se opposti); per quella densa, i pesi della softmax, cioè l'attention che lo stato rivolge a
+    ciascun glifo. In oro il glifo dell'indizio.</span></figcaption><canvas id="bars"></canvas></figure>
+  </div>
+  <figure class="across land"><figcaption><span data-l="en">The energy on the plane through the mean
+  \(c\) of the stored glyphs spanned by their first two principal directions \(u_1, u_2\). For the
+  classical networks every point \(c + a u_1 + b u_2\) is rounded to the binary state of its signs, so
+  that the surface is made of terraces; for the dense network it is the energy of the continuous state
+  itself. The small balls are the stored glyphs, at their own energy (with more than three glyphs they lie
+  near the plane, not on it); the gold path is the run, projected on the plane, at the height of its
+  true energy.</span><span data-l="it" lang="it">L'energia sul piano per la media \(c\) dei glifi
+  memorizzati generato dalle loro prime due direzioni principali \(u_1, u_2\). Per le reti classiche ogni
+  punto \(c + a u_1 + b u_2\) è arrotondato allo stato binario dei suoi segni, così che la superficie è
+  fatta di terrazze; per la rete densa è l'energia dello stato continuo stesso. Le sfere scure sono i
+  glifi memorizzati, alla loro energia (con più di tre glifi stanno vicino al piano, non sul piano); il
+  cammino d'oro è la corsa, proiettata sul piano, all'altezza della sua vera energia.</span></figcaption>
+  <div id="landscape"></div></figure>
+</main>
+
+<h2 class="part"><span data-l="en">Capacity</span><span data-l="it" lang="it">Capacità</span></h2>
+<p class="prose" data-l="en">With the Hebbian rule the field on neuron \(i\) at a stored pattern
+\(\xi^\nu\) is \(h_i = \xi^\nu_i + \frac1N \sum_{\mu \ne \nu} \xi^\mu_i\, \xi^{\mu\top} \xi^\nu\) up to a
+term of order \(p/N\): the pattern itself plus a crosstalk among the patterns, whose standard deviation
+for random patterns is about \(\sqrt{p/N}\). When the crosstalk becomes comparable to 1, some bits of the
+patterns flip, the flips spread, and the analysis of Amit, Gutfreund and Sompolinsky (1985) puts the
+collapse at \(p \approx 0.138\, N\), that is, about 20 patterns for \(N = 144\). The figure measures it,
+storing random patterns one at a time and starting the network both from each pattern and from a cue
+with 10% of its pixels flipped. Glyphs are far from random, since they share most of the ground, and the
+Hebbian network above merges them into mixtures already with a handful of them (add A to the five
+stored by default); the projection rule makes any set of linearly independent patterns a fixed point,
+at the cost of a rule that is no longer local.</p>
+<p class="prose" data-l="it" lang="it">Con la regola di Hebb il campo sul neurone \(i\) in un pattern
+memorizzato \(\xi^\nu\) è \(h_i = \xi^\nu_i + \frac1N \sum_{\mu \ne \nu} \xi^\mu_i\, \xi^{\mu\top} \xi^\nu\)
+a meno di un termine di ordine \(p/N\): il pattern stesso più un'interferenza fra i pattern, la cui
+deviazione standard per pattern casuali è circa \(\sqrt{p/N}\). Quando l'interferenza diventa paragonabile
+a 1 alcuni bit dei pattern si invertono, le inversioni si propagano, e l'analisi di Amit, Gutfreund e
+Sompolinsky (1985) colloca il collasso a \(p \approx 0.138\, N\), cioè circa 20 pattern per \(N = 144\).
+La figura lo misura, memorizzando pattern casuali uno alla volta e facendo partire la rete sia da ciascun
+pattern sia da un indizio con il 10% dei pixel invertiti. I glifi sono tutt'altro che casuali, poiché
+condividono gran parte dello sfondo, e la rete di Hebb qui sopra li fonde in miscele già con pochi di
+essi (si aggiunga A ai cinque memorizzati all'inizio); la regola di proiezione rende punto fisso ogni
+insieme di pattern linearmente indipendenti, al prezzo di una regola che non è più locale.</p>
+<figure class="across"><figcaption><span data-l="en">The fraction of the stored patterns recalled
+(final overlap at least 0.95, on at most 40 of them for each \(p\)), against the number \(p\) of random
+patterns of \(N = 144\) pixels, for the classical Hebbian network and for the dense network with the
+\(\beta\) of the bar; the dashed lines mark \(0.138\, N\) and \(N\).</span><span data-l="it" lang="it">La
+frazione dei pattern memorizzati richiamati (sovrapposizione finale almeno 0.95, su al più 40 di essi per
+ogni \(p\)), in funzione del numero \(p\) di pattern casuali di \(N = 144\) pixel, per la rete classica di
+Hebb e per la rete densa con il \(\beta\) della barra; le linee tratteggiate segnano \(0.138\, N\) e
+\(N\).</span></figcaption>
+<canvas id="cap"></canvas>
+<div class="stepper"><span>\(p\)</span><output id="capp">0</output><button id="capreset" type="button">Reset</button><button id="capadd" type="button">Add pattern</button><button id="capplay" type="button">Play</button></div>
+<p id="caprep"></p></figure>
+
+<h2 class="part"><span data-l="en">Dense Associative Memories and Attention</span><span data-l="it" lang="it">Memorie associative dense e attention</span></h2>
+<p class="prose" data-l="en">The Hebbian energy is, up to a constant,
+\(-\frac1{2N} \sum_\mu (\xi^{\mu\top} s)^2\), a sum over the patterns of a quadratic function of the
+overlap. Krotov and Hopfield (2016) replaced the square by a function \(F\) that grows faster, so that
+near a pattern its own term dominates the crosstalk of the others, and for \(F(x) = x^n\) the number of
+patterns that can be stored grows as \(N^{n-1}\); Ramsauer et al. (2020) took the exponential, with a
+log-sum-exp that also admits continuous states \(\xi \in \mathbb{R}^N\),
+\[E(\xi) = -\beta^{-1} \log \sum_{\mu=1}^p \exp(\beta\, \xi^{\mu\top}\xi) + \tfrac12\, \xi^\top \xi + \beta^{-1} \log p + \tfrac12 M^2,\]
+with \(M\) the largest norm of a pattern. The concave-convex procedure applied to this energy, which
+linearizes the concave log-sum-exp at the current state and minimizes the convex rest exactly, gives the
+update \(\xi^{\text{new}} = X \operatorname{softmax}(\beta X^\top \xi)\), and the energy never goes up
+along it. This is the attention of <a href="attention.html">the transformer</a>,
+\(\operatorname{softmax}(\beta\, Q K^\top) V\), with the state as the query, \(Q = \xi^\top\), the stored
+patterns as both keys and values, \(K = V = X^\top\), and \(\beta = 1/\sqrt{d_k}\). With a large \(\beta\)
+the softmax is nearly one-hot and a single update retrieves the pattern, also with many more patterns than
+neurons (the gold curve of the capacity, up to \(p = 2N\)); with a small \(\beta\) the weights spread over
+the patterns that look alike and the update stops at a metastable state, their average, drawn in grey on
+the state (store all 36 glyphs, choose the dense network and lower \(\beta\) below 0.05).</p>
+<p class="prose" data-l="it" lang="it">L'energia di Hebb è, a meno di una costante,
+\(-\frac1{2N} \sum_\mu (\xi^{\mu\top} s)^2\), una somma sui pattern di una funzione quadratica della
+sovrapposizione. Krotov e Hopfield (2016) hanno sostituito il quadrato con una funzione \(F\) che cresce
+più in fretta, così che vicino a un pattern il suo termine domina l'interferenza degli altri, e per
+\(F(x) = x^n\) il numero di pattern memorizzabili cresce come \(N^{n-1}\); Ramsauer et al. (2020) hanno
+preso l'esponenziale, con una log-sum-exp che ammette anche stati continui \(\xi \in \mathbb{R}^N\),
+\[E(\xi) = -\beta^{-1} \log \sum_{\mu=1}^p \exp(\beta\, \xi^{\mu\top}\xi) + \tfrac12\, \xi^\top \xi + \beta^{-1} \log p + \tfrac12 M^2,\]
+con \(M\) la norma più grande di un pattern. La procedura concava-convessa applicata a questa energia, che
+linearizza la log-sum-exp concava nello stato corrente e minimizza esattamente il resto convesso, dà
+l'aggiornamento \(\xi^{\text{new}} = X \operatorname{softmax}(\beta X^\top \xi)\), lungo il quale l'energia
+non sale mai. È l'attention del <a href="attention.html">transformer</a>,
+\(\operatorname{softmax}(\beta\, Q K^\top) V\), con lo stato come query, \(Q = \xi^\top\), i pattern
+memorizzati come chiavi e come valori, \(K = V = X^\top\), e \(\beta = 1/\sqrt{d_k}\). Con un \(\beta\)
+grande la softmax è quasi un vettore indicatore e un solo aggiornamento richiama il pattern, anche con
+molti più pattern che neuroni (la curva d'oro della capacità, fino a \(p = 2N\)); con un \(\beta\) piccolo
+i pesi si distribuiscono sui pattern che si somigliano e l'aggiornamento si ferma in uno stato
+metastabile, la loro media, disegnata in grigio sullo stato (si memorizzino tutti i 36 glifi, si scelga la
+rete densa e si abbassi \(\beta\) sotto 0.05).</p>
+
+<footer><span data-l="en">Scene Q of opt-playground, after J. J. Hopfield,
+<a href="https://doi.org/10.1073/pnas.79.8.2554">Neural networks and physical systems with emergent collective computational abilities</a>
+(1982), D. Krotov and J. J. Hopfield, <a href="https://arxiv.org/abs/1606.01164">Dense Associative Memory for Pattern Recognition</a>
+(2016), and H. Ramsauer et al., <a href="https://arxiv.org/abs/2008.02217">Hopfield Networks is All You Need</a>
+(2020): the ideas are theirs, rebuilt here from the equations.</span><span data-l="it" lang="it">Scena Q di
+opt-playground, da J. J. Hopfield,
+<a href="https://doi.org/10.1073/pnas.79.8.2554">Neural networks and physical systems with emergent collective computational abilities</a>
+(1982), D. Krotov e J. J. Hopfield, <a href="https://arxiv.org/abs/1606.01164">Dense Associative Memory for Pattern Recognition</a>
+(2016), e H. Ramsauer et al., <a href="https://arxiv.org/abs/2008.02217">Hopfield Networks is All You Need</a>
+(2020): le idee sono loro, ricostruite qui dalle equazioni.</span></footer>
+<script type="module" src="src/hopfield.js"></script>
+</body>
+</html>
