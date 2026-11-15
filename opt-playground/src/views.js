@@ -99,6 +99,7 @@ export function dual(svg, problem, state, hover, onHover, params, algo) {
 export function curve(svg, problem, state) {
   svg.replaceChildren();
   const W = 560, H = 150, pad = 30;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   const gaps = [];
   let best = -Infinity;
   for (const o of state.trace) { best = Math.max(best, o.value); gaps.push(Math.max(problem.optimum.value - best, 1e-6)); }

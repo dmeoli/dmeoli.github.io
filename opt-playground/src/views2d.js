@@ -141,6 +141,7 @@ export function curve2(svg, problem, runs) {
   // runs: [{ state, cls }], the gap of each drawn on the same axes
   svg.replaceChildren();
   const W = 480, H = 140, pad = 30;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   const all = runs.map(({ state }) => {
     const gaps = [];
     let best = -Infinity;
