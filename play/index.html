@@ -11,7 +11,12 @@
 <meta property="og:url" content="https://dmeoli.github.io/play">
 <meta property="og:image" content="https://dmeoli.github.io/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<script>location.replace('/?section=play' + location.hash);</script>
+<script>
+  /* Play is now two sections: the tabs of learning, networks and generative
+     models are in /ml, the others in /optimization */
+  var h = location.hash.slice(1);
+  location.replace('/?section=' + (/^(learning|networks|generative)$/.test(h) ? 'ml' : 'optimization') + location.hash);
+</script>
 </head>
 <body><p><a href="/?section=play">Play</a></p></body>
 </html>

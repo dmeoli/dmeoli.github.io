@@ -443,12 +443,13 @@ footer {
   .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--f13) var(--f8); }
   .gallery figcaption { font-size: var(--s-05); }
 }
-/* the second row of the menu: play, translate and art, apart from the
-   academic sections, smaller and in the lilac of the accent, spread in three
-   equal columns under the first row, which sets the width of the box */
+/* the second row of the menu: the scenes of optimization and of machine
+   learning, translate and art, apart from the academic sections, smaller and
+   in the lilac of the accent, spread evenly under the first row, which sets
+   the width of the box */
 .sections .menu { display: inline-flex; flex-direction: column; gap: var(--f5); max-width: 100%; }
 .sections .row1 { display: flex; flex-wrap: wrap; gap: var(--f5) var(--f21); }
-.sections .row2 { display: grid; grid-template-columns: repeat(3, 1fr); justify-items: center; }
+.sections .row2 { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--f5) var(--f21); padding: 0 var(--f13); }
 .sections a.side { font-size: var(--s-075); color: var(--heading); letter-spacing: .146em; }
 .sections a.side:hover, .sections a.side:focus-visible, .sections a.side[aria-current="true"] { color: var(--accent); }
 /* a scene of play opened over the page, as wide as the screen, with the
@@ -618,7 +619,8 @@ footer {
   <a href="/contact" data-l="en" data-section="contact">Contact</a><a href="/contatti" data-l="it" lang="it" data-section="contact">Contatti</a>
   </div>
   <div class="row2">
-  <a class="side" href="/play" data-l="en" data-section="play">Play</a><a class="side" href="/gioca" data-l="it" lang="it" data-section="play">Gioca</a>
+  <a class="side" href="/optimization" data-l="en" data-section="optimization">Optimization</a><a class="side" href="/ottimizzazione" data-l="it" lang="it" data-section="optimization">Ottimizzazione</a>
+  <a class="side" href="/ml" data-l="en" data-section="ml">Machine Learning</a><a class="side" href="/ml" data-l="it" lang="it" data-section="ml">Machine learning</a>
   <a class="side" href="/translate" data-l="en" data-section="translate">Translate</a><a class="side" href="/traduci" data-l="it" lang="it" data-section="translate">Traduci</a>
   <a class="side" href="/art" data-l="en" data-section="art">Art</a><a class="side" href="/arte" data-l="it" lang="it" data-section="art">Arte</a>
   </div>
@@ -825,18 +827,15 @@ footer {
   </div>
 </section>
 
-<section id="play" class="play">
+<section id="optimization" class="play">
   <div class="grid">
-    <h2><a href="/play" data-l="en" data-section="play">Play</a><a href="/gioca" data-l="it" lang="it" data-section="play">Gioca</a></h2>
+    <h2><a href="/optimization" data-l="en" data-section="optimization">Optimization</a><a href="/ottimizzazione" data-l="it" lang="it" data-section="optimization">Ottimizzazione</a></h2>
     <div class="body">
-      <p data-l="en">Interactive pages, in the browser, on what happens inside an optimization algorithm: the primal polyhedron and the dual model side by side, the path of the iterates, and the same views for the learning models, which are trained by optimization. The scenes in sequence, for a talk, are in <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
-      <p data-l="it" lang="it">Pagine interattive, nel browser, su cosa succede dentro un algoritmo di ottimizzazione: il poliedro primale e il modello duale affiancati, il cammino delle iterate, e le stesse viste per i modelli di apprendimento, che si addestrano ottimizzando. Le scene in sequenza, per un seminario, sono in <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
+      <p data-l="en">Interactive pages, in the browser, on what happens inside an optimization algorithm: the primal polyhedron and the dual model side by side, the path of the iterates, and the real iterates of the solvers of SMS++ replayed on the same pictures. The scenes in sequence, for a talk, are in <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
+      <p data-l="it" lang="it">Pagine interattive, nel browser, su cosa succede dentro un algoritmo di ottimizzazione: il poliedro primale e il modello duale affiancati, il cammino delle iterate, e le iterate vere dei solutori di SMS++ riprodotte sulle stesse figure. Le scene in sequenza, per un seminario, sono in <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
       <div class="subnav" role="tablist">
         <button type="button" role="tab" data-sub="decomposition"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span> <span class="count">4</span></button>
         <button type="button" role="tab" data-sub="lp"><span data-l="en">Linear and Integer</span><span data-l="it" lang="it">Lineare e intera</span> <span class="count">4</span></button>
-        <button type="button" role="tab" data-sub="learning"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span> <span class="count">4</span></button>
-        <button type="button" role="tab" data-sub="networks"><span data-l="en">Inside Networks</span><span data-l="it" lang="it">Dentro le reti</span> <span class="count">6</span></button>
-        <button type="button" role="tab" data-sub="generative"><span data-l="en">Representations and Generative Models</span><span data-l="it" lang="it">Rappresentazioni e modelli generativi</span> <span class="count">3</span></button>
       </div>
       <div class="sub scenes" data-sub="decomposition" role="tabpanel">
         <article class="scene">
@@ -922,7 +921,22 @@ footer {
             <a class="go" href="https://dmeoli.github.io/opt-playground/lp3d.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
-        <button type="button" class="next" data-goto="learning"><span data-l="en">Next: Learning</span><span data-l="it" lang="it">Avanti: Apprendimento</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
+        <a class="next" href="/ml" data-section="ml"><span data-l="en">Next: Machine Learning</span><span data-l="it" lang="it">Avanti: Machine learning</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="ml" class="play">
+  <div class="grid">
+    <h2><a href="/ml" data-l="en" data-section="ml">Machine Learning</a><a href="/ml" data-l="it" lang="it" data-section="ml">Machine learning</a></h2>
+    <div class="body">
+      <p data-l="en">Interactive pages, in the browser, on the models of machine learning, which are trained by optimization: the optimizers on test functions, the support vector machine with its dual, and what happens inside a network, layer by layer, after the TensorFlow Playground and the essays of C. Olah. The scenes in sequence, for a talk, are in <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
+      <p data-l="it" lang="it">Pagine interattive, nel browser, sui modelli di machine learning, che si addestrano ottimizzando: gli ottimizzatori su funzioni di test, la support vector machine con il suo duale, e cosa succede dentro una rete, strato per strato, sul modello del TensorFlow Playground e dei saggi di C. Olah. Le scene in sequenza, per un seminario, sono in <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
+      <div class="subnav" role="tablist">
+        <button type="button" role="tab" data-sub="learning"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span> <span class="count">4</span></button>
+        <button type="button" role="tab" data-sub="networks"><span data-l="en">Inside Networks</span><span data-l="it" lang="it">Dentro le reti</span> <span class="count">6</span></button>
+        <button type="button" role="tab" data-sub="generative"><span data-l="en">Representations and Generative Models</span><span data-l="it" lang="it">Rappresentazioni e modelli generativi</span> <span class="count">3</span></button>
       </div>
       <div class="sub scenes" data-sub="learning" role="tabpanel">
         <article class="scene">
@@ -1060,8 +1074,6 @@ footer {
             <ul class="tags"><li>DDPM</li><li>DDIM</li><li><span data-l="en">Score</span><span data-l="it" lang="it">Score</span></li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/diffusion.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
-        </article>
-      </div>
         </article>
       </div>
     </div>
@@ -1337,7 +1349,8 @@ Decomposition methods and solvers for large-scale
      shown, one after the other. */
   (function () {
     var it = { research: 'ricerca', publications: 'pubblicazioni',
-               software: 'software', play: 'gioca', translate: 'traduci',
+               software: 'software', optimization: 'ottimizzazione', ml: 'ml',
+               translate: 'traduci',
                art: 'arte', experience: 'esperienze',
                education: 'formazione', contact: 'contatti' },
         en = {}, ids = Object.keys(it), root = document.documentElement,
@@ -1391,7 +1404,7 @@ Decomposition methods and solvers for large-scale
     show(current);
 
     // the menu, and the name of each section
-    var links = document.querySelectorAll('.sections a, h2 a[data-section]');
+    var links = document.querySelectorAll('.sections a, h2 a[data-section], a.next[data-section]');
     for (var i = 0; i < links.length; i++)
       links[i].addEventListener('click', function (e) {
         e.preventDefault();

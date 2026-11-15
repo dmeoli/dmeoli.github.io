@@ -33,11 +33,14 @@
     var t = root.getAttribute('data-theme');
     return t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
   }
+  // the way back goes to the section of the site that lists the scene
+  var ml = !/^\/opt-playground\/(index|components|benders|lp|lp3d|integer|polarity)?(\.html)?$/.test(location.pathname.replace(/\/$/, '/index.html'));
   document.addEventListener('DOMContentLoaded', function () {
     var bar = document.createElement('div');
     bar.className = 'scenebar';
     bar.innerHTML =
-      '<a class="home" href="/play"><span data-l="en">&larr; Play</span><span data-l="it" lang="it">&larr; Gioca</span></a>' +
+      (ml ? '<a class="home" href="/ml"><span data-l="en">&larr; Machine Learning</span><span data-l="it" lang="it">&larr; Machine learning</span></a>'
+          : '<a class="home" href="/optimization"><span data-l="en">&larr; Optimization</span><span data-l="it" lang="it">&larr; Ottimizzazione</span></a>') +
       '<button type="button" data-set="en">EN</button><span aria-hidden="true">&middot;</span>' +
       '<button type="button" data-set="it">IT</button>' +
       '<button type="button" class="theme" aria-label="Light or dark theme" title="Light or dark theme">&#9680;</button>';
