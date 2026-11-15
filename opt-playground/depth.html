@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Depth playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<style>
+  /* depth.html: the formulas of the toggles under the bar, then the output on
+     the left and the layers on the right, the strip of unit maps across */
+  .presets { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .presets button { padding: 3px 9px; font-size: 12px; }
+  .presets button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: var(--panel); }
+  .eqs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 0 0 14px; font-size: 15px; }
+  @media (max-width: 1000px) { .eqs { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+  @media (max-width: 560px) { .eqs { grid-template-columns: minmax(0, 1fr); } }
+  .eqs section { display: grid; gap: 2px; align-content: start; }
+  .eqs h3, .dp h3 { margin: 0 0 2px; font: 500 11px 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  .eq { padding: 3px 7px; border: 1px solid transparent; border-radius: 6px; overflow-x: auto; color: var(--ink-soft); }
+  .eq.lit { background: var(--lilac); border-color: var(--accent-2); color: var(--ink); }
+  .eq.base { color: var(--ink); }
+  .eq small { display: block; font: 11px/1.35 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+  main.dp { grid-template-columns: minmax(0, 340px) minmax(0, 1fr); align-items: start; }
+  @media (max-width: 760px) { main.dp { grid-template-columns: minmax(0, 1fr); } }
+  .dp canvas { width: 100%; display: block; border-radius: 6px; }
+  .dp figcaption { min-height: 0; }
+  #map { max-width: 340px; }
+  .dp .stats { margin: 8px 0; }
+  .across { grid-column: 1 / -1; }
+  .showtest { display: flex; gap: 6px; align-items: center; font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); margin-top: 6px; }
+</style>
+</head>
+<body>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html" aria-current="page">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1>Depth playground</h1>
+  <p class="lede">A stack of up to 30 fully connected layers of the same width, trained in
+  the page on a data set of the TensorFlow Playground, trains or not according to how the
+  signal crosses the layers: with weights too small the activations and the gradients
+  shrink by a nearly constant factor at every layer, while with weights too large the
+  \(\tanh\) and sigmoid units saturate and the network computes a function that changes
+  erratically over the plane. The initializations of Glorot and Bengio and of He et al.
+  choose the variance of the weights so that the variance of the activations stays about
+  constant from layer to layer; normalization restores it at every layer, and residual
+  connections give the gradient a path around each layer.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span>data set</span><select id="data"><option value="circle">Circle</option><option value="xor">Exclusive or</option><option value="gauss">Gaussians</option><option value="spiral">Spiral</option></select></label>
+    <label><span>depth <output id="depthOut"></output></span><input id="depth" type="range" min="2" max="30" step="1"></label>
+    <label><span>width</span><select id="width"><option>8</option><option>12</option><option>16</option></select></label>
+    <label><span>activation</span><select id="act"><option value="tanh">Tanh</option><option value="relu">ReLU</option><option value="sigmoid">Sigmoid</option></select></label>
+    <label><span>initialization</span><select id="init"><option value="naive">naive N(0, 1)</option><option value="small">small N(0, 0.01²)</option><option value="xavier">Xavier / Glorot</option><option value="he">He</option></select></label>
+    <label><span>normalization</span><select id="norm"><option value="none">none</option><option value="batch">batch norm</option><option value="layer">layer norm</option></select></label>
+    <label class="check"><span>residual</span><input id="res" type="checkbox"></label>
+    <label><span>optimizer</span><select id="opt"><option value="adam">Adam</option><option value="sgd">SGD</option></select></label>
+    <label><span>learning rate</span><select id="lr"><option>0.001</option><option>0.003</option><option>0.01</option><option>0.03</option><option>0.1</option><option>0.3</option></select></label>
+    <label><span>weights seed</span><select id="seed"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+  </div>
+  <div class="transport"><label class="counter"><span>epoch</span><output id="epoch"></output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="train" type="button">Play</button></div>
+  <div class="row presets"><span>presets</span></div>
+</section>
+<div class="eqs">
+  <section><h3>Layer \(l\)</h3>
+    <div class="eq base">\(a_l = W_l\,h_{l-1} + b_l\)<small>\(W_l\) is \(n_{\rm out} \times n_{\rm in}\), \(h_0 = x / 3\)</small></div>
+    <div class="eq base">\(h_l = \phi\big(N(a_l)\big)\)<small>\(\phi\) the activation, \(N\) the normalization</small></div>
+  </section>
+  <section><h3>Initialization of \(W_l\)</h3>
+    <div class="eq" data-init="naive">\(W_{ij} \sim \mathcal N(0, 1)\)</div>
+    <div class="eq" data-init="small">\(W_{ij} \sim \mathcal N(0, 10^{-4})\)</div>
+    <div class="eq" data-init="xavier">\(\operatorname{Var} W_{ij} = \dfrac{2}{n_{\rm in} + n_{\rm out}}\)<small>Glorot and Bengio</small></div>
+    <div class="eq" data-init="he">\(\operatorname{Var} W_{ij} = \dfrac{2}{n_{\rm in}}\)<small>He et al., for ReLU</small></div>
+  </section>
+  <section><h3>Normalization \(N\)</h3>
+    <div class="eq" data-norm="none">\(N(a) = a\)</div>
+    <div class="eq" data-norm="batch">\(N(a)_j = \gamma_j\,\dfrac{a_j - \mu_j}{\sqrt{\sigma_j^2 + \epsilon}} + \beta_j\)<small>batch norm: \(\mu_j, \sigma_j^2\) of unit \(j\) over the minibatch</small></div>
+    <div class="eq" data-norm="layer"><small>layer norm: the same, with \(\mu, \sigma^2\) over the units of one example</small></div>
+  </section>
+  <section><h3>Residual connection</h3>
+    <div class="eq" id="eqres">\(h_l = h_{l-1} + F(h_{l-1})\)<small>\(F(h) = \phi(N(W_l h + b_l))\), for \(l \ge 2\); then \(\partial h_l / \partial h_{l-1} = I + \partial F / \partial h\)</small></div>
+  </section>
+</div>
+<p class="explain" id="explain"></p>
+<main class="dp">
+  <figure><figcaption>The probability of the violet class over the plane \([-6, 6]^2\),
+  with the training points (filled); the loss of the training set (solid) and of the test
+  set (dashed), the dotted line at \(\log 2\) being that of a constant answer.</figcaption>
+  <canvas id="map"></canvas>
+  <label class="showtest"><input id="showTest" type="checkbox">show the test points (hollow)</label>
+  <dl class="stats"><div><dt>training loss</dt><dd id="trainLoss"></dd></div><div><dt>test loss</dt><dd id="testLoss"></dd></div><div><dt>test accuracy</dt><dd id="testAcc"></dd></div></dl>
+  <canvas id="loss"></canvas></figure>
+  <figure><figcaption>Layer by layer, from the input (top) to the output, on the 200
+  training points: the histogram of the activations \(h_l\) over <span id="range"></span>
+  (violet), and that of \(\log_{10} |\partial L / \partial (W_l)_{ij}|\) over the entries of
+  \(W_l\) (gold), the tick marking the norm of the whole gradient of \(W_l\); values beyond
+  the ends fall in the darker end bins.</figcaption>
+  <canvas id="layers"></canvas></figure>
+  <figure class="across"><figcaption>The first unit of every layer over the plane, on the
+  scale of the histograms: a unit whose signal has vanished takes the colour of zero, a
+  saturated one is violet or gold almost everywhere.</figcaption>
+  <canvas id="strip"></canvas></figure>
+</main>
+<footer>Scene O of opt-playground, after X. Glorot and Y. Bengio,
+<a href="https://proceedings.mlr.press/v9/glorot10a.html">Understanding the difficulty of training deep feedforward neural networks</a> (2010);
+K. He, X. Zhang, S. Ren and J. Sun, <a href="https://arxiv.org/abs/1502.01852">Delving deep into rectifiers</a> (2015)
+and <a href="https://arxiv.org/abs/1512.03385">Deep residual learning for image recognition</a> (2016);
+S. Ioffe and C. Szegedy, <a href="https://arxiv.org/abs/1502.03167">Batch normalization</a> (2015);
+J. L. Ba, J. R. Kiros and G. E. Hinton, <a href="https://arxiv.org/abs/1607.06450">Layer normalization</a> (2016):
+the ideas are theirs, rebuilt here from the equations. The configuration is kept in the address.</footer>
+<script type="module" src="src/depth.js"></script>
+</body>
+</html>

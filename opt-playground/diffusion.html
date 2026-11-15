@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diffusion playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<style>
+  /* diffusion.html: four planes of the same frame, the formulas lit part by part */
+  .df canvas { width: 100%; height: auto; display: block; border-radius: 6px; }
+  #coef { margin-top: 6px; }
+  .formula { font-size: 118%; text-align: center; margin: 2px 0 8px; color: var(--ink); overflow-x: auto; overflow-y: hidden; }
+  .formula mjx-container { transition: color .15s; }
+  .formula [class*="p-"] { cursor: help; }
+  .df[data-lit] .formula mjx-container { color: color-mix(in srgb, var(--ink-soft) 40%, var(--ground)); }
+  .df[data-lit="sig"] .p-sig, .df[data-lit="x0"] .p-x0, .df[data-lit="noi"] .p-noi, .df[data-lit="eps"] .p-eps,
+  .df[data-lit="xt"] .p-xt, .df[data-lit="drift"] .p-drift, .df[data-lit="z"] .p-z, .df[data-lit="hat"] .p-hat { color: var(--accent); }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 8px 0 0; font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+  .row button { padding: 3px 9px; font-size: 12px; }
+  .row label { display: flex; gap: 6px; align-items: center; }
+  .note { font: 12px/1.45 'IBM Plex Mono', monospace; color: var(--ink-soft); min-height: 1.5em; margin: 6px 0 0; }
+  .note b { font-weight: 500; color: var(--ink); }
+  main figcaption { min-height: 0; }
+  @media (max-width: 600px) { .formula { font-size: 100%; } }
+</style>
+</head>
+<body>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html" aria-current="page">Diffusion</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1>Diffusion playground</h1>
+  <p class="lede">A cloud of points in the plane is turned into a standard gaussian by adding
+  noise in \(T\) small steps, and a small network is trained in the page to predict, from a
+  noisy point and the time, the noise that was added; since that prediction is, up to a
+  factor, the score \(\nabla \log p_t\) of the noisy data, running the steps backwards from
+  pure noise and removing at each step the predicted noise carries the points back onto the
+  shape. Hover the parts of the two formulas to see them in the planes below them.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span>data</span><select id="data"></select></label>
+    <label><span>schedule</span><select id="sched"><option value="linear">linear</option><option value="cosine">cosine</option></select></label>
+    <label><span>steps \(T\)</span><select id="T"><option>50</option><option>100</option><option>200</option></select></label>
+    <label><span>hidden layers</span><select id="depth"><option>2</option><option>3</option></select></label>
+    <label><span>width</span><select id="width"><option>64</option><option>128</option></select></label>
+    <label><span>step size of Adam</span><select id="lr"><option>0.001</option><option>0.003</option><option>0.01</option></select></label>
+    <label><span>sampler</span><select id="sampler"><option value="ddpm">DDPM, T steps</option><option value="ddim">DDIM, T steps</option><option value="ddim20">DDIM, 20 steps</option></select></label>
+    <label><span>seed</span><select id="seed"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+    <div class="inline"><label><span>time \(t\) <output id="tv"></output></span><input id="t" type="range" min="0" max="100" step="1"></label><button id="anim" type="button">Animate</button></div>
+  </div>
+  <div class="transport"><label class="counter"><span>step</span><output id="count"></output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="train" type="button">Play</button></div>
+</section>
+<p class="explain" id="explain"></p>
+<main>
+  <figure class="df" id="fig-fwd"><figcaption>The forward process at the time \(t\) of the
+  slider: every point of the data (2000 of them) with its own fixed noise \(\varepsilon\), so
+  that moving the slider moves each point along a line. Below, the two coefficients against
+  \(t\), violet \(\sqrt{\bar\alpha_t}\) and gold \(\sqrt{1-\bar\alpha_t}\).</figcaption>
+  <p class="formula">\(x_t = \class{p-sig}{\sqrt{\bar\alpha_t}}\;\class{p-x0}{x_0} + \class{p-noi}{\sqrt{1-\bar\alpha_t}}\;\class{p-eps}{\varepsilon},\quad \varepsilon \sim \mathcal N(0, I)\)</p>
+  <canvas id="fwd" width="460" height="460"></canvas>
+  <canvas id="coef" width="460" height="96"></canvas></figure>
+  <figure class="df" id="fig-field"><figcaption>What the network has learnt at the time
+  \(t\) of the slider: at each point of a grid the arrow is \(-\sqrt{1-\bar\alpha_t}\,
+  \varepsilon_\theta(x, t) = (1-\bar\alpha_t)\,\nabla\log p_t(x)\), the move towards the
+  expected \(\sqrt{\bar\alpha_t}\,x_0\), with the length compressed (square root of the
+  length, the longest arrow one cell); the data in grey underneath.</figcaption>
+  <canvas id="field" width="460" height="460"></canvas>
+  <div class="row"><label><input id="exact" type="checkbox">the exact field of the data, in gold</label></div>
+  <p class="note" id="fieldNote"></p></figure>
+  <figure class="df" id="fig-rev"><figcaption>The reverse process: 600 points drawn from
+  \(\mathcal N(0, I)\) at \(t = T\) follow the steps of the sampler down to \(t = 0\), with the
+  trails of 40 of them; the data in grey. Hover the formula to see, for the last step, where
+  the points were, the move given by the network and the fresh noise; with DDIM there is no
+  fresh noise, and \(s\) is the next time of the sampler (\(t-1\), or \(t - T/20\) with 20
+  steps).</figcaption>
+  <p class="formula" id="eqDDPM">\(x_{t-1} = \frac{1}{\sqrt{\alpha_t}}\Big(\class{p-xt}{x_t} - \class{p-drift}{\frac{\beta_t}{\sqrt{1-\bar\alpha_t}}\,\varepsilon_\theta(x_t, t)}\Big) + \class{p-z}{\sigma_t z}\)</p>
+  <p class="formula" id="eqDDIM" hidden>\(x_{s} = \sqrt{\bar\alpha_{s}}\;\class{p-hat}{\frac{\class{p-xt}{x_t} - \sqrt{1-\bar\alpha_t}\,\varepsilon_\theta(x_t,t)}{\sqrt{\bar\alpha_t}}} + \class{p-drift}{\sqrt{1-\bar\alpha_{s}}\;\varepsilon_\theta(x_t, t)}\)</p>
+  <canvas id="rev" width="460" height="460"></canvas>
+  <div class="row"><button id="sample" type="button">Sample</button><span id="revNote"></span></div></figure>
+  <figure class="df" id="fig-loss"><figcaption>The loss \(\frac1B\sum_i \|\varepsilon_\theta(x_{t_i},
+  t_i) - \varepsilon_i\|^2\) of every batch (\(B = 128\), \(t_i\) uniform in \(1, \dots, T\)),
+  faint, and its moving average; it does not go to zero, since the noise cannot be told
+  apart from the data at large \(t\). Below, the distance of the last samples from the
+  data.</figcaption>
+  <canvas id="lossc" width="460" height="230"></canvas>
+  <p class="note" id="lossNote"></p></figure>
+</main>
+<footer>Scene P of opt-playground, after J. Sohl-Dickstein, E. Weiss, N. Maheswaranathan and
+S. Ganguli, <a href="https://arxiv.org/abs/1503.03585">Deep Unsupervised Learning using
+Nonequilibrium Thermodynamics</a> (2015), J. Ho, A. Jain and P. Abbeel,
+<a href="https://arxiv.org/abs/2006.11239">Denoising Diffusion Probabilistic Models</a> (2020),
+Y. Song, J. Sohl-Dickstein, D. P. Kingma, A. Kumar, S. Ermon and B. Poole,
+<a href="https://arxiv.org/abs/2011.13456">Score-Based Generative Modeling through Stochastic
+Differential Equations</a> (2021), and J. Song, C. Meng and S. Ermon,
+<a href="https://arxiv.org/abs/2010.02502">Denoising Diffusion Implicit Models</a> (2021); the
+cosine schedule is that of A. Nichol and P. Dhariwal (2021). The ideas are theirs, rebuilt here
+from the equations.</footer>
+<script type="module" src="src/diffusion.js"></script>
+</body>
+</html>

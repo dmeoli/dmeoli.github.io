@@ -24,10 +24,16 @@
   .count { align-self: center; font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); white-space: nowrap; }
   button:disabled { opacity: .5; cursor: default; }
   .m1, .m2, .q1, .q2 { cursor: crosshair; }
+  .looks { grid-column: 1 / -1; margin: 8px 0 -12px; font: 500 13px 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  #sal, #advprob { max-width: 340px; }
+  #advprob { margin-top: 8px; image-rendering: auto; }
+  #adv { image-rendering: auto; }
+  .row label { display: flex; gap: 6px; align-items: center; }
+  .row input[type=range] { width: 110px; }
 </style>
 </head>
 <body>
-<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html" aria-current="page">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="present.html">Talk</a></nav>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html" aria-current="page">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
   <h1>Convolution playground</h1>
   <p class="lede">What the layers of a convolutional network compute on the image of a digit.
@@ -76,10 +82,40 @@
   <h3>maps 10&times;10</h3><canvas id="m2" class="m2" width="520" height="80"></canvas>
   <h3>pooled 5&times;5</h3><canvas id="q2" class="q2" width="520" height="80"></canvas>
   <h3>input maximizing the channel</h3><canvas id="viz" width="520" height="80"></canvas></figure>
+  <h2 class="looks">What the network looks at</h2>
+  <figure class="cv"><figcaption>The saliency of a class \(c\): the gradient
+  \(\partial s_c / \partial x\) of its score \(s_c\) (the logit, before the softmax) with
+  respect to every pixel of the input, violet where more ink would raise the score, gold
+  where it would lower it, scaled to its largest magnitude. With &times; input the map is
+  the gradient times the pixel, which keeps only the inked pixels and tells which of them
+  push the score up. The gradient is local: it says what a small change does, not what the
+  network has understood.</figcaption>
+  <div class="row"><label>class <select id="salc"><option value="-1">predicted</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></label><label><input id="salx" type="checkbox"> &times; input</label></div>
+  <canvas id="sal" width="400" height="400"></canvas>
+  <p class="note" id="salnote"></p></figure>
+  <figure class="cv"><figcaption>An adversarial example: a few steps of the fast gradient
+  sign method, \(x' = \mathrm{clip}(x + \epsilon\, \mathrm{sign}(\nabla_x \ell))\), with
+  \(\ell\) the loss of the current answer (to move away from it) or minus the loss of a
+  target class; every step has size \(2.5\,\epsilon/\text{steps}\), and the iterate is kept
+  within \(\epsilon\) of \(x\) in every pixel and in \([0, 1]\). The change is small in
+  pixels and still flips the answer; on a network this small, trained on a few thousand
+  digits, the perturbation is often visible as faint strokes, unlike those of large
+  networks on photographs.</figcaption>
+  <div class="row"><label>target <select id="tgt"><option value="-1">away</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></label>
+  <label>\(\epsilon\) <input id="eps" type="range" min="0.02" max="0.3" step="0.01"><output id="epsOut"></output></label>
+  <label>steps <select id="iters"><option>1</option><option>5</option><option>10</option><option>20</option></select></label></div>
+  <div class="row"><button id="attack" type="button">Attack</button><button id="useadv" type="button" disabled>Use as input</button></div>
+  <canvas id="adv" width="620" height="226"></canvas>
+  <canvas id="advprob" width="400" height="130"></canvas>
+  <p class="note" id="advnote"></p></figure>
 </main>
 <footer>Scene I of opt-playground, after C. Olah,
 <a href="https://colah.github.io/posts/2014-07-Conv-Nets-Modular/">Conv Nets: A Modular Perspective</a>
-(2014): the idea is his, rebuilt here from the equations.</footer>
+(2014): the idea is his, rebuilt here from the equations. Saliency after K. Simonyan,
+A. Vedaldi and A. Zisserman, <a href="https://arxiv.org/abs/1312.6034">Deep Inside
+Convolutional Networks</a> (2014); adversarial examples after I. Goodfellow, J. Shlens and
+C. Szegedy, <a href="https://arxiv.org/abs/1412.6572">Explaining and Harnessing Adversarial
+Examples</a> (2015).</footer>
 <script type="module" src="src/conv.js"></script>
 </body>
 </html>

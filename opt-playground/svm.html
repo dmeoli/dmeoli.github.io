@@ -8,11 +8,18 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
 <script src="theme.js"></script>
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="stage3d.css">
 <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
 </head>
 <body>
-<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html" aria-current="page">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="present.html">Talk</a></nav>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html" aria-current="page">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
   <h1>SVM playground</h1>
   <p class="lede">A support vector machine, primal and dual side by side. The
@@ -47,6 +54,16 @@
       <div><dt>\(\sum_i \alpha_i y_i\)</dt><dd id="eq"></dd></div>
       <div><dt>status</dt><dd id="status"></dd></div>
     </dl>
+  </figure>
+  <figure id="liftfig" class="lift">
+    <figcaption>The lift: every point \(x\) goes up to the height \(\langle w, \varphi(x) \rangle / \|w\|\),
+    its coordinate along \(w = \sum_i \alpha_i y_i \varphi(x_i)\) in the space of the kernel, so that the
+    separating hyperplane becomes the plane at height \(-b / \|w\|\) and the margins the two
+    planes \(1 / \|w\|\) above and below it. The plane cuts the lifted surface along a curve
+    whose shadow on the floor is the boundary \(f = 0\) of the primal picture; the surface and
+    the plane move with every SMO step.</figcaption>
+    <div id="lift"></div>
+    <p id="liftinfo" class="explain"></p>
   </figure>
 </main>
 <footer>Part of scene E of opt-playground; optiml has the same machine with the

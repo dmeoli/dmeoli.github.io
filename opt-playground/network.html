@@ -8,11 +8,18 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
 <script src="theme.js"></script>
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="stage3d-b.css">
 <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
 </head>
 <body class="wide">
-<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html" aria-current="page">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="present.html">Talk</a></nav>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html" aria-current="page">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
   <h1>Network playground</h1>
   <p class="lede">A small neural network trained in the browser, with everything
@@ -20,7 +27,10 @@
   those of optiml, and two networks can race from the same initial weights with
   different optimizers. Every neuron shows its output over the plane; links are
   the weights (violet positive, gold negative, thicker when larger); point at a
-  neuron to see it large on the right, click a link to edit its weight.</p>
+  neuron to see it large on the right, click a link to edit its weight. With dropout
+  \(p\), every hidden neuron is switched off with probability \(p\) in each mini-batch of
+  training (drawn faded while the network trains) and the others are scaled by
+  \(1/(1-p)\); at test time, and in every map and loss shown, all neurons are on.</p>
 </header>
 <section class="controls">
   <div class="settings">
@@ -28,6 +38,7 @@
     <label><span>activation</span><select id="act"></select></label>
     <label><span>regularization</span><select id="reg"></select></label>
     <label><span>regularization rate</span><select id="regRate"></select></label>
+    <label title="probability of dropping a hidden neuron in a training mini-batch; off at test time"><span>dropout</span><select id="drop"></select></label>
     <label><span>problem type</span><select id="problem"></select></label>
     <label><span>optimizer</span><select id="opt"></select></label>
     <label class="check"><span>race</span><input id="race" type="checkbox"></label>
@@ -63,15 +74,19 @@
     <canvas id="outB" class="race-only" width="260" height="260"></canvas>
     <label class="check row"><input id="showTest" type="checkbox"><span>show test data</span></label>
     <label class="check row"><input id="disc" type="checkbox"><span>discretize output</span></label>
-    <h3>Loss landscape</h3>
-    <p id="landNote" class="placeholder">Not computed yet: the training loss on a plane of two random directions through the current weights, with the path of the past epochs.</p>
+    <h3>Loss landscape <span id="landView" class="switch"><button type="button" data-v="map" aria-pressed="true">map</button><button type="button" data-v="3d" aria-pressed="false">3D</button></span></h3>
+    <p id="landNote" class="placeholder">Not computed yet: the training loss on a plane through the current weights, spanned by two random filter-normalized directions or by the two principal directions of the path, with the path of the past epochs projected on it and the current weights (gold) moving as training goes on.</p>
     <canvas id="land" width="260" height="260" hidden></canvas>
+    <div id="land3d" hidden></div>
+    <label><span>directions</span><select id="landDir"><option value="random">random, filter-normalized</option><option value="pca">principal, of the path</option></select></label>
     <button id="landBtn" type="button">Compute around the current weights</button>
   </section>
 </main>
 <div id="wedit" class="wedit" hidden><input type="text" inputmode="decimal" aria-label="weight"></div>
 <footer>Scene F of opt-playground. Loss curves: solid training, dashed test;
-violet the first network, gold the second. The configuration is kept in the address.</footer>
+violet the first network, gold the second. The loss landscape follows H. Li et al.,
+<a href="https://arxiv.org/abs/1712.09913">Visualizing the Loss Landscape of Neural Nets</a> (2018).
+The configuration is kept in the address.</footer>
 <script type="module" src="src/network.js"></script>
 </body>
 </html>

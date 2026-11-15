@@ -2,82 +2,38 @@
 // C. Olah, "Neural Networks, Manifolds, and Topology" (2014),
 // https://colah.github.io/posts/2014-03-NN-Manifolds-Topology/ (the idea, rebuilt
 // from its equations; no figure or code of the post is used).
-// A network 2 -> (2) x L -> 1 is trained in the page. A layer z -> act(W z + b)
-// is shown as a continuous deformation in three phases: the linear map
-// (1-s) z + s W z, the translation + s b, the activation (1-s) u + s act(u).
-// With tanh and det W > 0 every phase is a homeomorphism, so a layer of width 2
-// can bend the plane but never tear it: the disc inside the ring cannot be
-// separated, however long one trains.
+// A network 2 -> (w) x L -> 1, w = 2 or 3, is trained in the page. A layer
+// z -> act(W z + b) is shown as a continuous deformation in three phases: the
+// linear map (1-s) z + s W z, the translation + s b, the activation
+// (1-s) u + s act(u). With tanh and det W > 0 every phase is a homeomorphism, so
+// a layer of width 2 can bend the plane but never tear it: the disc inside the
+// ring cannot be separated, however long one trains. With w = 3 the plane is
+// laid in space (z = 0) and the disc can be lifted out of the ring, after which
+// a plane separates them.
 
-import { build, forward, backward, update, rng } from './nn.js';
+import { forward, rng } from './nn.js';
+import * as M from './manifolds-model.js';
+import { THREE, stage3d, axes, tok, onTheme } from './stage3d-b.js';
 import { setTex } from './tex.js';
 
 const $ = id => document.getElementById(id);
-const S = { data: 'curves', layers: 2, act: 'tanh', seed: 3, T: 0 };
+const S = { data: 'curves', width: 2, layers: 2, act: 'tanh', seed: 3, T: 0 };
 new URLSearchParams(location.hash.slice(1)).forEach((v, k) => { if (k in S) S[k] = typeof S[k] === 'number' ? +v : v; });
-
-// the data, in [-1, 1]^2, labels +1 and -1
-function makeData(kind, r) {
-  const pts = [], n = 240, g = () => (r() - 0.5) * 0.08;
-  for (let i = 0; i < n; i++) {
-    const pos = i % 2 === 0;
-    if (kind === 'curves') {             // two interleaved curves
-      const x = 2 * r() - 1;
-      pts.push({ x, y: 0.45 * Math.sin(3 * x) + (pos ? 0.22 : -0.22) + g(), label: pos ? 1 : -1 });
-    } else if (kind === 'ring') {        // a disc inside a ring
-      const a = 2 * Math.PI * r(), rad = pos ? 0.35 * Math.sqrt(r()) : 0.65 + 0.25 * r();
-      pts.push({ x: rad * Math.cos(a), y: rad * Math.sin(a), label: pos ? 1 : -1 });
-    } else if (kind === 'xor') {
-      const x = 2 * r() - 1, y = 2 * r() - 1;
-      pts.push({ x: x + Math.sign(x) * 0.05, y: y + Math.sign(y) * 0.05, label: x * y > 0 ? 1 : -1 });
-    } else {                             // two spirals
-      const t = 0.25 + 1.6 * Math.PI * r(), d = pos ? 0 : Math.PI, rad = t / (1.85 * Math.PI);
-      pts.push({ x: rad * Math.cos(t + d) + g(), y: rad * Math.sin(t + d) + g(), label: pos ? 1 : -1 });
-    }
-  }
-  return pts;
-}
 
 let net, pts, timer = null, morph = null, epoch = 0;
 function reset() {
   stopTrain();
-  net = build([2, ...Array(S.layers).fill(2), 1], S.act, 'tanh', S.seed * 17 + 1);
-  pts = makeData(S.data, rng(S.seed * 31 + 7));
+  net = M.makeNet(S.width, S.layers, S.act, S.seed);
+  pts = M.makeData(S.data, rng(S.seed * 31 + 7));
+  $('hidden').hidden = S.width === 3; $('hidden3d').hidden = S.width !== 3; view = null; g3 = null;
   epoch = 0; S.T = Math.min(S.T, 3 * S.layers);
   $('T').max = 3 * S.layers;
   save(); draw();
 }
 
-function trainEpoch() {
-  const r = rng(epoch + 1), order = pts.map((_, i) => i).sort(() => r() - 0.5);
-  for (let b = 0; b < order.length; b += 10) {
-    const batch = order.slice(b, b + 10);
-    for (const i of batch) { forward(net, [pts[i].x, pts[i].y]); backward(net, pts[i].label); }
-    update(net, 'adam', 0.02, 'L2', 0.0005, batch.length);
-  }
-  epoch++;
-}
-
-// the coordinates of a point after the deformation T: layer k = floor(T / 3),
-// phase floor(T) mod 3, and the fraction s inside the phase
-const actf = { tanh: Math.tanh, relu: x => Math.max(0, x) };
-function layerParams(k) {
-  const L = net[k + 1];
-  return { W: L.map(n => n.inputs.map(l => l.w)), b: L.map(n => n.bias) };
-}
-function deform(p, T) {
-  let z = [p[0], p[1]];
-  for (let k = 0; k < S.layers; k++) {
-    const { W, b } = layerParams(k), loc = Math.min(3, T - 3 * k);
-    const Wz = [W[0][0] * z[0] + W[0][1] * z[1], W[1][0] * z[0] + W[1][1] * z[1]];
-    const s1 = Math.min(1, Math.max(0, loc)), s2 = Math.min(1, Math.max(0, loc - 1)), s3 = Math.min(1, Math.max(0, loc - 2));
-    let u = [(1 - s1) * z[0] + s1 * Wz[0], (1 - s1) * z[1] + s1 * Wz[1]];
-    u = [u[0] + s2 * b[0], u[1] + s2 * b[1]];
-    z = [(1 - s3) * u[0] + s3 * actf[S.act](u[0]), (1 - s3) * u[1] + s3 * actf[S.act](u[1])];
-    if (loc < 3) break;
-  }
-  return z;
-}
+function trainEpoch() { M.trainEpoch(net, pts, epoch); epoch++; }
+const layerParams = k => M.layerParams(net, k);
+const deform = (p, T) => M.deform(net, S.act, p, T);
 
 // ------------------------------------------------------------------ drawing
 const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
@@ -121,39 +77,121 @@ function draw() {
   plane($('input'), p => p, [-1.2, 1.2, -1.2, 1.2], true);
   const qs = pts.map(p => deform([p.x, p.y], S.T));
   let m = 1.1;
-  for (const q of qs) m = Math.max(m, Math.abs(q[0]) * 1.1, Math.abs(q[1]) * 1.1);
+  for (const q of qs) for (const c of q) m = Math.max(m, Math.abs(c) * 1.1);
   view = view === null ? m : view + 0.3 * (m - view);
-  const f = plane($('hidden'), p => deform(p, S.T), [-view, view, -view, view], false);
-  // in the space of the last layer the output unit is a line w.h + b = 0
-  if (S.T >= 3 * S.layers - 1e-9) {
-    const o = net.at(-1)[0], w = o.inputs.map(l => l.w), b = o.bias, ctx = $('hidden').getContext('2d');
-    ctx.strokeStyle = css('--accent'); ctx.lineWidth = 2; ctx.setLineDash([6, 4]); ctx.beginPath();
-    if (Math.abs(w[1]) > Math.abs(w[0])) { ctx.moveTo(f.X(-view), f.Y((-b + w[0] * view) / w[1])); ctx.lineTo(f.X(view), f.Y((-b - w[0] * view) / w[1])); }
-    else { ctx.moveTo(f.X((-b + w[1] * view) / w[0]), f.Y(-view)); ctx.lineTo(f.X((-b - w[1] * view) / w[0]), f.Y(view)); }
-    ctx.stroke(); ctx.setLineDash([]);
+  const end = S.T >= 3 * S.layers - 1e-9;
+  if (S.width === 3) draw3d(qs, end);
+  else {
+    const f = plane($('hidden'), p => deform(p, S.T), [-view, view, -view, view], false);
+    // in the space of the last layer the output unit is a line w.h + b = 0
+    if (end) {
+      const o = net.at(-1)[0], w = o.inputs.map(l => l.w), b = o.bias, ctx = $('hidden').getContext('2d');
+      ctx.strokeStyle = css('--accent'); ctx.lineWidth = 2; ctx.setLineDash([6, 4]); ctx.beginPath();
+      if (Math.abs(w[1]) > Math.abs(w[0])) { ctx.moveTo(f.X(-view), f.Y((-b + w[0] * view) / w[1])); ctx.lineTo(f.X(view), f.Y((-b - w[0] * view) / w[1])); }
+      else { ctx.moveTo(f.X((-b + w[1] * view) / w[0]), f.Y(-view)); ctx.lineTo(f.X((-b - w[1] * view) / w[0]), f.Y(view)); }
+      ctx.stroke(); ctx.setLineDash([]);
+    }
   }
   const k = Math.min(Math.floor(S.T / 3), S.layers - 1), loc = S.T - 3 * k;
-  const phase = S.T >= 3 * S.layers ? 'the last hidden layer, where the output unit draws a line (dashed)' :
+  const phase = S.T >= 3 * S.layers ? `the last hidden layer, where the output unit draws a ${S.width === 3 ? 'plane (translucent)' : 'line (dashed)'}` :
     `layer ${k + 1}, ${['the linear map \\(W\\)', 'the translation \\(b\\)', `the activation ${S.act === 'tanh' ? '\\(\\tanh\\)' : '\\(\\mathrm{ReLU}\\)'}`][Math.min(2, Math.floor(loc))]}`;
-  const { W } = layerParams(k), det = W[0][0] * W[1][1] - W[0][1] * W[1][0];
+  const { W } = layerParams(k), det = M.det(W);
   // the formulas are typeset only when they change, the number is plain text
   setTex($('phase'), phase);
-  setTex($('detW'), `\\(\\det W_${k + 1} =\\) `);
-  $('det').textContent = det.toFixed(3);
-  $('detNeg').textContent = det < 0 ? ' (negative: a reflection, not reachable by a continuous deformation of the plane)' : '';
+  if (S.width === 3 && k === 0) {
+    setTex($('detW'), '\\(W_1\\) is \\(3 \\times 2\\): it maps the plane onto a plane in space');
+    $('det').textContent = ''; $('detNeg').textContent = '';
+  } else {
+    setTex($('detW'), `\\(\\det W_${k + 1} =\\) `);
+    $('det').textContent = det.toFixed(3);
+    $('detNeg').textContent = det < 0 ? ` (negative: a reflection, not reachable by a continuous deformation of the ${S.width === 3 ? 'space' : 'plane'})` : '';
+  }
   let ok = 0; for (const p of pts) if (Math.sign(forward(net, [p.x, p.y])) === p.label) ok++;
   $('acc').textContent = `${(100 * ok / pts.length).toFixed(1)}%`;
   $('epoch').textContent = epoch;
   $('Tv').textContent = S.T.toFixed(2);
 }
 
-function save() { history.replaceState(null, '', '#' + new URLSearchParams({ data: S.data, layers: S.layers, act: S.act, seed: S.seed, T: S.T.toFixed(2) })); }
+// ------------------------------------------------------------ width 3, in space
+// the content (points, grid, the sheet of the plane, the separating plane) lives
+// in [-view, view]^3 and is scaled into the cube [-1, 1]^3 where the axes are
+let st = null, g3 = null, axesView = 0;
+const NG = 24, GRID = 13, GS = 60;
+function build3d() {
+  if (!st) st = stage3d($('hidden3d'), { position: [3.7, -4.6, 3.2], label: 'hidden space' });
+  st.clear();
+  const T = THREE, content = new T.Group();
+  const ball = new T.SphereGeometry(0.022, 10, 8);
+  const dots = new T.InstancedMesh(ball, new T.MeshLambertMaterial(), pts.length);
+  const A = tok('--accent'), G = tok('--gold');
+  pts.forEach((p, i) => dots.setColorAt(i, p.label > 0 ? A : G));
+  const grid = new T.LineSegments(new T.BufferGeometry(), new T.LineBasicMaterial({ color: tok('--ink-soft'), transparent: true, opacity: 0.4 }));
+  grid.geometry.setAttribute('position', new T.BufferAttribute(new Float32Array(GRID * 2 * GS * 6), 3));
+  const sheetGeo = new T.PlaneGeometry(2.4, 2.4, NG, NG);
+  sheetGeo.setAttribute('color', new T.BufferAttribute(new Float32Array(sheetGeo.attributes.position.count * 3), 3));
+  const sheet = new T.Mesh(sheetGeo, new T.MeshBasicMaterial({ vertexColors: true, side: T.DoubleSide, transparent: true, opacity: 0.45, depthWrite: false }));
+  const clip = [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]].map(n => new T.Plane(new T.Vector3(...n), 1));
+  const sep = new T.Mesh(new T.PlaneGeometry(1, 1), new T.MeshBasicMaterial({ color: tok('--accent'), side: T.DoubleSide, transparent: true, opacity: 0.22, depthWrite: false, clippingPlanes: clip }));
+  const sepEdge = new T.LineSegments(new T.EdgesGeometry(new T.PlaneGeometry(1, 1, 8, 8)), new T.LineBasicMaterial({ color: tok('--accent'), transparent: true, opacity: 0.35, clippingPlanes: clip }));
+  const sepG = new T.Group(); sepG.add(sep, sepEdge);
+  content.add(sheet, grid, dots, sepG);
+  const ax = new T.Group();
+  st.group.add(content, ax);
+  g3 = { content, dots, grid, sheet, sepG, ax };
+  axesView = 0;
+}
+function draw3d(qs, end) {
+  if (!g3) build3d();
+  const T = THREE, { content, dots, grid, sheet, sepG, ax } = g3, mat = new T.Matrix4();
+  content.scale.setScalar(1 / view);
+  qs.forEach((q, i) => dots.setMatrixAt(i, mat.makeScale(view, view, view).setPosition(q[0], q[1], q[2])));
+  dots.instanceMatrix.needsUpdate = true; if (dots.instanceColor) dots.instanceColor.needsUpdate = true;
+  // the grid of the input plane, carried by the deformation
+  const gp = grid.geometry.attributes.position.array; let o = 0;
+  for (let i = -6; i <= 6; i++) for (const dir of [0, 1]) {
+    let prev = null;
+    for (let j = 0; j <= GS; j++) {
+      const t = -1.2 + 2.4 * j / GS, c = i * 0.2, q = deform(dir ? [c, t] : [t, c], S.T);
+      if (prev) { gp.set(prev, o); gp.set(q, o + 3); o += 6; }
+      prev = q;
+    }
+  }
+  grid.geometry.attributes.position.needsUpdate = true; grid.geometry.computeBoundingSphere();
+  // the sheet of the input plane, tinted by the decision of the network
+  const sp = sheet.geometry.attributes.position, sc = sheet.geometry.attributes.color;
+  const hex = c => new T.Color(c), Ac = hex(css('--accent')), Gc = hex(css('--gold')), Bc = hex(css('--ground')), tmp = new T.Color();
+  for (let q = 0; q < sp.count; q++) {
+    const x = -1.2 + 2.4 * (q % (NG + 1)) / NG, y = 1.2 - 2.4 * Math.floor(q / (NG + 1)) / NG, z = deform([x, y], S.T), out = forward(net, [x, y]);
+    sp.setXYZ(q, z[0], z[1], z[2]);
+    tmp.copy(Bc).lerp(out > 0 ? Ac : Gc, 0.25 + 0.5 * Math.abs(out)); sc.setXYZ(q, tmp.r, tmp.g, tmp.b);
+  }
+  sp.needsUpdate = true; sc.needsUpdate = true; sheet.geometry.computeBoundingSphere();
+  // the output unit in the last layer: the plane w.h + b = 0, cut by the cube
+  sepG.visible = end;
+  if (end) {
+    const out = net.at(-1)[0], w = new T.Vector3(...out.inputs.map(l => l.w)), n2 = w.lengthSq() || 1;
+    sepG.position.copy(w.clone().multiplyScalar(-out.bias / n2));
+    sepG.quaternion.setFromUnitVectors(new T.Vector3(0, 0, 1), w.clone().normalize());
+    sepG.scale.setScalar(8 * view);
+  }
+  // the axes, named with the half-width of the view
+  if (Math.abs(view - axesView) > 0.02 * view) {
+    st.clear(ax); axesView = view;
+    const v = view.toFixed(2);
+    ax.add(axes({ x: [-1, 1, `h\u2081 \u00b1${v}`], y: [-1, 1, `h\u2082 \u00b1${v}`], z: [-1, 1, `h\u2083 \u00b1${v}`] }));
+  }
+  st.render();
+}
+onTheme(() => { g3 = null; draw(); });
+
+function save() { history.replaceState(null, '', '#' + new URLSearchParams({ data: S.data, width: S.width, layers: S.layers, act: S.act, seed: S.seed, T: S.T.toFixed(2) })); }
 function stopTrain() { clearInterval(timer); timer = null; $('play').textContent = 'Play'; }
 function stopMorph() { clearInterval(morph); morph = null; $('morph').textContent = 'Animate'; }
 
-$('data').value = S.data; $('layers').value = S.layers; $('act').value = S.act; $('T').max = 3 * S.layers; $('T').value = S.T;
+$('data').value = S.data; $('width').value = S.width; $('layers').value = S.layers; $('act').value = S.act; $('T').max = 3 * S.layers; $('T').value = S.T;
 $('data').onchange = e => { S.data = e.target.value; reset(); };
 $('layers').onchange = e => { S.layers = +e.target.value; reset(); };
+$('width').onchange = e => { S.width = +e.target.value; reset(); };
 $('act').onchange = e => { S.act = e.target.value; reset(); };
 $('seed').onclick = () => { S.seed++; reset(); };
 $('T').oninput = e => { stopMorph(); S.T = +e.target.value; save(); draw(); };

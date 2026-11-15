@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LP in 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="stage3d.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html" aria-current="page">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1>LP in three variables</h1>
+  <p class="lede">The same linear program as in <a href="lp.html">the plane</a>, \(\max\, c \cdot x,\ A x \le b,\ x \ge 0\),
+  now with three variables, so that the feasible region is a polytope. The simplex
+  walks along its edges from vertex to vertex, each pivot raising the level plane
+  \(c \cdot x = z\), until no reduced cost is positive; on the Klee-Minty cube
+  Dantzig's rule visits all 8 vertices. The barrier method goes through the inside
+  instead, along the central path, from the analytic center to the optimum as \(\mu\) shrinks.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <div class="inline"><label><span>instance</span><select id="inst"></select></label><button id="regen" type="button">Regenerate</button></div>
+    <label><span>method</span><select id="mode"><option value="simplex">Simplex</option><option value="ipm">Interior point (barrier)</option></select></label>
+    <label><span>pivot rule</span><select id="rule"><option value="dantzig">Dantzig (largest reduced cost)</option><option value="bland">Bland (smallest index)</option></select></label>
+    <label class="check"><span>level plane</span><input id="level" type="checkbox" checked></label>
+  </div>
+  <div class="transport"><label class="counter"><span id="cname">pivots</span><output id="iter">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+</section>
+<p id="info" class="explain"></p>
+<main class="lp3">
+  <figure>
+    <figcaption>The polytope (translucent faces, its edges), the objective \(c\) as an
+    arrow and the level plane through the current point <span class="k dw"></span>;
+    the path of the method <span class="k path3"></span> and the optimum <span class="k opt"></span>.
+    Drag to turn, wheel to zoom.</figcaption>
+    <div id="stage"></div>
+  </figure>
+  <figure>
+    <figcaption id="tcap"></figcaption>
+    <div class="tablewrap"><table id="table" class="basis"></table></div>
+    <dl class="stats"><div><dt>\(c \cdot x\)</dt><dd id="pval"></dd></div><div><dt>\(b \cdot y\)</dt><dd id="dval"></dd></div><div><dt>\(b \cdot y - c \cdot x\)</dt><dd id="gap"></dd></div></dl>
+    <p id="dual" class="explain"></p>
+  </figure>
+</main>
+<footer>Scene C of opt-playground, in three variables; the Klee-Minty cube is from
+Klee and Minty (1972), the first instance from Chvátal's Linear Programming (1983).</footer>
+<script type="module" src="src/lp3d.js"></script>
+</body>
+</html>

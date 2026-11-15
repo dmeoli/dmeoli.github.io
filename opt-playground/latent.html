@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Latent space playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<style>
+  /* latent.html: the two views of the plane, the probe, the pad, the curves */
+  .lt canvas { width: 100%; height: auto; display: block; border-radius: 6px; }
+  #lat, #grid { cursor: crosshair; touch-action: none; }
+  #probe, #pad, #recon { image-rendering: pixelated; }
+  #pad { cursor: crosshair; touch-action: none; }
+  #lc { cursor: default; }
+  main figcaption { min-height: 0; }
+  .pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+  .pair figure > div, .pair > div { min-width: 0; }
+  .pair h3 { margin: 0 0 4px; font: 500 11px 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  .lt .strip { margin-top: 12px; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 8px 0 0; font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+  .row button { padding: 3px 9px; font-size: 12px; }
+  .readout { font: 12px/1.45 'IBM Plex Mono', monospace; color: var(--ink-soft); margin: 6px 0 0; min-height: 2.9em; }
+  .readout b { font-weight: 500; color: var(--ink); }
+  .keys { display: flex; flex-wrap: wrap; gap: 2px 12px; margin: 8px 0 0; padding: 0; list-style: none; font: 500 13px 'IBM Plex Mono', monospace; }
+  .keys li { display: flex; align-items: center; gap: 5px; }
+  .keys i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
+  figure.span { grid-column: 1 / -1; }
+  .formula { font-size: 118%; text-align: center; margin: 4px 0 8px; color: var(--ink); overflow-x: auto; overflow-y: hidden; }
+  .formula mjx-container { transition: color .15s; }
+  .formula .frec, .formula .fkl { cursor: default; }
+  #fig-loss[data-lit] .formula mjx-container { color: color-mix(in srgb, var(--ink-soft) 40%, var(--ground)); }
+  #fig-loss[data-lit="rec"] .formula .frec { color: var(--accent); }
+  #fig-loss[data-lit="kl"] .formula .fkl { color: var(--gold); }
+  #fig-loss[data-lit] .formula .frec, #fig-loss[data-lit] .formula .fkl { transition: color .15s; }
+  button:disabled, select:disabled { opacity: .5; cursor: default; }
+  @media (max-width: 600px) { .formula { font-size: 74%; } }
+</style>
+</head>
+<body>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html" aria-current="page">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1>Latent space playground</h1>
+  <p class="lede">An autoencoder compresses each image of a digit into a code of two
+  numbers and learns to rebuild the image from the code alone, so that every digit becomes
+  a point of the plane and every point of the plane an image. Trained only to reconstruct,
+  it leaves wide regions between the classes whose points decode to nothing recognizable;
+  the variational version encodes each digit as a small Gaussian and pays, in the KL term,
+  for moving it away from a standard normal, which packs the codes around the origin and
+  makes the whole plane decodable.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span>model</span><select id="model"><option value="ae">autoencoder</option><option value="vae">variational (VAE)</option></select></label>
+    <label><span>weight \(\beta\) of the KL</span><select id="beta"><option>0.25</option><option>0.5</option><option>1</option><option>2</option><option>4</option></select></label>
+    <label><span>hidden units</span><select id="H"><option>64</option><option>128</option></select></label>
+    <label><span>step size of Adam</span><select id="lr"><option>0.001</option><option>0.002</option><option>0.005</option></select></label>
+    <label><span>weights seed</span><select id="seed"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+  </div>
+  <div class="transport"><label class="counter"><span>epoch · step</span><output id="count"></output></label><button id="reset" type="button">Reset</button><button id="step" type="button" disabled>Step</button><button id="train" type="button" disabled>Play</button></div>
+</section>
+<p class="explain" id="explain"></p>
+<main>
+  <figure class="lt"><figcaption>The latent plane: the code of each of 600 held-out digits,
+  coloured by its class (for the VAE the mean \(\mu(x)\), with the circles of radius 1 and 2
+  of the prior). Drag the ring to decode any point; click two digits to interpolate between
+  them.</figcaption>
+  <canvas id="lat" width="520" height="520"></canvas>
+  <ul class="keys" id="keys"></ul></figure>
+  <figure class="lt"><figcaption>The same square of the plane, cut into 12&times;12 cells,
+  each showing what the decoder makes of the point at its centre: the regions that no digit
+  maps to decode to blurs or to mixtures, until the VAE fills them.</figcaption>
+  <canvas id="grid" width="520" height="520"></canvas>
+  <p class="readout" id="gridnote"></p></figure>
+  <figure class="lt"><figcaption>The point under the ring, decoded, and the interpolation
+  between the two digits clicked on the plane: the images decoded at evenly spaced points
+  of the segment that joins their codes.</figcaption>
+  <div class="pair"><div><h3>decoded at the ring</h3><canvas id="probe" width="240" height="240"></canvas></div>
+  <div><h3>the ring</h3><p class="readout" id="probenote"></p></div></div>
+  <canvas id="path" class="strip" width="520" height="60"></canvas>
+  <p class="readout" id="pathnote"></p></figure>
+  <figure class="lt"><figcaption>Draw a digit with the mouse or a finger: it is scaled and
+  centred as the training digits are (its inked box to 16 pixels, its centre of mass in the
+  middle, as for MNIST), its code is the gold diamond on both views, and on the right is the
+  image decoded from that code.</figcaption>
+  <div class="pair"><div><h3>input</h3><canvas id="pad" width="240" height="240"></canvas></div>
+  <div><h3>reconstruction</h3><canvas id="recon" width="240" height="240"></canvas></div></div>
+  <div class="row"><button id="clear" type="button">Clear</button><button id="sample" type="button">Held-out digit</button></div>
+  <p class="readout" id="padnote"></p></figure>
+  <figure class="lt span" id="fig-loss"><figcaption>The VAE maximizes, for each digit \(x\),
+  the evidence lower bound below (with weight \(\beta\) on its second term), and the curves
+  show its two terms per digit as losses, averaged over the last batches: the reconstruction
+  error \(-\mathbb{E}\log p_\theta(x\mid z)\), the binary cross-entropy of the decoded image,
+  and the KL divergence of \(q_\phi(z\mid x) = \mathcal{N}(\mu, \mathrm{diag}\,\sigma^2)\)
+  from the prior. The plain autoencoder sets \(z = \mu(x)\) and minimizes the first term
+  only. Hover a curve or a term.</figcaption>
+  <p class="formula">\(\mathcal{L}_\beta(x) = \class{frec}{\mathbb{E}_{q_\phi(z\mid x)}\big[\log p_\theta(x\mid z)\big]} - \beta\,\class{fkl}{D_{\mathrm{KL}}\big(q_\phi(z\mid x)\,\big\|\,\mathcal{N}(0, I)\big)},\)</p>
+  <p class="formula">\(\class{fkl}{D_{\mathrm{KL}} = \tfrac12 \textstyle\sum_{q=1}^{2} \big(\mu_q^2 + \sigma_q^2 - 1 - \log \sigma_q^2\big)}, \quad z = \mu + \sigma \odot \varepsilon\)</p>
+  <canvas id="lc" width="1040" height="240"></canvas>
+  <p class="readout" id="lossnote"></p></figure>
+</main>
+<footer>Scene N of opt-playground, after D. P. Kingma and M. Welling,
+<a href="https://arxiv.org/abs/1312.6114">Auto-Encoding Variational Bayes</a> (2014), and
+G. E. Hinton and R. R. Salakhutdinov,
+<a href="https://doi.org/10.1126/science.1127647">Reducing the Dimensionality of Data with Neural Networks</a>
+(2006): the ideas are theirs, rebuilt here from the equations.</footer>
+<script type="module" src="src/latent.js"></script>
+</body>
+</html>

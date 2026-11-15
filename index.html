@@ -819,9 +819,10 @@ footer {
       <p data-l="it" lang="it">Pagine interattive, nel browser, su cosa succede dentro un algoritmo di ottimizzazione: il poliedro primale e il modello duale affiancati, il cammino delle iterate, e le stesse viste per i modelli di apprendimento, che si addestrano ottimizzando. Le scene in sequenza, per un seminario, sono in <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
       <div class="subnav" role="tablist">
         <button type="button" role="tab" data-sub="decomposition"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span> <span class="count">4</span></button>
-        <button type="button" role="tab" data-sub="lp"><span data-l="en">Linear and Integer</span><span data-l="it" lang="it">Lineare e intera</span> <span class="count">3</span></button>
-        <button type="button" role="tab" data-sub="learning"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span> <span class="count">3</span></button>
-        <button type="button" role="tab" data-sub="networks"><span data-l="en">Inside Networks</span><span data-l="it" lang="it">Dentro le reti</span> <span class="count">5</span></button>
+        <button type="button" role="tab" data-sub="lp"><span data-l="en">Linear and Integer</span><span data-l="it" lang="it">Lineare e intera</span> <span class="count">4</span></button>
+        <button type="button" role="tab" data-sub="learning"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span> <span class="count">4</span></button>
+        <button type="button" role="tab" data-sub="networks"><span data-l="en">Inside Networks</span><span data-l="it" lang="it">Dentro le reti</span> <span class="count">6</span></button>
+        <button type="button" role="tab" data-sub="generative"><span data-l="en">Representations and Generative Models</span><span data-l="it" lang="it">Rappresentazioni e modelli generativi</span> <span class="count">3</span></button>
       </div>
       <div class="sub scenes" data-sub="decomposition" role="tabpanel">
         <article class="scene">
@@ -870,7 +871,7 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/lp.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/lp.webm" poster="/assets/play/lp.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Linear Programming"></video><video class="th-dark" src="/assets/play/lp-dark.webm" poster="/assets/play/lp-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Linear Programming"></video></a>
           <div class="text">
-            <p class="num">01 / 03</p>
+            <p class="num">01 / 04</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/lp.html"><span data-l="en">Linear Programming</span><span data-l="it" lang="it">Programmazione lineare</span></a></h3>
             <p class="desc"><span data-l="en">The simplex walks along the vertices and the barrier crosses the interior along the central path; beside them the dual, where the same steps read in another way.</span><span data-l="it" lang="it">Il simplesso cammina sui vertici e la barriera attraversa l'interno lungo il cammino centrale; accanto il duale, dove gli stessi passi si leggono in un altro modo.</span></p>
             <ul class="tags"><li><span data-l="en">Simplex</span><span data-l="it" lang="it">Simplesso</span></li><li><span data-l="en">Barrier</span><span data-l="it" lang="it">Barriera</span></li><li><span data-l="en">Duality</span><span data-l="it" lang="it">Dualità</span></li></ul>
@@ -880,7 +881,7 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/integer.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/integer.webm" poster="/assets/play/integer.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Integer Programming"></video><video class="th-dark" src="/assets/play/integer-dark.webm" poster="/assets/play/integer-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Integer Programming"></video></a>
           <div class="text">
-            <p class="num">02 / 03</p>
+            <p class="num">02 / 04</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/integer.html"><span data-l="en">Integer Programming</span><span data-l="it" lang="it">Programmazione intera</span></a></h3>
             <p class="desc"><span data-l="en">Branch and bound draws its tree while the relaxation shrinks, and Gomory and cover cuts carve the polygon towards its integer hull.</span><span data-l="it" lang="it">Il branch and bound disegna il suo albero mentre il rilassamento si restringe, e i tagli di Gomory e di copertura scavano il poligono verso il suo inviluppo intero.</span></p>
             <ul class="tags"><li>Branch and Bound</li><li>Gomory</li><li><span data-l="en">Cover Cuts</span><span data-l="it" lang="it">Tagli di copertura</span></li></ul>
@@ -890,11 +891,21 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/polarity.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/polarity.webp" width="640" height="442" alt="Polarity" loading="lazy"><img class="th-dark" src="/assets/play/polarity-dark.webp" width="640" height="442" alt="Polarity" loading="lazy"></a>
           <div class="text">
-            <p class="num">03 / 03</p>
+            <p class="num">03 / 04</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a></h3>
             <p class="desc"><span data-l="en">A polytope and its polar in 3D, where the vertices of one are the facets of the other; it turns with the mouse.</span><span data-l="it" lang="it">Un politopo e il suo polare in 3D, dove i vertici dell'uno sono le facce dell'altro; si ruota col mouse.</span></p>
             <ul class="tags"><li><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></li><li>3D</li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/polarity.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/lp3d.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/lp3d.webm" poster="/assets/play/lp3d.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Linear Programming in 3D"></video><video class="th-dark" src="/assets/play/lp3d-dark.webm" poster="/assets/play/lp3d-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Linear Programming in 3D"></video></a>
+          <div class="text">
+            <p class="num">04 / 04</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/lp3d.html"><span data-l="en">Linear Programming in 3D</span><span data-l="it" lang="it">Programmazione lineare in 3D</span></a></h3>
+            <p class="desc"><span data-l="en">The same linear program with three variables: the polytope in 3D, the level plane rising with the objective, the simplex walking along the edges (all 8 vertices of the Klee-Minty cube with Dantzig's rule) and the barrier method along the central path inside the solid.</span><span data-l="it" lang="it">Lo stesso programma lineare con tre variabili: il politopo in 3D, il piano di livello che sale con l'obiettivo, il simplesso che cammina sugli spigoli (tutti gli 8 vertici del cubo di Klee-Minty con la regola di Dantzig) e il metodo barriera lungo il cammino centrale dentro il solido.</span></p>
+            <ul class="tags"><li><span data-l="en">Simplex</span><span data-l="it" lang="it">Simplesso</span></li><li>Klee-Minty</li><li><span data-l="en">Central path</span><span data-l="it" lang="it">Cammino centrale</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/lp3d.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
         <button type="button" class="next" data-goto="learning"><span data-l="en">Next: Learning</span><span data-l="it" lang="it">Avanti: Apprendimento</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
@@ -903,9 +914,9 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/learning.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/learning.webm" poster="/assets/play/learning.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Optimizers"></video><video class="th-dark" src="/assets/play/learning-dark.webm" poster="/assets/play/learning-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Optimizers"></video></a>
           <div class="text">
-            <p class="num">01 / 03</p>
+            <p class="num">01 / 04</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/learning.html"><span data-l="en">Optimizers</span><span data-l="it" lang="it">Ottimizzatori</span></a></h3>
-            <p class="desc"><span data-l="en">The optimizers of optiml, from gradient descent and Adam to Newton, BFGS and the proximal bundle, side by side on two-dimensional test functions, with their paths drawn on the level curves.</span><span data-l="it" lang="it">Gli ottimizzatori di optiml, dalla discesa del gradiente e Adam a Newton, BFGS e il bundle prossimale, affiancati su funzioni di prova in due dimensioni, con i loro cammini disegnati sulle curve di livello.</span></p>
+            <p class="desc"><span data-l="en">The optimizers of optiml, from gradient descent and Adam to Newton, BFGS and the proximal bundle, racing on two-dimensional test functions such as Rosenbrock, animated step by step on the level map and on the 3D surface side by side, with the real runs of optiml replayed.</span><span data-l="it" lang="it">Gli ottimizzatori di optiml, dalla discesa del gradiente e Adam a Newton, BFGS e il bundle prossimale, in gara su funzioni di prova in due dimensioni come Rosenbrock, animati passo per passo sulla mappa di livello e sulla superficie 3D affiancate, con le corse reali di optiml rigiocate.</span></p>
             <ul class="tags"><li><span data-l="en">Gradient</span><span data-l="it" lang="it">Gradiente</span></li><li>Adam</li><li>optiml</li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/learning.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -913,7 +924,7 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/svm.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/svm.webm" poster="/assets/play/svm.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Support Vector Machines"></video><video class="th-dark" src="/assets/play/svm-dark.webm" poster="/assets/play/svm-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Support Vector Machines"></video></a>
           <div class="text">
-            <p class="num">02 / 03</p>
+            <p class="num">02 / 04</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/svm.html"><span data-l="en">Support Vector Machines</span><span data-l="it" lang="it">Macchine a vettori di supporto</span></a></h3>
             <p class="desc"><span data-l="en">The margin of a support vector machine trained by SMO and, beside it, the dual multipliers in their box: the support vectors are the points whose multiplier leaves zero.</span><span data-l="it" lang="it">Il margine di una macchina a vettori di supporto addestrata con SMO e, accanto, i moltiplicatori duali nel loro box: i vettori di supporto sono i punti il cui moltiplicatore lascia lo zero.</span></p>
             <ul class="tags"><li>SVM</li><li>SMO</li><li><span data-l="en">Dual</span><span data-l="it" lang="it">Duale</span></li></ul>
@@ -923,11 +934,21 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/network.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/network.webm" poster="/assets/play/network.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Neural Networks"></video><video class="th-dark" src="/assets/play/network-dark.webm" poster="/assets/play/network-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Neural Networks"></video></a>
           <div class="text">
-            <p class="num">03 / 03</p>
+            <p class="num">03 / 04</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/network.html"><span data-l="en">Neural Networks</span><span data-l="it" lang="it">Reti neurali</span></a></h3>
             <p class="desc"><span data-l="en">A small network trained in the page, each neuron drawn as the function it computes, and the loss landscape around the current weights.</span><span data-l="it" lang="it">Una piccola rete addestrata nella pagina, ogni neurone disegnato come la funzione che calcola, e il paesaggio della loss attorno ai pesi correnti.</span></p>
             <ul class="tags"><li>Backpropagation</li><li><span data-l="en">Loss Landscape</span><span data-l="it" lang="it">Paesaggio della loss</span></li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/network.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/depth.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/depth.webm" poster="/assets/play/depth.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Depth"></video><video class="th-dark" src="/assets/play/depth-dark.webm" poster="/assets/play/depth-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Depth"></video></a>
+          <div class="text">
+            <p class="num">04 / 04</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a></h3>
+            <p class="desc"><span data-l="en">Up to 30 layers on a data set of the TensorFlow Playground, with the histograms of activations and gradients layer by layer: weights too small make the signal vanish, weights too large saturate the units, and He initialization, normalization and residual connections keep it alive.</span><span data-l="it" lang="it">Fino a 30 strati su un data set del TensorFlow Playground, con gli istogrammi di attivazioni e gradienti strato per strato: pesi troppo piccoli fanno svanire il segnale, pesi troppo grandi saturano le unità, e l'inizializzazione di He, la normalizzazione e le connessioni residue lo tengono vivo.</span></p>
+            <ul class="tags"><li><span data-l="en">Initialization</span><span data-l="it" lang="it">Inizializzazione</span></li><li>Batch Norm</li><li><span data-l="en">Residual</span><span data-l="it" lang="it">Residui</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/depth.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
         <button type="button" class="next" data-goto="networks"><span data-l="en">Next: Inside Networks</span><span data-l="it" lang="it">Avanti: Dentro le reti</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
@@ -936,7 +957,7 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/manifolds.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/manifolds.webm" poster="/assets/play/manifolds.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Layers as Deformations"></video><video class="th-dark" src="/assets/play/manifolds-dark.webm" poster="/assets/play/manifolds-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Layers as Deformations"></video></a>
           <div class="text">
-            <p class="num">01 / 05</p>
+            <p class="num">01 / 06</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/manifolds.html"><span data-l="en">Layers as Deformations</span><span data-l="it" lang="it">Strati come deformazioni</span></a></h3>
             <p class="desc"><span data-l="en">Each hidden layer as a continuous deformation of the plane (the linear map, the translation, the activation) until the two classes can be cut by a line; with width 2 the ring cannot be untied, after Olah.</span><span data-l="it" lang="it">Ogni strato nascosto come una deformazione continua del piano (la mappa lineare, la traslazione, l'attivazione) finché le due classi si separano con una retta; con larghezza 2 l'anello non si scioglie, da Olah.</span></p>
             <ul class="tags"><li><span data-l="en">Topology</span><span data-l="it" lang="it">Topologia</span></li><li>tanh</li><li>Olah</li></ul>
@@ -946,7 +967,7 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/superposition.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/superposition.webm" poster="/assets/play/superposition.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Superposition"></video><video class="th-dark" src="/assets/play/superposition-dark.webm" poster="/assets/play/superposition-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Superposition"></video></a>
           <div class="text">
-            <p class="num">02 / 05</p>
+            <p class="num">02 / 06</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Superposition</span></a></h3>
             <p class="desc"><span data-l="en">Five features squeezed into two dimensions: when they are dense the model keeps the two most important, when they are sparse it packs all of them in a pentagon and accepts a little interference; after the Toy Models of Anthropic.</span><span data-l="it" lang="it">Cinque caratteristiche compresse in due dimensioni: quando sono dense il modello tiene le due più importanti, quando sono rare le mette tutte in un pentagono e accetta un po' di interferenza; dai Toy Models di Anthropic.</span></p>
             <ul class="tags"><li>Superposition</li><li><span data-l="en">Interpretability</span><span data-l="it" lang="it">Interpretabilità</span></li></ul>
@@ -954,7 +975,7 @@ footer {
             <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/conv.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/conv.webm" poster="/assets/play/conv.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Convolution"></video><video class="th-dark" src="/assets/play/conv-dark.webm" poster="/assets/play/conv-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Convolution"></video></a>
           <div class="text">
-            <p class="num">03 / 05</p>
+            <p class="num">03 / 06</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a></h3>
             <p class="desc"><span data-l="en">A small convolutional network trained on digits drawn in the page: the filter slides over the input, the maps of both layers show where each pattern occurs, and hovering a cell lights the part of the image it depends on; draw a digit yourself, after Olah.</span><span data-l="it" lang="it">Una piccola rete convoluzionale addestrata su cifre disegnate nella pagina: il filtro scorre sull'input, le mappe dei due strati mostrano dove compare ogni motivo, e passando su una cella si illumina la parte dell'immagine da cui dipende; la cifra si può disegnare a mano, da Olah.</span></p>
             <ul class="tags"><li><span data-l="en">Filters</span><span data-l="it" lang="it">Filtri</span></li><li><span data-l="en">Feature maps</span><span data-l="it" lang="it">Mappe</span></li><li><span data-l="en">Receptive fields</span><span data-l="it" lang="it">Campi recettivi</span></li></ul>
@@ -964,7 +985,7 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/lstm.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/lstm.webm" poster="/assets/play/lstm.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="LSTM"></video><video class="th-dark" src="/assets/play/lstm-dark.webm" poster="/assets/play/lstm-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="LSTM"></video></a>
           <div class="text">
-            <p class="num">04 / 05</p>
+            <p class="num">04 / 06</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/lstm.html"><span data-l="en">LSTM</span><span data-l="it" lang="it">LSTM</span></a></h3>
             <p class="desc"><span data-l="en">An LSTM and a plain recurrent network learn side by side to carry a bit across many steps: the cell is unrolled with the real values of its gates, and the gradient of the plain network vanishes with the delay, after Olah.</span><span data-l="it" lang="it">Una LSTM e una rete ricorrente semplice imparano affiancate a portare un bit attraverso molti passi: la cella è srotolata con i valori veri dei suoi gate, e il gradiente della rete semplice svanisce col ritardo, da Olah.</span></p>
             <ul class="tags"><li><span data-l="en">Gates</span><span data-l="it" lang="it">Gate</span></li><li><span data-l="en">Cell state</span><span data-l="it" lang="it">Stato di cella</span></li><li><span data-l="en">Vanishing gradient</span><span data-l="it" lang="it">Gradiente che svanisce</span></li></ul>
@@ -974,11 +995,54 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/attention.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/attention.webm" poster="/assets/play/attention.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Attention"></video><video class="th-dark" src="/assets/play/attention-dark.webm" poster="/assets/play/attention-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Attention"></video></a>
           <div class="text">
-            <p class="num">05 / 05</p>
+            <p class="num">05 / 06</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attention</span></a></h3>
             <p class="desc"><span data-l="en">A transformer of one or two layers learns to reverse, sort or recall a sequence, and the attention of every head forms under the eyes: the anti-diagonal of the reversal, the induction head of the recall, and q, k, v and the softmax for one query.</span><span data-l="it" lang="it">Un transformer di uno o due strati impara a invertire, ordinare o richiamare una sequenza, e l'attenzione di ogni testa si forma sotto gli occhi: l'antidiagonale dell'inversione, la testa a induzione del richiamo, e q, k, v e la softmax per una query.</span></p>
             <ul class="tags"><li>Self-Attention</li><li><span data-l="en">Heads</span><span data-l="it" lang="it">Teste</span></li><li>Transformer</li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/attention.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/gnn.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/gnn.webm" poster="/assets/play/gnn.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Graph Networks"></video><video class="th-dark" src="/assets/play/gnn-dark.webm" poster="/assets/play/gnn-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Graph Networks"></video></a>
+          <div class="text">
+            <p class="num">06 / 06</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/gnn.html"><span data-l="en">Graph Networks</span><span data-l="it" lang="it">Reti su grafi</span></a></h3>
+            <p class="desc"><span data-l="en">Message passing round by round: the labels of a few nodes spreading through their communities, the truth values of an assignment reaching the clauses of a formula as in NeuroSAT, and two graphs that no number of rounds can tell apart.</span><span data-l="it" lang="it">Il message passing round per round: le etichette di pochi nodi che si propagano nelle loro comunità, i valori di verità di un assegnamento che raggiungono le clausole di una formula come in NeuroSAT, e due grafi che nessun numero di round distingue.</span></p>
+            <ul class="tags"><li>GCN</li><li>GIN</li><li><span data-l="en">Weisfeiler-Leman</span><span data-l="it" lang="it">Weisfeiler-Leman</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/gnn.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <button type="button" class="next" data-goto="generative"><span data-l="en">Next: Representations and Generative Models</span><span data-l="it" lang="it">Avanti: Rappresentazioni e modelli generativi</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
+      </div>
+      <div class="sub scenes" data-sub="generative" role="tabpanel">
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/representations.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/representations.webm" poster="/assets/play/representations.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Representations"></video><video class="th-dark" src="/assets/play/representations-dark.webm" poster="/assets/play/representations-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Representations"></video></a>
+          <div class="text">
+            <p class="num">01 / 03</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a></h3>
+            <p class="desc"><span data-l="en">Five hundred digits followed through the layers of a network while it trains, each layer drawn with PCA, t-SNE or a linear probe: the classes overlap in the pixels and come apart layer after layer, after Olah.</span><span data-l="it" lang="it">Cinquecento cifre seguite attraverso gli strati di una rete mentre si addestra, ogni strato disegnato con PCA, t-SNE o una sonda lineare: le classi si sovrappongono nei pixel e si separano strato dopo strato, da Olah.</span></p>
+            <ul class="tags"><li>PCA</li><li>t-SNE</li><li><span data-l="en">Nearest neighbours</span><span data-l="it" lang="it">Vicini</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/representations.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/latent.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/latent.webm" poster="/assets/play/latent.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Latent Space"></video><video class="th-dark" src="/assets/play/latent-dark.webm" poster="/assets/play/latent-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Latent Space"></video></a>
+          <div class="text">
+            <p class="num">02 / 03</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/latent.html"><span data-l="en">Latent Space</span><span data-l="it" lang="it">Spazio latente</span></a></h3>
+            <p class="desc"><span data-l="en">An autoencoder squeezes each digit into two numbers: the plane of the codes, what the decoder makes of every point of it, and the interpolation between two digits; the variational version fills the holes that the plain one leaves.</span><span data-l="it" lang="it">Un autoencoder comprime ogni cifra in due numeri: il piano dei codici, cosa il decoder ricava da ogni suo punto, e l'interpolazione fra due cifre; la versione variazionale riempie i buchi che quella semplice lascia.</span></p>
+            <ul class="tags"><li>Autoencoder</li><li>VAE</li><li>ELBO</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/latent.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/diffusion.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/diffusion.webm" poster="/assets/play/diffusion.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Diffusion"></video><video class="th-dark" src="/assets/play/diffusion-dark.webm" poster="/assets/play/diffusion-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Diffusion"></video></a>
+          <div class="text">
+            <p class="num">03 / 03</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a></h3>
+            <p class="desc"><span data-l="en">A cloud of points turned into noise step by step and brought back by a small network that learns the noise: the forward process, the learnt field of directions and the samples falling onto the shape.</span><span data-l="it" lang="it">Una nuvola di punti trasformata in rumore passo dopo passo e riportata indietro da una piccola rete che impara il rumore: il processo in avanti, il campo di direzioni appreso e i campioni che ricadono sulla forma.</span></p>
+            <ul class="tags"><li>DDPM</li><li>DDIM</li><li><span data-l="en">Score</span><span data-l="it" lang="it">Score</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/diffusion.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
       </div>

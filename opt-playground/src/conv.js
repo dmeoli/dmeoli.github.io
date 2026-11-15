@@ -6,14 +6,17 @@
 // conv 3x3 -> ReLU -> pool -> softmax (src/convnet.js) is trained with Adam on
 // synthetic digits (src/convdata.js); the reader draws the input and sees the
 // filters, the maps, the pooled maps, the receptive field of a cell, one filter
-// sliding over the input, and the input that maximizes each layer-2 channel.
+// sliding over the input, and the input that maximizes each layer-2 channel;
+// last, what the network looks at: the saliency of a class (Simonyan et al.
+// 2014) and an adversarial example made by iterated FGSM (Goodfellow et al.
+// 2015).
 
-import { makeNet, forward, trainBatch, accuracy, visualize, receptiveField, N, P1, P2, NC } from './convnet.js';
+import { makeNet, forward, trainBatch, accuracy, visualize, receptiveField, classScore, fgsm, argmax, N, P1, P2, NC } from './convnet.js';
 import { makeSet } from './convdata.js';
 import { rng } from './nn.js';
 
 const $ = id => document.getElementById(id);
-const S = { c1: 6, c2: 8, lr: 0.003, seed: 1, f: 0 };
+const S = { c1: 6, c2: 8, lr: 0.003, seed: 1, f: 0, salc: -1, salx: 0, tgt: -1, eps: 0.1, iters: 10 };
 new URLSearchParams(location.hash.slice(1)).forEach((v, k) => { if (k in S && Number.isFinite(+v)) S[k] = +v; });
 const NTRAIN = 6000, NTEST = 1000, B = 32;
 
@@ -21,6 +24,7 @@ let net, data = null, test = null, steps = 0, losses = [], acc = null, evalAt = 
 let order = [], at = 0, shuf = rng(1);
 let x = new Float64Array(N * N), F = null, truth = null, hover = null;
 let running = false, pos = 10 * N + 9, sliding = null, viz = [], vizNext = 0, vizStamp = -1;
+let adv = null;                           // the last attack: { x0, xa, from, target }
 
 // ------------------------------------------------------------------ the data, made in chunks
 // the held-out digits first, then the training digits, a slice per frame;
@@ -160,14 +164,16 @@ function drawInput() {
   }
 }
 
-function drawProb() {
-  const cv = $('prob'), ctx = cv.getContext('2d'), W = cv.width, H = cv.height, w = W / NC, top = 12, base = H - 22;
+// the bars of the 10 probabilities; `ref`, when given, is outlined in gold
+function drawProb(cv = $('prob'), prob = F.prob, ref = null) {
+  const ctx = cv.getContext('2d'), W = cv.width, H = cv.height, w = W / NC, top = 12, base = H - 22;
   ctx.fillStyle = P.ground; ctx.fillRect(0, 0, W, H);
-  let best = 0; for (let k = 1; k < NC; k++) if (F.prob[k] > F.prob[best]) best = k;
+  const best = argmax(prob);
   ctx.font = '12px IBM Plex Mono, monospace'; ctx.textAlign = 'center';
   for (let k = 0; k < NC; k++) {
-    const h = F.prob[k] * (base - top);
+    const h = prob[k] * (base - top);
     ctx.fillStyle = P.rule; ctx.fillRect(k * w + 6, top, w - 12, base - top);
+    if (k === ref) { ctx.strokeStyle = P.goldc; ctx.lineWidth = 2; ctx.strokeRect(k * w + 5, top - 1, w - 10, base - top + 2); }
     ctx.fillStyle = k === best ? P.accent : P.accent2; ctx.globalAlpha = k === best ? 1 : 0.55;
     ctx.fillRect(k * w + 6, base - h, w - 12, h); ctx.globalAlpha = 1;
     ctx.fillStyle = k === best ? P.accent : P.soft; ctx.fillText(k, k * w + w / 2, H - 6);
@@ -249,11 +255,62 @@ function drawSlide() {
     ` (${terms} of the 9 pixels under the window are inked)`;
 }
 
+// ------------------------------------------------------------------ what the network looks at
+// a 20x20 image on a canvas: cell c at (x0, y0), coloured by `color`
+function grid(ctx, arr, x0, y0, c, color) {
+  for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) { ctx.fillStyle = color(arr[i * N + j]); ctx.fillRect(x0 + j * c, y0 + i * c, c, c); }
+  ctx.strokeStyle = P.rule; ctx.lineWidth = 1; ctx.strokeRect(x0 + 0.5, y0 + 0.5, N * c - 1, N * c - 1);
+}
+
+function drawSaliency() {
+  const c = S.salc < 0 ? argmax(F.prob) : S.salc, { value, dx } = classScore(net, x, c);
+  const m = S.salx ? dx.map((g, k) => g * x[k]) : dx, mx = absMax(m);
+  const cv = $('sal'), ctx = cv.getContext('2d');
+  ctx.fillStyle = P.ground; ctx.fillRect(0, 0, cv.width, cv.height);
+  grid(ctx, m, 0, 0, cv.width / N, v => div(v / mx));
+  $('salnote').textContent = `${S.salx ? '∂s/∂x × x' : '∂s/∂x'} for class ${c}, whose score is s = ${value.toFixed(2)} ` +
+    `(probability ${F.prob[c].toFixed(2)}); the largest |${S.salx ? 'value' : 'gradient'}| is ${mx.toFixed(3)}.`;
+}
+
+function drawAdversarial() {
+  const cv = $('adv'), ctx = cv.getContext('2d'), c = 9, top = 24, gap = (cv.width - 3 * N * c) / 2;
+  ctx.fillStyle = P.ground; ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.font = '11px IBM Plex Mono, monospace'; ctx.fillStyle = P.soft; ctx.textAlign = 'start';
+  $('useadv').disabled = !adv;
+  if (!adv) {
+    ctx.fillText('press Attack to perturb the current input', 0, 14);
+    drawProb($('advprob'), F.prob);
+    $('advnote').textContent = `The network says ${argmax(F.prob)} on the input; choose a target and ε, then Attack.`;
+    return;
+  }
+  const d = adv.xa.map((v, k) => v - adv.x0[k]), e = Math.max(adv.eps, 1e-9);
+  ctx.fillText('x', 0, 14); ctx.fillText(`x' − x, scaled by 1/ε`, N * c + gap, 14); ctx.fillText(`x'`, 2 * (N * c + gap), 14);
+  grid(ctx, adv.x0, 0, top, c, v => seq(P.ink, v));
+  grid(ctx, d, N * c + gap, top, c, v => div(v / e));
+  grid(ctx, adv.xa, 2 * (N * c + gap), top, c, v => seq(P.ink, v));
+  const pa = forward(net, adv.xa).prob, p0 = forward(net, adv.x0).prob, now = argmax(pa), was = argmax(p0);
+  drawProb($('advprob'), pa, adv.target ?? was);
+  let l1 = 0, linf = 0, moved = 0;
+  for (const v of d) { l1 += Math.abs(v); linf = Math.max(linf, Math.abs(v)); if (Math.abs(v) > 1e-9) moved++; }
+  const aim = adv.target === null ? `away from ${was}` : `towards ${adv.target}`;
+  $('advnote').textContent = `${adv.steps} step${adv.steps > 1 ? 's' : ''} ${aim} with ε = ${adv.eps.toFixed(2)}: ${moved} of ${N * N} pixels moved, ` +
+    `by ${(l1 / (N * N)).toFixed(3)} on average and at most ${linf.toFixed(2)}. The network said ${was} (p ${p0[was].toFixed(2)}) ` +
+    `and now says ${now} (p ${pa[now].toFixed(2)})` + (now === was ? ', unchanged: try a larger ε or more steps.' :
+    adv.target !== null && now !== adv.target ? `, not yet the target ${adv.target}.` : '.') + ' The bars are the probabilities on x′, the gold outline the class aimed at (or left).';
+}
+
+function attack() {
+  if (!data) return;
+  const target = S.tgt < 0 ? null : S.tgt;
+  adv = { x0: Float64Array.from(x), xa: fgsm(net, x, { target, eps: S.eps, steps: S.iters }), target, eps: S.eps, steps: S.iters };
+  drawAdversarial();
+}
+
 // ------------------------------------------------------------------ everything
 function refresh() {
   if (!P) palette();
   F = forward(net, x);
-  drawInput(); drawProb(); drawSlide(); drawLayer1(); drawLayer2();
+  drawInput(); drawProb(); drawSlide(); drawLayer1(); drawLayer2(); drawSaliency(); drawAdversarial();
   const ep = data ? steps * B / NTRAIN : 0;
   $('count').textContent = `${ep.toFixed(2)} · ${steps}`;
   $('step').disabled = $('train').disabled = !data;
@@ -273,7 +330,7 @@ function refresh() {
   } else $('hover').textContent = 'Hover a cell of a map to see its receptive field.';
 }
 
-function save() { history.replaceState(null, '', '#' + new URLSearchParams({ c1: S.c1, c2: S.c2, lr: S.lr, seed: S.seed, f: S.f })); }
+function save() { history.replaceState(null, '', '#' + new URLSearchParams({ c1: S.c1, c2: S.c2, lr: S.lr, seed: S.seed, f: S.f, salc: S.salc, salx: S.salx, tgt: S.tgt, eps: S.eps, iters: S.iters })); }
 
 // ------------------------------------------------------------------ the reader's hand
 function canvasPoint(cv, e) {
@@ -288,7 +345,7 @@ function brush(gx, gy) {                  // a soft round brush, in grid units
     if (v > x[i * N + j]) x[i * N + j] = v;
   }
 }
-$('in').addEventListener('pointerdown', e => { drawing = true; last = null; truth = null; try { $('in').setPointerCapture(e.pointerId); } catch (err) { /* a synthetic pointer */ } ink(e); });
+$('in').addEventListener('pointerdown', e => { drawing = true; last = null; truth = null; adv = null; try { $('in').setPointerCapture(e.pointerId); } catch (err) { /* a synthetic pointer */ } ink(e); });
 $('in').addEventListener('pointermove', e => { if (drawing) ink(e); });
 $('in').addEventListener('pointerup', () => { drawing = false; });
 $('in').addEventListener('pointercancel', () => { drawing = false; });
@@ -298,9 +355,9 @@ function ink(e) {
   else brush(p[0], p[1]);
   last = p; refresh();
 }
-$('clear').onclick = () => { x = new Float64Array(N * N); truth = null; refresh(); };
+$('clear').onclick = () => { x = new Float64Array(N * N); truth = null; adv = null; refresh(); };
 let sampleR = rng(7);
-$('sample').onclick = () => { if (!test) return; const k = Math.floor(sampleR() * NTEST); x = Float64Array.from(test.X[k]); truth = test.Y[k]; refresh(); };
+$('sample').onclick = () => { if (!test) return; const k = Math.floor(sampleR() * NTEST); x = Float64Array.from(test.X[k]); truth = test.Y[k]; adv = null; refresh(); };
 
 // hovering a map shows the receptive field of the cell
 for (const stage of ['m1', 'q1', 'm2', 'q2']) {
@@ -345,6 +402,15 @@ for (const k of ['c1', 'c2', 'lr', 'seed']) {
   $(k).onchange = e => { S[k] = +e.target.value; reset(); };
 }
 $('reset').onclick = reset;
+// the saliency and the attack
+$('salc').value = S.salc; $('salc').onchange = e => { S.salc = +e.target.value; save(); drawSaliency(); };
+$('salx').checked = !!S.salx; $('salx').onchange = e => { S.salx = e.target.checked ? 1 : 0; save(); drawSaliency(); };
+$('tgt').value = S.tgt; $('tgt').onchange = e => { S.tgt = +e.target.value; save(); };
+$('iters').value = S.iters; $('iters').onchange = e => { S.iters = +e.target.value; save(); };
+$('eps').value = S.eps; $('epsOut').textContent = S.eps.toFixed(2);
+$('eps').oninput = e => { S.eps = +e.target.value; $('epsOut').textContent = S.eps.toFixed(2); save(); };
+$('attack').onclick = attack;
+$('useadv').onclick = () => { if (!adv) return; x = Float64Array.from(adv.xa); truth = null; adv = null; refresh(); };
 $('step').onclick = () => { if (!data) return; stop(); step(); kick(); refresh(); };
 $('train').onclick = () => running ? stop() : start();
 document.addEventListener('keydown', e => {
@@ -357,6 +423,6 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { pa
 
 reset();
 makeData(() => {
-  x = Float64Array.from(test.X[3]); truth = test.Y[3];
+  x = Float64Array.from(test.X[3]); truth = test.Y[3]; adv = null;
   kick(); refresh();
 });

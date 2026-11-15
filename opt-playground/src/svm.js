@@ -4,6 +4,8 @@
 // time: every step lights the pair it moves, in the dual and in the primal.
 
 import { rng } from './nn.js';
+import * as THREE from 'three';
+import { stage3d, rod, ball, clear, label } from './stage3d.js';
 
 const $ = id => document.getElementById(id);
 const S = { kernel: 'linear', C: 1, gamma: 0.5, data: 'blobs', seed: 3 };
@@ -104,8 +106,81 @@ function drawDual() {
   el('text', { x: 32, y: H - 1, class: 'lab' }).textContent = 'red: the pair of the last step)';
 }
 
+// the lift: the height of x is <w, phi(x)> / |w| = (f(x) - b) / |w|, its
+// coordinate along w in the space of the kernel; the hyperplane w.phi + b = 0 is
+// then the horizontal plane at -b / |w|, the margins are 1 / |w| above and below,
+// and the plane cuts the surface along the curve f = 0. Drawn with the plane at
+// height 0 and the farthest point at height 0.9; the axis gives the true values.
+let lift = null;
+const liftGroup = new THREE.Group();
+function drawLift() {
+  const fig = $('liftfig');
+  fig.hidden = S.kernel === 'linear';
+  if (fig.hidden) return;
+  if (!lift) { lift = stage3d($('lift'), { camera: [3.1, -3.4, 2.1], target: [0, 0, -0.4], aspect: 0.75, onTheme: drawLift }); lift.content.add(liftGroup); lift.renderer.localClippingEnabled = true; }
+  clear(liftGroup);
+  const col = lift.colors, R = 4.5, NG = 44, FL = -1.25, n = pts.length;
+  let w2 = 0;
+  for (let i = 0; i < n; i++) if (alpha[i] > 0) for (let j = 0; j < n; j++) if (alpha[j] > 0) w2 += alpha[i] * alpha[j] * pts[i].y * pts[j].y * K(i, j);
+  const nw = Math.sqrt(Math.max(w2, 0));
+  const fi = pts.map(p => f(p.x)), top = Math.max(1e-9, ...fi.map(Math.abs));
+  const H = v => (nw > 1e-9 ? Math.max(-1.2, Math.min(1.2, 0.9 * v / top)) : 0);
+  // the surface is cut a little above the floor, so that its shadow shows
+  const cut = [new THREE.Plane(new THREE.Vector3(0, 0, 1), 1.1), new THREE.Plane(new THREE.Vector3(0, 0, -1), 1.15)];
+  // the surface, coloured by the side of the plane
+  const g = new THREE.PlaneGeometry(2, 2, NG, NG), pos = g.attributes.position, colors = new Float32Array(pos.count * 3), F = [];
+  const cp = col.accent2, cn = col.gold;
+  for (let q = 0; q < pos.count; q++) {
+    const u = pos.getX(q), v = pos.getY(q), val = f([u * R, v * R]);
+    F[q] = val; pos.setZ(q, H(val));
+    const c = val >= 0 ? cp : cn;
+    colors.set([c.r, c.g, c.b], q * 3);
+  }
+  g.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  g.computeVertexNormals();
+  liftGroup.add(new THREE.Mesh(g, new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide, transparent: true, opacity: 0.45, depthWrite: false, clippingPlanes: cut })));
+  // the separating plane and the margins, the floor
+  const sq = (z, material) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material); m.position.z = z; liftGroup.add(m); };
+  sq(0, new THREE.MeshBasicMaterial({ color: col.ink, transparent: true, opacity: 0.12, side: THREE.DoubleSide, depthWrite: false }));
+  sq(FL, new THREE.MeshBasicMaterial({ color: col.rule, transparent: true, opacity: 0.6, side: THREE.DoubleSide, depthWrite: false }));
+  if (nw > 1e-9) for (const s of [1, -1]) {
+    const z = H(s), loop = [[-1, -1], [1, -1], [1, 1], [-1, 1], [-1, -1]].map(([a, b]) => new THREE.Vector3(a, b, z));
+    const l = new THREE.Line(new THREE.BufferGeometry().setFromPoints(loop), new THREE.LineDashedMaterial({ color: col.soft, dashSize: 0.05, gapSize: 0.04 }));
+    l.computeLineDistances(); liftGroup.add(l);
+  }
+  // the curve f = 0 by marching squares: on the plane, and its shadow on the floor
+  if (nw > 1e-9) {
+    const im = new THREE.MeshBasicMaterial({ color: col.ink }), N1 = NG + 1;
+    const P = (q, r) => { const a = F[q], b = F[r], t = a / (a - b); return [pos.getX(q) + t * (pos.getX(r) - pos.getX(q)), pos.getY(q) + t * (pos.getY(r) - pos.getY(q))]; };
+    for (let j = 0; j < NG; j++) for (let i = 0; i < NG; i++) {
+      const c = [j * N1 + i, j * N1 + i + 1, (j + 1) * N1 + i + 1, (j + 1) * N1 + i], cut = [];
+      for (let e = 0; e < 4; e++) { const q = c[e], r = c[(e + 1) % 4]; if ((F[q] >= 0) !== (F[r] >= 0)) cut.push(P(q, r)); }
+      for (let e = 0; e + 1 < cut.length; e += 2) {
+        liftGroup.add(rod([...cut[e], 0], [...cut[e + 1], 0], 0.007, im));
+        liftGroup.add(rod([...cut[e], FL], [...cut[e + 1], FL], 0.007, im));
+      }
+    }
+  }
+  // the points on the surface, with their shadows on the floor
+  pts.forEach((p, k) => {
+    const sv = alpha[k] > 1e-6, hot = last && (k === last.i || k === last.j);
+    const c = hot ? col.red : p.y > 0 ? col.accent : col.gold;
+    const u = [p.x[0] / R, p.x[1] / R];
+    liftGroup.add(ball([...u, H(fi[k])], hot ? 0.05 : sv ? 0.04 : 0.025, new THREE.MeshLambertMaterial({ color: c, emissive: sv ? c : 0x000000, emissiveIntensity: 0.35 })));
+    liftGroup.add(ball([...u, FL], 0.015, new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: 0.6 })));
+  });
+  if (nw > 1e-9) {
+    const t = label(`plane: -b/‖w‖ = ${(-b / nw).toFixed(2)}`, col.soft, 0.08);
+    t.position.set(-1, 1.3, 0); liftGroup.add(t);
+  }
+  lift.setAxes({ origin: [-1, -1, FL], ends: [[1.25, -1, FL], [-1, 1.25, FL], [-1, -1, 1.35]], names: ['x1', 'x2', '⟨w,φ(x)⟩/‖w‖'], size: 0.09 });
+  $('liftinfo').textContent = nw > 1e-9
+    ? `‖w‖ = ${nw.toFixed(3)}: the margins are ${(1 / nw).toFixed(3)} from the plane, ${(2 / nw).toFixed(3)} apart, in the space of the kernel.`
+    : 'All the multipliers are zero, so w = 0: the first SMO step starts the lift.';
+}
+
 function draw() {
-  drawPrimal(); drawDual();
+  drawPrimal(); drawDual(); drawLift();
   const sv = alpha.filter(a => a > 1e-6).length, bound = alpha.filter(a => a > S.C - 1e-6).length;
   $('iter').textContent = iter; $('dval').textContent = dualValue().toFixed(4);
   $('sv').textContent = sv; $('svC').textContent = bound;
@@ -116,6 +191,12 @@ function stop() { clearInterval(timer); timer = null; $('play').textContent = 'P
 function play() { if (timer) return stop(); $('play').textContent = 'Pause'; timer = setInterval(step, 250); }
 function reset() { stop(); makeData(); $('status').textContent = ''; draw(); }
 
+// the address may set the data, the kernel, C, gamma, the seed and a number of
+// SMO steps to take at once (e.g. #data=rings&kernel=poly&k=40)
+const H = new URLSearchParams(location.hash.slice(1));
+for (const key of ['data', 'kernel']) if (H.has(key)) { S[key] = H.get(key); $(key).value = S[key]; }
+for (const key of ['C', 'gamma', 'seed']) if (H.has(key) && Number.isFinite(+H.get(key))) S[key] = +H.get(key);
+$('C').value = S.C; $('COut').textContent = S.C; $('gamma').value = S.gamma; $('gammaOut').textContent = S.gamma;
 $('kernel').onchange = e => { S.kernel = e.target.value; reset(); };
 $('data').onchange = e => { S.data = e.target.value; reset(); };
 $('C').oninput = e => { S.C = +e.target.value; $('COut').textContent = e.target.value; reset(); };
@@ -130,3 +211,5 @@ document.addEventListener('keydown', e => {
   if (e.key === ' ') { e.preventDefault(); play(); }
 });
 reset();
+for (let i = 0; i < (+H.get('k') || 0) && smoStep(); i++) iter++;
+draw();

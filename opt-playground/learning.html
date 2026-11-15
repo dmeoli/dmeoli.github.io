@@ -16,39 +16,83 @@
   "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
 } }
 </script>
+<style>
+  /* the two figures side by side, each with its bar and a full screen of its own */
+  .fig { min-width: 0; }
+  .figbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; min-height: 32px; margin-bottom: 6px; font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+  .figname { text-transform: uppercase; letter-spacing: .08em; font-size: 11px; color: var(--accent); }
+  #readout { font-variant-numeric: tabular-nums; white-space: pre; }
+  .fiter { margin-left: auto; font-variant-numeric: tabular-nums; }
+  .fiter b { font-weight: 500; color: var(--ink); }
+  .figbar button { font-size: 11px; padding: 3px 7px; }
+  .figbar button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: var(--panel); }
+  .mapwrap, .stage3d { width: 100%; aspect-ratio: 1; overflow: hidden; }
+  .mapwrap { display: flex; justify-content: center; }
+  #map { display: block; cursor: crosshair; border-radius: 6px; }
+  .stage3d canvas { width: 100%; height: 100%; display: block; cursor: grab; border-radius: 6px; }
+  .stage3d { font: italic 14px Spectral, Georgia, serif; color: var(--ink-soft); }
+  .fig:fullscreen { background: var(--ground); padding: 16px 24px; display: flex; flex-direction: column; }
+  .fig:fullscreen .figbar { font-size: 16px; }
+  .fig:fullscreen .figname { font-size: 15px; }
+  .fig:fullscreen .mapwrap, .fig:fullscreen .stage3d { flex: 1; aspect-ratio: auto; min-height: 0; }
+  /* the curves under both, the legend beside them */
+  .curvesfig { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 4px 24px; align-items: start; }
+  .curvesfig figcaption { grid-column: 1 / -1; min-height: 0; }
+  .curvewrap { overflow: hidden; }
+  #curves { display: block; }
+  .curvesfig .legend { columns: 1; margin-top: 18px; }
+  @media (max-width: 860px) { .curvesfig { grid-template-columns: minmax(0, 1fr); } .curvesfig .legend { margin-top: 0; } }
+  /* the speed and the scrubber, a line under the bar */
+  .controls .scrub { display: flex; flex-wrap: wrap; gap: 12px 22px; align-items: end; }
+  .controls .scrub label.scrubber { flex: 1 1 240px; grid-template-columns: minmax(0, 1fr); }
+  .scrubber input { width: 100%; }
+  .controls label:has(> input[type=checkbox]) { justify-items: start; }
+</style>
 </head>
 <body>
-<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html" aria-current="page">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="present.html">Talk</a></nav>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html" aria-current="page">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
   <h1>Learning playground</h1>
   <p class="lede">Training a model is minimizing a function: here the test
   functions of optiml in two dimensions, and its algorithms racing on the same
   landscape from the same start, first-order, adaptive, second-order and a
-  bundle method, the only one built for the nonsmooth case. Click on the map to
-  move the start.</p>
+  bundle method, the only one built for the nonsmooth case. The level map and
+  the surface show the same iteration; click on the map to move the start,
+  drag the surface to turn it. Space plays and pauses, the arrows step forward
+  and back, also in full screen.</p>
 </header>
 <section class="controls">
   <div class="settings">
     <label><span>function</span><select id="fn"></select></label>
-    <label><span>view</span><select id="view"><option value="map">level map</option><option value="3d">3D surface</option></select></label>
     <label><span>learning rate</span><input id="lr" type="range" min="0.0002" max="0.1" step="0.0002" value="0.002"><output id="lrOut">0.002</output></label>
     <label><span>bundle \(t\)</span><input id="t" type="range" min="0.05" max="3" step="0.05" value="0.5"><output id="tOut">0.5</output></label>
+    <label><span>log scale</span><input id="log" type="checkbox"></label>
+    <label><span>levels on surface</span><input id="sc" type="checkbox"></label>
     <label><span>replay a trace</span><select id="traceSel"><option value="">none</option><option value="traces/rosenbrock-optiml.json">optiml on Rosenbrock (real run)</option></select></label>
     <label><span>or load a file</span><input id="traceFile" type="file" accept=".json,application/json"></label>
   </div>
   <div class="transport"><label class="counter"><span>iteration</span><output id="iter">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+  <div class="row scrub">
+    <label><span>speed</span><input id="speed" type="range" min="0" max="7" step="1" value="5"><output id="speedOut">30/s</output></label>
+    <label class="scrubber"><span>go to iteration</span><input id="scrub" type="range" min="0" max="600" step="1" value="0"></label>
+  </div>
   <div id="algos" class="algos row"></div>
 </section>
-<main>
-  <figure>
-    <div id="mapbox"><canvas id="map" width="520" height="520"></canvas></div>
-    <div id="surface" class="stage" hidden></div>
+<main class="land">
+  <figure id="figMap" class="fig">
+    <div class="figbar"><span class="figname">level map</span><output id="readout"></output><span class="fiter">iteration <b>0</b></span><button type="button" data-fs="figMap">full screen</button></div>
+    <div id="mapwrap" class="mapwrap"><canvas id="map"></canvas></div>
   </figure>
-  <figure>
-    <figcaption>The value of each algorithm against the iterations (log scale), and
-    where each one is now. Newton and BFGS need a smooth function and are left out
-    on the nonsmooth one.</figcaption>
-    <canvas id="curves" width="520" height="260"></canvas>
+  <figure id="fig3d" class="fig">
+    <div class="figbar"><span class="figname">surface</span><span class="fiter">iteration <b>0</b></span><button type="button" id="rotate" aria-pressed="false">auto-rotate</button><button type="button" id="home">reset camera</button><button type="button" data-fs="fig3d">full screen</button></div>
+    <div id="surface" class="stage3d"></div>
+  </figure>
+  <figure class="curvesfig">
+    <figcaption>The value of each algorithm against the iterations (log scale), up
+    to the iteration shown, and its value there; the dashed lines are the runs of
+    optiml replayed. Newton and BFGS need a smooth function and are left out on
+    the nonsmooth one.</figcaption>
+    <div class="curvewrap"><canvas id="curves"></canvas></div>
     <ul id="legend" class="legend"></ul>
   </figure>
 </main>

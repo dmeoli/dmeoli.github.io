@@ -2,7 +2,8 @@
 // input 20x20 -> conv 3x3 (c1 filters, zero padding) -> ReLU -> max-pool 2x2
 // -> conv 3x3 (c2 filters on the c1 maps) -> ReLU -> max-pool 2x2 -> dense
 // softmax over 10 classes, with its own backward pass and Adam. The input
-// gradient of a layer-2 channel is also given, for feature visualization.
+// gradients of a layer-2 channel (feature visualization), of a class score
+// (saliency) and of the loss (adversarial examples) are also given.
 
 import { rng } from './nn.js';
 
@@ -109,19 +110,62 @@ function backFromZ2(net, f, dz2, g, dx) {
   convBack(f.x, 1, N, net.w1, c1, dz1, g && g.w1, g && g.b1, dx);
 }
 
-// cross-entropy of the label y: the gradients are added to g
-export function backward(net, f, y, g) {
-  const { c2, D } = net, dl = Float64Array.from(f.prob);
-  dl[y] -= 1;
-  const dp2 = new Float64Array(D);
+// from the gradient on the logits down to the parameters (into g, when given)
+// and to the input (into dx, when given)
+function backFromLogits(net, f, dl, g, dx) {
+  const { c2, D } = net, dp2 = new Float64Array(D);
   for (let k = 0; k < NC; k++) {
     const o = k * D, d = dl[k];
-    g.bd[k] += d;
-    for (let e = 0; e < D; e++) { g.wd[o + e] += d * f.p2[e]; dp2[e] += net.wd[o + e] * d; }
+    if (g) g.bd[k] += d;
+    for (let e = 0; e < D; e++) { if (g) g.wd[o + e] += d * f.p2[e]; dp2[e] += net.wd[o + e] * d; }
   }
   const dz2 = new Float64Array(c2 * P1 * P1);
   for (let o = 0; o < D; o++) { const k = f.i2[o]; if (f.z2[k] > 0) dz2[k] += dp2[o]; }
-  backFromZ2(net, f, dz2, g, null);
+  backFromZ2(net, f, dz2, g, dx);
+}
+
+// cross-entropy of the label y: the gradients are added to g
+export function backward(net, f, y, g) {
+  const dl = Float64Array.from(f.prob);
+  dl[y] -= 1;
+  backFromLogits(net, f, dl, g, null);
+}
+
+// the score s_c of class c (its logit, before the softmax) and its gradient
+// in x, the saliency map of Simonyan, Vedaldi and Zisserman (2014)
+export function classScore(net, x, c) {
+  const f = forward(net, x), dl = new Float64Array(NC), dx = new Float64Array(N * N);
+  dl[c] = 1;
+  backFromLogits(net, f, dl, null, dx);
+  return { value: f.logits[c], dx, prob: f.prob };
+}
+
+// the cross-entropy of label y at x, and its gradient in x
+export function lossInput(net, x, y) {
+  const f = forward(net, x), dl = Float64Array.from(f.prob), dx = new Float64Array(N * N);
+  dl[y] -= 1;
+  backFromLogits(net, f, dl, null, dx);
+  return { value: loss(f, y), dx, prob: f.prob };
+}
+
+export const argmax = p => { let b = 0; for (let k = 1; k < p.length; k++) if (p[k] > p[b]) b = k; return b; };
+
+// iterated FGSM (Goodfellow, Shlens and Szegedy 2015; Kurakin et al. 2017):
+// steps of size alpha along the sign of the input gradient, towards the class
+// `target` (down its loss) or, with target null, away from the class
+// predicted at x (up its loss); every iterate is kept within eps of x in
+// every pixel and in [0, 1]. One step with alpha = eps is plain FGSM.
+export function fgsm(net, x, { target = null, eps = 0.1, steps = 10, alpha = null } = {}) {
+  const y = target ?? argmax(forward(net, x).prob), dir = target === null ? 1 : -1, a = alpha ?? (steps === 1 ? eps : 2.5 * eps / steps);
+  const xa = Float64Array.from(x);
+  for (let t = 0; t < steps; t++) {
+    const { dx } = lossInput(net, xa, y);
+    for (let k = 0; k < xa.length; k++) {
+      const v = xa[k] + dir * a * Math.sign(dx[k]);
+      xa[k] = Math.min(1, Math.max(0, Math.min(x[k] + eps, Math.max(x[k] - eps, v))));
+    }
+  }
+  return xa;
 }
 
 // the mean of the pre-activation of channel k of layer 2, and its gradient in x

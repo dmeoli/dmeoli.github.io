@@ -1,6 +1,7 @@
 // A small neural-network library for the scene F, in the spirit of nn.ts of the
 // TensorFlow Playground: fully connected layers, a few activations, square
-// loss, L1 or L2 regularization, mini-batches, and the optimizers of optiml.
+// loss, L1 or L2 regularization, dropout, mini-batches, and the optimizers of
+// optiml.
 
 export const activations = {
   relu: { f: x => Math.max(0, x), d: x => (x > 0 ? 1 : 0) },
@@ -21,7 +22,7 @@ export function build(shape, act, outAct, seed = 7) {
   shape.forEach((n, l) => {
     const layer = [];
     for (let i = 0; i < n; i++) {
-      const node = { id: `${l}_${i}`, bias: l ? 0.1 : 0, out: 0, total: 0, d: 0, inputs: [], outputs: [],
+      const node = { id: `${l}_${i}`, bias: l ? 0.1 : 0, out: 0, total: 0, d: 0, inputs: [], outputs: [], keep: 1, m: 1,
                      act: l === shape.length - 1 ? outAct : act, acc: 0, st: {} };
       if (l) for (const prev of layers[l - 1]) {
         const link = { src: prev, dst: node, w: r() - 0.5, acc: 0, st: {} };
@@ -34,23 +35,35 @@ export function build(shape, act, outAct, seed = 7) {
   return layers;
 }
 
-export function forward(net, x) {
+// with masked true the hidden units are multiplied by their factor `keep` of
+// the dropout mask (see dropMask); without it every unit is on, as at test time
+export function forward(net, x, masked = false) {
   net[0].forEach((n, i) => { n.out = x[i]; });
   for (let l = 1; l < net.length; l++)
     for (const n of net[l]) {
       n.total = n.bias + n.inputs.reduce((s, k) => s + k.w * k.src.out, 0);
-      n.out = activations[n.act].f(n.total);
+      n.m = masked ? n.keep : 1;
+      n.out = n.m * activations[n.act].f(n.total);
     }
   return net.at(-1)[0].out;
 }
 
-// the derivatives of 1/2 (out - y)^2, accumulated over a batch
+// inverted dropout: every hidden unit is dropped with probability p (keep = 0)
+// or kept and scaled by 1 / (1 - p), so that its mean is unchanged and nothing
+// has to be rescaled at test time; the inputs and the output are never dropped
+export function dropMask(net, p, r) {
+  for (let l = 1; l < net.length - 1; l++)
+    for (const n of net[l]) n.keep = p > 0 && r() < p ? 0 : 1 / (1 - p);
+}
+
+// the derivatives of 1/2 (out - y)^2, accumulated over a batch, through the
+// mask of the last forward
 export function backward(net, y) {
   const out = net.at(-1)[0];
   out.d = out.out - y;
   for (let l = net.length - 1; l >= 1; l--) {
     for (const n of net[l]) {
-      const dt = n.d * activations[n.act].d(n.total);
+      const dt = n.d * n.m * activations[n.act].d(n.total);
       n.acc += dt;
       for (const k of n.inputs) k.acc += dt * k.src.out;
       n._dt = dt;

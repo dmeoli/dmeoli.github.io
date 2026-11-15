@@ -12,7 +12,7 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
 </head>
 <body>
-<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html" aria-current="page">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="present.html">Talk</a></nav>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html" aria-current="page">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
 <header>
   <h1>LP playground</h1>
   <p class="lede">A linear program with two variables and two rows, so that its
@@ -36,7 +36,8 @@
   two rows \(A^\top y \ge c\), the dual points of the path and the optimum.</figcaption><svg id="dual" viewBox="0 0 420 420"></svg>
   <dl class="stats"><div><dt>\(c \cdot x\)</dt><dd id="pval"></dd></div><div><dt>\(b \cdot y\)</dt><dd id="dval"></dd></div><div><dt>\(b \cdot y - c \cdot x\)</dt><dd id="gap"></dd></div></dl></figure>
 </main>
-<footer>Scene C of opt-playground; for richer LP pictures in the plane see lpviz
+<footer>Scene C of opt-playground; the same program in three variables, with the
+simplex on the edges of a polytope, is in <a href="lp3d.html">LP in 3D</a>; for richer LP pictures in the plane see lpviz
 (lpviz.net) and GILP.</footer>
 <script type="module" src="src/lp.js"></script>
 </body>

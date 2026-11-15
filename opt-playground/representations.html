@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Representations playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<style>
+  /* representations.html: the ten classes, chosen so that every adjacent and
+     non-adjacent pair is at least 17 apart in OKLab (x100) for normal vision,
+     with contrast 3 or more against the ground; for the colour-blind reader
+     the numerals (points: numerals) carry the class as well */
+  :root { --c0: #4e039b; --c1: #9f65e5; --c2: #9e1978; --c3: #fe017b; --c4: #6c0207;
+          --c5: #cb6814; --c6: #625e0d; --c7: #2582a4; --c8: #1641fc; --c9: #10123d; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --c0: #8e48cd; --c1: #ab9eff; --c2: #d51686; --c3: #ff7bab; --c4: #e64f00;
+          --c5: #f7ab38; --c6: #8d8654; --c7: #19bfca; --c8: #0980ff; --c9: #ffe4e6; }
+  }
+  :root[data-theme="dark"] { --c0: #8e48cd; --c1: #ab9eff; --c2: #d51686; --c3: #ff7bab; --c4: #e64f00;
+          --c5: #f7ab38; --c6: #8d8654; --c7: #19bfca; --c8: #0980ff; --c9: #ffe4e6; }
+  main.repr figcaption { min-height: 0; }
+  .wideall { grid-column: 1 / -1; }
+  .mapgrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+  @media (max-width: 860px) { .mapgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
+  .mapgrid canvas { width: 100%; height: auto; display: block; border-radius: 6px; cursor: crosshair; touch-action: none; }
+  .mapgrid h3, .repr h3 { margin: 0 0 4px; font: 500 11px 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); display: flex; justify-content: space-between; gap: 6px; }
+  .mapgrid h3 output { color: var(--ink-soft); letter-spacing: .04em; text-transform: none; }
+  .classes { display: flex; flex-wrap: wrap; gap: 4px 14px; list-style: none; padding: 0; margin: 10px 0 0; font: 12px 'IBM Plex Mono', monospace; color: var(--ink); }
+  .classes li { display: flex; align-items: center; gap: 5px; }
+  .classes i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
+  #pad { width: 100%; max-width: 260px; height: auto; display: block; border-radius: 6px; image-rendering: pixelated; cursor: crosshair; touch-action: none; }
+  #nb, #bars { width: 100%; height: auto; display: block; border-radius: 6px; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 8px 0 0; font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+  .row button { padding: 3px 9px; font-size: 12px; }
+  .note { font: 12px/1.45 'IBM Plex Mono', monospace; color: var(--ink-soft); min-height: 3em; margin: 6px 0 0; }
+  .padrow { display: grid; grid-template-columns: minmax(0, 260px) minmax(0, 1fr); gap: 14px; align-items: start; }
+  @media (max-width: 520px) { .padrow { grid-template-columns: 1fr; } }
+  .prose p { margin: 0 0 10px; font-size: 15px; line-height: 1.5; }
+  button:disabled { opacity: .5; cursor: default; }
+</style>
+</head>
+<body>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html">Graphs</a> · <a href="representations.html" aria-current="page">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1>Representations playground</h1>
+  <p class="lede">A perceptron with two hidden layers is trained in the page to classify
+  digits, and 500 digits that it never sees in training are followed through its layers:
+  each layer maps them to a point cloud in its own space, which is drawn here in two
+  dimensions with PCA, with t-SNE or with a linear probe. In the input the classes overlap
+  (two images of a 3 in different fonts may share fewer pixels than a 3 and an 8), and
+  the training pulls them apart layer after layer, until in the last hidden layer they
+  lie in regions that the linear map to the logits can separate.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span>map</span><select id="view"><option value="tsne">t-SNE</option><option value="pca">PCA</option><option value="probe">linear probe</option></select></label>
+    <label><span>perplexity</span><select id="perp"><option>10</option><option>30</option><option>50</option></select></label>
+    <label><span>hidden layers</span><select id="hid"><option>32-16</option><option>64-32</option><option>128-64</option></select></label>
+    <label><span>step size of Adam</span><select id="lr"><option>0.001</option><option>0.003</option><option>0.01</option></select></label>
+    <label><span>weights seed</span><select id="seed"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+    <label><span>points</span><select id="marks"><option value="dots">dots</option><option value="digits">numerals</option></select></label>
+  </div>
+  <div class="transport"><label class="counter"><span>epoch</span><output id="count"></output></label><button id="reset" type="button">Reset</button><button id="step" type="button" disabled>Step</button><button id="train" type="button" disabled>Play</button></div>
+</section>
+<p class="explain" id="explain"></p>
+<main class="repr">
+  <figure class="wideall"><figcaption>The same 500 held-out digits in the four spaces of
+  the network, from the 400 pixels of the input to the 10 logits, each map computed on
+  that layer alone; beside its name, the leave-one-out accuracy of the vote of the 5
+  nearest neighbours in that space. Hover a point: it and its 8 nearest neighbours in
+  the space of that layer are ringed in every map, so that one sees which neighbours a
+  layer brings together and where the other layers put them.</figcaption>
+  <div class="mapgrid" id="maps"></div>
+  <ul class="classes" id="classes"></ul></figure>
+  <figure><figcaption>Draw a digit (or take a held-out one): the cross marks where it
+  lands in every map. In PCA and in the probe the place is exact; t-SNE has no map for
+  new points, so the cross is put at the mean of the positions of the 500, weighted by the
+  Gaussian affinities \(p_{j|\mathrm{new}}\) of the new point in that layer.</figcaption>
+  <div class="padrow"><div><canvas id="pad" width="400" height="400"></canvas>
+  <div class="row"><button id="clear" type="button">Clear</button><button id="sample" type="button">Held-out digit</button></div></div>
+  <p class="note" id="padnote"></p></div></figure>
+  <figure><figcaption>The hovered digit and its 8 nearest neighbours in the space of the
+  layer it was hovered in, nearest first, and below how many of the 8 nearest share its
+  class in each layer.</figcaption>
+  <canvas id="nb" width="520" height="220"></canvas>
+  <p class="note" id="nbnote"></p></figure>
+  <figure><figcaption>Separation per layer: the accuracy of the 5-nearest-neighbour vote
+  on the 500 points (violet), against its value for the untrained network (gold tick);
+  the dashed line is the accuracy of the network itself on the same digits.</figcaption>
+  <canvas id="bars" width="520" height="230"></canvas></figure>
+  <figure class="prose"><figcaption>What the maps keep, and what they do not.</figcaption>
+  <p>t-SNE turns the distances of a layer into affinities
+  \(p_{j|i} \propto \exp(-\|x_i - x_j\|^2 / 2\sigma_i^2)\), with \(\sigma_i\) set for every
+  point so that it has about as many effective neighbours as the perplexity, and places
+  points \(y_i\) in the plane to minimize \(\mathrm{KL}(P\,\|\,Q)\), where
+  \(p_{ij} = (p_{j|i} + p_{i|j})/2n\) and \(q_{ij} \propto (1 + \|y_i - y_j\|^2)^{-1}\).
+  The loss is large when near neighbours are put far apart and small for the converse, so
+  that what the map preserves is who is next to whom: the clusters and their members.</p>
+  <p>It does not preserve the size of a cluster (\(\sigma_i\) adapts to the local
+  density), nor the distance between two clusters (the heavy tail of \(q\) pushes
+  moderately distant groups far apart), nor their relative position, which changes with
+  the seed and the perplexity; two clusters drawn far apart are therefore not more
+  different than two drawn close. This is why the accuracy above each map is measured in
+  the layer itself and not in the picture. PCA, on the contrary, is a linear projection
+  on the two directions of largest variance: its distances are faithful along them and
+  shrunk along all others, so that classes that overlap in PCA may well be separated in a
+  direction it does not show. The probe draws the plane \(z = A x\) that a softmax
+  classifier on \(z\) finds most useful, fitted on 1000 other digits that the network
+  does not see either (500 points in 400 dimensions are separated by almost any plane
+  fitted on them), which makes it a measure of linear separability in two dimensions
+  rather than a picture of the geometry.</p>
+  </figure>
+</main>
+<footer>Scene M of opt-playground, after C. Olah,
+<a href="https://colah.github.io/posts/2014-10-Visualizing-MNIST/">Visualizing MNIST: An Exploration of Dimensionality Reduction</a>
+(2014) and <a href="https://colah.github.io/posts/2015-01-Visualizing-Representations/">Visualizing Representations: Deep Learning and Human Beings</a>
+(2015), and L. van der Maaten and G. Hinton,
+<a href="https://www.jmlr.org/papers/v9/vandermaaten08a.html">Visualizing Data using t-SNE</a>
+(JMLR, 2008): the ideas are theirs, rebuilt here from the equations.</footer>
+<script type="module" src="src/repr.js"></script>
+</body>
+</html>

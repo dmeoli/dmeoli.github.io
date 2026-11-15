@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Graph networks playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<style>
+  #graph, #strips, #curves3 { width: 100%; height: auto; display: block; border-radius: 6px; }
+  #graph { cursor: grab; touch-action: none; }
+  #graph.dragging { cursor: grabbing; }
+  #strips { cursor: crosshair; }
+  main .col { display: grid; gap: 22px; align-content: start; min-width: 0; }
+  main figcaption { min-height: 0; }
+  .stepper { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-top: 8px; font: 13px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+  .stepper input[type=range] { flex: 1 1 140px; width: auto; }
+  .stepper button { padding: 2px 9px; }
+  .readout { font: 13px 'IBM Plex Mono', monospace; color: var(--ink-soft); margin: 6px 0 0; min-height: 2.8em; }
+  .readout b { font-weight: 500; color: var(--ink); }
+  .formula { font-size: 118%; text-align: center; margin: 4px 0 4px; color: var(--ink); overflow-x: auto; overflow-y: hidden; }
+  .formula.small { font-size: 100%; color: var(--ink-soft); margin-bottom: 10px; }
+  .formula mjx-container { transition: color .15s; }
+  #fig-update[data-lit] .formula.main mjx-container { color: color-mix(in srgb, var(--ink-soft) 35%, var(--ground)); }
+  #fig-update[data-lit="m"] .formula .fm, #fig-update[data-lit="m"] .formula .fs,
+  #fig-update[data-lit="h"] .formula .fh, #fig-update[data-lit="s"] .formula .fs,
+  #fig-update[data-lit="o"] .formula .fo, #fig-update[data-lit="o"] .formula .fw { color: var(--accent); }
+  .legend2 { display: flex; flex-wrap: wrap; gap: 4px 16px; font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); margin: 6px 0 0; }
+  .legend2 i { display: inline-block; width: 12px; height: 4px; border-radius: 2px; vertical-align: middle; margin-right: 5px; }
+  .legend2 i.dash { background: repeating-linear-gradient(90deg, var(--accent-2) 0 5px, transparent 5px 8px); }
+  .scale { display: inline-block; width: 90px; height: 10px; border-radius: 2px; vertical-align: middle; margin: 0 4px;
+    background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--ink-soft) 35%, var(--ground)), var(--gold)); }
+  @media (max-width: 600px) { .formula { font-size: 100%; } }
+</style>
+</head>
+<body>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="depth.html">Depth</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="gnn.html" aria-current="page">Graphs</a> · <a href="representations.html">Representations</a> · <a href="latent.html">Latent space</a> · <a href="diffusion.html">Diffusion</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1>Graph networks playground</h1>
+  <p class="lede">A graph network gives every node a vector and, in every round, replaces it
+  with a function of the sum of the vectors of its neighbours and its own, the same
+  function at every node; after \(k\) rounds a node can depend only on the nodes within
+  \(k\) edges of it. The network here, written with its own backward pass, is trained in
+  the page with Adam, and one can follow its states round by round: the labels of a few
+  nodes spreading through their communities, the truth values of a hidden assignment
+  reaching the clauses of a formula, and two different graphs which no number of rounds
+  can tell apart.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span>task</span><select id="task"><option value="community">communities</option><option value="clauses">clauses of a formula</option><option value="triangles">triangles (1-WL)</option></select></label>
+    <button id="regen" type="button">New graph</button>
+    <label class="opt-community"><span>communities</span><select id="comm"><option>2</option><option>3</option></select></label>
+    <label class="opt-community"><span>labelled per community</span><select id="lab"><option>1</option><option selected>2</option><option>3</option></select></label>
+    <label class="opt-triangles"><span>pair</span><select id="pair"><option value="ring">C6 and two triangles</option><option value="k33">K3,3 and the prism</option></select></label>
+    <label><span>aggregation</span><select id="agg"><option value="gcn">GCN (normalised)</option><option value="gin">sum (GIN)</option></select></label>
+    <label><span>rounds \(K\)</span><select id="K"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option></select></label>
+    <label><span>hidden size</span><select id="H"><option>8</option><option selected>12</option><option>16</option></select></label>
+    <label><span>learning rate</span><select id="lr"><option>0.003</option><option selected>0.01</option><option>0.03</option></select></label>
+  </div>
+  <div class="transport"><label class="counter"><span>step</span><output id="steps">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="train" type="button">Play</button></div>
+</section>
+<p class="explain" id="status"></p>
+<main>
+<div class="col">
+  <figure id="fig-graph"><figcaption id="graphcap"></figcaption>
+  <canvas id="graph" width="560" height="460"></canvas>
+  <div class="stepper"><span>round \(k\)</span><button id="prev" type="button" aria-label="previous round">&lsaquo;</button><input id="k" type="range" min="0" max="3" step="1" value="3"><button id="next" type="button" aria-label="next round">&rsaquo;</button><output id="kv"></output></div>
+  <p class="legend2">state at round <i>k</i>, first principal component: <span class="scale"></span> second: towards the ink or the ground</p>
+  <p class="readout" id="readout"></p></figure>
+</div>
+<div class="col">
+  <figure id="fig-update"><figcaption>The update that gives the hovered node its state at
+  round \(k\) (the first update when \(k = 0\)): its vector before, the message of every
+  neighbour (its state times the coefficient of the aggregation, the largest first), their
+  sum \(z_v\), and the vector after; the bars of each row are the hidden units, violet when
+  positive and gold when negative, all on one scale. Hover a row to find its part in the formula.</figcaption>
+  <p class="formula main" id="f-gcn">\(\class{fo}{h_v^{(k+1)}} = \class{fw}{\tanh\Big(W^{(k)}} \class{fs}{\sum_{u \in N(v) \cup \{v\}}} \class{fm fh}{\frac{h_u^{(k)}}{\sqrt{d_u d_v}}} \class{fw}{{} + b^{(k)}\Big)}\)</p>
+  <p class="formula main" id="f-gin" hidden>\(\class{fo}{h_v^{(k+1)}} = \class{fw}{\tanh\Big(W^{(k)}}\big(\class{fh}{h_v^{(k)}} + \class{fs}{\sum_{u \in N(v)}} \class{fm}{h_u^{(k)}}\big) \class{fw}{{} + b^{(k)}\Big)}\)</p>
+  <p class="formula small" id="f-out"></p>
+  <canvas id="strips" width="560" height="200"></canvas></figure>
+  <figure id="fig-curves"><figcaption id="curvecap"></figcaption>
+  <canvas id="curves3" width="560" height="240"></canvas>
+  <p class="legend2" id="curvelegend"></p></figure>
+</div>
+</main>
+<footer>Scene L of opt-playground, after J. Gilmer et al.,
+<a href="https://arxiv.org/abs/1704.01212">Neural Message Passing for Quantum Chemistry</a> (2017),
+T. N. Kipf and M. Welling, <a href="https://arxiv.org/abs/1609.02907">Semi-Supervised Classification with Graph Convolutional Networks</a> (2017),
+K. Xu et al., <a href="https://arxiv.org/abs/1810.00826">How Powerful are Graph Neural Networks?</a> (2019), and
+D. Selsam et al., <a href="https://arxiv.org/abs/1802.03685">Learning a SAT Solver from Single-Bit Supervision</a> (2019):
+the ideas are theirs, rebuilt here from the equations.</footer>
+<script type="module" src="src/gnn.js"></script>
+</body>
+</html>
