@@ -438,8 +438,11 @@ footer {
   .gallery figcaption { font-size: var(--s-05); }
 }
 /* the second row of the menu: play, translate and art, apart from the
-   academic sections, smaller and in the lilac of the accent */
-.sections .more { flex-basis: 100%; height: 0; }
+   academic sections, smaller and in the lilac of the accent, spread in three
+   equal columns under the first row, which sets the width of the box */
+.sections .menu { display: inline-flex; flex-direction: column; gap: var(--f5); max-width: 100%; }
+.sections .row1 { display: flex; flex-wrap: wrap; gap: var(--f5) var(--f21); }
+.sections .row2 { display: grid; grid-template-columns: repeat(3, 1fr); justify-items: center; }
 .sections a.side { font-size: var(--s-075); color: var(--heading); letter-spacing: .146em; }
 .sections a.side:hover, .sections a.side:focus-visible, .sections a.side[aria-current="true"] { color: var(--accent); }
 /* the thumbnails of play in the theme of the page */
@@ -461,6 +464,58 @@ footer {
 .subnav button:hover, .subnav button:focus-visible { color: var(--accent); border-color: var(--accent); }
 .subnav button[aria-selected="true"] { color: var(--ground); background: var(--accent); }
 .tabs > .sub:not(.on) { display: none; }
+.tabs > .sub.on { animation: sub-in .35s ease-out; }
+@keyframes sub-in { from { opacity: 0; transform: translateY(8px); } }
+.subnav .count {
+  display: inline-block; min-width: 1.6em; margin-left: var(--f3); padding: 0 var(--f3); border-radius: 999px;
+  font-size: .9em; text-align: center; background: color-mix(in srgb, currentColor 16%, transparent);
+}
+/* the scenes of play, one a row: the loop on one side, alternating, and what
+   the scene shows on the other; each comes in when it reaches the screen */
+.scenes { display: flex; flex-direction: column; gap: var(--f55); }
+.scene { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--f34); align-items: center; }
+.scene:nth-of-type(even) { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); }
+.scene:nth-of-type(even) .media { order: 2; }
+.scene .media {
+  display: block; overflow: hidden; border-radius: 10px; border: 1px solid var(--rule); background: var(--surface);
+  box-shadow: 0 14px 34px -22px var(--accent); transition: box-shadow .3s ease-out, transform .3s ease-out;
+}
+.scene .media video, .scene .media img { display: block; width: 100%; height: auto; transition: transform .6s ease-out; }
+.scene:hover .media { transform: translateY(-3px); box-shadow: 0 20px 40px -20px var(--accent); }
+.scene:hover .media video, .scene:hover .media img { transform: scale(1.035); }
+.scene .num { margin: 0 0 var(--f5); font-family: var(--mono); font-size: var(--s-075); letter-spacing: .146em; color: var(--gold); }
+.scene h3 { margin: 0 0 var(--f8); font-family: var(--serif); font-size: var(--s1); font-weight: 600; line-height: 1.2; }
+.scene h3 a { color: var(--heading); text-decoration: none; }
+.scene h3 a:hover { color: var(--accent); }
+.scene .desc { margin: 0 0 var(--f13); font-size: var(--s-025); color: var(--ink-soft); }
+.scene .tags { display: flex; flex-wrap: wrap; gap: var(--f5); margin: 0 0 var(--f13); padding: 0; list-style: none; }
+.scene .tags li {
+  font-family: var(--mono); font-size: var(--s-075); letter-spacing: .06em; color: var(--heading);
+  background: var(--accent-wash); border-radius: 999px; padding: 2px var(--f8);
+}
+.scene .go, .scenes .next {
+  display: inline-flex; align-items: center; gap: var(--f5); font-family: var(--mono); font-size: var(--s-075);
+  letter-spacing: .12em; text-transform: uppercase; text-decoration: none; color: var(--accent);
+  border: 1px solid var(--accent); border-radius: 999px; padding: var(--f5) var(--f13); background: none; cursor: pointer;
+  transition: color .2s, background .2s;
+}
+.scene .go:hover, .scene .go:focus-visible, .scenes .next:hover, .scenes .next:focus-visible { color: var(--ground); background: var(--accent); }
+.scene .arrow, .scenes .next .arrow { display: inline-block; transition: transform .2s ease-out; }
+.scene .go:hover .arrow, .scenes .next:hover .arrow { transform: translateX(4px); }
+.scenes .next { align-self: flex-end; }
+.reveal .scene { opacity: 0; transform: translateY(28px); transition: opacity .7s ease-out, transform .7s ease-out; }
+.reveal .scene.seen { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal .scene { opacity: 1; transform: none; transition: none; }
+  .tabs > .sub.on { animation: none; }
+  .scene .media, .scene .media video, .scene .media img { transition: none; }
+}
+@media (max-width: 720px) {
+  .scenes { gap: var(--f34); }
+  .scene { grid-template-columns: 1fr; gap: var(--f13); }
+  .scene:nth-of-type(even) { grid-template-columns: 1fr; }
+  .scene:nth-of-type(even) .media { order: 0; }
+}
 .tabs > .sub > .eyebrow.label:first-child { display: none; }
 </style>
 </head>
@@ -533,16 +588,21 @@ footer {
 </header>
 
 <nav class="sections" aria-label="Sections">
+  <div class="menu">
+  <div class="row1">
   <a href="/research" data-l="en" data-section="research">Research</a><a href="/ricerca" data-l="it" lang="it" data-section="research">Ricerca</a>
   <a href="/publications" data-l="en" data-section="publications">Publications</a><a href="/pubblicazioni" data-l="it" lang="it" data-section="publications">Pubblicazioni</a>
   <a href="/software" data-l="en" data-section="software">Software</a><a href="/software" data-l="it" lang="it" data-section="software">Software</a>
   <a href="/experience" data-l="en" data-section="experience">Experience</a><a href="/esperienze" data-l="it" lang="it" data-section="experience">Esperienze</a>
   <a href="/education" data-l="en" data-section="education">Education</a><a href="/formazione" data-l="it" lang="it" data-section="education">Formazione</a>
   <a href="/contact" data-l="en" data-section="contact">Contact</a><a href="/contatti" data-l="it" lang="it" data-section="contact">Contatti</a>
-  <span class="more" aria-hidden="true"></span>
+  </div>
+  <div class="row2">
   <a class="side" href="/play" data-l="en" data-section="play">Play</a><a class="side" href="/gioca" data-l="it" lang="it" data-section="play">Gioca</a>
   <a class="side" href="/translate" data-l="en" data-section="translate">Translate</a><a class="side" href="/traduci" data-l="it" lang="it" data-section="translate">Traduci</a>
   <a class="side" href="/art" data-l="en" data-section="art">Art</a><a class="side" href="/arte" data-l="it" lang="it" data-section="art">Arte</a>
+  </div>
+  </div>
 </nav>
 
 <main>
@@ -752,43 +812,142 @@ footer {
       <p data-l="en">Interactive pages, in the browser, on what happens inside an optimization algorithm: the primal polyhedron and the dual model side by side, the path of the iterates, and the same views for the learning models, which are trained by optimization. The source is <a href="https://github.com/dmeoli/opt-playground">opt-playground</a>; the scenes in sequence, for a talk, are in <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
       <p data-l="it" lang="it">Pagine interattive, nel browser, su cosa succede dentro un algoritmo di ottimizzazione: il poliedro primale e il modello duale affiancati, il cammino delle iterate, e le stesse viste per i modelli di apprendimento, che si addestrano ottimizzando. Il sorgente è <a href="https://github.com/dmeoli/opt-playground">opt-playground</a>; le scene in sequenza, per un seminario, sono in <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
       <div class="subnav" role="tablist">
-        <button type="button" role="tab" data-sub="decomposition"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></button>
-        <button type="button" role="tab" data-sub="lp"><span data-l="en">Linear and integer</span><span data-l="it" lang="it">Lineare e intera</span></button>
-        <button type="button" role="tab" data-sub="learning"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></button>
-        <button type="button" role="tab" data-sub="networks"><span data-l="en">Inside networks</span><span data-l="it" lang="it">Dentro le reti</span></button>
+        <button type="button" role="tab" data-sub="decomposition"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span> <span class="count">4</span></button>
+        <button type="button" role="tab" data-sub="lp"><span data-l="en">Linear and integer</span><span data-l="it" lang="it">Lineare e intera</span> <span class="count">3</span></button>
+        <button type="button" role="tab" data-sub="learning"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span> <span class="count">3</span></button>
+        <button type="button" role="tab" data-sub="networks"><span data-l="en">Inside networks</span><span data-l="it" lang="it">Dentro le reti</span> <span class="count">2</span></button>
       </div>
-      <div class="sub cards" data-sub="decomposition" role="tabpanel"><div class="row">
-        <div><a href="https://dmeoli.github.io/opt-playground/index.html"><video class="th-light" src="/assets/play/index.webm" poster="/assets/play/index.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Lagrangian decomposition"></video><video class="th-dark" src="/assets/play/index-dark.webm" poster="/assets/play/index-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Lagrangian decomposition"></video></a>
-          <p class="what"><span data-l="en"><b>Lagrangian decomposition</b>: the dual and the primal side by side, with the dual solvers of SMS++</span><span data-l="it" lang="it"><b>Decomposizione lagrangiana</b>: duale e primale affiancati, con i solutori duali di SMS++</span></p></div>
-        <div><a href="https://dmeoli.github.io/opt-playground/components.html"><video class="th-light" src="/assets/play/components.webm" poster="/assets/play/components.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="A dual that is a sum"></video><video class="th-dark" src="/assets/play/components-dark.webm" poster="/assets/play/components-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="A dual that is a sum"></video></a>
-          <p class="what"><span data-l="en"><b>A dual that is a sum</b>: aggregated and disaggregated models, incremental subgradient</span><span data-l="it" lang="it"><b>Un duale somma di componenti</b>: modelli aggregati e disaggregati, subgradiente incrementale</span></p></div>
-        <div><a href="https://dmeoli.github.io/opt-playground/benders.html"><video class="th-light" src="/assets/play/benders.webm" poster="/assets/play/benders.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Benders decomposition"></video><video class="th-dark" src="/assets/play/benders-dark.webm" poster="/assets/play/benders-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Benders decomposition"></video></a>
-          <p class="what"><span data-l="en"><b>Benders decomposition</b>: every cut a vertex of the dual of the recourse</span><span data-l="it" lang="it"><b>Decomposizione di Benders</b>: ogni taglio un vertice del duale del ricorso</span></p></div>
-        <div><a href="https://dmeoli.github.io/opt-playground/index.html#t=smspp-box-bundle"><video class="th-light" src="/assets/play/runs.webm" poster="/assets/play/runs.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Real runs of SMS++"></video><video class="th-dark" src="/assets/play/runs-dark.webm" poster="/assets/play/runs-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Real runs of SMS++"></video></a>
-          <p class="what"><span data-l="en"><b>Real runs of SMS++</b>: BundleSolver and SubGradSolver replayed from the traces of smspp_dual_trace</span><span data-l="it" lang="it"><b>Esecuzioni reali di SMS++</b>: BundleSolver e SubGradSolver rigiocati dalle tracce di smspp_dual_trace</span></p></div>
-      </div></div>
-      <div class="sub cards" data-sub="lp" role="tabpanel"><div class="row">
-        <div><a href="https://dmeoli.github.io/opt-playground/lp.html"><video class="th-light" src="/assets/play/lp.webm" poster="/assets/play/lp.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Linear programming"></video><video class="th-dark" src="/assets/play/lp-dark.webm" poster="/assets/play/lp-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Linear programming"></video></a>
-          <p class="what"><span data-l="en"><b>Linear programming</b>: simplex and barrier, primal and dual in the plane</span><span data-l="it" lang="it"><b>Programmazione lineare</b>: simplesso e barriera, primale e duale nel piano</span></p></div>
-        <div><a href="https://dmeoli.github.io/opt-playground/integer.html"><video class="th-light" src="/assets/play/integer.webm" poster="/assets/play/integer.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Integer programming"></video><video class="th-dark" src="/assets/play/integer-dark.webm" poster="/assets/play/integer-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Integer programming"></video></a>
-          <p class="what"><span data-l="en"><b>Integer programming</b>: branch and bound, Gomory and cover cuts</span><span data-l="it" lang="it"><b>Programmazione intera</b>: branch and bound, tagli di Gomory e di copertura</span></p></div>
-        <div><a href="https://dmeoli.github.io/opt-playground/polarity.html"><img class="th-light" src="/assets/play/polarity.webp" width="640" height="442" alt="Polarity" loading="lazy"><img class="th-dark" src="/assets/play/polarity-dark.webp" width="640" height="442" alt="Polarity" loading="lazy"></a>
-          <p class="what"><span data-l="en"><b>Polarity</b>: a polytope and its polar in 3D</span><span data-l="it" lang="it"><b>Polarità</b>: un politopo e il suo polare in 3D</span></p></div>
-      </div></div>
-      <div class="sub cards" data-sub="learning" role="tabpanel"><div class="row">
-        <div><a href="https://dmeoli.github.io/opt-playground/learning.html"><video class="th-light" src="/assets/play/learning.webm" poster="/assets/play/learning.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Learning"></video><video class="th-dark" src="/assets/play/learning-dark.webm" poster="/assets/play/learning-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Learning"></video></a>
-          <p class="what"><span data-l="en"><b>Learning</b>: the optimizers of optiml on two-dimensional functions</span><span data-l="it" lang="it"><b>Apprendimento</b>: gli ottimizzatori di optiml su funzioni in due dimensioni</span></p></div>
-        <div><a href="https://dmeoli.github.io/opt-playground/svm.html"><video class="th-light" src="/assets/play/svm.webm" poster="/assets/play/svm.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Support vector machines"></video><video class="th-dark" src="/assets/play/svm-dark.webm" poster="/assets/play/svm-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Support vector machines"></video></a>
-          <p class="what"><span data-l="en"><b>Support vector machines</b>: primal and dual, SMO</span><span data-l="it" lang="it"><b>Macchine a vettori di supporto</b>: primale e duale, SMO</span></p></div>
-        <div><a href="https://dmeoli.github.io/opt-playground/network.html"><video class="th-light" src="/assets/play/network.webm" poster="/assets/play/network.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Neural networks"></video><video class="th-dark" src="/assets/play/network-dark.webm" poster="/assets/play/network-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Neural networks"></video></a>
-          <p class="what"><span data-l="en"><b>Neural networks</b>: a small network trained in the page, the loss landscape</span><span data-l="it" lang="it"><b>Reti neurali</b>: una piccola rete addestrata nella pagina, il paesaggio della loss</span></p></div>
-      </div></div>
-      <div class="sub cards" data-sub="networks" role="tabpanel"><div class="row">
-        <div><a href="https://dmeoli.github.io/opt-playground/manifolds.html"><video class="th-light" src="/assets/play/manifolds.webm" poster="/assets/play/manifolds.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Layers as deformations"></video><video class="th-dark" src="/assets/play/manifolds-dark.webm" poster="/assets/play/manifolds-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Layers as deformations"></video></a>
-          <p class="what"><span data-l="en"><b>Layers as deformations</b>: the hidden layers bending the plane, after Olah</span><span data-l="it" lang="it"><b>Strati come deformazioni</b>: gli strati nascosti che piegano il piano, da Olah</span></p></div>
-        <div><a href="https://dmeoli.github.io/opt-playground/superposition.html"><video class="th-light" src="/assets/play/superposition.webm" poster="/assets/play/superposition.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Superposition"></video><video class="th-dark" src="/assets/play/superposition-dark.webm" poster="/assets/play/superposition-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Superposition"></video></a>
-          <p class="what"><span data-l="en"><b>Superposition</b>: more features than dimensions, after the Toy Models of Anthropic</span><span data-l="it" lang="it"><b>Superposition</b>: più caratteristiche che dimensioni, dai Toy Models di Anthropic</span></p></div>
-      </div></div>
+      <div class="sub scenes" data-sub="decomposition" role="tabpanel">
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/index.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/index.webm" poster="/assets/play/index.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Lagrangian decomposition"></video><video class="th-dark" src="/assets/play/index-dark.webm" poster="/assets/play/index-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Lagrangian decomposition"></video></a>
+          <div class="text">
+            <p class="num">01 / 04</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/index.html"><span data-l="en">Lagrangian decomposition</span><span data-l="it" lang="it">Decomposizione lagrangiana</span></a></h3>
+            <p class="desc"><span data-l="en">The coupling rows are relaxed with multipliers, and the dual function is built cut by cut beside the primal polyhedron, where the points that the oracle returns live; bundle, Kelley and the subgradient, with the variants of the dual solvers of SMS++.</span><span data-l="it" lang="it">Le righe di accoppiamento si rilassano con i moltiplicatori, e la funzione duale si costruisce taglio per taglio accanto al poliedro primale, dove vivono i punti che l'oracolo restituisce; bundle, Kelley e subgradiente, con le varianti dei solutori duali di SMS++.</span></p>
+            <ul class="tags"><li>Bundle</li><li>Kelley</li><li><span data-l="en">Subgradient</span><span data-l="it" lang="it">Subgradiente</span></li><li>SMS++</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/index.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/components.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/components.webm" poster="/assets/play/components.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="A dual that is a sum"></video><video class="th-dark" src="/assets/play/components-dark.webm" poster="/assets/play/components-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="A dual that is a sum"></video></a>
+          <div class="text">
+            <p class="num">02 / 04</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/components.html"><span data-l="en">A dual that is a sum</span><span data-l="it" lang="it">Un duale somma di componenti</span></a></h3>
+            <p class="desc"><span data-l="en">When the dual is the sum of K independent pieces, one model for each piece is far better than one model of the sum, for the same calls to the oracle; the incremental subgradient moves after every piece instead of after all of them.</span><span data-l="it" lang="it">Quando il duale è la somma di K pezzi indipendenti, un modello per ogni pezzo è molto meglio di un modello della somma, a parità di chiamate all'oracolo; il subgradiente incrementale si muove dopo ogni pezzo invece che dopo tutti.</span></p>
+            <ul class="tags"><li><span data-l="en">Disaggregated</span><span data-l="it" lang="it">Disaggregato</span></li><li><span data-l="en">Incremental</span><span data-l="it" lang="it">Incrementale</span></li><li><span data-l="en">Oracle calls</span><span data-l="it" lang="it">Chiamate all'oracolo</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/components.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/benders.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/benders.webm" poster="/assets/play/benders.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Benders decomposition"></video><video class="th-dark" src="/assets/play/benders-dark.webm" poster="/assets/play/benders-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Benders decomposition"></video></a>
+          <div class="text">
+            <p class="num">03 / 04</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/benders.html"><span data-l="en">Benders decomposition</span><span data-l="it" lang="it">Decomposizione di Benders</span></a></h3>
+            <p class="desc"><span data-l="en">The master proposes a first-stage decision and the subproblem answers with a cut; every cut is a vertex of the dual of the recourse, and the two pictures move together.</span><span data-l="it" lang="it">Il master propone una decisione di primo stadio e il sottoproblema risponde con un taglio; ogni taglio è un vertice del duale del ricorso, e le due figure si muovono insieme.</span></p>
+            <ul class="tags"><li>Benders</li><li><span data-l="en">Recourse</span><span data-l="it" lang="it">Ricorso</span></li><li><span data-l="en">Cutting planes</span><span data-l="it" lang="it">Piani di taglio</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/benders.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/index.html#t=smspp-box-bundle" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/runs.webm" poster="/assets/play/runs.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Real runs of SMS++"></video><video class="th-dark" src="/assets/play/runs-dark.webm" poster="/assets/play/runs-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Real runs of SMS++"></video></a>
+          <div class="text">
+            <p class="num">04 / 04</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/index.html#t=smspp-box-bundle"><span data-l="en">Real runs of SMS++</span><span data-l="it" lang="it">Esecuzioni reali di SMS++</span></a></h3>
+            <p class="desc"><span data-l="en">Not a simulation: the iterates of BundleSolver and SubGradSolver of SMS++ on a small problem, recorded by smspp_dual_trace and replayed step by step on the same pictures.</span><span data-l="it" lang="it">Non una simulazione: le iterate di BundleSolver e SubGradSolver di SMS++ su un piccolo problema, registrate da smspp_dual_trace e rigiocate passo per passo sulle stesse figure.</span></p>
+            <ul class="tags"><li>BundleSolver</li><li>SubGradSolver</li><li><span data-l="en">Traces</span><span data-l="it" lang="it">Tracce</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/index.html#t=smspp-box-bundle"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <button type="button" class="next" data-goto="lp"><span data-l="en">Next: Linear and integer</span><span data-l="it" lang="it">Avanti: Lineare e intera</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
+      </div>
+      <div class="sub scenes" data-sub="lp" role="tabpanel">
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/lp.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/lp.webm" poster="/assets/play/lp.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Linear programming"></video><video class="th-dark" src="/assets/play/lp-dark.webm" poster="/assets/play/lp-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Linear programming"></video></a>
+          <div class="text">
+            <p class="num">01 / 03</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/lp.html"><span data-l="en">Linear programming</span><span data-l="it" lang="it">Programmazione lineare</span></a></h3>
+            <p class="desc"><span data-l="en">The simplex walks along the vertices and the barrier crosses the interior along the central path; beside them the dual, where the same steps read in another way.</span><span data-l="it" lang="it">Il simplesso cammina sui vertici e la barriera attraversa l'interno lungo il cammino centrale; accanto il duale, dove gli stessi passi si leggono in un altro modo.</span></p>
+            <ul class="tags"><li><span data-l="en">Simplex</span><span data-l="it" lang="it">Simplesso</span></li><li><span data-l="en">Barrier</span><span data-l="it" lang="it">Barriera</span></li><li><span data-l="en">Duality</span><span data-l="it" lang="it">Dualità</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/lp.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/integer.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/integer.webm" poster="/assets/play/integer.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Integer programming"></video><video class="th-dark" src="/assets/play/integer-dark.webm" poster="/assets/play/integer-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Integer programming"></video></a>
+          <div class="text">
+            <p class="num">02 / 03</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/integer.html"><span data-l="en">Integer programming</span><span data-l="it" lang="it">Programmazione intera</span></a></h3>
+            <p class="desc"><span data-l="en">Branch and bound draws its tree while the relaxation shrinks, and Gomory and cover cuts carve the polygon towards its integer hull.</span><span data-l="it" lang="it">Il branch and bound disegna il suo albero mentre il rilassamento si restringe, e i tagli di Gomory e di copertura scavano il poligono verso il suo inviluppo intero.</span></p>
+            <ul class="tags"><li>Branch and bound</li><li>Gomory</li><li><span data-l="en">Cover cuts</span><span data-l="it" lang="it">Tagli di copertura</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/integer.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/polarity.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/polarity.webp" width="640" height="442" alt="Polarity" loading="lazy"><img class="th-dark" src="/assets/play/polarity-dark.webp" width="640" height="442" alt="Polarity" loading="lazy"></a>
+          <div class="text">
+            <p class="num">03 / 03</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a></h3>
+            <p class="desc"><span data-l="en">A polytope and its polar in 3D, where the vertices of one are the facets of the other; it turns with the mouse.</span><span data-l="it" lang="it">Un politopo e il suo polare in 3D, dove i vertici dell'uno sono le facce dell'altro; si ruota col mouse.</span></p>
+            <ul class="tags"><li><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></li><li>3D</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/polarity.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <button type="button" class="next" data-goto="learning"><span data-l="en">Next: Learning</span><span data-l="it" lang="it">Avanti: Apprendimento</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
+      </div>
+      <div class="sub scenes" data-sub="learning" role="tabpanel">
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/learning.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/learning.webm" poster="/assets/play/learning.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Optimizers"></video><video class="th-dark" src="/assets/play/learning-dark.webm" poster="/assets/play/learning-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Optimizers"></video></a>
+          <div class="text">
+            <p class="num">01 / 03</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/learning.html"><span data-l="en">Optimizers</span><span data-l="it" lang="it">Ottimizzatori</span></a></h3>
+            <p class="desc"><span data-l="en">The optimizers of optiml, from gradient descent to Adam, side by side on two-dimensional test functions, with their paths drawn on the level curves.</span><span data-l="it" lang="it">Gli ottimizzatori di optiml, dalla discesa del gradiente ad Adam, affiancati su funzioni di prova in due dimensioni, con i loro cammini disegnati sulle curve di livello.</span></p>
+            <ul class="tags"><li><span data-l="en">Gradient</span><span data-l="it" lang="it">Gradiente</span></li><li>Adam</li><li>optiml</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/learning.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/svm.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/svm.webm" poster="/assets/play/svm.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Support vector machines"></video><video class="th-dark" src="/assets/play/svm-dark.webm" poster="/assets/play/svm-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Support vector machines"></video></a>
+          <div class="text">
+            <p class="num">02 / 03</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/svm.html"><span data-l="en">Support vector machines</span><span data-l="it" lang="it">Macchine a vettori di supporto</span></a></h3>
+            <p class="desc"><span data-l="en">The margin of a support vector machine trained by SMO and, beside it, the dual multipliers in their box: the support vectors are the points whose multiplier leaves zero.</span><span data-l="it" lang="it">Il margine di una macchina a vettori di supporto addestrata con SMO e, accanto, i moltiplicatori duali nel loro box: i vettori di supporto sono i punti il cui moltiplicatore lascia lo zero.</span></p>
+            <ul class="tags"><li>SVM</li><li>SMO</li><li><span data-l="en">Dual</span><span data-l="it" lang="it">Duale</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/svm.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/network.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/network.webm" poster="/assets/play/network.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Neural networks"></video><video class="th-dark" src="/assets/play/network-dark.webm" poster="/assets/play/network-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Neural networks"></video></a>
+          <div class="text">
+            <p class="num">03 / 03</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/network.html"><span data-l="en">Neural networks</span><span data-l="it" lang="it">Reti neurali</span></a></h3>
+            <p class="desc"><span data-l="en">A small network trained in the page, each neuron drawn as the function it computes, and the loss landscape around the current weights.</span><span data-l="it" lang="it">Una piccola rete addestrata nella pagina, ogni neurone disegnato come la funzione che calcola, e il paesaggio della loss attorno ai pesi correnti.</span></p>
+            <ul class="tags"><li>Backpropagation</li><li><span data-l="en">Loss landscape</span><span data-l="it" lang="it">Paesaggio della loss</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/network.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <button type="button" class="next" data-goto="networks"><span data-l="en">Next: Inside networks</span><span data-l="it" lang="it">Avanti: Dentro le reti</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
+      </div>
+      <div class="sub scenes" data-sub="networks" role="tabpanel">
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/manifolds.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/manifolds.webm" poster="/assets/play/manifolds.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Layers as deformations"></video><video class="th-dark" src="/assets/play/manifolds-dark.webm" poster="/assets/play/manifolds-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Layers as deformations"></video></a>
+          <div class="text">
+            <p class="num">01 / 02</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/manifolds.html"><span data-l="en">Layers as deformations</span><span data-l="it" lang="it">Strati come deformazioni</span></a></h3>
+            <p class="desc"><span data-l="en">Each hidden layer as a continuous deformation of the plane (the linear map, the translation, the activation) until the two classes can be cut by a line; with width 2 the ring cannot be untied, after Olah.</span><span data-l="it" lang="it">Ogni strato nascosto come una deformazione continua del piano (la mappa lineare, la traslazione, l'attivazione) finché le due classi si separano con una retta; con larghezza 2 l'anello non si scioglie, da Olah.</span></p>
+            <ul class="tags"><li><span data-l="en">Topology</span><span data-l="it" lang="it">Topologia</span></li><li>tanh</li><li>Olah</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/manifolds.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/superposition.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/superposition.webm" poster="/assets/play/superposition.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Superposition"></video><video class="th-dark" src="/assets/play/superposition-dark.webm" poster="/assets/play/superposition-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Superposition"></video></a>
+          <div class="text">
+            <p class="num">02 / 02</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Superposition</span></a></h3>
+            <p class="desc"><span data-l="en">Five features squeezed into two dimensions: when they are dense the model keeps the two most important, when they are sparse it packs all of them in a pentagon and accepts a little interference; after the Toy Models of Anthropic.</span><span data-l="it" lang="it">Cinque caratteristiche compresse in due dimensioni: quando sono dense il modello tiene le due più importanti, quando sono rare le mette tutte in un pentagono e accetta un po' di interferenza; dai Toy Models di Anthropic.</span></p>
+            <ul class="tags"><li>Superposition</li><li><span data-l="en">Interpretability</span><span data-l="it" lang="it">Interpretabilità</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/superposition.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+      </div>
     </div>
   </div>
 </section>
@@ -1306,6 +1465,20 @@ Decomposition methods and solvers for large-scale
       pick(body.querySelector(':scope > .sub[data-sub="' + h + '"]') ? h : bs[0].getAttribute('data-sub'), true);
       for (var i = 0; i < bs.length; i++)
         bs[i].addEventListener('click', function () { pick(this.getAttribute('data-sub')); });
+      nav.addEventListener('keydown', function (e) {
+        var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (!d) return;
+        var k = Array.prototype.indexOf.call(bs, document.activeElement);
+        if (k < 0) return;
+        var b = bs[(k + d + bs.length) % bs.length];
+        b.focus(); pick(b.getAttribute('data-sub')); e.preventDefault();
+      });
+      var nx = body.querySelectorAll('.next[data-goto]');
+      for (var j = 0; j < nx.length; j++)
+        nx[j].addEventListener('click', function () {
+          pick(this.getAttribute('data-goto'));
+          nav.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
     })(navs[n]);
   })();
 </script>
@@ -1321,8 +1494,17 @@ Decomposition methods and solvers for large-scale
         else e.target.pause();
       });
     }, { threshold: 0.4 });
-    var vs = document.querySelectorAll('.cards video');
+    var vs = document.querySelectorAll('.cards video, .scenes video');
     for (var i = 0; i < vs.length; i++) io.observe(vs[i]);
+    /* each scene fades in the first time it reaches the screen */
+    document.documentElement.classList.add('reveal');
+    var ro = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('seen'); ro.unobserve(e.target); }
+      });
+    }, { threshold: 0.15 });
+    var sc = document.querySelectorAll('.scene');
+    for (var k = 0; k < sc.length; k++) ro.observe(sc[k]);
   })();
 </script>
 </body>
