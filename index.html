@@ -454,6 +454,25 @@ footer {
 .gallery button { padding: 0; border: 0; background: none; cursor: zoom-in; border-radius: 4px; overflow: hidden; }
 .gallery img { display: block; width: 100%; height: auto; transition: transform .4s ease; }
 .gallery button:hover img, .gallery button:focus-visible img { transform: scale(1.03); }
+/* works with nudity: blurred under a veil until the reader confirms being
+   18 or older (remembered in this browser) */
+.gallery figure.explicit button { position: relative; }
+.gallery figure.explicit img { filter: blur(24px) saturate(.7); transform: scale(1.12); }
+.gallery .veil {
+  position: absolute; inset: 0; display: grid; place-content: center; gap: var(--f5); padding: var(--f13);
+  text-align: center; color: #f4eefc; background: rgb(20 14 30 / .38);
+  font-family: var(--mono); font-size: var(--s-075); letter-spacing: .12em; text-transform: uppercase;
+}
+.gallery .veil b { font-size: 1.6em; font-weight: 500; color: var(--gold); letter-spacing: .06em; }
+.adult-ok .gallery figure.explicit img { filter: none; transform: none; }
+.adult-ok .gallery .veil { display: none; }
+.agegate { max-width: min(30rem, 92vw); border: 0; border-radius: 14px; padding: var(--f21); color: var(--ink); background: var(--tone-2); box-shadow: inset 0 0 0 1px var(--gold-3), 0 24px 80px rgb(0 0 0 / .45); }
+.agegate::backdrop { background: rgb(20 14 30 / .78); backdrop-filter: blur(4px); }
+.agegate h3 { margin: 0 0 var(--f8); font-weight: 500; color: var(--title); }
+.agegate p { margin: 0 0 var(--f13); }
+.agegate .row { display: flex; flex-wrap: wrap; gap: var(--f8); justify-content: flex-end; }
+.agegate button { font-family: var(--mono); font-size: var(--s-075); letter-spacing: .12em; text-transform: uppercase; border-radius: 999px; padding: var(--f5) var(--f13); cursor: pointer; border: 1px solid var(--rule); background: none; color: var(--ink); }
+.agegate button.yes { background: var(--accent); border-color: var(--accent); color: var(--ground); }
 .gallery figcaption { font-size: var(--s-025); color: var(--ink-soft); line-height: var(--lead-display); }
 .gallery audio { width: 100%; height: 32px; }
 .art .label, .play .label { margin: var(--f21) 0 var(--f8); }
@@ -1335,6 +1354,15 @@ Decomposition methods and solvers for large-scale
 
 </div>
 <dialog class="lightbox" id="artbox" aria-label="Artwork"><img alt=""></dialog>
+<dialog class="agegate" id="agegate" aria-labelledby="agegate-t">
+  <h3 id="agegate-t"><span data-l="en">Artistic nudity</span><span data-l="it" lang="it">Nudo artistico</span></h3>
+  <p data-l="en">Some works in this exhibition show nude adult figures. To see them, confirm that you are at least 18 years old; the choice is remembered in this browser.</p>
+  <p data-l="it" lang="it">Alcune opere di questa mostra mostrano figure adulte nude. Per vederle conferma di avere almeno 18 anni; la scelta resta memorizzata in questo browser.</p>
+  <div class="row">
+    <button type="button" class="no"><span data-l="en">Cancel</span><span data-l="it" lang="it">Annulla</span></button>
+    <button type="button" class="yes"><span data-l="en">I am 18 or older</span><span data-l="it" lang="it">Ho almeno 18 anni</span></button>
+  </div>
+</dialog>
 <dialog class="lightbox" id="photo" aria-label="Donato, Maria Meoli">
   <picture>
     <source srcset="photo-large.webp" type="image/webp">
@@ -1579,13 +1607,28 @@ Decomposition methods and solvers for large-scale
      of the model and says so when it is not reachable */
   (function () {
     var box = document.getElementById('artbox'), img = box.querySelector('img');
-    var bs = document.querySelectorAll('.gallery button');
+    var bs = document.querySelectorAll('.gallery button'), gate = document.getElementById('agegate'),
+        root = document.documentElement, pending = null;
+    try { if (localStorage.getItem('adult-ok') === '1') root.classList.add('adult-ok'); } catch (e) {}
+    function open(b) {
+      img.src = b.getAttribute('data-full');
+      img.alt = b.querySelector('img').alt;
+      box.showModal();
+    }
     for (var i = 0; i < bs.length; i++)
       bs[i].addEventListener('click', function () {
-        img.src = this.getAttribute('data-full');
-        img.alt = this.querySelector('img').alt;
-        box.showModal();
+        if (this.closest('figure.explicit') && !root.classList.contains('adult-ok')) {
+          pending = this; gate.showModal(); return;
+        }
+        open(this);
       });
+    gate.querySelector('.yes').addEventListener('click', function () {
+      root.classList.add('adult-ok');
+      try { localStorage.setItem('adult-ok', '1'); } catch (e) {}
+      gate.close();
+      if (pending) open(pending);
+    });
+    gate.querySelector('.no').addEventListener('click', function () { gate.close(); });
     box.addEventListener('click', function () { box.close(); });
 
     var API = 'https://tradutturi-372868569544.europe-west1.run.app/translate';
