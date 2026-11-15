@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Superposition playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+</head>
+<body>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html" aria-current="page">Superposition</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1>Superposition playground</h1>
+  <p class="lede">How a network stores more features than it has dimensions: \(n\) features
+  are squeezed into 2 dimensions, \(h = W x\), and read back as
+  \(x' = \mathrm{ReLU}(W^\top W x + b)\), each weighted by its importance. When the
+  features are dense only the 2 most important get a direction; as they become sparse
+  the others are packed in too, first in antipodal pairs, then as a pentagon, because
+  two features that are rarely active together rarely interfere. With a linear read-out
+  this never happens: try it.</p>
+</header>
+<section class="controls">
+  <label><span>features \(n\)</span><select id="n"><option>3</option><option selected>5</option><option>6</option><option>8</option><option>10</option></select></label>
+  <label><span>sparsity (features active with probability <output id="dens"></output>)</span><input id="sparsity" type="range" min="0" max="2" step="0.05" value="0"></label>
+  <label><span>importance decay \(r\)</span><input id="decay" type="range" min="0.5" max="1" step="0.01" value="0.9"></label>
+  <label><span>read-out</span><select id="out"><option value="relu">ReLU</option><option value="linear">linear</option></select></label>
+  <div class="buttons"><button id="seed" type="button">New weights</button><button id="train" type="button">Train</button></div>
+</section>
+<p class="explain"><span id="rep"></span>, after <span id="steps"></span> steps of Adam.</p>
+<main>
+  <figure><figcaption>The columns \(W_i\) of \(W\) in the 2 hidden dimensions, darker
+  for the more important features, and the unit circle.</figcaption><canvas id="arrows" width="420" height="420"></canvas></figure>
+  <figure><figcaption>\(W^\top W\) (violet positive, gold negative) with \(b\) in the last column, and
+  below the norm of each \(W_i\), violet when the feature has its own direction,
+  gold when it interferes with the others.</figcaption><canvas id="gram" width="420" height="320"></canvas><canvas id="bars" width="420" height="150"></canvas></figure>
+</main>
+<footer>Scene H of opt-playground, after N. Elhage et al.,
+<a href="https://transformer-circuits.pub/2022/toy_model/index.html">Toy Models of Superposition</a>
+(2022): the model is theirs, rebuilt here from the equations.</footer>
+<script type="module" src="src/superposition.js"></script>
+</body>
+</html>

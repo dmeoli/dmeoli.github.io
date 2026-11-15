@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Components playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+</head>
+<body>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html" aria-current="page">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1>Components playground</h1>
+  <p class="lede">A Lagrangian dual that is a sum: <span id="K"></span> independent
+  subproblems share one coupling row, so that \(L(\lambda) = \sum_k L_k(\lambda)\)
+  and the oracle answers one component at a time. Kelley's method with one model of
+  \(L\) (aggregated) races the same method with one model per component
+  (disaggregated), and the subgradient method races its incremental variant, which
+  moves after every component; all are charged by the calls to the oracle of a
+  component.</p>
+</header>
+<section class="controls">
+  <label><span>instance</span><select id="inst"></select></label>
+  <label><span>subgradient step</span><input id="s0" type="range" min="0.1" max="3" step="0.1" value="1"> <output id="s0v"></output></label>
+  <div class="buttons"><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+</section>
+<main>
+  <figure><figcaption>The dual function \(L\) (dark), the aggregated model and the
+  disaggregated one of the two runs of Kelley, the point of each method (a ring
+  of its colour) and the maximum \(\lambda^*\).</figcaption><svg id="dual" viewBox="0 0 460 360"></svg>
+  <dl class="stats"><div><dt>\(\max L\)</dt><dd id="lstar"></dd></div></dl></figure>
+  <figure><figcaption>The relative gap of the best value found against the calls
+  to the oracle of a component, in log scale. For the incremental method the
+  value is the true \(L\) at the end of each cycle, which the method itself does not
+  compute.</figcaption><svg id="conv" viewBox="0 0 460 360"></svg></figure>
+</main>
+<footer>Scene E of opt-playground. The disaggregated model is the one of the
+bundle methods of SMS++ when the objective is a sum of functions (one bundle per
+component); the incremental subgradient is that of Nedić and Bertsekas.</footer>
+<script type="module" src="src/components.js"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Learning playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html" aria-current="page">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1>Learning playground</h1>
+  <p class="lede">Training a model is minimizing a function: here the test
+  functions of optiml in two dimensions, and its algorithms racing on the same
+  landscape from the same start, first-order, adaptive, second-order and a
+  bundle method, the only one built for the nonsmooth case. Click on the map to
+  move the start.</p>
+</header>
+<section class="controls">
+  <label><span>function</span><select id="fn"></select></label>
+  <label><span>view</span><select id="view"><option value="map">level map</option><option value="3d">3D surface</option></select></label>
+  <label><span>learning rate</span><input id="lr" type="range" min="0.0002" max="0.1" step="0.0002" value="0.002"><output id="lrOut">0.002</output></label>
+  <label><span>bundle \(t\)</span><input id="t" type="range" min="0.05" max="3" step="0.05" value="0.5"><output id="tOut">0.5</output></label>
+  <div class="buttons">
+    <button id="reset" type="button">Reset</button>
+    <button id="step" type="button">Step</button>
+    <button id="play" type="button">Play</button>
+  </div>
+  <label><span>replay a trace</span><select id="traceSel"><option value="">none</option><option value="traces/rosenbrock-optiml.json">optiml on Rosenbrock (real run)</option></select></label>
+  <label><span>or load a file</span><input id="traceFile" type="file" accept=".json,application/json"></label>
+  <div id="algos" class="algos"></div>
+</section>
+<main>
+  <figure>
+    <div id="mapbox"><canvas id="map" width="520" height="520"></canvas></div>
+    <div id="surface" class="stage" hidden></div>
+  </figure>
+  <figure>
+    <figcaption>The value of each algorithm against the iterations (log scale), and
+    where each one is now. Newton and BFGS need a smooth function and are left out
+    on the nonsmooth one.</figcaption>
+    <canvas id="curves" width="520" height="260"></canvas>
+    <ul id="legend" class="legend"></ul>
+    <dl class="stats"><div><dt>iteration</dt><dd id="iter"></dd></div></dl>
+  </figure>
+</main>
+<footer>Scene E of opt-playground; the algorithms are those of optiml
+(github.com/dmeoli/optiml), written again in the browser; the dashed paths are
+real runs of optiml, recorded and replayed.</footer>
+<script type="module" src="src/learning.js"></script>
+</body>
+</html>

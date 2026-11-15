@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polarity playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html" aria-current="page">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1>Polarity playground</h1>
+  <p class="lede">A polytope \(P\) containing the origin and its polar
+  \(P^\circ = \{\, y : x \cdot y \le 1 \text{ for all } x \in P \,\}\), drawn one inside the other: every face of
+  one is a vertex of the other, every edge an edge, and the polar of the polar is
+  \(P\) again. Point at a face to light up its vertex in the other polytope.</p>
+</header>
+<section class="controls">
+  <label><span>polytope</span><select id="shape"></select></label>
+  <label><span>outer</span><select id="outer"><option value="P">P (the primal)</option><option value="D">P° (the polar)</option></select></label>
+  <label><span>scale of \(P\)</span><input id="scale" type="range" min="0.6" max="1.6" step="0.05" value="1"><output id="scaleOut">1</output></label>
+  <label class="check"><span>spin</span><input id="spin" type="checkbox" checked></label>
+</section>
+<p id="explain" class="explain"></p>
+<main class="single">
+  <figure>
+    <figcaption>Violet: the outer polytope, its faces translucent; gold: the inner one.
+    Drag to turn, wheel to zoom. Growing \(P\) shrinks \(P^\circ\): the polar reverses
+    inclusion.</figcaption>
+    <div id="stage" class="stage"></div>
+  </figure>
+</main>
+<footer>Scene G of opt-playground. The same correspondence pairs, in linear
+programming, a vertex of the primal region with a face of the dual one
+(complementary slackness), and, in the decomposition playground, the regions of
+the dual map with the vertices of the hull of the columns.</footer>
+<script type="module" src="src/polarity.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{ "kind": "dual2d", "source": "SMS++ BundleSolver",
+  "problem": { "points": [[0, 0], [8, 0], [8, 8], [0, 8]],
+    "polygon": [[0, 0], [8, 0], [8, 8], [0, 8]],
+    "c": [-0.35, -1], "A": [[1, 0.25], [-0.45, 1]], "b": [5.5, 4.2], "lmax": 6 },
+  "iterations": [
+    { "lam": [0, 0], "value": -10.8, "subgradient": [4.5, 0.2], "column": [8, 8], "serious": true, "center": [0, 0] },
+    { "lam": [4.5, 0.2], "value": -25.59, "subgradient": [-5.5, -4.2], "column": [0, 0], "serious": false, "center": [0, 0] },
+    { "lam": [1.08, 0], "value": -11.78, "subgradient": [-3.5, 3.8], "column": [0, 8], "serious": false, "center": [0, 0] },
+    { "lam": [0.719101123596, 0.820224719101], "value": -7.4, "subgradient": [-5.5, -4.2], "column": [0, 0], "serious": true, "center": [0.719101123596, 0.820224719101] }
+  ] }

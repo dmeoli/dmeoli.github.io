@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SVM playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+</head>
+<body>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html" aria-current="page">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1>SVM playground</h1>
+  <p class="lede">A support vector machine, primal and dual side by side. The
+  dual is a quadratic problem over the multipliers, one per point, each in the
+  box \([0, C]\), with \(\sum_i \alpha_i y_i = 0\); the primal surface is \(f(x) = \sum_i \alpha_i y_i K(x_i, x) + b\).
+  SMO moves two multipliers at a time: a multiplier leaving zero is a support
+  vector lighting up in the plane.</p>
+</header>
+<section class="controls">
+  <label><span>data</span><select id="data"><option value="blobs">Two clusters</option><option value="rings">Disc in a ring</option></select></label>
+  <label><span>kernel</span><select id="kernel"><option value="linear">linear</option><option value="poly">polynomial (degree 2)</option><option value="rbf">Gaussian</option></select></label>
+  <label><span>\(C\)</span><input id="C" type="range" min="0.05" max="10" step="0.05" value="1"><output id="COut">1</output></label>
+  <label><span>\(\gamma\) (Gaussian)</span><input id="gamma" type="range" min="0.05" max="3" step="0.05" value="0.5"><output id="gammaOut">0.5</output></label>
+  <button id="regen" type="button">Regenerate</button>
+  <div class="buttons"><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+</section>
+<main>
+  <figure>
+    <figcaption>Primal: the decision surface (the dark line is \(f = 0\), the lighter
+    ones the margins \(f = \pm 1\)), the points (ringed: support vectors; red: the pair
+    of the last step).</figcaption>
+    <canvas id="plane" width="460" height="460"></canvas>
+  </figure>
+  <figure>
+    <figcaption>Dual: the multipliers \(\alpha_i\) in their boxes \([0, C]\); at \(C\) a point is
+    inside the margin or misclassified.</figcaption>
+    <svg id="dual" viewBox="0 0 520 300"></svg>
+    <dl class="stats">
+      <div><dt>SMO steps</dt><dd id="iter"></dd></div>
+      <div><dt>dual value</dt><dd id="dval"></dd></div>
+      <div><dt>support vectors</dt><dd><span id="sv"></span> (<span id="svC"></span> at \(C\))</dd></div>
+      <div><dt>\(\sum_i \alpha_i y_i\)</dt><dd id="eq"></dd></div>
+      <div><dt>status</dt><dd id="status"></dd></div>
+    </dl>
+  </figure>
+</main>
+<footer>Part of scene E of opt-playground; optiml has the same machine with the
+primal, the Wolfe dual and the Lagrangian dual (github.com/dmeoli/optiml).</footer>
+<script type="module" src="src/svm.js"></script>
+</body>
+</html>

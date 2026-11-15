@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Playground talk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<style>
+  body.deck { max-width: none; padding: 0; height: 100vh; display: grid; grid-template-rows: auto 1fr auto; }
+  .bar { display: flex; align-items: baseline; gap: 18px; padding: 10px 18px; border-bottom: 1px solid var(--rule); }
+  .bar h1 { font-size: 22px; margin: 0; }
+  .bar p { margin: 0; color: var(--ink-soft); font-style: italic; flex: 1; }
+  .bar .n { font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+  iframe { width: 100%; height: 100%; border: 0; }
+  .keys { padding: 6px 18px; font: 11px 'IBM Plex Mono', monospace; color: var(--ink-soft); border-top: 1px solid var(--rule); display: flex; gap: 18px; }
+  .keys button { font-size: 11px; padding: 2px 8px; }
+</style>
+</head>
+<body class="deck">
+<div class="bar"><h1 id="title"></h1><p id="note"></p><span id="n" class="n"></span></div>
+<iframe id="scene" title="scene"></iframe>
+<div class="keys">
+  <button id="prev" type="button">◀ PgUp</button><button id="next" type="button">PgDn ▶</button>
+  <button id="full" type="button">Full screen (F)</button>
+  <span>inside a scene: arrow right one step, space play and pause</span>
+</div>
+<script>
+  // the talk: each slide is a scene with its whole configuration in the address
+  const slides = [
+    { t: 'The Lagrangian dual, one multiplier', n: 'Every cut of the dual is a column of the primal; the subgradient zig-zags.',
+      u: 'index.html#s=a1&p=disc&a=subgradient&l0=2.4&s0=0.6' },
+    { t: 'Two multipliers: the dual is a polyhedral complex', n: 'Kelley jumps to the corners of the box.',
+      u: 'index.html#s=a2&p=ring&a=kelley&v=map&l1=0.2&l2=2.8' },
+    { t: 'Stabilization', n: 'The proximal bundle against Kelley, same start, primal and dual of each.',
+      u: 'index.html#s=a2&p=ring&a=bundle&v=map&l1=0.2&l2=2.8&t=0.3&m1=0.1&r=1&b=kelley' },
+    { t: 'The dual as a roof', n: 'The model comes down onto the Lagrangian function as cuts are added.',
+      u: 'index.html#s=a2&p=ring&a=bundle&v=3d&l1=0.2&l2=2.8&t=0.3&m1=0.1' },
+    { t: '\\(z_{\\mathrm{LP}} \\le z_{\\mathrm{LD}} \\le z_{\\mathrm{IP}}\\)', n: 'The Lagrangian bound improves on the continuous relaxation only off the integer hull.',
+      u: 'index.html#s=a2&p=gap&a=bundle&v=map&l1=0.5&l2=1.5&t=0.5&m1=0.1' },
+    { t: 'The solvers of SMS++', n: 'SubGradSolver with ColorTV and Volume against BundleSolver.',
+      u: 'index.html#s=a2&p=gap&a=subgradSolver&v=map&l1=0.5&l2=1.5&strStepsize=1&strDeflection=1&beta0=1&tau=1&gamma=2&r=1&b=bundleSolver' },
+    { t: 'Benders', n: 'Every cut is a vertex of the dual polygon of the recourse.', u: 'benders.html' },
+    { t: 'Simplex and its dual', n: 'Each basis gives a dual point, feasible only at the optimum.', u: 'lp.html' },
+    { t: 'Branch and bound', n: 'Every node of the tree is a piece of the polygon.', u: 'integer.html' },
+    { t: 'Polarity', n: 'A face of one polytope is a vertex of the other.',
+      u: 'polarity.html' },
+    { t: 'Learning is optimization', n: 'The algorithms of optiml on the Rosenbrock valley.',
+      u: 'learning.html' },
+    { t: 'Primal and dual of an SVM', n: 'A multiplier leaving zero lights a support vector.', u: 'svm.html' },
+    { t: 'Inside a network', n: 'SGD against Adam, same data, same initial weights.',
+      u: 'network.html#data=spiral&feats=x1,x2,sinx1,sinx2&hidden=6,4&race=1&opt=sgd&optB=adam&lr=0.03' },
+  ];
+  let i = Math.max(0, Math.min(slides.length - 1, (+location.hash.slice(1) || 1) - 1));
+  const $ = id => document.getElementById(id);
+  function show() {
+    const s = slides[i], M = window.MathJax && MathJax.typesetPromise ? MathJax : null;
+    if (M) M.typesetClear([$('title'), $('note')]);
+    $('title').textContent = s.t; $('note').textContent = s.n; $('n').textContent = `${i + 1} / ${slides.length}`;
+    // the titles may hold formulas
+    if (M) M.startup.promise = M.startup.promise.then(() => M.typesetPromise([$('title'), $('note')]));
+    $('scene').src = s.u; history.replaceState(null, '', '#' + (i + 1));
+  }
+  const go = d => { i = Math.max(0, Math.min(slides.length - 1, i + d)); show(); };
+  $('prev').onclick = () => go(-1); $('next').onclick = () => go(1);
+  $('full').onclick = () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+  const keys = e => {
+    if (e.key === 'PageDown') { e.preventDefault(); go(1); }
+    if (e.key === 'PageUp') { e.preventDefault(); go(-1); }
+    if (e.key === 'f' || e.key === 'F') $('full').click();
+  };
+  document.addEventListener('keydown', keys);
+  // the keys pressed inside the scene reach the deck too
+  $('scene').addEventListener('load', () => { try { $('scene').contentDocument.addEventListener('keydown', keys); } catch (e) {} });
+  show();
+</script>
+</body>
+</html>

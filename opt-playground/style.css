@@ -1,0 +1,175 @@
+/* the palette of dmeoli.github.io */
+:root {
+  --ground: #e8e2f3; --ink: #2e2040; --ink-soft: #5f4b76; --rule: #d4c9e6;
+  --accent: #7338a8; --accent-2: #9363be; --lilac: #d4b9eb; --gold: #6c5920;
+  --panel: #f2edf8;
+}
+/* dark with the system, unless the reader chose a theme on the site (theme.js
+   copies that choice into data-theme, since the pages share its origin) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #231f30; --ink: #f6effc; --ink-soft: #c9bdd7; --rule: #47415e;
+    --accent: #d4b9eb; --accent-2: #b98ee6; --lilac: #4e2c72; --gold: #b59a45;
+    --panel: #2d283f;
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #231f30; --ink: #f6effc; --ink-soft: #c9bdd7; --rule: #47415e;
+  --accent: #d4b9eb; --accent-2: #b98ee6; --lilac: #4e2c72; --gold: #b59a45;
+  --panel: #2d283f;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0 auto; max-width: 1080px; padding: 24px 16px 40px;
+  background: var(--ground); color: var(--ink);
+  font: 17px/1.5 Spectral, Georgia, serif;
+}
+h1 { font-weight: 600; margin: 0 0 6px; color: var(--accent); }
+.lede { margin: 0 0 18px; color: var(--ink-soft); max-width: 72ch; }
+.controls {
+  display: flex; flex-wrap: wrap; gap: 12px 22px; align-items: end;
+  font: 13px/1.3 'IBM Plex Mono', monospace; background: var(--panel);
+  border: 1px solid var(--rule); border-radius: 8px; padding: 12px 14px;
+}
+.controls label { display: grid; gap: 4px; }
+.controls span { text-transform: uppercase; letter-spacing: .08em; color: var(--ink-soft); font-size: 11px; }
+.params { display: flex; gap: 18px; flex-wrap: wrap; }
+.params label { grid-template-columns: auto auto; align-items: center; column-gap: 8px; }
+.params span { grid-column: 1 / -1; }
+select, button {
+  font: inherit; color: var(--ink); background: var(--ground);
+  border: 1px solid var(--rule); border-radius: 6px; padding: 5px 9px;
+}
+button { cursor: pointer; }
+button:hover { border-color: var(--accent); color: var(--accent); }
+input[type=range] { accent-color: var(--accent); width: 120px; }
+.buttons { display: flex; gap: 8px; margin-left: auto; }
+.explain { color: var(--ink-soft); font-style: italic; margin: 12px 0; min-height: 3em; }
+main { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+@media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+figure { margin: 0; }
+figcaption { font-size: 14px; color: var(--ink-soft); margin-bottom: 6px; min-height: 5.5em; }
+svg { width: 100%; height: auto; display: block; }
+.stats { display: flex; gap: 22px; font: 13px 'IBM Plex Mono', monospace; margin: 8px 0 0; }
+.stats dt { color: var(--ink-soft); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+.stats dd { margin: 0; }
+footer { margin-top: 28px; font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.k { display: inline-block; width: 10px; height: 10px; vertical-align: middle; }
+.k.dw { border-radius: 50%; background: var(--gold); }
+.k.opt { transform: rotate(45deg); border: 2px solid var(--accent); }
+
+/* drawing */
+.grid { stroke: var(--rule); stroke-width: 1; }
+.axis { stroke: var(--ink-soft); stroke-width: 1; }
+.tick, .lab { font: 11px 'IBM Plex Mono', monospace; fill: var(--ink-soft); }
+.tick { text-anchor: middle; }
+.end { text-anchor: end; }
+.infeasible { fill: var(--ink); opacity: .07; }
+.coupling { stroke: var(--gold); stroke-width: 2; }
+.relaxation { fill: none; stroke: var(--ink-soft); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.inthull { fill: var(--lilac); opacity: .45; stroke: var(--accent-2); stroke-width: 1; }
+.colhull { fill: var(--accent); opacity: .22; stroke: var(--accent); stroke-width: 2; }
+.colseg { stroke: var(--accent); stroke-width: 3; opacity: .5; }
+.ipt { fill: var(--ink-soft); }
+.col { fill: var(--accent); stroke: var(--ground); stroke-width: 2; }
+.col.hot { fill: var(--gold); }
+.arrow, .tipfill { stroke: var(--ink-soft); fill: var(--ink-soft); stroke-width: 1.5; }
+.opt { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+.dw { fill: var(--gold); stroke: var(--ground); stroke-width: 2; }
+.cut { stroke: var(--accent-2); stroke-width: 1; opacity: .35; }
+.truef { fill: none; stroke: var(--ink-soft); stroke-width: 1.5; stroke-dasharray: 4 4; }
+.model { fill: none; stroke: var(--accent); stroke-width: 3; }
+.prox { fill: none; stroke: var(--gold); stroke-width: 1.5; stroke-dasharray: 2 3; }
+.center { fill: none; stroke: var(--gold); stroke-width: 2.5; }
+.iter circle { fill: var(--accent); stroke: var(--ground); stroke-width: 2; cursor: pointer; }
+.iter.null circle { fill: var(--ground); stroke: var(--accent); }
+.iter.hot circle { fill: var(--gold); }
+.gapline { fill: none; stroke: var(--accent); stroke-width: 2; }
+
+/* the map of the multipliers: a canvas under an SVG with the same frame */
+.dualbox { position: relative; }
+.dualbox canvas { position: absolute; image-rendering: pixelated; border-radius: 2px; }
+.dualbox svg { position: relative; }
+.mapframe { fill: none; stroke: var(--rule); }
+.path { fill: none; stroke: var(--ink); stroke-width: 1.5; opacity: .7; }
+.star { fill: var(--gold); stroke: var(--ground); stroke-width: 1; }
+.onmap { fill: var(--ink); font-weight: 500; paint-order: stroke; stroke: var(--ground); stroke-width: 3px; }
+.dualbox canvas.gl { position: static; width: 100%; height: auto; cursor: grab; border-radius: 6px; }
+
+/* the race: a second row with the primal and the dual of the second algorithm */
+.race-only { display: none; }
+body.racing .race-only { display: block; }
+.runname { grid-column: 1 / -1; margin: 6px 0 -10px; font: 500 13px 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.runname:empty { display: none; }
+.runname.b, .explain.b { color: var(--gold); }
+.explain.b:empty { display: none; }
+figure.wide { grid-column: 1 / -1; max-width: 640px; }
+.gapline.b { stroke: var(--gold); }
+.check { grid-template-columns: auto; justify-items: start; }
+.params.b span { color: var(--gold); }
+[hidden] { display: none !important; }
+.lpregion { fill: none; stroke: var(--ink-soft); stroke-width: 1; stroke-dasharray: 1 3; }
+.lpopt { fill: none; stroke: var(--ink); stroke-width: 2; }
+.ipopt { fill: var(--ink); stroke: var(--ground); stroke-width: 1.5; }
+.k.lpk { border-radius: 50%; border: 2px solid var(--ink); }
+.k.ipk { background: var(--ink); }
+/* pages and the single stage of the polarity scene */
+nav.pages { font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); margin-bottom: 10px; }
+a { color: var(--accent); }
+nav.pages a { color: var(--ink-soft); text-decoration: none; }
+nav.pages a[aria-current] { color: var(--accent); border-bottom: 1px solid var(--accent); }
+main.single { grid-template-columns: 1fr; }
+.stage canvas { width: 100%; height: auto; display: block; cursor: grab; }
+/* the learning scene */
+#map, #curves { width: 100%; height: auto; display: block; border-radius: 6px; cursor: crosshair; }
+#curves { cursor: default; }
+.algos { display: flex; flex-wrap: wrap; gap: 6px 16px; flex-basis: 100%; }
+.algo { display: flex !important; align-items: center; gap: 6px; font-size: 12px; }
+.algo i, .legend i { display: inline-block; width: 12px; height: 4px; border-radius: 2px; }
+.legend { list-style: none; padding: 0; margin: 8px 0; font: 12px 'IBM Plex Mono', monospace; columns: 2; }
+.legend li { display: flex; align-items: center; gap: 6px; }
+.legend b { font-weight: 500; margin-left: auto; padding-right: 12px; }
+/* the network scene */
+.nnlayout { grid-template-columns: 220px 1fr 270px; align-items: start; }
+@media (max-width: 960px) { .nnlayout { grid-template-columns: 1fr; } }
+.side { display: grid; gap: 8px; font: 12px 'IBM Plex Mono', monospace; }
+.side h3 { margin: 10px 0 0; font: 500 11px 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.side label { display: grid; gap: 3px; }
+.side label span { font-size: 11px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .06em; }
+.feats { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+.layersctl { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.layersctl button, .layer button { padding: 2px 7px; }
+.layer { border: 1px solid var(--rule); border-radius: 6px; padding: 2px 4px; }
+canvas.neuron { width: 30px; height: 30px; border-radius: 4px; border: 1px solid var(--rule); display: block; }
+#out, #outB { width: 100%; height: auto; border-radius: 6px; }
+#loss { width: 100%; height: auto; }
+.big { font: 500 20px 'IBM Plex Mono', monospace; }
+.mid svg { width: 100%; height: auto; }
+#plane { width: 100%; height: auto; border-radius: 6px; display: block; }
+/* the integer scene */
+.bbopen { fill: var(--lilac); opacity: .35; stroke: var(--accent-2); stroke-dasharray: 3 3; }
+.treeedge { stroke: var(--rule); stroke-width: 1.5; }
+.small { font-size: 9px; }
+.tnode circle { fill: var(--accent); stroke: var(--ground); stroke-width: 2; cursor: pointer; }
+.tnode.integer circle { fill: var(--gold); }
+.tnode.pruned circle, .tnode.infeasible circle { fill: var(--ink-soft); opacity: .5; }
+.tnode.branched circle { fill: var(--accent-2); }
+.tnode.hot circle { stroke: var(--ink); stroke-width: 3; }
+.tval { font: 9px 'IBM Plex Mono', monospace; fill: #fff; text-anchor: middle; pointer-events: none; }
+.trbox { fill: var(--gold); opacity: .08; }
+#land { width: 100%; height: auto; border-radius: 6px; }
+.linkhit { cursor: pointer; }
+.wedit { position: absolute; z-index: 10; background: var(--panel); border: 1px solid var(--accent); border-radius: 6px; padding: 3px; }
+.wedit input { width: 80px; font: 12px 'IBM Plex Mono', monospace; }
+
+/* components.html: the dual function and the four methods */
+.dualfn { fill: none; stroke: var(--ink); stroke-width: 2; }
+:root { --m1: var(--accent); --m2: var(--gold); --m3: var(--accent-2); --m4: var(--ink-soft); }
+
+/* manifolds.html: the two planes */
+#input, #hidden { width: 100%; height: auto; display: block; border-radius: 6px; }
+#arrows, #gram, #bars { width: 100%; height: auto; display: block; border-radius: 6px; }
+#bars { margin-top: 8px; }
+/* the formulas (MathJax) keep their letters inside the uppercase labels */
+mjx-container { text-transform: none; letter-spacing: normal; }
+.stats dt mjx-container, .controls span mjx-container, .side label span mjx-container { font-size: 125%; }

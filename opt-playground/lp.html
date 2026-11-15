@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LP playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+</head>
+<body>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html" aria-current="page">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1>LP playground</h1>
+  <p class="lede">A linear program with two variables and two rows, so that its
+  dual lives in the plane too: \(\max\, c \cdot x,\ A x \le b,\ x \ge 0\) on the
+  left, \(\min\, b \cdot y,\ A^\top y \ge c,\ y \ge 0\) on the right. The simplex
+  walks the vertices of the primal, and every basis gives a dual point, outside the
+  dual region until the basis is optimal; the barrier method follows the central path in both.</p>
+</header>
+<section class="controls">
+  <label><span>instance</span><select id="inst"></select></label>
+  <label><span>method</span><select id="mode"><option value="simplex">Simplex</option><option value="ipm">Interior point (barrier)</option></select></label>
+  <div class="buttons"><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+</section>
+<p id="info" class="explain"></p>
+<main>
+  <figure><figcaption>Primal: the feasible region, the two rows, the path of the
+  method and the optimum <span class="k opt"></span>.</figcaption><svg id="primal" viewBox="0 0 420 420"></svg></figure>
+  <figure><figcaption>Dual: its feasible region (unbounded, cut by the frame), the
+  two rows \(A^\top y \ge c\), the dual points of the path and the optimum.</figcaption><svg id="dual" viewBox="0 0 420 420"></svg>
+  <dl class="stats"><div><dt>\(c \cdot x\)</dt><dd id="pval"></dd></div><div><dt>\(b \cdot y\)</dt><dd id="dval"></dd></div><div><dt>\(b \cdot y - c \cdot x\)</dt><dd id="gap"></dd></div></dl></figure>
+</main>
+<footer>Scene C of opt-playground; for richer LP pictures in the plane see lpviz
+(lpviz.net) and GILP.</footer>
+<script type="module" src="src/lp.js"></script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Network playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+</head>
+<body>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html" aria-current="page">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1>Network playground</h1>
+  <p class="lede">A small neural network trained in the browser, with everything
+  the TensorFlow Playground has, and two additions: the optimizer is chosen among
+  those of optiml, and two networks can race from the same initial weights with
+  different optimizers. Every neuron shows its output over the plane; links are
+  the weights (violet positive, gold negative, thicker when larger); point at a
+  neuron to see it large on the right, click a link to edit its weight.</p>
+</header>
+<section class="controls">
+  <div class="buttons"><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+  <label><span>epoch</span><output id="epoch" class="big"></output></label>
+  <label><span>problem</span><select id="problem"></select></label>
+  <label><span>activation</span><select id="act"></select></label>
+  <label><span>learning rate</span><select id="lr"></select></label>
+  <label><span>regularization</span><select id="reg"></select></label>
+  <label><span>rate</span><select id="regRate"></select></label>
+  <label><span>optimizer</span><select id="opt"></select></label>
+  <label class="check"><span>race</span><input id="race" type="checkbox"></label>
+  <label class="race-only"><span>against</span><select id="optB"></select></label>
+</section>
+<main class="nnlayout">
+  <section class="side">
+    <h3>Data</h3>
+    <label><span>data set</span><select id="data"></select></label>
+    <label><span>ratio of training data</span><input id="ratio" type="range" min="10" max="90" step="10"><output id="ratioOut"></output>%</label>
+    <label><span>noise</span><input id="noise" type="range" min="0" max="50" step="5"><output id="noiseOut"></output></label>
+    <label><span>batch size</span><input id="batch" type="range" min="1" max="30" step="1"><output id="batchOut"></output></label>
+    <button id="regen" type="button">Regenerate</button>
+    <h3>Features</h3>
+    <div id="feats" class="feats"></div>
+    <h3>Hidden layers</h3>
+    <div id="layers" class="layersctl"></div>
+  </section>
+  <section class="mid">
+    <svg id="net" viewBox="0 0 620 330"></svg>
+    <svg id="netB" class="race-only" viewBox="0 0 620 330"></svg>
+  </section>
+  <section class="side">
+    <h3>Output</h3>
+    <canvas id="out" width="260" height="260"></canvas>
+    <dl class="stats"><div><dt>training loss</dt><dd id="trainLoss"></dd></div><div><dt>test loss</dt><dd id="testLoss"></dd></div></dl>
+    <canvas id="outB" class="race-only" width="260" height="260"></canvas>
+    <dl class="stats race-only"><div><dt>training loss B</dt><dd id="trainLossB"></dd></div><div><dt>test loss B</dt><dd id="testLossB"></dd></div></dl>
+    <canvas id="loss" width="260" height="90"></canvas>
+    <h3>Loss landscape</h3>
+    <canvas id="land" width="260" height="260"></canvas>
+    <button id="landBtn" type="button">Compute around the current weights</button>
+    <label class="check"><span>show test data</span><input id="showTest" type="checkbox"></label>
+    <label class="check"><span>discretize output</span><input id="disc" type="checkbox"></label>
+  </section>
+</main>
+<div id="wedit" class="wedit" hidden><input type="text" inputmode="decimal" aria-label="weight"></div>
+<footer>Scene F of opt-playground. Loss curves: solid training, dashed test;
+violet the first network, gold the second. The configuration is kept in the address.</footer>
+<script type="module" src="src/network.js"></script>
+</body>
+</html>

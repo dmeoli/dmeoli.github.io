@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Integer playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+</head>
+<body>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html" aria-current="page">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1>Integer playground</h1>
+  <p class="lede">An integer program in the plane: the polygon of its continuous
+  relaxation (dashed) and the hull of its integer points (filled). Branch and
+  bound splits the polygon on a fractional coordinate, and every node of the tree
+  is a piece of it (click a node to see its piece); cuts shave the polygon
+  instead, until the continuous optimum is integer.</p>
+</header>
+<section class="controls">
+  <label><span>instance</span><select id="inst"></select></label>
+  <label><span>method</span><select id="mode"><option value="bb">Branch and bound</option><option value="gomory">Gomory fractional cuts</option><option value="cuts">Cutting planes (hull facets)</option><option value="cover">Cover cuts (binary)</option></select></label>
+  <label><span>node selection</span><select id="rule"><option value="best">best bound</option><option value="depth">depth first</option></select></label>
+  <div class="buttons"><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+</section>
+<p id="node" class="explain"></p>
+<main>
+  <figure><figcaption>The plane: polygon, integer hull, the open nodes (light) and
+  the selected one, its continuous optimum <span class="k lpk"></span>, the best
+  integer point found <span class="k ipk"></span>.</figcaption>
+  <svg id="plane" viewBox="0 0 460 460"></svg></figure>
+  <figure><figcaption>The tree: each node shows its bound; violet open, gold
+  integer, grey pruned or infeasible, ringed the one selected.</figcaption>
+  <svg id="tree" viewBox="0 0 560 300"></svg>
+  <dl class="stats">
+    <div><dt>\(z_{\mathrm{LP}}\)</dt><dd id="zlp"></dd></div>
+    <div><dt>incumbent</dt><dd id="inc"></dd></div>
+    <div><dt>\(z_{\mathrm{IP}}\)</dt><dd id="zip"></dd></div>
+    <div><dt>progress</dt><dd id="cnt"></dd></div>
+  </dl></figure>
+</main>
+<footer>Scene B of opt-playground. Gomory cuts come from the row of the basis of
+a fractional coordinate and keep integer coefficients; the facets of the integer
+hull are the best cuts one can add.</footer>
+<script type="module" src="src/integer.js"></script>
+</body>
+</html>
