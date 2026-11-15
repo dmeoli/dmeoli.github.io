@@ -12,7 +12,7 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
 </head>
 <body>
-<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html" aria-current="page">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="present.html">Talk</a></nav>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html" aria-current="page">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="present.html">Talk</a></nav>
 <header>
   <h1>Integer playground</h1>
   <p class="lede">An integer program in the plane: the polygon of its continuous
@@ -22,10 +22,12 @@
   instead, until the continuous optimum is integer.</p>
 </header>
 <section class="controls">
-  <label><span>instance</span><select id="inst"></select></label>
-  <label><span>method</span><select id="mode"><option value="bb">Branch and bound</option><option value="gomory">Gomory fractional cuts</option><option value="cuts">Cutting planes (hull facets)</option><option value="cover">Cover cuts (binary)</option></select></label>
-  <label><span>node selection</span><select id="rule"><option value="best">best bound</option><option value="depth">depth first</option></select></label>
-  <div class="buttons"><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+  <div class="settings">
+    <label><span>instance</span><select id="inst"></select></label>
+    <label><span>method</span><select id="mode"><option value="bb">Branch and bound</option><option value="gomory">Gomory fractional cuts</option><option value="cuts">Cutting planes (hull facets)</option><option value="cover">Cover cuts (binary)</option></select></label>
+    <label><span>node selection</span><select id="rule"><option value="best">best bound</option><option value="depth">depth first</option></select></label>
+  </div>
+  <div class="transport"><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
 </section>
 <p id="node" class="explain"></p>
 <main>

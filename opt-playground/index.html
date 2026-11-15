@@ -18,7 +18,7 @@
 </script>
 </head>
 <body>
-<nav class="pages"><a href="index.html" aria-current="page">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="present.html">Talk</a></nav>
+<nav class="pages"><a href="index.html" aria-current="page">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="present.html">Talk</a></nav>
 <header>
   <h1>Decomposition playground</h1>
   <p class="lede">The Lagrangian dual of a small integer program, and the same
@@ -28,22 +28,20 @@
 </header>
 
 <section class="controls">
-  <label><span>scene</span><select id="scene"></select></label>
-  <label><span>instance</span><select id="preset"></select></label>
-  <label><span>algorithm</span><select id="algo"></select></label>
-  <label><span>dual view</span><select id="view"></select></label>
-  <div id="params" class="params"></div>
-  <label class="check"><span>race</span><input id="race" type="checkbox"></label>
-  <label><span>against</span><select id="algoB"></select></label>
-  <div id="paramsB" class="params b"></div>
-  <label><span>replay a trace</span><select id="traceSel"><option value="">none</option><option value="smspp-box-bundle">SMS++ BundleSolver (real run)</option><option value="smspp-box-subgrad-volume">SMS++ SubGradSolver, Volume (real run)</option><option value="smspp-box-subgrad">SMS++ SubGradSolver (real run)</option></select></label>
-  <label><span>trace file</span><input id="importTrace" type="file" accept=".json,application/json"></label>
-  <div class="buttons">
+  <div class="settings">
+    <label><span>scene</span><select id="scene"></select></label>
+    <label><span>instance</span><select id="preset"></select></label>
+    <label><span>algorithm</span><select id="algo"></select></label>
+    <label><span>dual view</span><select id="view"></select></label>
+    <div id="params" class="params"></div>
+    <label class="check"><span>race</span><input id="race" type="checkbox"></label>
+    <label><span>against</span><select id="algoB"></select></label>
+    <div id="paramsB" class="params b"></div>
+    <label><span>replay a trace</span><select id="traceSel"><option value="">none</option><option value="smspp-box-bundle">SMS++ BundleSolver (real run)</option><option value="smspp-box-subgrad-volume">SMS++ SubGradSolver, Volume (real run)</option><option value="smspp-box-subgrad">SMS++ SubGradSolver (real run)</option></select></label>
+    <label><span>trace file</span><input id="importTrace" type="file" accept=".json,application/json"></label>
     <button id="exportTrace" type="button">Export trace</button>
-    <button id="reset" type="button">Reset</button>
-    <button id="step" type="button">Step</button>
-    <button id="play" type="button">Play</button>
   </div>
+  <div class="transport"><label class="counter"><span>iteration</span><output id="iter">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
 </section>
 
 <p id="explain" class="explain"></p>
@@ -71,7 +69,6 @@
   <figure class="wide">
     <svg id="curve" viewBox="0 0 480 140"></svg>
     <dl class="stats">
-      <div><dt>iteration</dt><dd id="iter"></dd></div>
       <div><dt>best \(L\)</dt><dd id="best"></dd></div>
       <div><dt>\(z_{\mathrm{LP}}\) <span class="k lpk"></span></dt><dd id="zlp"></dd></div>
       <div><dt>\(z_{\mathrm{LD}} = \max L\) <span class="k opt"></span></dt><dd id="target"></dd></div>

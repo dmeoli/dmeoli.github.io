@@ -11,8 +11,8 @@
 <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
 </head>
-<body>
-<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html" aria-current="page">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="present.html">Talk</a></nav>
+<body class="wide">
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html" aria-current="page">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="present.html">Talk</a></nav>
 <header>
   <h1>Network playground</h1>
   <p class="lede">A small neural network trained in the browser, with everything
@@ -23,46 +23,50 @@
   neuron to see it large on the right, click a link to edit its weight.</p>
 </header>
 <section class="controls">
-  <div class="buttons"><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
-  <label><span>epoch</span><output id="epoch" class="big"></output></label>
-  <label><span>problem</span><select id="problem"></select></label>
-  <label><span>activation</span><select id="act"></select></label>
-  <label><span>learning rate</span><select id="lr"></select></label>
-  <label><span>regularization</span><select id="reg"></select></label>
-  <label><span>rate</span><select id="regRate"></select></label>
-  <label><span>optimizer</span><select id="opt"></select></label>
-  <label class="check"><span>race</span><input id="race" type="checkbox"></label>
-  <label class="race-only"><span>against</span><select id="optB"></select></label>
+  <div class="settings">
+    <label><span>learning rate</span><select id="lr"></select></label>
+    <label><span>activation</span><select id="act"></select></label>
+    <label><span>regularization</span><select id="reg"></select></label>
+    <label><span>regularization rate</span><select id="regRate"></select></label>
+    <label><span>problem type</span><select id="problem"></select></label>
+    <label><span>optimizer</span><select id="opt"></select></label>
+    <label class="check"><span>race</span><input id="race" type="checkbox"></label>
+    <label class="race-only"><span>against</span><select id="optB"></select></label>
+  </div>
+  <div class="transport"><label class="counter"><span>epoch</span><output id="epoch"></output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
 </section>
 <main class="nnlayout">
-  <section class="side">
+  <section class="side nndata">
     <h3>Data</h3>
-    <label><span>data set</span><select id="data"></select></label>
-    <label><span>ratio of training data</span><input id="ratio" type="range" min="10" max="90" step="10"><output id="ratioOut"></output>%</label>
-    <label><span>noise</span><input id="noise" type="range" min="0" max="50" step="5"><output id="noiseOut"></output></label>
-    <label><span>batch size</span><input id="batch" type="range" min="1" max="30" step="1"><output id="batchOut"></output></label>
+    <div id="datas" class="datas" role="radiogroup" aria-label="data set"></div>
+    <label><span>ratio of training data: <output id="ratioOut"></output>%</span><input id="ratio" type="range" min="10" max="90" step="10"></label>
+    <label><span>noise: <output id="noiseOut"></output></span><input id="noise" type="range" min="0" max="50" step="5"></label>
+    <label><span>batch size: <output id="batchOut"></output></span><input id="batch" type="range" min="1" max="30" step="1"></label>
     <button id="regen" type="button">Regenerate</button>
     <h3>Features</h3>
     <div id="feats" class="feats"></div>
-    <h3>Hidden layers</h3>
-    <div id="layers" class="layersctl"></div>
   </section>
-  <section class="mid">
-    <svg id="net" viewBox="0 0 620 330"></svg>
-    <svg id="netB" class="race-only" viewBox="0 0 620 330"></svg>
+  <section class="mid nnmid">
+    <div class="nethead"><span id="layersctl" class="pm"></span><h3 id="nlayers"></h3></div>
+    <div id="colheads" class="colheads"></div>
+    <p id="nameA" class="netname race-only"></p>
+    <svg id="net" viewBox="0 0 640 330"></svg>
+    <p id="nameB" class="netname b race-only"></p>
+    <svg id="netB" class="race-only" viewBox="0 0 640 330"></svg>
   </section>
-  <section class="side">
+  <section class="side nnout">
     <h3>Output</h3>
+    <dl class="stats"><div><dt>test loss</dt><dd id="testLoss"></dd></div><div><dt>training loss</dt><dd id="trainLoss"></dd></div></dl>
+    <dl class="stats race-only b"><div><dt>test loss B</dt><dd id="testLossB"></dd></div><div><dt>training loss B</dt><dd id="trainLossB"></dd></div></dl>
+    <canvas id="loss" width="260" height="70"></canvas>
     <canvas id="out" width="260" height="260"></canvas>
-    <dl class="stats"><div><dt>training loss</dt><dd id="trainLoss"></dd></div><div><dt>test loss</dt><dd id="testLoss"></dd></div></dl>
     <canvas id="outB" class="race-only" width="260" height="260"></canvas>
-    <dl class="stats race-only"><div><dt>training loss B</dt><dd id="trainLossB"></dd></div><div><dt>test loss B</dt><dd id="testLossB"></dd></div></dl>
-    <canvas id="loss" width="260" height="90"></canvas>
+    <label class="check row"><input id="showTest" type="checkbox"><span>show test data</span></label>
+    <label class="check row"><input id="disc" type="checkbox"><span>discretize output</span></label>
     <h3>Loss landscape</h3>
-    <canvas id="land" width="260" height="260"></canvas>
+    <p id="landNote" class="placeholder">Not computed yet: the training loss on a plane of two random directions through the current weights, with the path of the past epochs.</p>
+    <canvas id="land" width="260" height="260" hidden></canvas>
     <button id="landBtn" type="button">Compute around the current weights</button>
-    <label class="check"><span>show test data</span><input id="showTest" type="checkbox"></label>
-    <label class="check"><span>discretize output</span><input id="disc" type="checkbox"></label>
   </section>
 </main>
 <div id="wedit" class="wedit" hidden><input type="text" inputmode="decimal" aria-label="weight"></div>

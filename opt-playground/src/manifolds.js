@@ -148,8 +148,8 @@ function draw() {
 }
 
 function save() { history.replaceState(null, '', '#' + new URLSearchParams({ data: S.data, layers: S.layers, act: S.act, seed: S.seed, T: S.T.toFixed(2) })); }
-function stopTrain() { clearInterval(timer); timer = null; $('train').textContent = 'Train'; }
-function stopMorph() { clearInterval(morph); morph = null; $('play').textContent = 'Play'; }
+function stopTrain() { clearInterval(timer); timer = null; $('play').textContent = 'Play'; }
+function stopMorph() { clearInterval(morph); morph = null; $('morph').textContent = 'Animate'; }
 
 $('data').value = S.data; $('layers').value = S.layers; $('act').value = S.act; $('T').max = 3 * S.layers; $('T').value = S.T;
 $('data').onchange = e => { S.data = e.target.value; reset(); };
@@ -157,14 +157,16 @@ $('layers').onchange = e => { S.layers = +e.target.value; reset(); };
 $('act').onchange = e => { S.act = e.target.value; reset(); };
 $('seed').onclick = () => { S.seed++; reset(); };
 $('T').oninput = e => { stopMorph(); S.T = +e.target.value; save(); draw(); };
-$('train').onclick = () => {
+$('reset').onclick = reset;
+$('step').onclick = () => { trainEpoch(); draw(); };
+$('play').onclick = () => {
   if (timer) return stopTrain();
-  $('train').textContent = 'Pause';
+  $('play').textContent = 'Pause';
   timer = setInterval(() => { for (let i = 0; i < 5; i++) trainEpoch(); draw(); }, 60);
 };
-$('play').onclick = () => {
+$('morph').onclick = () => {
   if (morph) return stopMorph();
-  $('play').textContent = 'Pause';
+  $('morph').textContent = 'Pause';
   if (S.T >= 3 * S.layers) S.T = 0;
   morph = setInterval(() => {
     S.T = Math.min(3 * S.layers, S.T + 0.04); $('T').value = S.T;
@@ -172,4 +174,11 @@ $('play').onclick = () => {
     save(); draw();
   }, 40);
 };
+document.addEventListener('keydown', e => {
+  // not while typing or choosing; on a slider the arrows move the slider
+  const t = e.target;
+  if (t.tagName === 'SELECT' || (t.tagName === 'INPUT' && t.type !== 'range')) return;
+  if (e.key === 'ArrowRight' && t.type !== 'range') $('step').click();
+  if (e.key === ' ') { e.preventDefault(); $('play').click(); }
+});
 reset();

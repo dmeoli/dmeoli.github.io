@@ -12,7 +12,7 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
 </head>
 <body>
-<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html" aria-current="page">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="present.html">Talk</a></nav>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html" aria-current="page">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="present.html">Talk</a></nav>
 <header>
   <h1>Benders playground</h1>
   <p class="lede">A two-stage problem with three scenarios: the first-stage
@@ -23,15 +23,17 @@
   without a trust region, as in BendersDecompositionSolver of SMS++.</p>
 </header>
 <section class="controls">
-  <label><span>int_BDSlv_CutType</span><select id="cut"><option value="single">eSingleCut</option><option value="multi">eMultiCut</option></select></label>
-  <label><span>dblTRRadius (0: none)</span><input id="tr" type="range" min="0" max="5" step="0.25" value="0"><output id="trOut">0</output></label>
-  <div class="buttons"><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+  <div class="settings">
+    <label><span>int_BDSlv_CutType</span><select id="cut"><option value="single">eSingleCut</option><option value="multi">eMultiCut</option></select></label>
+    <label><span>dblTRRadius (0: none)</span><input id="tr" type="range" min="0" max="5" step="0.25" value="0"><output id="trOut">0</output></label>
+  </div>
+  <div class="transport"><label class="counter"><span>iteration</span><output id="it">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
 </section>
 <main>
   <figure><figcaption>The master: the true objective \(c\,y + \mathbb{E}[Q(y)]\) (dashed), the
   model of the cuts (violet), the iterates, the trust region and its centre.</figcaption>
   <svg id="master" viewBox="0 0 520 400"></svg>
-  <dl class="stats"><div><dt>iteration</dt><dd id="it"></dd></div><div><dt>upper bound</dt><dd id="ub"></dd></div><div><dt>lower bound</dt><dd id="lb"></dd></div><div><dt>cuts</dt><dd id="nc"></dd></div></dl></figure>
+  <dl class="stats"><div><dt>upper bound</dt><dd id="ub"></dd></div><div><dt>lower bound</dt><dd id="lb"></dd></div><div><dt>cuts</dt><dd id="nc"></dd></div></dl></figure>
   <figure><figcaption>The dual polygon of the recourse: each ring is a vertex used
   as a cut by a scenario (violet, gold, teal; bright at the last iteration), the
   arrows the directions \(h - T y\) at the last \(y\).</figcaption>

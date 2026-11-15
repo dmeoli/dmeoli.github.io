@@ -12,7 +12,7 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
 </head>
 <body>
-<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html" aria-current="page">Superposition</a> · <a href="present.html">Talk</a></nav>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html" aria-current="page">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="present.html">Talk</a></nav>
 <header>
   <h1>Superposition playground</h1>
   <p class="lede">How a network stores more features than it has dimensions: \(n\) features
@@ -24,11 +24,13 @@
   this never happens: try it.</p>
 </header>
 <section class="controls">
-  <label><span>features \(n\)</span><select id="n"><option>3</option><option selected>5</option><option>6</option><option>8</option><option>10</option></select></label>
-  <label><span>sparsity (features active with probability <output id="dens"></output>)</span><input id="sparsity" type="range" min="0" max="2" step="0.05" value="0"></label>
-  <label><span>importance decay \(r\)</span><input id="decay" type="range" min="0.5" max="1" step="0.01" value="0.9"></label>
-  <label><span>read-out</span><select id="out"><option value="relu">ReLU</option><option value="linear">linear</option></select></label>
-  <div class="buttons"><button id="seed" type="button">New weights</button><button id="train" type="button">Train</button></div>
+  <div class="settings">
+    <label><span>features \(n\)</span><select id="n"><option>3</option><option selected>5</option><option>6</option><option>8</option><option>10</option></select></label>
+    <label><span>sparsity (features active with probability <output id="dens"></output>)</span><input id="sparsity" type="range" min="0" max="2" step="0.05" value="0"></label>
+    <label><span>importance decay \(r\)</span><input id="decay" type="range" min="0.5" max="1" step="0.01" value="0.9"></label>
+    <div class="inline"><label><span>read-out</span><select id="out"><option value="relu">ReLU</option><option value="linear">linear</option></select></label><button id="seed" type="button">New weights</button></div>
+  </div>
+  <div class="transport"><button id="reset" type="button">Reset</button><button id="step" type="button" title="20 steps of Adam">Step</button><button id="play" type="button">Play</button></div>
 </section>
 <p class="explain"><span id="rep"></span>, after <span id="steps"></span> steps of Adam.</p>
 <main>

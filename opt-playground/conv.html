@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convolution playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<style>
+  /* conv.html: the canvases scale with their column, the grids stay crisp */
+  .cv canvas { width: 100%; height: auto; display: block; border-radius: 6px; image-rendering: pixelated; }
+  #in { max-width: 340px; cursor: crosshair; touch-action: none; }
+  #prob { max-width: 340px; margin-top: 8px; image-rendering: auto; }
+  #slide { image-rendering: auto; cursor: pointer; }
+  .cv h3 { margin: 12px 0 4px; font: 500 11px 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  .cv h3:first-of-type { margin-top: 0; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 8px 0 0; font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+  .row button { padding: 3px 9px; font-size: 12px; }
+  .note { font: 12px/1.45 'IBM Plex Mono', monospace; color: var(--ink-soft); min-height: 3em; margin: 6px 0 0; }
+  .count { align-self: center; font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); white-space: nowrap; }
+  button:disabled { opacity: .5; cursor: default; }
+  .m1, .m2, .q1, .q2 { cursor: crosshair; }
+</style>
+</head>
+<body>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html" aria-current="page">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1>Convolution playground</h1>
+  <p class="lede">What the layers of a convolutional network compute on the image of a digit.
+  A layer applies one small filter at every position of its input, with the same weights
+  everywhere, so that its map records where the pattern of the filter occurs; max-pooling
+  keeps the strongest response of every 2&times;2 block, and the second layer looks for
+  patterns among the pooled maps of the first, over a larger part of the image. The network
+  is trained in the page on digits written in a few fonts: draw one yourself, and hover a
+  cell of a map to see the part of the input it depends on.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span>filters in layer 1</span><select id="c1"><option>4</option><option>6</option><option>8</option></select></label>
+    <label><span>filters in layer 2</span><select id="c2"><option>6</option><option>8</option><option>12</option></select></label>
+    <label><span>step size of Adam</span><select id="lr"><option>0.001</option><option>0.003</option><option>0.01</option></select></label>
+    <label><span>weights seed</span><select id="seed"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+  </div>
+  <div class="transport"><label class="counter"><span>epoch · step</span><output id="count"></output></label><button id="reset" type="button">Reset</button><button id="step" type="button" disabled>Step</button><button id="train" type="button" disabled>Play</button></div>
+</section>
+<p class="explain" id="explain"></p>
+<main>
+  <figure class="cv"><figcaption>The input, 20&times;20 intensities in \([0, 1]\): draw a digit
+  with the mouse or a finger. Below, the probabilities that the network gives to the 10
+  classes; the outline is the receptive field of the hovered cell.</figcaption>
+  <canvas id="in" width="400" height="400"></canvas>
+  <div class="row"><button id="clear" type="button">Clear</button><button id="sample" type="button">Held-out digit</button><span id="truth"></span></div>
+  <canvas id="prob" width="400" height="130"></canvas>
+  <p class="note" id="hover"></p></figure>
+  <figure class="cv"><figcaption>One filter of layer 1 sliding over the input: at every
+  position \((i, j)\) the map takes \(y_{ij} = \mathrm{ReLU}\big(b + \sum_{u,v} w_{uv}\,
+  x_{i+u,\,j+v}\big)\), with \(u, v \in \{-1, 0, 1\}\) and zeros outside the grid. Click a
+  filter below to choose it, or the input to move the window.</figcaption>
+  <canvas id="slide" width="620" height="284"></canvas>
+  <div class="row"><button id="next" type="button">Next position</button><button id="play" type="button">Slide</button><span id="pos"></span></div>
+  <p class="note" id="sum"></p></figure>
+  <figure class="cv"><figcaption>Layer 1: the filters \(w\) (violet positive, gold negative),
+  then their maps for the current input after the ReLU, then the maps after max-pooling
+  2&times;2, one column per filter; every map is scaled to its own maximum.</figcaption>
+  <h3>filters 3&times;3</h3><canvas id="f1" width="520" height="80"></canvas>
+  <h3>maps 20&times;20</h3><canvas id="m1" class="m1" width="520" height="80"></canvas>
+  <h3>pooled 10&times;10</h3><canvas id="q1" class="q1" width="520" height="80"></canvas></figure>
+  <figure class="cv"><figcaption>Layer 2: each filter reads all the pooled maps of layer 1,
+  so its cells depend on 8&times;8 pixels and those of its pooled maps on 10&times;10. Last, the
+  input that drives each channel highest, found by gradient ascent from noise, after
+  <a href="https://distill.pub/2017/feature-visualization/">Feature Visualization</a>.</figcaption>
+  <h3>maps 10&times;10</h3><canvas id="m2" class="m2" width="520" height="80"></canvas>
+  <h3>pooled 5&times;5</h3><canvas id="q2" class="q2" width="520" height="80"></canvas>
+  <h3>input maximizing the channel</h3><canvas id="viz" width="520" height="80"></canvas></figure>
+</main>
+<footer>Scene I of opt-playground, after C. Olah,
+<a href="https://colah.github.io/posts/2014-07-Conv-Nets-Modular/">Conv Nets: A Modular Perspective</a>
+(2014): the idea is his, rebuilt here from the equations.</footer>
+<script type="module" src="src/conv.js"></script>
+</body>
+</html>

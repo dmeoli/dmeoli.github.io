@@ -60,7 +60,7 @@ function step() {
 }
 function stop() { clearInterval(timer); timer = null; $('play').textContent = 'Play'; }
 function play() { if (timer) return stop(); $('play').textContent = 'Pause'; timer = setInterval(step, 40); }
-function reset() { stop(); makeData(); makeNets(); save(); buildControls(); draw(); }
+function reset() { stop(); makeData(); makeNets(); save(); buildControls(); clearLandscape(); draw(); }
 
 // ------------------------------------------------------------------ drawing
 // the color of a value in [-1, 1]: gold for negative, lavender at zero, violet for positive
@@ -87,18 +87,24 @@ function heat(canvas, fn, size, pts) {
 // the output of a node over the plane
 function nodeFn(net, node) { return (x, y) => { forward(net, input({ x, y })); return node.out; }; }
 
+// the frame of the drawing: the columns of the layers across its width, the
+// rows of the neurons 50 apart; the headers of the layers use the same columns
+const W = 640, X0 = 70, X1 = W - 30, R = 17, DY = 50;
+const colX = (l, L) => X0 + l * (X1 - X0) / Math.max(L - 1, 1);
+const frameH = net => Math.max(240, Math.max(...net.map(layer => layer.length)) * DY + 30);
+
 function drawNet(net, svgId, k) {
-  const svg = $(svgId), W = 620, H = 330, L = net.length, NS = 'http://www.w3.org/2000/svg';
+  const svg = $(svgId), H = frameH(net), L = net.length, NS = 'http://www.w3.org/2000/svg';
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   svg.replaceChildren();
   const pos = new Map();
   net.forEach((layer, l) => layer.forEach((n, i) => {
-    const x = 40 + l * (W - 90) / Math.max(L - 1, 1), y = H / 2 + (i - (layer.length - 1) / 2) * 44;
-    pos.set(n, [x, y]);
+    pos.set(n, [colX(l, L), H / 2 + (i - (layer.length - 1) / 2) * DY]);
   }));
   const el = (t, a, p = svg) => { const e = document.createElementNS(NS, t); for (const [x, v] of Object.entries(a)) e.setAttribute(x, v); p.appendChild(e); return e; };
   for (const layer of net) for (const n of layer) for (const lk of n.inputs) {
     const [x1, y1] = pos.get(lk.src), [x2, y2] = pos.get(n), w = lk.w;
-    const dpath = `M${x1 + 15},${y1} C${(x1 + x2) / 2},${y1} ${(x1 + x2) / 2},${y2} ${x2 - 15},${y2}`;
+    const dpath = `M${x1 + R},${y1} C${(x1 + x2) / 2},${y1} ${(x1 + x2) / 2},${y2} ${x2 - R},${y2}`;
     el('path', { d: dpath, fill: 'none', stroke: w >= 0 ? '#7338a8' : '#b59a45', 'stroke-width': Math.min(8, 0.4 + 2.2 * Math.abs(w)), opacity: 0.75 });
     // a wide transparent twin of the link, to click on it and edit its weight
     const hit = el('path', { d: dpath, fill: 'none', stroke: 'transparent', 'stroke-width': 10, class: 'linkhit' });
@@ -106,14 +112,14 @@ function drawNet(net, svgId, k) {
     hit.appendChild(document.createElementNS(NS, 'title')).textContent = `weight ${w.toFixed(3)} (click to edit)`;
   }
   net.forEach((layer, l) => layer.forEach((n, i) => {
-    const [x, y] = pos.get(n), size = 30;
-    const fo = el('foreignObject', { x: x - 15, y: y - 15, width: size, height: size });
+    const [x, y] = pos.get(n), size = 2 * R;
+    const fo = el('foreignObject', { x: x - R, y: y - R, width: size, height: size });
     const c = document.createElement('canvas'); c.width = c.height = size; c.className = 'neuron';
     fo.appendChild(c);
-    heat(c, nodeFn(net, n), 14);
+    heat(c, nodeFn(net, n), 16);
     c.addEventListener('mouseenter', () => { focus = { k, node: n }; drawOut(); });
     c.addEventListener('mouseleave', () => { focus = null; drawOut(); });
-    if (l === 0) el('text', { x: x - 20, y: y + 4, class: 'lab end' }).textContent = features[S.feats[i]].label;
+    if (l === 0) el('text', { x: x - R - 6, y: y + 4, class: 'lab end' }).textContent = features[S.feats[i]].label;
   }));
 }
 
@@ -133,7 +139,9 @@ function editWeight(link, e) {
 function params(net) { const out = []; for (let l = 1; l < net.length; l++) for (const n of net[l]) { out.push(n); for (const k of n.inputs) out.push(k); } return out; }
 const getV = net => params(net).map(o => ('w' in o ? o.w : o.bias));
 const setV = (net, v) => params(net).forEach((o, i) => { if ('w' in o) o.w = v[i]; else o.bias = v[i]; });
+function clearLandscape() { $('land').hidden = true; $('landNote').hidden = false; }
 function landscape() {
+  $('land').hidden = false; $('landNote').hidden = true;
   const net = nets[0], v0 = getV(net), r = rng(99), n = v0.length;
   const rnd = () => Array.from({ length: n }, () => r() - 0.5);
   const norm = a => Math.hypot(...a), scaleTo = (a, len) => { const k = len / (norm(a) || 1); return a.map(x => x * k); };
@@ -171,6 +179,9 @@ function drawOut() {
 function drawLoss() {
   const cv = $('loss'), ctx = cv.getContext('2d'), W = cv.width, H = cv.height;
   ctx.clearRect(0, 0, W, H);
+  // the axes, so that the chart is there before the first epoch
+  ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--rule'); ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(4, 2); ctx.lineTo(4, H - 4); ctx.lineTo(W - 4, H - 4); ctx.stroke();
   const all = history.flat().flat(), hi = Math.max(0.05, ...all), n = Math.max(20, history[0].length);
   const line = (h, i, col, dash) => {
     ctx.strokeStyle = col; ctx.setLineDash(dash); ctx.lineWidth = 2; ctx.beginPath();
@@ -189,6 +200,7 @@ function draw() {
   $('trainLoss').textContent = h[0].toFixed(3); $('testLoss').textContent = h[1].toFixed(3);
   if (S.race) { const g = history[1].at(-1) || [loss(nets[1], train), loss(nets[1], test)]; $('trainLossB').textContent = g[0].toFixed(3); $('testLossB').textContent = g[1].toFixed(3); }
   document.body.classList.toggle('racing', S.race);
+  $('nameA').textContent = optimizers[S.opt].name; $('nameB').textContent = optimizers[S.optB].name;
 }
 
 // ----------------------------------------------------------------- controls
@@ -199,7 +211,14 @@ function sel(id, entries, value, on) {
 function buildControls() {
   const datas = S.problem === 'regression' ? [['plane', 'Plane'], ['gaussreg', 'Gaussians']] : [['circle', 'Circle'], ['xor', 'Exclusive or'], ['gauss', 'Gaussians'], ['spiral', 'Spiral']];
   sel('problem', [['classification', 'Classification'], ['regression', 'Regression']], S.problem, v => { S.problem = v; S.data = v === 'regression' ? 'plane' : 'circle'; reset(); });
-  sel('data', datas, S.data, v => { S.data = v; reset(); });
+  const db = $('datas'); db.replaceChildren();
+  for (const [k, l] of datas) {
+    const b = document.createElement('button'); b.type = 'button'; b.title = l;
+    b.setAttribute('role', 'radio'); b.setAttribute('aria-checked', k === S.data);
+    const c = document.createElement('canvas'); c.width = c.height = 64; b.appendChild(c);
+    thumb(c, k); b.onclick = () => { S.data = k; reset(); };
+    db.appendChild(b);
+  }
   sel('act', [['relu', 'ReLU'], ['tanh', 'Tanh'], ['sigmoid', 'Sigmoid'], ['linear', 'Linear']], S.act, v => { S.act = v; reset(); });
   sel('lr', [0.00001, 0.0001, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10].map(v => [v, v]), S.lr, v => { S.lr = +v; save(); });
   sel('reg', [['none', 'None'], ['L1', 'L1'], ['L2', 'L2']], S.reg, v => { S.reg = v; save(); });
@@ -226,18 +245,40 @@ function buildControls() {
     fb.appendChild(l);
   }
   texSet(fb);
-  const lb = $('layers'); lb.replaceChildren();
-  const btn = (t, f) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.onclick = f; return b; };
-  lb.append(btn('+ layer', () => { if (S.hidden.length < 6) S.hidden.push(2); reset(); }), btn('− layer', () => { S.hidden.pop(); reset(); }));
+  // above the network, as in the TensorFlow Playground: + and − for the
+  // layers, and over the column of each hidden layer + and − for its neurons
+  const btn = (t, title, f) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.title = title; b.onclick = f; return b; };
+  $('layersctl').replaceChildren(btn('+', 'add a hidden layer', () => { if (S.hidden.length < 6) S.hidden.push(2); reset(); }),
+                                 btn('−', 'remove a hidden layer', () => { S.hidden.pop(); reset(); }));
+  $('nlayers').textContent = `${S.hidden.length} hidden layer${S.hidden.length === 1 ? '' : 's'}`;
+  const ch = $('colheads'); ch.replaceChildren();
   S.hidden.forEach((n, i) => {
-    const g = document.createElement('span'); g.className = 'layer';
-    g.append(btn('+', () => { if (S.hidden[i] < 8) S.hidden[i]++; reset(); }), document.createTextNode(` ${n} `), btn('−', () => { if (S.hidden[i] > 1) S.hidden[i]--; reset(); }));
-    lb.appendChild(g);
+    const g = document.createElement('div'); g.className = 'colhead';
+    g.style.left = `${100 * colX(i + 1, S.hidden.length + 2) / W}%`;
+    const pm = document.createElement('span'); pm.className = 'pm';
+    pm.append(btn('+', 'add a neuron', () => { if (S.hidden[i] < 8) S.hidden[i]++; reset(); }), btn('−', 'remove a neuron', () => { if (S.hidden[i] > 1) S.hidden[i]--; reset(); }));
+    g.append(pm, Object.assign(document.createElement('span'), { textContent: `${n} neuron${n === 1 ? '' : 's'}` }));
+    ch.appendChild(g);
   });
+}
+// a small picture of a data set, its points on the colour of zero
+function thumb(c, kind) {
+  const ctx = c.getContext('2d'), r = rng(5), pts = dataset(kind, 160, 0, r), w = c.width;
+  ctx.fillStyle = `rgb(${color(0)})`; ctx.fillRect(0, 0, w, w);
+  for (const p of pts) {
+    ctx.fillStyle = `rgb(${color(p.label).map(Math.round)})`;
+    ctx.beginPath(); ctx.arc((p.x + 6) / 12 * w, (6 - p.y) / 12 * w, 1.8, 0, 7); ctx.fill();
+  }
 }
 
 $('play').onclick = play; $('step').onclick = step; $('reset').onclick = reset;
 $('landBtn').onclick = landscape;
 $('regen').onclick = () => { S.seed = Math.floor(Math.random() * 1e6); reset(); };
-document.addEventListener('keydown', e => { if (e.key === 'ArrowRight') step(); if (e.key === ' ' && e.target.tagName !== 'INPUT') { e.preventDefault(); play(); } });
+document.addEventListener('keydown', e => {
+  // not while typing or choosing; on a slider the arrows move the slider
+  const t = e.target;
+  if (t.tagName === 'SELECT' || (t.tagName === 'INPUT' && t.type !== 'range')) return;
+  if (e.key === 'ArrowRight' && t.type !== 'range') step();
+  if (e.key === ' ') { e.preventDefault(); play(); }
+});
 reset();

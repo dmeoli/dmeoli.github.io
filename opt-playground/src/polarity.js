@@ -146,5 +146,10 @@ for (const [k, s] of Object.entries(shapes)) $('shape').append(new Option(s.labe
 $('shape').addEventListener('change', build);
 $('outer').addEventListener('change', build);
 $('scale').addEventListener('input', e => { $('scaleOut').textContent = e.target.value; build(); });
+// space starts and stops the spin, as it plays and pauses the other scenes
+document.addEventListener('keydown', e => {
+  if (e.key !== ' ' || ['SELECT', 'INPUT'].includes(e.target.tagName)) return;
+  e.preventDefault(); $('spin').checked = !$('spin').checked;
+});
 setup();
 build();

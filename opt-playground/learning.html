@@ -18,7 +18,7 @@
 </script>
 </head>
 <body>
-<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html" aria-current="page">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="present.html">Talk</a></nav>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html" aria-current="page">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="present.html">Talk</a></nav>
 <header>
   <h1>Learning playground</h1>
   <p class="lede">Training a model is minimizing a function: here the test
@@ -28,18 +28,16 @@
   move the start.</p>
 </header>
 <section class="controls">
-  <label><span>function</span><select id="fn"></select></label>
-  <label><span>view</span><select id="view"><option value="map">level map</option><option value="3d">3D surface</option></select></label>
-  <label><span>learning rate</span><input id="lr" type="range" min="0.0002" max="0.1" step="0.0002" value="0.002"><output id="lrOut">0.002</output></label>
-  <label><span>bundle \(t\)</span><input id="t" type="range" min="0.05" max="3" step="0.05" value="0.5"><output id="tOut">0.5</output></label>
-  <div class="buttons">
-    <button id="reset" type="button">Reset</button>
-    <button id="step" type="button">Step</button>
-    <button id="play" type="button">Play</button>
+  <div class="settings">
+    <label><span>function</span><select id="fn"></select></label>
+    <label><span>view</span><select id="view"><option value="map">level map</option><option value="3d">3D surface</option></select></label>
+    <label><span>learning rate</span><input id="lr" type="range" min="0.0002" max="0.1" step="0.0002" value="0.002"><output id="lrOut">0.002</output></label>
+    <label><span>bundle \(t\)</span><input id="t" type="range" min="0.05" max="3" step="0.05" value="0.5"><output id="tOut">0.5</output></label>
+    <label><span>replay a trace</span><select id="traceSel"><option value="">none</option><option value="traces/rosenbrock-optiml.json">optiml on Rosenbrock (real run)</option></select></label>
+    <label><span>or load a file</span><input id="traceFile" type="file" accept=".json,application/json"></label>
   </div>
-  <label><span>replay a trace</span><select id="traceSel"><option value="">none</option><option value="traces/rosenbrock-optiml.json">optiml on Rosenbrock (real run)</option></select></label>
-  <label><span>or load a file</span><input id="traceFile" type="file" accept=".json,application/json"></label>
-  <div id="algos" class="algos"></div>
+  <div class="transport"><label class="counter"><span>iteration</span><output id="iter">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
+  <div id="algos" class="algos row"></div>
 </section>
 <main>
   <figure>
@@ -52,7 +50,6 @@
     on the nonsmooth one.</figcaption>
     <canvas id="curves" width="520" height="260"></canvas>
     <ul id="legend" class="legend"></ul>
-    <dl class="stats"><div><dt>iteration</dt><dd id="iter"></dd></div></dl>
   </figure>
 </main>
 <footer>Scene E of opt-playground; the algorithms are those of optiml

@@ -239,5 +239,11 @@ $('inst').onchange = reset;
 $('mode').onchange = e => { mode = e.target.value; $('rule').parentElement.hidden = mode !== 'bb'; reset(); };
 $('rule').onchange = e => { rule = e.target.value; reset(); };
 $('step').onclick = step; $('play').onclick = play; $('reset').onclick = reset;
-document.addEventListener('keydown', e => { if (e.key === 'ArrowRight') step(); if (e.key === ' ' && e.target.tagName !== 'INPUT') { e.preventDefault(); play(); } });
+document.addEventListener('keydown', e => {
+  // not while typing or choosing; on a slider the arrows move the slider
+  const t = e.target;
+  if (t.tagName === 'SELECT' || (t.tagName === 'INPUT' && t.type !== 'range')) return;
+  if (e.key === 'ArrowRight' && t.type !== 'range') step();
+  if (e.key === ' ') { e.preventDefault(); play(); }
+});
 reset();

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Attention playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<style>
+  #example, #big, #thumbs, #qkv, #curves2 { width: 100%; height: auto; display: block; border-radius: 6px; }
+  #example, #big, #qkv { cursor: crosshair; }
+  #thumbs { cursor: pointer; margin-top: 8px; }
+  .promptrow { display: flex; gap: 8px; align-items: center; margin: 0 0 8px; font: 13px 'IBM Plex Mono', monospace; }
+  .promptrow span { text-transform: uppercase; letter-spacing: .08em; color: var(--ink-soft); font-size: 11px; }
+  .promptrow input { flex: 1; min-width: 0; font: inherit; color: var(--ink); background: var(--ground);
+    border: 1px solid var(--rule); border-radius: 6px; padding: 5px 9px; }
+  .promptrow input:focus { outline: none; border-color: var(--accent); }
+  .readout { font: 13px 'IBM Plex Mono', monospace; color: var(--ink-soft); margin: 6px 0 0; min-height: 1.4em; }
+  .readout b { font-weight: 500; color: var(--ink); }
+  .readout .bad { color: var(--gold); }
+  .formula { font-size: 125%; text-align: center; margin: 4px 0 10px; color: var(--ink); }
+  .formula mjx-container { transition: color .15s; }
+  #fig-qkv[data-lit] .formula mjx-container { color: color-mix(in srgb, var(--ink-soft) 35%, var(--ground)); }
+  #fig-qkv[data-lit="q"] .formula .fq, #fig-qkv[data-lit="k"] .formula .fk,
+  #fig-qkv[data-lit="v"] .formula .fv, #fig-qkv[data-lit="s"] .formula .fs,
+  #fig-qkv[data-lit="a"] .formula .fa, #fig-qkv[data-lit="o"] .formula .fo { color: var(--accent); }
+  .buttons .count { align-self: center; font: 13px 'IBM Plex Mono', monospace; color: var(--ink-soft); white-space: nowrap; }
+  .buttons .count b { font-weight: 500; color: var(--ink); }
+  main .col { display: grid; gap: 22px; align-content: start; min-width: 0; }
+  main figcaption { min-height: 0; }
+  @media (max-width: 600px) {
+    .buttons { margin-left: 0; flex-basis: 100%; }
+    .formula { font-size: 110%; }
+  }
+</style>
+</head>
+<body>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html" aria-current="page">Attention</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1>Attention playground</h1>
+  <p class="lede">A transformer of one or two layers, written here with its own backward
+  pass, is trained in the page to reverse, sort or recall a short sequence of digits, and
+  one can watch its attention form. In every head each position emits a query \(q\) that
+  is compared with the keys \(k\) of the positions it may see, and the softmax of the
+  scores weights their values \(v\); on the reverse task each position of the answer
+  learns to look at its mirror image in the prompt, so that the matrix becomes
+  anti-diagonal. The recall task (a b … a → b) needs two layers, since the token that
+  follows the earlier copy of the query must first be found and then read.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span>task</span><select id="task"><option value="reverse">reverse</option><option value="sort">sort</option><option value="recall">recall</option></select></label>
+    <label><span>length \(n\)</span><select id="n"><option>3</option><option>4</option><option>5</option><option selected>6</option><option>7</option><option>8</option></select></label>
+    <label><span>layers</span><select id="layers"><option>1</option><option>2</option></select></label>
+    <label><span>heads</span><select id="heads"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></label>
+    <label><span>mask</span><select id="causal"><option value="1">causal</option><option value="0">open prompt</option></select></label>
+    <label><span>layer norm</span><select id="ln"><option value="1">on</option><option value="0">off</option></select></label>
+    <label><span>learning rate</span><select id="lr"><option>0.001</option><option selected>0.003</option><option>0.01</option></select></label>
+  </div>
+  <div class="transport"><label class="counter"><span>step</span><output id="steps">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="train" type="button">Play</button></div>
+</section>
+<p class="explain" id="status"></p>
+<main>
+<div class="col">
+  <figure id="fig-example"><figcaption>The sequence read by the model (top: the prompt, then
+  its own earlier answers, fainter) and its prediction at each position of the answer
+  (bottom, gold when wrong). Hover a prediction: the lines show how much it attends to
+  each token in the selected head.</figcaption>
+  <div class="promptrow"><span>prompt</span><input id="prompt" type="text" inputmode="numeric" spellcheck="false" aria-label="prompt digits"><button id="random" type="button">Random</button></div>
+  <canvas id="example" width="520" height="230"></canvas>
+  <p class="readout" id="readout"></p></figure>
+  <figure id="fig-qkv"><figcaption>Inside the selected head for the selected query: its
+  \(q\), then for every key it may see \(k_j\), \(v_j\), the score \(q\cdot k_j/\sqrt{d_k}\)
+  and its weight after the softmax; the last row is the output \(\sum_j a_j v_j\).</figcaption>
+  <p class="formula">\(\class{fo}{\class{fa}{\mathrm{softmax}\Big(\class{fs}{\frac{\class{fq}{Q}\,\class{fk}{K^\top}}{\sqrt{d_k}}}\Big)}\,\class{fv}{V}}\)</p>
+  <canvas id="qkv" width="520" height="300"></canvas></figure>
+</div>
+<div class="col">
+  <figure id="fig-heads"><figcaption>The attention matrix of the selected head, queries as
+  rows and keys as columns, darker for larger weights; the cells hidden by the mask are
+  blank (with the open prompt the prompt sees itself in both directions) and the selected
+  query is framed. Below, every head of every layer: click one to
+  select it.</figcaption>
+  <canvas id="big" width="440" height="440"></canvas>
+  <canvas id="thumbs" width="440" height="120"></canvas></figure>
+  <figure id="fig-curves"><figcaption>Token accuracy (violet) and loss (gold, log scale) on
+  200 held-out examples, against the steps of Adam.</figcaption>
+  <canvas id="curves2" width="520" height="240"></canvas></figure>
+</div>
+</main>
+<footer>Scene K of opt-playground, after C. Olah and S. Carter,
+<a href="https://distill.pub/2016/augmented-rnns/">Attention and Augmented Recurrent Neural Networks</a>
+(2016), and Vaswani et al. (2017): the ideas are theirs, rebuilt here from the equations.</footer>
+<script type="module" src="src/attention.js"></script>
+</body>
+</html>

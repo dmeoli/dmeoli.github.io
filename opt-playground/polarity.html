@@ -18,7 +18,7 @@
 </script>
 </head>
 <body>
-<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html" aria-current="page">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="present.html">Talk</a></nav>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html" aria-current="page">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html">LSTM</a> · <a href="attention.html">Attention</a> · <a href="present.html">Talk</a></nav>
 <header>
   <h1>Polarity playground</h1>
   <p class="lede">A polytope \(P\) containing the origin and its polar
@@ -27,10 +27,12 @@
   \(P\) again. Point at a face to light up its vertex in the other polytope.</p>
 </header>
 <section class="controls">
-  <label><span>polytope</span><select id="shape"></select></label>
-  <label><span>outer</span><select id="outer"><option value="P">P (the primal)</option><option value="D">P° (the polar)</option></select></label>
-  <label><span>scale of \(P\)</span><input id="scale" type="range" min="0.6" max="1.6" step="0.05" value="1"><output id="scaleOut">1</output></label>
-  <label class="check"><span>spin</span><input id="spin" type="checkbox" checked></label>
+  <div class="settings">
+    <label><span>polytope</span><select id="shape"></select></label>
+    <label><span>outer</span><select id="outer"><option value="P">P (the primal)</option><option value="D">P° (the polar)</option></select></label>
+    <label><span>scale of \(P\)</span><input id="scale" type="range" min="0.6" max="1.6" step="0.05" value="1"><output id="scaleOut">1</output></label>
+    <label class="check"><span>spin</span><input id="spin" type="checkbox" checked></label>
+  </div>
 </section>
 <p id="explain" class="explain"></p>
 <main class="single">

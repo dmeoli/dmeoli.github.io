@@ -281,7 +281,13 @@ $('traceSel').addEventListener('change', e => { if (e.target.value) loadTrace(e.
 $('traceFile').addEventListener('change', async e => { const f = e.target.files[0]; if (f) loadTrace(JSON.parse(await f.text())); });
 $('play').addEventListener('click', play);
 $('reset').addEventListener('click', reset);
-document.addEventListener('keydown', e => { if (e.key === 'ArrowRight') step(); if (e.key === ' ' && e.target.tagName !== 'INPUT') { e.preventDefault(); play(); } });
+document.addEventListener('keydown', e => {
+  // not while typing or choosing; on a slider the arrows move the slider
+  const t = e.target;
+  if (t.tagName === 'SELECT' || (t.tagName === 'INPUT' && t.type !== 'range')) return;
+  if (e.key === 'ArrowRight' && t.type !== 'range') step();
+  if (e.key === ' ') { e.preventDefault(); play(); }
+});
 useLr();
 computeField();
 reset();

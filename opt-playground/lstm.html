@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LSTM playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<style>
+main.lstm { grid-template-columns: minmax(0, 1fr) 290px; align-items: start; }
+main.lstm figcaption { min-height: 0; }
+main.lstm canvas { width: 100%; display: block; border-radius: 6px; }
+.across { grid-column: 1 / -1; }
+.pair { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+@media (max-width: 860px) { main.lstm, .pair { grid-template-columns: minmax(0, 1fr); } }
+#chain, #heat { cursor: pointer; }
+.stepper { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-top: 8px; font: 13px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.stepper input[type=range] { flex: 1 1 140px; width: auto; }
+.stepper button { padding: 2px 9px; }
+.eqs { display: grid; gap: 4px; font-size: 15px; }
+.eqs h3 { margin: 0 0 4px; font: 500 11px 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.eq { padding: 5px 8px; border: 1px solid transparent; border-radius: 6px; overflow-x: auto; }
+.eq.lit { background: var(--lilac); border-color: var(--accent-2); }
+.eq small { display: block; font: 12px/1.35 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.eq small b { font-weight: 500; color: var(--ink); }
+.controls output.big { min-width: 3ch; }
+</style>
+</head>
+<body>
+<nav class="pages"><a href="index.html">Decomposition</a> · <a href="components.html">Components</a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="integer.html">Integer</a> · <a href="polarity.html">Polarity</a> · <a href="learning.html">Learning</a> · <a href="svm.html">SVM</a> · <a href="network.html">Network</a> · <a href="manifolds.html">Manifolds</a> · <a href="superposition.html">Superposition</a> · <a href="conv.html">Convolution</a> · <a href="lstm.html" aria-current="page">LSTM</a> · <a href="attention.html">Attention</a> · <a href="present.html">Talk</a></nav>
+<header>
+  <h1>LSTM playground</h1>
+  <p class="lede">A recurrent network reads a sequence one symbol at a time and has to
+  carry in its state whatever the answer will need. A network of LSTM cells and a plain
+  \(\tanh\) network of the same size are trained side by side, with Adam, on tasks in which
+  an early symbol decides a late answer. In the LSTM the cell state \(c_t\), kept by the
+  forget gate and written by the input gate, carries the first bit across many steps; in
+  the plain network the gradient with respect to the early states shrinks geometrically
+  with the delay, so that at 20 steps the first bit is learnt only from some initial weights,
+  and at 30 almost never.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span>task</span><select id="task"><option value="first">Remember the first bit</option><option value="depth">Bracket depth</option><option value="count">Count the ones</option></select></label>
+    <label><span>length \(T\) <output id="Tv"></output></span><input id="T" type="range" min="5" max="40" step="1" value="20"></label>
+    <label><span>hidden units</span><select id="H"><option>4</option><option selected>6</option><option>8</option></select></label>
+    <label><span>learning rate</span><select id="lr"><option>0.002</option><option selected>0.005</option><option>0.01</option><option>0.02</option></select></label>
+    <label><span>network shown</span><select id="show"><option value="lstm">LSTM</option><option value="rnn">plain RNN</option></select></label>
+  </div>
+  <div class="transport"><label class="counter"><span>epoch</span><output id="epoch">0</output></label><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="train" type="button">Play</button></div>
+</section>
+<p class="explain" id="rep"></p>
+<main class="lstm">
+  <figure><figcaption id="chaincap">The cell unrolled over the steps around \(t\), drawn from
+  the values of the sequence below: the lines along the top are the units of \(c_t\), those
+  along the bottom the units of \(h_t\) (violet positive, gold negative, thicker when larger);
+  each gate is a column of bars, one per unit, filled as far as the gate is open.</figcaption>
+  <canvas id="chain" height="292"></canvas>
+  <div class="stepper"><span>step \(t\)</span><button id="prev" type="button" aria-label="previous step">&lsaquo;</button><input id="t" type="range" min="1" max="20" step="1" value="1"><button id="next" type="button" aria-label="next step">&rsaquo;</button><output id="tv"></output><button id="seq" type="button">New sequence</button></div>
+  </figure>
+  <aside class="eqs">
+    <h3>The cell at step <span id="eqt"></span></h3>
+    <div class="eq lstm-only" data-part="f">\(f_t = \sigma(W_f\,[h_{t-1}, x_t] + b_f)\)<small>forget gate: how much of \(c_{t-1}\) is kept; mean <b id="vf"></b></small></div>
+    <div class="eq lstm-only" data-part="i">\(i_t = \sigma(W_i\,[h_{t-1}, x_t] + b_i)\)<small>input gate: how much of the candidate is written; mean <b id="vi"></b></small></div>
+    <div class="eq lstm-only" data-part="g">\(\tilde c_t = \tanh(W_c\,[h_{t-1}, x_t] + b_c)\)<small>candidate values; mean <b id="vg"></b></small></div>
+    <div class="eq lstm-only" data-part="c">\(c_t = f_t \odot c_{t-1} + i_t \odot \tilde c_t\)<small>cell state; mean <b id="vc"></b></small></div>
+    <div class="eq lstm-only" data-part="o">\(o_t = \sigma(W_o\,[h_{t-1}, x_t] + b_o)\)<small>output gate; mean <b id="vo"></b></small></div>
+    <div class="eq lstm-only" data-part="h">\(h_t = o_t \odot \tanh(c_t)\)<small>hidden state; mean <b id="vh"></b></small></div>
+    <div class="eq rnn-only" data-part="h" hidden>\(h_t = \tanh(W\,[h_{t-1}, x_t] + b)\)<small>hidden state, the only memory of the plain network; mean <b id="vr"></b></small></div>
+    <div class="eq" data-part="y">\(\hat y_t = \operatorname{softmax}(W_y h_t + b_y)\)<small>the output, read <span id="where"></span></small></div>
+  </aside>
+  <figure class="across"><figcaption>The whole sequence, step by step (columns, the
+  input on top) and unit by unit (rows): \(c_t\) (divided by 2 and clipped), \(h_t\), the
+  gates from 0 (ground) to 1 (violet) and the candidate \(\tilde c_t\); the frame marks
+  step \(t\). Click a column to move there.</figcaption><canvas id="heat"></canvas></figure>
+  <div class="pair">
+    <figure><figcaption>The loss of the two networks, trained on the same sequences
+    (10 minibatches of 16 fresh sequences per epoch), and their accuracy.</figcaption><canvas id="loss"></canvas></figure>
+    <figure><figcaption>The norm of the gradient of the loss at the last step \(T\) with
+    respect to \(h_t\), averaged over 32 test sequences and divided by its value at
+    \(t = T\), in log scale: for the plain RNN it falls by a roughly constant factor at
+    every step back, while for the LSTM, before training, it stays nearly flat, carried by
+    \(c_t\) through the forget gates. Once the LSTM has stored the bit it falls too in
+    the middle of the sequence, which the answer no longer depends on.</figcaption><canvas id="grad"></canvas></figure>
+  </div>
+</main>
+<footer>Scene J of opt-playground, after C. Olah,
+<a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">Understanding LSTM Networks</a>
+(2015): the idea is his, rebuilt here from the equations.</footer>
+<script type="module" src="src/lstm.js"></script>
+</body>
+</html>

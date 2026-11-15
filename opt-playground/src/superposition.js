@@ -109,16 +109,25 @@ function draw() {
 }
 
 function save() { history.replaceState(null, '', '#' + new URLSearchParams(S)); }
-function stop() { clearInterval(timer); timer = null; $('train').textContent = 'Train'; }
+function stop() { clearInterval(timer); timer = null; $('play').textContent = 'Play'; }
 
 for (const k of ['n', 'sparsity', 'decay', 'out']) {
   $(k).value = S[k];
   $(k).oninput = e => { S[k] = k === 'out' ? e.target.value : +e.target.value; reset(); };
 }
 $('seed').onclick = () => { S.seed++; reset(); };
-$('train').onclick = () => {
+$('reset').onclick = reset;
+$('step').onclick = () => { trainSteps(20); draw(); };
+$('play').onclick = () => {
   if (timer) return stop();
-  $('train').textContent = 'Pause';
+  $('play').textContent = 'Pause';
   timer = setInterval(() => { trainSteps(20); draw(); if (steps >= 4000) stop(); }, 30);
 };
+document.addEventListener('keydown', e => {
+  // not while typing or choosing; on a slider the arrows move the slider
+  const t = e.target;
+  if (t.tagName === 'SELECT' || (t.tagName === 'INPUT' && t.type !== 'range')) return;
+  if (e.key === 'ArrowRight' && t.type !== 'range') $('step').click();
+  if (e.key === ' ') { e.preventDefault(); $('play').click(); }
+});
 reset();

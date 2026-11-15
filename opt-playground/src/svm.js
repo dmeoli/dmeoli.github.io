@@ -99,7 +99,9 @@ function drawDual() {
     el('rect', { x: 32 + k * bw, y: Y(a), width: bw - 2, height: Math.max(0.5, Y(0) - Y(a)),
                  fill: hot ? '#c0281e' : p.y > 0 ? '#7338a8' : '#b59a45', opacity: a > 1e-6 ? 0.9 : 0.35 });
   });
-  el('text', { x: 32, y: H - 8, class: 'lab' }).textContent = 'α_i of each point (violet y = +1, gold y = -1; red: the pair of the last step)';
+  // the legend on two lines, so that it fits in the frame
+  el('text', { x: 32, y: H - 14, class: 'lab' }).textContent = 'α_i of each point (violet y = +1, gold y = -1;';
+  el('text', { x: 32, y: H - 1, class: 'lab' }).textContent = 'red: the pair of the last step)';
 }
 
 function draw() {
@@ -120,5 +122,11 @@ $('C').oninput = e => { S.C = +e.target.value; $('COut').textContent = e.target.
 $('gamma').oninput = e => { S.gamma = +e.target.value; $('gammaOut').textContent = e.target.value; reset(); };
 $('regen').onclick = () => { S.seed = Math.floor(Math.random() * 1e6); reset(); };
 $('step').onclick = step; $('play').onclick = play; $('reset').onclick = reset;
-document.addEventListener('keydown', e => { if (e.key === 'ArrowRight') step(); if (e.key === ' ' && e.target.tagName !== 'INPUT') { e.preventDefault(); play(); } });
+document.addEventListener('keydown', e => {
+  // not while typing or choosing; on a slider the arrows move the slider
+  const t = e.target;
+  if (t.tagName === 'SELECT' || (t.tagName === 'INPUT' && t.type !== 'range')) return;
+  if (e.key === 'ArrowRight' && t.type !== 'range') step();
+  if (e.key === ' ') { e.preventDefault(); play(); }
+});
 reset();
