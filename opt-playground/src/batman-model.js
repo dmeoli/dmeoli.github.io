@@ -7,9 +7,8 @@
 // region is the set of the points between two curves, which are written here
 // in closed form on their intervals (for x >= 0, the curve being even): the
 // outline is sampled on the pieces themselves, never traced from pixels.
-// The coefficient of x^2 in f is (3 sqrt 33 - 7) / 112 in the equation of
-// 2011; the GeoGebra file has 122, with which f and s miss each other at
-// |x| = 4 by about 0.12, and the outline has a short vertical step there.
+// The coefficient of x^2 in f is (3 sqrt 33 - 7) / 112, as in the equation
+// of 2011: with it f(4) = s(4) and the outline closes.
 
 const S10 = Math.sqrt(10), S33 = Math.sqrt(33);
 
@@ -215,5 +214,5 @@ export function solid({ den = 112, size = 100, thick = 4, plate = 0, density = 2
 
 export function fileName({ den, size, thick, plate }) {
   const r = x => +(+x).toPrecision(4);
-  return `batman_${r(size)}mm_t${r(thick)}${plate > 0 ? `_oval${r(plate)}` : ''}${den === 122 ? '_ggb122' : ''}`;
+  return `batman_${r(size)}mm_t${r(thick)}${plate > 0 ? `_oval${r(plate)}` : ''}`;
 }

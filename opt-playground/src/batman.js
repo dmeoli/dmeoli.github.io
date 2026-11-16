@@ -303,22 +303,15 @@ function stats() {
   const poly = MODEL.bat.map(v => MODEL.V[v]);
   for (let i = 0; i < poly.length; i++) { const [x0, y0] = poly[i], [x1, y1] = poly[(i + 1) % poly.length]; a += x0 * y1 - x1 * y0; }
   $('area').textContent = (a / 2).toFixed(3);
-  const f4 = PS.find(p => p.id === 'f').y(4), s4 = PS.find(p => p.id === 's').y(4);
-  $('gap').textContent = Math.abs(f4 - s4) < 1e-9 ? '0' : `f(4) − s(4) = ${(f4 - s4).toFixed(4)}`;
 }
 
 function show() {
-  $('den').value = state.den; $('mode').value = state.mode;
+  $('mode').value = state.mode;
   $('thick').value = state.thick; $('thickout').textContent = state.thick.toFixed(2);
   $('bevel').value = state.bevel; $('bevelout').textContent = state.bevel.toFixed(2);
-  const h = { den: state.den, mode: state.mode, thick: state.thick, bevel: state.bevel };
+  const h = { mode: state.mode, thick: state.thick, bevel: state.bevel };
   if (state.off.size) h.off = [...state.off].join('');
   history.replaceState(null, '', '#' + new URLSearchParams(h));
-}
-
-function setDen(den) {
-  state.den = den; PS = pieces(den); MODEL = planar({ den });
-  legend(); draw2d(false); buildBat(); stats(); show();
 }
 
 function fillSelects() {
@@ -344,7 +337,7 @@ function svgFile() {
   drawPlot(svg, pal);
   const bg = el('rect', { x: 0, y: 0, width: 680, height: 370, fill: '#ffffff' });
   svg.prepend(bg);
-  save(new XMLSerializer().serializeToString(svg), `batman_curve${state.den === 122 ? '_ggb122' : ''}.svg`, 'image/svg+xml');
+  save(new XMLSerializer().serializeToString(svg), 'batman_curve.svg', 'image/svg+xml');
 }
 
 async function printFile(what) {
@@ -365,14 +358,12 @@ async function printFile(what) {
 
 function init() {
   const h = new URLSearchParams(location.hash.slice(1));
-  if (h.get('den') === '122') state.den = 122;
   if (h.get('mode') === 'ribbons') state.mode = 'ribbons';
   const num = (k, lo, hi, d) => { const x = parseFloat(h.get(k)); return isFinite(x) ? Math.min(hi, Math.max(lo, x)) : d; };
   state.thick = num('thick', 0.1, 2, 0.6); state.bevel = num('bevel', 0, 0.2, 0.06);
   for (const c of h.get('off') || '') if (ORDER.includes(c)) state.off.add(c);
   PS = pieces(state.den); MODEL = planar({ den: state.den });
   fillSelects(); legend(); draw2d(true); hover(null); setup(); stats(); show();
-  $('den').addEventListener('change', e => setDen(+e.target.value));
   $('mode').addEventListener('change', e => { state.mode = e.target.value; showMode(); show(); });
   $('thick').addEventListener('input', e => { state.thick = +e.target.value; buildBat(); show(); });
   $('bevel').addEventListener('input', e => { state.bevel = +e.target.value; buildBat(); show(); });

@@ -101,7 +101,6 @@ main.batman figcaption { min-height: 0; }
 </header>
 <section class="controls">
   <div class="settings">
-    <label><span data-l="en">coefficient in f</span><span data-l="it" lang="it">coefficiente in f</span><select id="den"><option value="112">(3√33 − 7)/112, 2011</option><option value="122">(3√33 − 7)/122, GeoGebra</option></select></label>
     <label><span data-l="en">3D view</span><span data-l="it" lang="it">vista 3D</span><select id="mode"><option value="solid">solid</option><option value="ribbons">ribbons</option></select></label>
     <label><span><span data-l="en">thickness</span><span data-l="it" lang="it">spessore</span></span><input id="thick" type="range" min="0.1" max="2" step="0.05" value="0.6"><output id="thickout">0.6</output></label>
     <label><span><span data-l="en">bevel</span><span data-l="it" lang="it">smusso</span></span><input id="bevel" type="range" min="0" max="0.2" step="0.01" value="0.06"><output id="bevelout">0.06</output></label>
@@ -141,30 +140,26 @@ main.batman figcaption { min-height: 0; }
     <div id="stage" class="stage"></div>
     <dl class="stats">
       <div><dt><span data-l="en">area</span><span data-l="it" lang="it">area</span></dt><dd id="area"></dd></div>
-      <div><dt><span data-l="en">gap at |x| = 4</span><span data-l="it" lang="it">salto in |x| = 4</span></dt><dd id="gap"></dd></div>
     </dl>
-    <p class="explain"><span data-l="en">In the equation of 2011 the coefficient of \(x^2\) in \(f\)
-    is \((3\sqrt{33} - 7)/112\), the value for which \(f(4) = s(4) = -3\sqrt{33}/7\) and the outline
-    closes; the GeoGebra file has 122, and \(f\) stops above \(s\), so that the lower outline steps at
-    \(|x| = 4\). Both can be chosen above.</span><span data-l="it" lang="it">Nell'equazione del 2011
-    il coefficiente di \(x^2\) in \(f\) è \((3\sqrt{33} - 7)/112\), il valore per cui
-    \(f(4) = s(4) = -3\sqrt{33}/7\) e il contorno si chiude; il file di GeoGebra ha 122, e \(f\) si
-    ferma sopra \(s\), sicché il contorno inferiore fa un gradino in \(|x| = 4\). Entrambi si scelgono
-    qui sopra.</span></p>
+    <p class="explain"><span data-l="en">The coefficient of \(x^2\) in \(f\) is
+    \((3\sqrt{33} - 7)/112\), the value for which \(f(4) = s(4) = -3\sqrt{33}/7\), so that the
+    outline closes.</span><span data-l="it" lang="it">Il coefficiente di \(x^2\) in \(f\) è
+    \((3\sqrt{33} - 7)/112\), il valore per cui \(f(4) = s(4) = -3\sqrt{33}/7\), sicché il
+    contorno si chiude.</span></p>
   </figure>
 </main>
 <section id="dl">
   <h2><span data-l="en">Downloads</span><span data-l="it" lang="it">Download</span></h2>
   <p class="lede" data-l="en">The GeoGebra file with the seven functions and the region, the curve
   as it is drawn above (SVG, with the functions turned off left out), and the emblem as a solid for
-  3D printing: the region of the coefficient chosen above, its outline sampled on the functions
+  3D printing: the region, its outline sampled on the functions
   themselves, extruded to the thickness asked for, alone or standing on the oval plate. The solid
   is closed, every edge between two triangles and every face turned outwards; the bevel of the
   view is not in it. The size is the width of the whole, the bat or the oval; STL has no unit
   (slicers read millimetres), 3MF states millimetres.</p>
   <p class="lede" data-l="it" lang="it">Il file di GeoGebra con le sette funzioni e la regione, la
   curva come è disegnata qui sopra (SVG, senza le funzioni spente), e lo stemma come solido per la
-  stampa 3D: la regione del coefficiente scelto qui sopra, con il contorno campionato sulle funzioni
+  stampa 3D: la regione, con il contorno campionato sulle funzioni
   stesse, estrusa allo spessore chiesto, da sola o in piedi sulla piastra ovale. Il solido è chiuso,
   ogni spigolo fra due triangoli e ogni faccia rivolta all'esterno; lo smusso della vista non c'è.
   La dimensione è la larghezza dell'insieme, il pipistrello o l'ovale; l'STL non ha unità (gli
