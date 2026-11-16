@@ -476,6 +476,105 @@ footer {
 .gallery figcaption { font-size: var(--s-025); color: var(--ink-soft); line-height: var(--lead-display); }
 .gallery audio { width: 100%; height: 32px; }
 .art .label, .play .label { margin: var(--f21) 0 var(--f8); }
+/* ---- expert systems as chatbots ----------------------------------------- */
+.chat {
+  display: flex; flex-direction: column; height: clamp(30rem, 72vh, 44rem);
+  background: var(--tone-1); border-radius: 16px; overflow: hidden;
+  box-shadow: inset 0 0 0 1px var(--gold-5);
+}
+.chat-head {
+  display: flex; align-items: center; gap: var(--f13); padding: var(--f13) var(--f21);
+  background: var(--tone-2); border-bottom: 1px solid var(--gold-4);
+}
+.chat-avatar {
+  flex: none; width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--accent); color: var(--ground); position: relative;
+}
+.chat-avatar svg { width: 24px; height: 24px; }
+.chat-avatar::after {
+  content: ""; position: absolute; right: 0; bottom: 0; width: 11px; height: 11px; border-radius: 50%;
+  background: var(--gold); box-shadow: 0 0 0 2px var(--tone-2);
+}
+.chat-who { display: grid; gap: 1px; margin-right: auto; min-width: 0; }
+.chat-who b { font-weight: 500; color: var(--title); }
+.chat-status { font-family: var(--mono); font-size: var(--s-075); letter-spacing: .08em; color: var(--ink-soft); }
+.chat-tools { display: flex; gap: var(--f5); align-items: center; }
+.chat-tools button, .chat-tools select {
+  font-family: var(--mono); font-size: var(--s-075); letter-spacing: .06em; color: var(--ink);
+  background: var(--tone-3); border: 1px solid transparent; border-radius: 999px;
+  padding: var(--f5) var(--f8); cursor: pointer;
+}
+.chat-tools button:hover, .chat-tools button:focus-visible { border-color: var(--accent); color: var(--accent); }
+.chat-tools button:disabled { opacity: .4; cursor: default; border-color: transparent; color: var(--ink); }
+.chat-progress { height: 2px; background: var(--gold-5); }
+.chat-progress i { display: block; height: 100%; width: 0; background: var(--gold); transition: width .6s cubic-bezier(.2,.8,.2,1); }
+.chat-log {
+  flex: 1; overflow-y: auto; padding: var(--f21); display: flex; flex-direction: column; gap: var(--f8);
+  scroll-behavior: smooth; overscroll-behavior: contain;
+}
+.msg {
+  max-width: min(34em, 86%); padding: var(--f8) var(--f13); line-height: var(--lead-display);
+  animation: msg-in .38s cubic-bezier(.2,.8,.2,1) both; transform-origin: bottom left;
+  white-space: pre-line; overflow-wrap: anywhere;
+}
+.msg.bot { align-self: flex-start; background: var(--tone-3); color: var(--ink); border-radius: 16px 16px 16px 4px; }
+.msg.me {
+  align-self: flex-end; background: var(--accent); color: var(--ground); border-radius: 16px 16px 4px 16px;
+  transform-origin: bottom right;
+}
+.msg.note {
+  align-self: center; max-width: 92%; text-align: center; background: none; color: var(--ink-soft);
+  font-size: var(--s-05); border: 1px dashed var(--gold-3); border-radius: 12px;
+}
+@keyframes msg-in { from { opacity: 0; transform: translateY(10px) scale(.96); } }
+.msg .why-toggle {
+  display: block; margin-top: var(--f5); padding: 0; border: 0; background: none; cursor: pointer;
+  font-family: var(--mono); font-size: var(--s-075); letter-spacing: .06em; color: var(--accent);
+}
+.msg .why { display: none; margin-top: var(--f5); padding-top: var(--f5); border-top: 1px solid var(--gold-4); font-size: var(--s-05); color: var(--ink-soft); }
+.msg.open .why { display: block; animation: msg-in .3s ease both; }
+.typing { align-self: flex-start; display: flex; gap: 5px; padding: 12px 14px; background: var(--tone-3); border-radius: 16px 16px 16px 4px; animation: msg-in .25s ease both; }
+.typing i { width: 7px; height: 7px; border-radius: 50%; background: var(--ink-soft); animation: dot 1.1s infinite ease-in-out; }
+.typing i:nth-child(2) { animation-delay: .15s; } .typing i:nth-child(3) { animation-delay: .3s; }
+@keyframes dot { 0%, 60%, 100% { transform: translateY(0); opacity: .45; } 30% { transform: translateY(-5px); opacity: 1; } }
+.chat-options {
+  display: flex; flex-wrap: wrap; gap: var(--f8); justify-content: flex-end;
+  padding: var(--f13) var(--f21) var(--f21); border-top: 1px solid var(--gold-5); min-height: 3.2em;
+  max-height: 40%; overflow-y: auto;
+}
+.chat-options button {
+  font: inherit; font-size: var(--s-025); color: var(--accent); background: var(--ground);
+  border: 1px solid var(--accent); border-radius: 999px; padding: var(--f5) var(--f13); cursor: pointer;
+  animation: chip-in .35s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i, 0) * 45ms);
+  transition: background .2s, color .2s, transform .2s;
+}
+.chat-options button:hover, .chat-options button:focus-visible { background: var(--accent); color: var(--ground); transform: translateY(-1px); }
+.chat-options.leaving button { animation: chip-out .22s ease both; }
+.chat-options.leaving button.picked { animation: none; background: var(--accent); color: var(--ground); }
+@keyframes chip-in { from { opacity: 0; transform: translateY(8px); } }
+@keyframes chip-out { to { opacity: 0; transform: scale(.92); } }
+.msg.card { max-width: min(36em, 92%); width: 100%; background: var(--ground); box-shadow: inset 0 0 0 1px var(--gold-3), 0 8px 28px rgb(40 20 70 / .12); }
+.result { display: grid; gap: var(--f13); }
+.result h4 { margin: 0; font-weight: 500; color: var(--title); font-size: var(--s1, 1.15em); }
+.result .item { display: grid; grid-template-columns: 1.6em 1fr auto; gap: 2px var(--f8); align-items: baseline; animation: msg-in .45s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i, 0) * 120ms); }
+.result .item .rank { font-family: var(--mono); font-size: var(--s-075); color: var(--gold); }
+.result .item .name { font-weight: 500; color: var(--title); text-decoration: none; }
+.result .item a.name:hover { color: var(--accent); text-decoration: underline; }
+.result .item .pct { font-family: var(--mono); font-size: var(--s-075); color: var(--ink-soft); }
+.result .item small, .result .item .bar { grid-column: 2 / -1; }
+.result .item small { color: var(--ink-soft); font-size: var(--s-05); }
+.result .item.top .name { color: var(--accent); font-size: 1.12em; }
+.result > small { color: var(--ink-soft); font-size: var(--s-05); border-top: 1px solid var(--gold-4); padding-top: var(--f8); }
+.result .bar { height: 6px; border-radius: 3px; background: var(--gold-5); overflow: hidden; }
+.result .bar i { display: block; height: 100%; width: 0; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--gold)); transition: width 1s cubic-bezier(.2,.8,.2,1); }
+.chat-error { color: var(--ink-soft); }
+@media (max-width: 46rem) {
+  .chat { height: 78vh; border-radius: 12px; }
+  .chat-head { padding: var(--f8) var(--f13); gap: var(--f8); }
+  .chat-log { padding: var(--f13); }
+  .chat-options { padding: var(--f8) var(--f13) var(--f13); justify-content: center; }
+  .msg { max-width: 92%; }
+}
 .translate form { display: grid; gap: var(--f8); max-width: 33em; }
 .translate textarea, .translate output {
   font: inherit; color: var(--ink); background: var(--tone-2); border: 1px solid var(--rule);
@@ -694,6 +793,7 @@ footer {
   <a class="side" href="/optimization" data-l="en" data-section="optimization">Optimization</a><a class="side" href="/ottimizzazione" data-l="it" lang="it" data-section="optimization">Ottimizzazione</a>
   <a class="side" href="/ml" data-l="en" data-section="ml">Machine Learning</a><a class="side" href="/ml" data-l="it" lang="it" data-section="ml">Machine learning</a>
   <a class="side" href="/translate" data-l="en" data-section="translate">Translate</a><a class="side" href="/traduci" data-l="it" lang="it" data-section="translate">Traduci</a>
+  <a class="side" href="/experts" data-l="en" data-section="experts">Expert Systems</a><a class="side" href="/esperti" data-l="it" lang="it" data-section="experts">Sistemi esperti</a>
   <a class="side" href="/art" data-l="en" data-section="art">Art</a><a class="side" href="/arte" data-l="it" lang="it" data-section="art">Arte</a>
   </div>
   </div>
@@ -1312,6 +1412,48 @@ Decomposition methods and solvers for large-scale
   </div>
 </section>
 
+<section id="experts" class="experts">
+  <div class="grid">
+    <h2><a href="/experts" data-l="en" data-section="experts">Expert Systems</a><a href="/esperti" data-l="it" lang="it" data-section="experts">Sistemi esperti</a></h2>
+    <div class="body">
+      <p data-l="en">Two rule-based expert systems, the symbolic AI I started from, to talk with as with a chatbot: each asks one question at a time, explains why it asks, and reasons over a knowledge base written from the experts&rsquo; criteria. The same engine answers here and on Telegram.</p>
+      <p data-l="it" lang="it">Due sistemi esperti a regole, l&rsquo;IA simbolica da cui sono partito, con cui parlare come con un chatbot: ciascuno fa una domanda alla volta, spiega perch&eacute; la fa e ragiona su una base di conoscenza scritta dai criteri degli esperti. Lo stesso motore risponde qui e su Telegram.</p>
+      <div class="subnav" role="tablist">
+        <button type="button" role="tab" data-sub="beerex">BeerEX</button>
+        <button type="button" role="tab" data-sub="pesad">PESAD</button>
+      </div>
+      <div class="sub" data-sub="beerex" role="tabpanel">
+      <p data-l="en">A beer to drink, chosen from 79 styles by taste, occasion and meal, with certainty factors or fuzzy logic (CLIPS). <a href="https://github.com/dmeoli/BeerEX">Code</a> &middot; <a href="https://t.me/BeerEXpertBot">Telegram</a></p>
+      <p data-l="it" lang="it">Una birra da bere, scelta fra 79 stili secondo gusto, occasione e pasto, con fattori di certezza o logica fuzzy (CLIPS). <a href="https://github.com/dmeoli/BeerEX">Codice</a> &middot; <a href="https://t.me/BeerEXpertBot">Telegram</a></p>
+      <div class="chat" data-bot="beerex">
+        <div class="chat-head">
+          <span class="chat-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h11v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/><path d="M16 11h2a2 2 0 0 1 0 4h-2"/><path d="M5 8a3 3 0 0 1 3-4 3 3 0 0 1 5 0 3 3 0 0 1 3 4"/><path d="M9 12v5M12 12v5"/></svg></span>
+          <span class="chat-who"><b>BeerEX</b><span class="chat-status" aria-live="polite"></span></span>
+          <span class="chat-tools"><select class="backend" aria-label="Reasoning"><option value="fuzzy">fuzzy</option><option value="cf">CF</option></select><button type="button" class="undo" title="Back one answer" aria-label="Back one answer">&#8630;</button><button type="button" class="restart" title="Start again" aria-label="Start again">&#8635;</button></span>
+        </div>
+        <div class="chat-progress"><i></i></div>
+        <div class="chat-log" role="log" aria-live="polite"></div>
+        <div class="chat-options" role="group" aria-label="Answers"></div>
+      </div>
+      </div>
+      <div class="sub" data-sub="pesad" role="tabpanel">
+      <p data-l="en">Anxiety, obsessive-compulsive and trauma-related disorders after the criteria of the DSM-5-TR (Prolog). An educational tool, not a diagnosis. <a href="https://github.com/dmeoli/PESAD">Code</a> &middot; <a href="https://t.me/PESADBot">Telegram</a></p>
+      <p data-l="it" lang="it">Disturbi d&rsquo;ansia, ossessivo-compulsivi e correlati a traumi secondo i criteri del DSM-5-TR (Prolog). Uno strumento didattico, non una diagnosi. <a href="https://github.com/dmeoli/PESAD">Codice</a> &middot; <a href="https://t.me/PESADBot">Telegram</a></p>
+      <div class="chat" data-bot="pesad">
+        <div class="chat-head">
+          <span class="chat-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21c-4.5-3-8-6.2-8-10.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 8 3.5C20 14.8 16.5 18 12 21z"/><path d="M8.5 11.5h2l1.5-2.5 2 5 1.5-2.5h2"/></svg></span>
+          <span class="chat-who"><b>PESAD</b><span class="chat-status" aria-live="polite"></span></span>
+          <span class="chat-tools"><button type="button" class="undo" title="Back one answer" aria-label="Back one answer">&#8630;</button><button type="button" class="restart" title="Start again" aria-label="Start again">&#8635;</button></span>
+        </div>
+        <div class="chat-progress"><i></i></div>
+        <div class="chat-log" role="log" aria-live="polite"></div>
+        <div class="chat-options" role="group" aria-label="Answers"></div>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="art" class="art">
   <div class="grid">
     <h2><a href="/art" data-l="en" data-section="art">Art</a><a href="/arte" data-l="it" lang="it" data-section="art">Arte</a></h2>
@@ -1529,7 +1671,7 @@ Decomposition methods and solvers for large-scale
   (function () {
     var it = { research: 'ricerca', publications: 'pubblicazioni',
                software: 'software', optimization: 'ottimizzazione', ml: 'ml',
-               translate: 'traduci',
+               translate: 'traduci', experts: 'esperti',
                art: 'arte', experience: 'esperienze',
                education: 'formazione', contact: 'contatti' },
         en = {}, ids = Object.keys(it), root = document.documentElement,
@@ -1855,6 +1997,218 @@ Decomposition methods and solvers for large-scale
                            !nav.contains(document.activeElement));
       last = y;
     }, { passive: true });
+  })();
+</script>
+<script>
+  /* the expert systems as chatbots: the service is stateless, so the page
+     keeps the answers and sends them all at each step; the engine replays
+     them and answers with the next question or with the result */
+  (function () {
+    var API = { beerex: 'https://beerex-372868569544.europe-west1.run.app', pesad: 'https://pesad-372868569544.europe-west1.run.app' };
+    var root = document.documentElement,
+        still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var HELLO = {
+      beerex: { en: 'Hi, I am BeerEX. A few questions on what you like and what you are eating, and I will suggest a beer, telling you why.',
+                it: 'Ciao, sono BeerEX. Qualche domanda su cosa ti piace e su cosa mangi, e ti consiglio una birra, dicendoti perch\u00e9.' },
+      pesad: { en: 'Hi, I am PESAD. I will ask you about what you feel and since when, following the criteria of the DSM-5-TR, one question at a time.',
+               it: 'Ciao, sono PESAD. Ti chiedo di ci\u00f2 che provi e da quando, seguendo i criteri del DSM-5-TR, una domanda alla volta.' }
+    };
+    var T = {
+      en: { online: 'online', typing: 'thinking…', why: 'Why do you ask?', again: 'Start again',
+            down: 'The service is waking up or not reachable: try again in a moment.', retry: 'Retry',
+            done: 'consultation complete', step: 'question ', reasons: 'Why these?',
+            scale: ['No', 'Hardly', 'Partly', 'Mostly', 'Yes'] },
+      it: { online: 'in linea', typing: 'sta pensando…', why: 'Perché me lo chiedi?', again: 'Ricomincia',
+            down: 'Il servizio si sta svegliando o non risponde: riprova fra un momento.', retry: 'Riprova',
+            done: 'consultazione conclusa', step: 'domanda ', reasons: 'Perch\u00e9 queste?',
+            scale: ['No', 'Poco', 'In parte', 'Abbastanza', 'S\u00ec'] }
+    };
+    /* the little markdown the engines write for Telegram: *bold*, _italic_ */
+    function md(text) {
+      return text.replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      }).replace(/\*([^*\n]+)\*/g, '<b>$1</b>').replace(/(^|\s)_([^_\n]+)_/g, '$1<i>$2</i>');
+    }
+    function lang() { return root.getAttribute('data-lang') === 'it' ? 'it' : 'en'; }
+    function el(tag, cls, text) {
+      var e = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (text != null) e.textContent = text;
+      return e;
+    }
+    function wait(ms) { return new Promise(function (r) { setTimeout(r, still ? 0 : ms); }); }
+
+    document.querySelectorAll('.chat[data-bot]').forEach(function (box) {
+      var bot = box.getAttribute('data-bot'), log = box.querySelector('.chat-log'),
+          opts = box.querySelector('.chat-options'), status = box.querySelector('.chat-status'),
+          bar = box.querySelector('.chat-progress i'), backend = box.querySelector('.backend'),
+          undo = box.querySelector('.undo'), answers = [], groups = [], seed = null, busy = false, started = false, maxStep = 1;
+
+      function setStatus(k) { status.textContent = T[lang()][k]; }
+      function scroll() { log.scrollTop = log.scrollHeight; }
+      function call(list) {
+        var body = { lang: lang(), answers: list };
+        if (backend) body.backend = backend.value;
+        if (seed !== null) body.seed = seed;
+        return fetch(API[bot] + '/step', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+        }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+      }
+      function botMsg(screen) {
+        var m = el('div', 'msg bot');
+        if (screen.kind === 'result') {
+          var r = el('div', 'result');
+          if (screen.title) r.appendChild(el('h4', null, screen.title));
+          m.classList.add('card');
+          (screen.items || []).forEach(function (it, k) {
+            var d = el('div', k ? 'item' : 'item top');
+            d.style.setProperty('--i', k);
+            d.appendChild(el('span', 'rank', String(k + 1)));
+            var nm = el(it.url ? 'a' : 'b', 'name', it.name);
+            if (it.url) { nm.href = it.url; nm.target = '_blank'; nm.rel = 'noopener'; }
+            d.appendChild(nm);
+            var v = parseFloat(String(it.score).replace(',', '.'));
+            if (!isNaN(v) && v > 1) v = v / 100;
+            d.appendChild(el('span', 'pct', isNaN(v) ? (it.score || '') : Math.round(v * 100) + '%'));
+            if (it.detail) d.appendChild(el('small', null, it.detail));
+            if (!isNaN(v)) {
+              var b = el('div', 'bar'), i = el('i');
+              b.appendChild(i); d.appendChild(b);
+              setTimeout(function () { i.style.width = Math.max(4, Math.min(100, v * 100)) + '%'; }, 200 + k * 120);
+            }
+            r.appendChild(d);
+          });
+          if (screen.text) {
+            var t = el('button', 'why-toggle', T[lang()].reasons);
+            t.type = 'button';
+            var w = el('div', 'why');
+            w.innerHTML = md(screen.text);
+            t.addEventListener('click', function () { m.classList.toggle('open'); scroll(); });
+            r.appendChild(t); r.appendChild(w);
+          }
+          if (screen.disclaimer) r.appendChild(el('small', null, screen.disclaimer));
+          m.appendChild(r);
+        } else {
+          m.appendChild(document.createTextNode(screen.text));
+          var more = [screen.help, screen.why].filter(Boolean).join('\n\n');
+          if (more) {
+            var t = el('button', 'why-toggle', T[lang()].why);
+            t.type = 'button';
+            t.addEventListener('click', function () { m.classList.toggle('open'); scroll(); });
+            m.appendChild(t);
+            m.appendChild(el('div', 'why', more));
+          }
+        }
+        return m;
+      }
+      function showOptions(screen) {
+        opts.classList.remove('leaving');
+        opts.textContent = '';
+        var list = screen.kind === 'result'
+          ? [{ value: null, label: T[lang()].again }] : (screen.options || []);
+        /* a yes/no of PESAD is followed by its degree of certainty: one row of
+           chips answers both, and the certainty question is never shown */
+        var vals = list.map(function (o) { return o.value; }).join();
+        if (bot === 'pesad' && vals === 'yes,no')
+          list = [['no', '1.0'], ['yes', '0.25'], ['yes', '0.5'], ['yes', '0.75'], ['yes', '1.0']]
+            .map(function (v, i) { return { value: v, label: T[lang()].scale[i] }; });
+        list.forEach(function (o, i) {
+          var b = el('button', null, o.label);
+          b.type = 'button';
+          b.style.setProperty('--i', i);
+          b.addEventListener('click', function () {
+            if (busy) return;
+            if (o.value === null) { restart(); return; }
+            b.classList.add('picked');
+            opts.classList.add('leaving');
+            setTimeout(function () { answer(o.value, o.label); }, still ? 0 : 200);
+          });
+          opts.appendChild(b);
+        });
+      }
+      function progress(screen) {
+        maxStep = Math.max(maxStep, (screen.step || answers.length) + 3);
+        bar.style.width = (screen.kind === 'result' ? 100 : Math.min(92, 100 * answers.length / maxStep)) + '%';
+      }
+      function render(screen, delay) {
+        var typing = el('div', 'typing');
+        typing.innerHTML = '<i></i><i></i><i></i>';
+        log.appendChild(typing); scroll(); setStatus('typing');
+        return wait(delay).then(function () {
+          typing.remove();
+          if (!answers.length && !log.querySelector('.msg')) {
+            log.appendChild(el('div', 'msg bot', HELLO[bot][lang()]));
+            if (screen.disclaimer && screen.kind !== 'result')
+              log.appendChild(el('div', 'msg note', screen.disclaimer));
+          }
+          log.appendChild(botMsg(screen)); scroll();
+          setStatus(screen.kind === 'result' ? 'done' : 'online');
+          progress(screen);
+          showOptions(screen);
+          undo.disabled = !answers.length;
+        });
+      }
+      function fail(list, cert, n) {
+        log.querySelectorAll('.typing').forEach(function (t) { t.remove(); });
+        log.appendChild(el('div', 'msg note chat-error', T[lang()].down));
+        opts.textContent = '';
+        var b = el('button', null, T[lang()].retry);
+        b.type = 'button';
+        b.addEventListener('click', function () { step(list, cert, n); });
+        opts.appendChild(b);
+        setStatus('online'); busy = false;
+      }
+      function step(list, cert, n) {
+        busy = true;
+        var t0 = Date.now();
+        return call(list).then(function (screen) {
+          if (cert != null && /\.certainty$/.test(screen.id || '')) {
+            list = list.concat([cert]);
+            return call(list);
+          }
+          return screen;
+        }).then(function (screen) {
+          if (n) groups.push(list.length - answers.length);
+          answers = list;
+          if (screen.seed !== undefined) seed = screen.seed;
+          var len = (screen.text || '').length;
+          return render(screen, Math.max(250, Math.min(1100, 400 + len * 6) - (Date.now() - t0)));
+        }).then(function () { busy = false; }, function () { fail(list, cert, n); });
+      }
+      function answer(value, label) {
+        opts.textContent = '';
+        log.appendChild(el('div', 'msg me', label)); scroll();
+        if (Array.isArray(value)) step(answers.concat([value[0]]), value[1], true);
+        else step(answers.concat([value]), null, true);
+      }
+      function restart() {
+        log.textContent = ''; opts.textContent = ''; answers = []; groups = []; seed = null; maxStep = 1;
+        bar.style.width = '0';
+        step([]);
+      }
+      /* back one answer: the conversation is rebuilt from the answers kept */
+      undo.addEventListener('click', function () {
+        if (busy || !answers.length) return;
+        var kept = answers.slice(0, answers.length - (groups.pop() || 1)), msgs = log.querySelectorAll('.msg.me');
+        var lastMe = msgs[msgs.length - 1];
+        while (lastMe && lastMe.nextSibling) lastMe.nextSibling.remove();
+        if (lastMe) { var prev = lastMe.previousSibling; lastMe.remove(); if (prev) prev.remove(); }
+        step(kept);
+      });
+      box.querySelector('.restart').addEventListener('click', function () { if (!busy) restart(); });
+      if (backend) backend.addEventListener('change', function () { if (!busy) restart(); });
+      /* the language follows the site: the conversation starts again in the new one */
+      new MutationObserver(function () { if (started && !busy) restart(); })
+        .observe(root, { attributes: true, attributeFilter: ['data-lang'] });
+      /* the service is woken and the chat started only when it is in view */
+      var io = new IntersectionObserver(function (es) {
+        if (es.some(function (e) { return e.isIntersecting; }) && !started) {
+          started = true; io.disconnect(); restart();
+        }
+      });
+      io.observe(box);
+      setStatus('online');
+    });
   })();
 </script>
 </body>
