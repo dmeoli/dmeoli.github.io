@@ -549,6 +549,17 @@ footer {
   transition: background .2s, color .2s, transform .2s;
 }
 .chat-options button:hover, .chat-options button:focus-visible { background: var(--accent); color: var(--ground); transform: translateY(-1px); }
+.chat-options .scale { width: 100%; display: grid; grid-template-columns: 1fr auto; gap: var(--f8) var(--f13); align-items: center; }
+.chat-options .scale label { font-size: var(--small, .9em); opacity: .85; }
+.chat-options .scale output { font-weight: 600; color: var(--accent); text-align: right; }
+.chat-options .scale input[type=range] { grid-column: 1 / -1; width: 100%; height: 6px; appearance: none; -webkit-appearance: none; border-radius: 3px;
+  background: linear-gradient(to right, var(--accent) var(--p, 50%), color-mix(in srgb, var(--accent) 22%, transparent) var(--p, 50%)); }
+.chat-options .scale input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); border: 3px solid var(--ground); box-shadow: 0 0 0 1px var(--accent); cursor: grab; }
+.chat-options .scale input[type=range]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--accent); border: 3px solid var(--ground); cursor: grab; }
+.chat-options .scale .ticks { grid-column: 1 / -1; display: flex; justify-content: space-between; margin-top: -2px; }
+.chat-options .scale .ticks button { border: 0; background: none; padding: 2px 0; font-size: .78em; opacity: .7; animation: none; color: inherit; }
+.chat-options .scale .ticks button:hover { background: none; color: var(--accent); transform: none; opacity: 1; }
+.chat-options .scale .send { grid-column: 1 / -1; justify-self: end; }
 .chat-options.leaving button { animation: chip-out .22s ease both; }
 .chat-options.leaving button.picked { animation: none; background: var(--accent); color: var(--ground); }
 @keyframes chip-in { from { opacity: 0; transform: translateY(8px); } }
@@ -571,6 +582,9 @@ footer {
 @media (max-width: 46rem) {
   .chat { height: 78vh; border-radius: 12px; }
   .chat-head { padding: var(--f8) var(--f13); gap: var(--f8); }
+  .chat-tools { flex-shrink: 1; min-width: 0; }
+  .chat-tools select { max-width: 6.5em; text-overflow: ellipsis; }
+  .chat-status { white-space: nowrap; }
   .chat-log { padding: var(--f13); }
   .chat-options { padding: var(--f8) var(--f13) var(--f13); justify-content: center; }
   .msg { max-width: 92%; }
@@ -1441,9 +1455,9 @@ Decomposition methods and solvers for large-scale
       <p data-l="it" lang="it">Disturbi d&rsquo;ansia, ossessivo-compulsivi e correlati a traumi secondo i criteri del DSM-5-TR (Prolog). Uno strumento didattico, non una diagnosi. <a href="https://github.com/dmeoli/PESAD">Codice</a> &middot; <a href="https://t.me/PESADBot">Telegram</a></p>
       <div class="chat" data-bot="pesad">
         <div class="chat-head">
-          <span class="chat-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21c-4.5-3-8-6.2-8-10.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 8 3.5C20 14.8 16.5 18 12 21z"/><path d="M8.5 11.5h2l1.5-2.5 2 5 1.5-2.5h2"/></svg></span>
+          <span class="chat-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M17.599 6.5a3 3 0 0 0 .399-1.375"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M19.938 10.5a4 4 0 0 1 .585.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M19.967 17.484A4 4 0 0 1 18 18"/></svg></span>
           <span class="chat-who"><b>PESAD</b><span class="chat-status" aria-live="polite"></span></span>
-          <span class="chat-tools"><button type="button" class="undo" title="Back one answer" aria-label="Back one answer">&#8630;</button><button type="button" class="restart" title="Start again" aria-label="Start again">&#8635;</button></span>
+          <span class="chat-tools"><select class="backend" aria-label="Reasoning"><option value="cf">CF &middot; min</option><option value="fuzzy">fuzzy &middot; product</option><option value="fuzzy_membership">fuzzy &middot; membership</option></select><button type="button" class="undo" title="Back one answer" aria-label="Back one answer">&#8630;</button><button type="button" class="restart" title="Start again" aria-label="Start again">&#8635;</button></span>
         </div>
         <div class="chat-progress"><i></i></div>
         <div class="chat-log" role="log" aria-live="polite"></div>
@@ -2017,11 +2031,13 @@ Decomposition methods and solvers for large-scale
       en: { online: 'online', typing: 'thinking…', why: 'Why do you ask?', again: 'Start again',
             down: 'The service is waking up or not reachable: try again in a moment.', retry: 'Retry',
             done: 'consultation complete', step: 'question ', reasons: 'Why these?',
-            scale: ['No', 'Hardly', 'Partly', 'Mostly', 'Yes'] },
+            scale: ['not at all', 'a little', 'partly', 'mostly', 'completely'],
+            how: 'How true is it?', send: 'Answer' },
       it: { online: 'in linea', typing: 'sta pensando…', why: 'Perché me lo chiedi?', again: 'Ricomincia',
             down: 'Il servizio si sta svegliando o non risponde: riprova fra un momento.', retry: 'Riprova',
             done: 'consultazione conclusa', step: 'domanda ', reasons: 'Perch\u00e9 queste?',
-            scale: ['No', 'Poco', 'In parte', 'Abbastanza', 'S\u00ec'] }
+            scale: ['per niente', 'poco', 'in parte', 'abbastanza', 'del tutto'],
+            how: 'Quanto \u00e8 vero?', send: 'Rispondi' }
     };
     /* the little markdown the engines write for Telegram: *bold*, _italic_ */
     function md(text) {
@@ -2109,9 +2125,7 @@ Decomposition methods and solvers for large-scale
         /* a yes/no of PESAD is followed by its degree of certainty: one row of
            chips answers both, and the certainty question is never shown */
         var vals = list.map(function (o) { return o.value; }).join();
-        if (bot === 'pesad' && vals === 'yes,no')
-          list = [['no', '1.0'], ['yes', '0.25'], ['yes', '0.5'], ['yes', '0.75'], ['yes', '1.0']]
-            .map(function (v, i) { return { value: v, label: T[lang()].scale[i] }; });
+        if (bot === 'pesad' && vals === 'yes,no') { slider(); return; }
         list.forEach(function (o, i) {
           var b = el('button', null, o.label);
           b.type = 'button';
@@ -2125,6 +2139,38 @@ Decomposition methods and solvers for large-scale
           });
           opts.appendChild(b);
         });
+      }
+      /* how true a statement is, on a bar of five steps from "not at all"
+         (a certain no) to "completely" (a certain yes) */
+      function slider() {
+        var L = T[lang()], VALUES = [['no', '1.0'], ['yes', '0.25'], ['yes', '0.5'], ['yes', '0.75'], ['yes', '1.0']];
+        var w = el('div', 'scale'), q = el('label', null, L.how),
+            r = el('input'), out = el('output'), ticks = el('div', 'ticks'), go = el('button', null, L.send);
+        r.type = 'range'; r.min = 0; r.max = 4; r.step = 1; r.value = 2;
+        r.id = bot + '-scale'; q.htmlFor = r.id;
+        function show() {
+          out.textContent = L.scale[r.value];
+          r.style.setProperty('--p', (r.value * 25) + '%');
+          r.setAttribute('aria-valuetext', L.scale[r.value]);
+        }
+        L.scale.forEach(function (t, i) {
+          var b = el('button', null, t); b.type = 'button'; b.tabIndex = -1;
+          b.addEventListener('click', function () { r.value = i; show(); });
+          ticks.appendChild(b);
+        });
+        r.addEventListener('input', show);
+        go.type = 'button'; go.className = 'send';
+        go.addEventListener('click', function () {
+          if (busy) return;
+          opts.classList.add('leaving');
+          var v = VALUES[r.value], label = L.scale[r.value];
+          setTimeout(function () { answer(v, label); }, still ? 0 : 200);
+        });
+        r.addEventListener('keydown', function (e) { if (e.key === 'Enter') go.click(); });
+        show();
+        w.appendChild(q); w.appendChild(out); w.appendChild(r); w.appendChild(ticks); w.appendChild(go);
+        opts.appendChild(w);
+        r.focus({ preventScroll: true });
       }
       function progress(screen) {
         maxStep = Math.max(maxStep, (screen.step || answers.length) + 3);
