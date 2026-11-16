@@ -1640,6 +1640,21 @@ Decomposition methods and solvers for large-scale
     box.addEventListener('click', function () { box.close(); });
 
     var API = 'https://tradutturi-372868569544.europe-west1.run.app/translate';
+    /* the service sleeps when nobody uses it and takes some seconds to wake:
+       it is woken as soon as the reader heads for the translator */
+    var warmed = false;
+    function warm() {
+      if (warmed) return;
+      warmed = true;
+      fetch(API.replace(/translate$/, ''), { mode: 'no-cors' }).catch(function () {});
+    }
+    if (/^\/(translate|traduci)/.test(location.pathname) ||
+        /section=(translate|traduci)/.test(location.search)) warm();
+    document.querySelectorAll('a[data-section="translate"]').forEach(function (a) {
+      a.addEventListener('pointerenter', warm);
+      a.addEventListener('focus', warm);
+      a.addEventListener('click', warm);
+    });
     var f = document.getElementById('tr-form');
     /* by default the page translates from its own language into Sicilian,
        with a sample sentence, until the reader picks or types something */
@@ -1654,6 +1669,7 @@ Decomposition methods and solvers for large-scale
     }
     dir.addEventListener('change', function () { touched = true; });
     txt.addEventListener('input', function () { touched = true; });
+    txt.addEventListener('focus', warm);
     defaults();
     new MutationObserver(defaults).observe(document.documentElement, { attributes: true, attributeFilter: ['data-lang'] });
     f.addEventListener('submit', function (e) {
