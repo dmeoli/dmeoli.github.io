@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Batman equation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<style>
+/* one colour per function, in light and in dark */
+:root {
+  --c-p: #6c5920; --c-h: #2f7d8c; --c-g: #b0457a; --c-q: #c0602a;
+  --c-r: #3d5fb0; --c-s: #4c8a3c; --c-f: #7338a8; --fill: #7338a81f;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --c-p: #d9bf6a; --c-h: #7cc6d2; --c-g: #e48bb5; --c-q: #f0a070;
+    --c-r: #93aef0; --c-s: #9fd38a; --c-f: #d4b9eb; --fill: #d4b9eb24;
+  }
+}
+:root[data-theme="dark"] {
+  --c-p: #d9bf6a; --c-h: #7cc6d2; --c-g: #e48bb5; --c-q: #f0a070;
+  --c-r: #93aef0; --c-s: #9fd38a; --c-f: #d4b9eb; --fill: #d4b9eb24;
+}
+main.batman { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+@media (max-width: 860px) { main.batman { grid-template-columns: 1fr; } }
+main.batman figcaption { min-height: 0; }
+.eqs2 mjx-container { white-space: nowrap; }
+.eqs2 { overflow-x: auto; overflow-y: hidden; padding-bottom: 2px; }
+.plotwrap { position: relative; }
+#plot { touch-action: manipulation; }
+#plot .grid { stroke: var(--rule); stroke-width: 1; }
+#plot .axis { stroke: var(--ink-soft); stroke-width: 1; opacity: .6; }
+#plot .tick { font: 11px 'IBM Plex Mono', monospace; fill: var(--ink-soft); }
+#plot .oval { fill: none; stroke: var(--gold); stroke-width: 1.2; stroke-dasharray: 4 4; opacity: .7; }
+#plot .region { fill: var(--fill); }
+#plot .piece { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+#plot .hit { fill: none; stroke: transparent; stroke-width: 16; cursor: help; pointer-events: stroke; }
+#plot .lab { font: italic 600 17px Spectral, Georgia, serif; paint-order: stroke; stroke: var(--ground); stroke-width: 4px; }
+#plot .on .piece { stroke-width: 5; }
+#tip { margin-top: 6px; background: var(--panel); border: 1px solid var(--rule); border-left: 4px solid var(--tipc, var(--rule)); border-radius: 6px; padding: 5px 10px; font-size: 13px; color: var(--ink-soft); min-height: 3.6em; overflow-x: auto; overflow-y: hidden; }
+#tip.show { color: var(--ink); }
+#tip .what { font: 11px 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-soft); display: block; }
+.legend2 { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 4px; }
+.legend2 li { display: grid; grid-template-columns: auto auto minmax(0, 1fr); align-items: center; gap: 8px; padding: 3px 6px; border-radius: 6px; font-size: 14px; }
+.legend2 li.on { background: var(--panel); }
+.legend2 input { accent-color: var(--accent); margin: 0; }
+.legend2 i { display: inline-block; width: 18px; height: 4px; border-radius: 2px; }
+.legend2 .f { overflow-x: auto; overflow-y: hidden; }
+.legend2 .f small { display: block; font: 11px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+#stage canvas { border-radius: 6px; touch-action: none; }
+.controls input[type=range] { width: 120px; }
+#dl { margin-top: 28px; }
+#dl h2 { font-weight: 600; font-size: 22px; margin: 0 0 6px; color: var(--accent); }
+#dl .lede { max-width: 80ch; font-size: 15px; }
+#dl input[type=number] { font: inherit; color: var(--ink); background: var(--ground); border: 1px solid var(--rule); border-radius: 6px; padding: 5px 6px; width: 6.5em; }
+#dl .transport { flex-wrap: wrap; }
+#dl button.main { color: var(--ground); background: var(--accent); border-color: var(--accent); font-weight: 500; padding: 8px 14px; }
+#dl button.main:hover { color: var(--ground); background: var(--accent-2); }
+#dl a.btn { font: inherit; color: var(--ink); background: var(--ground); border: 1px solid var(--rule); border-radius: 6px; padding: 5px 9px; text-decoration: none; display: inline-block; }
+#dl a.btn:hover { border-color: var(--accent); color: var(--accent); }
+#pstatus { margin: 0; min-height: 1.3em; color: var(--ink-soft); overflow-wrap: anywhere; }
+@media (max-width: 640px) { #dl .transport { margin-left: 0; } }
+</style>
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attenzione</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Misture di esperti</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Hebbiano</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html">Talk</a><br><span class="group"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></span> <a href="shells.html"><span data-l="en">Three numbers</span><span data-l="it" lang="it">Tre numeri</span></a><br><span class="group">Batman</span> <a href="batman.html" aria-current="page"><span data-l="en">The equation</span><span data-l="it" lang="it">L'equazione</span></a></nav>
+<header>
+  <h1><span data-l="en">The Batman equation</span><span data-l="it" lang="it">L'equazione di Batman</span></h1>
+  <p class="lede" data-l="en">The emblem of Batman as the set of the points of the plane that
+  satisfy two inequalities, written with seven functions of \(x\). The equation was posted on
+  Reddit on 28 July 2011 by a student, who credited it to his teacher J. Matthew Register; within a
+  few days the question "Is this Batman equation for real?" on Mathematics Stack Exchange had taken
+  it apart, and an answer of 7 August 2011 wrote it piece by piece, as is done here. The image
+  carried no name, so that the credit to Register rests on the reports that followed it. Each
+  function contains the step \(t(x) = \sqrt{|x|/x}\), which is 1 for \(x &gt; 0\) and not real
+  otherwise, hence it exists only on the interval where the argument of its \(t\) is positive; at
+  every \(x\) exactly one lower and one upper function is defined, and the region is the set of the
+  points between them.</p>
+  <p class="lede" data-l="it" lang="it">Lo stemma di Batman come insieme dei punti del piano che
+  soddisfano due disuguaglianze, scritte con sette funzioni di \(x\). L'equazione è stata pubblicata
+  su Reddit il 28 luglio 2011 da uno studente, che l'attribuiva al suo insegnante J. Matthew
+  Register; in pochi giorni la domanda "Is this Batman equation for real?" su Mathematics Stack
+  Exchange l'aveva smontata, e una risposta del 7 agosto 2011 la scriveva pezzo per pezzo, come si
+  fa qui. L'immagine non portava nomi, sicché l'attribuzione a Register poggia sui resoconti che
+  l'hanno seguita. Ogni funzione contiene il gradino \(t(x) = \sqrt{|x|/x}\), che vale 1 per
+  \(x &gt; 0\) e non è reale altrimenti, dunque esiste solo sull'intervallo in cui l'argomento del
+  suo \(t\) è positivo; per ogni \(x\) è definita esattamente una funzione inferiore e una superiore,
+  e la regione è l'insieme dei punti fra le due.</p>
+  <p class="lede eqs2">\(\big((y &gt; s) \lor (y &gt; f)\big) \land \big((y &lt; g) \lor (y &lt; p) \lor (y &lt; h) \lor (y &lt; r) \lor (y &lt; q)\big)\)</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span data-l="en">coefficient in f</span><span data-l="it" lang="it">coefficiente in f</span><select id="den"><option value="112">(3√33 − 7)/112, 2011</option><option value="122">(3√33 − 7)/122, GeoGebra</option></select></label>
+    <label><span data-l="en">3D view</span><span data-l="it" lang="it">vista 3D</span><select id="mode"><option value="solid">solid</option><option value="ribbons">ribbons</option></select></label>
+    <label><span><span data-l="en">thickness</span><span data-l="it" lang="it">spessore</span></span><input id="thick" type="range" min="0.1" max="2" step="0.05" value="0.6"><output id="thickout">0.6</output></label>
+    <label><span><span data-l="en">bevel</span><span data-l="it" lang="it">smusso</span></span><input id="bevel" type="range" min="0" max="0.2" step="0.01" value="0.06"><output id="bevelout">0.06</output></label>
+    <label class="check"><span data-l="en">light sweep</span><span data-l="it" lang="it">luce che passa</span><input id="sweep" type="checkbox"></label>
+  </div>
+  <div class="transport">
+    <button type="button" id="replay"><span data-l="en">Draw again</span><span data-l="it" lang="it">Ridisegna</span></button>
+    <button type="button" id="view"><span data-l="en">Reset view</span><span data-l="it" lang="it">Vista iniziale</span></button>
+  </div>
+</section>
+<main class="batman">
+  <figure>
+    <figcaption><span data-l="en">The seven functions on their intervals, each in its colour, and
+    the region between the lower and the upper one (shaded); the dashed oval is that of the
+    emblem. Point at a curve, or touch it, for its formula; a box below turns a function off, and
+    with it the part of the region it bounds, since there no inequality of its side
+    holds.</span><span data-l="it" lang="it">Le sette funzioni sui loro intervalli, ciascuna nel suo
+    colore, e la regione fra quella inferiore e quella superiore (ombreggiata); l'ovale tratteggiato
+    è quello dello stemma. Puntare una curva, o toccarla, per la sua formula; una casella qui sotto
+    spegne una funzione, e con essa la parte della regione che delimita, perché lì nessuna
+    disuguaglianza del suo lato è soddisfatta.</span></figcaption>
+    <div class="plotwrap">
+      <svg id="plot" viewBox="0 0 680 370" role="img" aria-label="The Batman curve, piece by piece"></svg>
+      <div id="tip" aria-live="polite"></div>
+    </div>
+    <ul class="legend2" id="legend"></ul>
+  </figure>
+  <figure>
+    <figcaption><span data-l="en">The region extruded into a solid on the oval of the emblem, in
+    the gold of this site with the bat in its ink. Drag to turn, wheel or pinch to zoom. In the
+    ribbons view each function is a band of its colour standing on its piece of the outline, around
+    the solid made transparent.</span><span data-l="it" lang="it">La regione estrusa in un solido
+    sull'ovale dello stemma, nell'oro di questo sito con il pipistrello nel suo inchiostro.
+    Trascinare per ruotare, rotella o pizzico per lo zoom. Nella vista a nastri ogni funzione è una
+    fascia del suo colore che sta sul suo tratto del contorno, attorno al solido reso
+    trasparente.</span></figcaption>
+    <div id="stage" class="stage"></div>
+    <dl class="stats">
+      <div><dt><span data-l="en">area</span><span data-l="it" lang="it">area</span></dt><dd id="area"></dd></div>
+      <div><dt><span data-l="en">gap at |x| = 4</span><span data-l="it" lang="it">salto in |x| = 4</span></dt><dd id="gap"></dd></div>
+    </dl>
+    <p class="explain"><span data-l="en">In the equation of 2011 the coefficient of \(x^2\) in \(f\)
+    is \((3\sqrt{33} - 7)/112\), the value for which \(f(4) = s(4) = -3\sqrt{33}/7\) and the outline
+    closes; the GeoGebra file has 122, and \(f\) stops above \(s\), so that the lower outline steps at
+    \(|x| = 4\). Both can be chosen above.</span><span data-l="it" lang="it">Nell'equazione del 2011
+    il coefficiente di \(x^2\) in \(f\) è \((3\sqrt{33} - 7)/112\), il valore per cui
+    \(f(4) = s(4) = -3\sqrt{33}/7\) e il contorno si chiude; il file di GeoGebra ha 122, e \(f\) si
+    ferma sopra \(s\), sicché il contorno inferiore fa un gradino in \(|x| = 4\). Entrambi si scelgono
+    qui sopra.</span></p>
+  </figure>
+</main>
+<section id="dl">
+  <h2><span data-l="en">Downloads</span><span data-l="it" lang="it">Download</span></h2>
+  <p class="lede" data-l="en">The GeoGebra file with the seven functions and the region, the curve
+  as it is drawn above (SVG, with the functions turned off left out), and the emblem as a solid for
+  3D printing: the region of the coefficient chosen above, its outline sampled on the functions
+  themselves, extruded to the thickness asked for, alone or standing on the oval plate. The solid
+  is closed, every edge between two triangles and every face turned outwards; the bevel of the
+  view is not in it. The size is the width of the whole, the bat or the oval; STL has no unit
+  (slicers read millimetres), 3MF states millimetres.</p>
+  <p class="lede" data-l="it" lang="it">Il file di GeoGebra con le sette funzioni e la regione, la
+  curva come è disegnata qui sopra (SVG, senza le funzioni spente), e lo stemma come solido per la
+  stampa 3D: la regione del coefficiente scelto qui sopra, con il contorno campionato sulle funzioni
+  stesse, estrusa allo spessore chiesto, da sola o in piedi sulla piastra ovale. Il solido è chiuso,
+  ogni spigolo fra due triangoli e ogni faccia rivolta all'esterno; lo smusso della vista non c'è.
+  La dimensione è la larghezza dell'insieme, il pipistrello o l'ovale; l'STL non ha unità (gli
+  slicer leggono millimetri), il 3MF dichiara i millimetri.</p>
+  <div class="controls">
+    <div class="settings">
+      <a class="btn" href="assets/batman.ggb" download="Batman.ggb">GeoGebra (.ggb)</a>
+      <button type="button" id="svg">SVG</button>
+      <label><span><span data-l="en">size, mm</span><span data-l="it" lang="it">dimensione, mm</span></span><input id="psize" type="number" min="20" max="300" step="1" value="100" title="width"></label>
+      <label><span><span data-l="en">bat, mm</span><span data-l="it" lang="it">pipistrello, mm</span></span><input id="pthick" type="number" min="0.6" max="20" step="0.1" value="4"></label>
+      <label class="check"><span data-l="en">oval plate</span><span data-l="it" lang="it">piastra ovale</span><input id="pplate" type="checkbox" checked></label>
+      <label><span><span data-l="en">plate, mm</span><span data-l="it" lang="it">piastra, mm</span></span><input id="pplatet" type="number" min="0.6" max="10" step="0.1" value="2"></label>
+    </div>
+    <div class="transport">
+      <button type="button" class="main" id="pboth"><span data-l="en">Download STL + 3MF</span><span data-l="it" lang="it">Scarica STL + 3MF</span></button>
+      <button type="button" id="pstl">STL</button>
+      <button type="button" id="p3mf">3MF</button>
+    </div>
+    <p class="row" id="pstatus" aria-live="polite"></p>
+  </div>
+</section>
+<footer><span data-l="en">Scene Y of opt-playground. The equation as posted on Reddit
+(r/pics, 28 July 2011) and discussed in the question 54506 of Mathematics Stack Exchange,
+<a href="https://math.stackexchange.com/questions/54506">"Is this Batman equation for real?"</a>;
+see also E. W. Weisstein, <a href="https://mathworld.wolfram.com/BatmanCurve.html">Batman curve</a>, MathWorld. The functions and
+the inequalities are those of the GeoGebra file above, of August 2011.</span><span data-l="it"
+lang="it">Scena Y di opt-playground. L'equazione come pubblicata su Reddit (r/pics, 28 luglio
+2011) e discussa nella domanda 54506 di Mathematics Stack Exchange,
+<a href="https://math.stackexchange.com/questions/54506">"Is this Batman equation for real?"</a>;
+si veda anche E. W. Weisstein, <a href="https://mathworld.wolfram.com/BatmanCurve.html">Batman curve</a>, MathWorld. Le funzioni e le disuguaglianze
+sono quelle del file di GeoGebra qui sopra, dell'agosto 2011.</span></footer>
+<script type="module" src="src/batman.js"></script>
+</body>
+</html>

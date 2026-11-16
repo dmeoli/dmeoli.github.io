@@ -35,7 +35,9 @@
   }
   // the way back goes to the section of the site that lists the scene
   var path = location.pathname.replace(/\/$/, '/index.html'),
-      back = /^\/opt-playground\/shells(\.html)?$/.test(path)
+      back = /^\/opt-playground\/batman(\.html)?$/.test(path)
+        ? '<a class="home" href="/batman"><span data-l="en">&larr; Batman</span><span data-l="it" lang="it">&larr; Batman</span></a>'
+        : /^\/opt-playground\/shells(\.html)?$/.test(path)
         ? '<a class="home" href="/shells"><span data-l="en">&larr; Shells</span><span data-l="it" lang="it">&larr; Conchiglie</span></a>'
         : /^\/opt-playground\/(index|components|benders|lp|lp3d|integer|polarity)?(\.html)?$/.test(path)
         ? '<a class="home" href="/optimization"><span data-l="en">&larr; Optimization</span><span data-l="it" lang="it">&larr; Ottimizzazione</span></a>'

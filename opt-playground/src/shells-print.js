@@ -262,9 +262,8 @@ function pieces({ pos, idx }) {
 
 /* ------------------------------------------------------------- the files -- */
 
-export function stl({ pos, idx }) {
+export function stl({ pos, idx }, head = 'binary STL, millimetres, shell after Raup (1966)') {
   const nt = idx.length / 3, buf = new ArrayBuffer(84 + 50 * nt), dv = new DataView(buf);
-  const head = 'binary STL, millimetres, shell after Raup (1966)';
   for (let i = 0; i < head.length; i++) dv.setUint8(i, head.charCodeAt(i));
   dv.setUint32(80, nt, true);
   let o = 84;
