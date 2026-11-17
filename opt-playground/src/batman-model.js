@@ -10,6 +10,8 @@
 // The coefficient of x^2 in f is (3 sqrt 33 - 7) / 112, as in the equation
 // of 2011: with it f(4) = s(4) and the outline closes.
 
+import { Layers } from './print/index.js';
+
 const S10 = Math.sqrt(10), S33 = Math.sqrt(33);
 
 export const coef = den => (3 * S33 - 7) / den;
@@ -175,41 +177,20 @@ export function planar({ den = 112, density = 24, oval = false } = {}) {
 export function solid({ den = 112, size = 100, thick = 4, plate = 0, density = 24 } = {}) {
   const P = planar({ den, density, oval: plate > 0 });
   const width = plate > 0 ? 2 * OVAL.A : 14, k = size / width;
-  const pos = [], idx = [], ids = new Map();
-  const at = (v, z) => {
-    const key = v + ':' + z;
-    if (!ids.has(key)) { ids.set(key, pos.length / 3); pos.push(P.V[v][0] * k, P.V[v][1] * k, z); }
-    return ids.get(key);
-  };
-  const face = (tris, z, up) => {
-    for (let i = 0; i < tris.length; i += 3) {
-      const a = at(tris[i], z), b = at(tris[i + 1], z), c = at(tris[i + 2], z);
-      if (up) idx.push(a, b, c); else idx.push(a, c, b);
-    }
-  };
-  const wall = (loop, z0, z1) => {
-    for (let i = 0; i < loop.length; i++) {
-      const a = loop[i], b = loop[(i + 1) % loop.length];
-      const a0 = at(a, z0), b0 = at(b, z0), a1 = at(a, z1), b1 = at(b, z1);
-      idx.push(a0, b0, b1, a0, b1, a1);
-    }
-  };
+  const L = new Layers(P.V, k);
   const batT = P.T.slice(0, P.batTris), rest = P.T.slice(P.batTris);
   if (plate > 0) {
-    face(P.T, 0, false);
-    face(rest, plate, true);
-    face(batT, plate + thick, true);
-    wall(P.ell, 0, plate);
-    wall(P.bat, plate, plate + thick);
+    L.face(P.T, 0, false);
+    L.face(rest, plate, true);
+    L.face(batT, plate + thick, true);
+    L.wall(P.ell, 0, plate);
+    L.wall(P.bat, plate, plate + thick);
   } else {
-    face(batT, 0, false);
-    face(batT, thick, true);
-    wall(P.bat, 0, thick);
+    L.face(batT, 0, false);
+    L.face(batT, thick, true);
+    L.wall(P.bat, 0, thick);
   }
-  const p = Float32Array.from(pos);
-  const mn = [Infinity, Infinity, Infinity], mx = [-Infinity, -Infinity, -Infinity];
-  for (let i = 0; i < p.length; i++) { mn[i % 3] = Math.min(mn[i % 3], p[i]); mx[i % 3] = Math.max(mx[i % 3], p[i]); }
-  return { pos: p, idx: Uint32Array.from(idx), dims: mx.map((v, i) => v - mn[i]) };
+  return L.mesh();
 }
 
 export function fileName({ den, size, thick, plate }) {

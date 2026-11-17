@@ -5,7 +5,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { pieces, abscissae, boundary, piecePolylines, planar, solid, fileName, OVAL } from './batman-model.js';
-import { stl, pack3mf, zip } from './shells-print.js';
+import { printPanel, save } from './print/index.js';
 import { t, onLang, onTheme } from './i18n.js';
 import { setTex } from './tex.js';
 
@@ -321,13 +321,6 @@ function fillSelects() {
 
 /* ------------------------------------------------------ downloads ------- */
 
-function save(bytes, name, type) {
-  const url = URL.createObjectURL(new Blob([bytes], { type }));
-  const a = document.createElement('a'); a.href = url; a.download = name;
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 60000);
-}
-
 // the curve in the light colours of the page, whatever the theme on screen
 function svgFile() {
   const pal = { rule: '#d4c9e6', soft: '#5f4b76', gold: '#6c5920', fill: '#7338a81f',
@@ -340,19 +333,23 @@ function svgFile() {
   save(new XMLSerializer().serializeToString(svg), 'batman_curve.svg', 'image/svg+xml');
 }
 
-async function printFile(what) {
-  const size = Math.min(300, Math.max(20, +$('psize').value || 100)), thick = Math.min(20, Math.max(0.6, +$('pthick').value || 4));
-  const plate = $('pplate').checked ? Math.min(10, Math.max(0.6, +$('pplatet').value || 2)) : 0;
-  $('psize').value = size; $('pthick').value = thick;
-  const o = { den: state.den, size, thick, plate }, m = solid(o), name = fileName(o);
-  const head = 'binary STL, millimetres, the Batman equation';
-  let file, bytes;
-  if (what === 'stl') { file = name + '.stl'; bytes = stl(m, head); }
-  else if (what === '3mf') { file = name + '.3mf'; bytes = await pack3mf(m, 'batman'); }
-  else { file = name + '.zip'; bytes = await zip([{ name: name + '.stl', data: stl(m, head) }, { name: name + '.3mf', data: await pack3mf(m, 'batman') }]); }
-  save(bytes, file, 'application/octet-stream');
-  $('pstatus').textContent = `${file}: ${m.idx.length / 3} ${t('triangles', 'triangoli')}, ${m.dims.map(x => x.toFixed(1)).join(' × ')} mm, ${(bytes.length / 1024).toFixed(0)} kB`;
+// the solid is quick to build: on the main thread
+function printSetup() {
+  printPanel($('dl'), {
+    size: { value: 100, min: 20, max: 300, what: { en: 'width', it: 'larghezza' } },
+    fields: [
+      { key: 'thick', label: { en: 'bat, mm', it: 'pipistrello, mm' }, value: 4, min: 0.6, max: 20, step: 0.1 },
+      { key: 'base', type: 'check', label: { en: 'oval plate', it: 'piastra ovale' }, value: true,
+        thick: { key: 'plate', label: { en: 'plate, mm', it: 'piastra, mm' }, value: 2, min: 0.6, max: 10, step: 0.1 } },
+    ],
+    before: [$('ggb'), $('svg')],
+    build: o => solid(opts(o)),
+    name: o => fileName(opts(o)),
+    head: 'binary STL, millimetres, the Batman equation',
+    object: 'batman',
+  });
 }
+const opts = o => ({ den: state.den, size: o.size, thick: o.thick, plate: o.base ? o.plate : 0 });
 
 /* ------------------------------------------------------------ init ------ */
 
@@ -370,10 +367,7 @@ function init() {
   $('replay').addEventListener('click', () => draw2d(true));
   $('view').addEventListener('click', () => { controls.reset(); camera.position.set(...HOME); controls.target.set(0, 0, 0); fit(); });
   $('svg').addEventListener('click', svgFile);
-  $('pboth').addEventListener('click', () => printFile('zip'));
-  $('pstl').addEventListener('click', () => printFile('stl'));
-  $('p3mf').addEventListener('click', () => printFile('3mf'));
-  $('pplate').addEventListener('change', () => { $('pplatet').disabled = !$('pplate').checked; });
+  printSetup();
   onLang(() => { fillSelects(); legend(); hover(null); });
   onTheme(() => { recolour(); });
   still.addEventListener('change', () => { controls.enableDamping = !still.matches; if (still.matches) { $('sweep').checked = false; finishDrawing(); } });

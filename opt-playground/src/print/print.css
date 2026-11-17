@@ -1,0 +1,9 @@
+/* the download panel of src/print/ui.js, inside a .controls bar of style.css */
+.printpanel input[type=number] { font: inherit; color: var(--ink); background: var(--ground); border: 1px solid var(--rule); border-radius: 6px; padding: 5px 6px; width: 6.5em; }
+.printpanel .transport { flex-wrap: wrap; }
+.printpanel button.main { color: var(--ground); background: var(--accent); border-color: var(--accent); font-weight: 500; padding: 8px 14px; }
+.printpanel button.main:hover { color: var(--ground); background: var(--accent-2); }
+.printpanel button:disabled { opacity: .55; cursor: progress; }
+.printpanel .pstatus { margin: 0; min-height: 1.3em; color: var(--ink-soft); overflow-wrap: anywhere; }
+.printpanel .pstatus progress { accent-color: var(--accent); width: 140px; vertical-align: middle; margin-left: 8px; }
+@media (max-width: 640px) { .printpanel .transport { margin-left: 0; } }

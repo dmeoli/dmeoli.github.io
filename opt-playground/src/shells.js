@@ -6,6 +6,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { presets, shell, fibonacci, logSpiral, PHI } from './shells-model.js';
 import { t, onLang, onTheme } from './i18n.js';
+import { printPanel } from './print/index.js';
+import { fileName } from './shells-print.js';
 
 const $ = id => document.getElementById(id);
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
@@ -276,42 +278,29 @@ function fillPresets() {
   $('ap').options[0].textContent = t('circle', 'cerchio');
   $('ap').options[1].textContent = t('ellipse', 'ellisse');
   $('ap').options[2].textContent = t('drop', 'goccia');
-  $('pres').options[0].textContent = t('draft', 'bozza');
-  $('pres').options[1].textContent = t('fine', 'alta');
 }
 
 /* ----------------------------------------------- download for printing -- */
 
-// the solid is built by a worker (src/shells-print.js), so that the page goes
-// on turning meanwhile; one zip holds both files, since a browser may stop a
-// second download started by the same click
-let worker = null;
-function printFile(what) {
-  const size = Math.min(300, Math.max(20, +$('psize').value || 80)), thick = Math.min(6, Math.max(0.8, +$('pthick').value || 1.6));
-  $('psize').value = size; $('pthick').value = thick;
-  const p = { W: state.W, D: state.D, T: state.T, S: state.ap === 'circle' ? 1 : state.S, n: state.n, drop: state.ap === 'drop' };
-  const o = { size, thick, base: $('pbase').checked, fine: $('pres').value === 'fine' };
-  const bs = ['pboth', 'pstl', 'p3mf'].map($), st = $('pstatus');
-  if (worker) worker.terminate();
-  worker = new Worker(new URL('./shells-print-worker.js', import.meta.url), { type: 'module' });
-  bs.forEach(b => { b.disabled = true; });
-  st.replaceChildren(t('building the solid', 'costruzione del solido'));
-  const bar = document.createElement('progress'); bar.max = 1; bar.value = 0; st.appendChild(bar);
-  const end = () => { bs.forEach(b => { b.disabled = false; }); worker.terminate(); worker = null; };
-  worker.onmessage = ({ data }) => {
-    if (data.progress !== undefined) { bar.value = data.progress; return; }
-    if (data.error) { st.textContent = t('failed: ', 'non riuscito: ') + data.error; return end(); }
-    const url = URL.createObjectURL(new Blob([data.bytes], { type: 'application/octet-stream' }));
-    const a = document.createElement('a'); a.href = url; a.download = data.file;
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 60000);
-    const mb = (data.bytes.length / 2 ** 20).toFixed(1), k = (data.tris / 1000).toFixed(0);
-    st.textContent = `${data.file}: ${k} k ${t('triangles', 'triangoli')}, ${data.dims.map(x => x.toFixed(1)).join(' × ')} mm, ${mb} MB` +
-      (data.onLip ? t(', laid on its aperture', ', posata sull\'apertura') : '');
-    end();
-  };
-  worker.onerror = e => { st.textContent = t('failed: ', 'non riuscito: ') + (e.message || 'worker'); end(); };
-  worker.postMessage({ p, o, what });
+// the solid is built by a worker (src/shells-print.js through src/print), so
+// that the page goes on turning meanwhile
+function printSetup() {
+  const shellOf = () => ({ W: state.W, D: state.D, T: state.T, S: state.ap === 'circle' ? 1 : state.S, n: state.n, drop: state.ap === 'drop' });
+  const opts = o => ({ size: o.size, thick: o.thick, base: o.base, fine: o.res === 'fine' });
+  printPanel($('print'), {
+    size: { value: 80, min: 20, max: 300, what: { en: 'largest dimension', it: 'lato maggiore' } },
+    fields: [
+      { key: 'thick', label: { en: 'wall, mm', it: 'parete, mm' }, value: 1.6, min: 0.8, max: 6, step: 0.1 },
+      { key: 'base', type: 'check', label: { en: 'flat base', it: 'base piana' }, value: true },
+      { key: 'res', type: 'select', label: { en: 'resolution', it: 'risoluzione' }, value: 'draft',
+        options: [{ value: 'draft', en: 'draft', it: 'bozza' }, { value: 'fine', en: 'fine', it: 'alta' }] },
+    ],
+    worker: { module: new URL('./shells-print.js', import.meta.url).href, fn: 'printMesh', args: o => [shellOf(), opts(o)] },
+    name: o => fileName(shellOf(), opts(o)),
+    head: 'binary STL, millimetres, shell after Raup (1966)',
+    object: 'shell',
+    note: info => (info.onLip ? t(', laid on its aperture', ', posata sull\'apertura') : ''),
+  });
 }
 
 function init() {
@@ -333,9 +322,7 @@ function init() {
   $('ap').addEventListener('change', e => set({ ap: e.target.value, preset: '' }));
   $('n').addEventListener('input', e => set({ n: +e.target.value, preset: '' }));
   $('golden').addEventListener('click', () => choose('golden'));
-  $('pboth').addEventListener('click', () => printFile('zip'));
-  $('pstl').addEventListener('click', () => printFile('stl'));
-  $('p3mf').addEventListener('click', () => printFile('3mf'));
+  printSetup();
   $('view').addEventListener('click', () => { controls.reset(); camera.position.set(-2.2, -1.85, 1.45); controls.target.set(0, 0, 0); dirty = true; });
   const sp = $('space');
   sp.addEventListener('pointerdown', e => { sp.setPointerCapture(e.pointerId); spacePointer(e); });
