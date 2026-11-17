@@ -1,0 +1,30 @@
+/* the layout shared by the pages of the group Fantasy */
+main.form { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: start; }
+@media (max-width: 860px) { main.form { grid-template-columns: minmax(0, 1fr); } }
+main.form figcaption { min-height: 0; }
+#stage canvas { border-radius: 6px; touch-action: none; display: block; }
+.about h2 { font-weight: 600; font-size: 18px; margin: 0 0 8px; color: var(--accent); }
+.about p { color: var(--ink-soft); margin: 0 0 12px; font-size: 15px; }
+.about .formula { overflow-x: auto; overflow-y: hidden; padding: 4px 0 10px; color: var(--ink); }
+.plane { width: 100%; height: auto; display: block; background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; }
+.stats { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 10px 0; font: 13px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.stats b { font-weight: 500; color: var(--accent); }
+#print { margin-top: 28px; }
+#print h2 { font-weight: 600; font-size: 22px; margin: 0 0 6px; color: var(--accent); }
+#print .lede { max-width: 80ch; font-size: 15px; }
+footer a { color: inherit; }
+/* Escher monster tiles */
+#tiling path { stroke: var(--ground); stroke-width: 1.2; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+#tiling .t0 { fill: var(--accent-2); } #tiling .t1 { fill: var(--lilac); } #tiling .t2 { fill: var(--accent); }
+#tiling .goal { fill: none; stroke: var(--gold); stroke-width: 2; stroke-dasharray: 5 4; }
+#tiling .tile { fill: none; stroke: var(--ink); stroke-width: 2.2; }
+#tiling .corner { fill: var(--gold); }
+/* the maps of the spherical labyrinth */
+#maps .disc { fill: var(--ground); stroke: var(--rule); }
+#maps .wall { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; }
+#maps .way { fill: none; stroke: var(--gold); stroke-width: 2.4; stroke-linejoin: round; }
+#maps .start { fill: var(--gold); } #maps .goal { fill: var(--ink); }
+/* the knot of the elven amulets */
+#knot .edge { stroke: var(--rule); stroke-width: 1; vector-effect: non-scaling-stroke; stroke-dasharray: 3 3; }
+#knot .under { stroke: var(--panel); fill: none; stroke-linecap: butt; }
+#knot .strand { stroke: var(--accent); fill: none; stroke-linecap: round; }

@@ -1,0 +1,21 @@
+/* Monsters typed by mathematics: what biomorphs.css does not have */
+.cardcol .card { margin-top: 0; }
+.cardcol { display: grid; justify-items: center; }
+.card .type { display: inline-block; border-radius: 99px; padding: 1px 8px; background: var(--c2); color: #fff; font-size: 11px; margin-left: 4px; }
+.card .pic canvas { aspect-ratio: 1.3; }
+.card .math { color: var(--ink-soft); margin: 2px 0 6px; }
+.card .vs { margin: 6px 0; color: var(--ink-soft); }
+.card .vs b { color: var(--ink); font-weight: 500; }
+.inline { display: flex; align-items: end; gap: 6px; }
+.types h2 { font-weight: 600; font-size: 22px; margin: 28px 0 8px; color: var(--accent); }
+.tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 10px 26px; }
+.tgrid h3 { font-size: 16px; font-weight: 600; margin: 8px 0 2px; }
+.tgrid p, .types .note { font-size: 15px; color: var(--ink-soft); margin: 0 0 6px; }
+.types .note { max-width: 80ch; margin-top: 12px; }
+#types button { min-width: 0; padding-left: 9px; padding-right: 9px; }
+@media (max-width: 520px) { #types { flex-wrap: wrap; } #types button { margin-bottom: 2px; } }
+body.thumb > :not(main), body.thumb .cardcol, body.thumb figcaption, body.thumb .hint { display: none !important; }
+body.thumb { margin: 0; padding: 0; max-width: none; }
+body.thumb main.bio { display: block; margin: 0; padding: 0; }
+body.thumb main.bio figure { margin: 0; }
+body.thumb #stage { border: 0; background: none; border-radius: 0; }

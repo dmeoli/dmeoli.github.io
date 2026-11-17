@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forms-group" content="anime">
+<title>Giant robots</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [["\\(", "\\)"]] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<style>
+main.rb { align-items: start; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+@media (max-width: 860px) { main.rb { grid-template-columns: minmax(0, 1fr); } }
+main.rb figcaption { min-height: 0; }
+#stage canvas { border-radius: 8px; touch-action: none; background: var(--panel); }
+.inline { display: inline-flex; gap: 6px; }
+.controls input[type=number] { width: 6.5em; }
+.facts { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 14px; margin: 0 0 14px; font-size: 14px; }
+.facts dt { font: 11px 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-soft); padding-top: 3px; }
+.facts dd { margin: 0; color: var(--ink-soft); }
+.facts b { color: var(--accent); font-weight: 600; }
+.sib { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.sib button { padding: 0; border-radius: 8px; background: var(--panel); display: grid; justify-items: center; }
+.sib canvas { width: 100%; height: auto; display: block; }
+.sib small { font: 10px 'IBM Plex Mono', monospace; color: var(--ink-soft); padding-bottom: 3px; }
+.note { font-size: 15px; color: var(--ink-soft); max-width: 80ch; }
+#print { margin-top: 28px; }
+#print h2 { font-weight: 600; font-size: 22px; margin: 0 0 6px; color: var(--accent); }
+#print .lede { max-width: 80ch; font-size: 15px; }
+</style>
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="lagrangian-dual.html"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="simplex-path.html"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a> · <a href="packing-mip.html"><span data-l="en">Packing</span><span data-l="it" lang="it">Impaccamento</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attenzione</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Misture di esperti</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Hebbiano</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html">Talk</a><br><span class="group"><span data-l="en">Forms</span><span data-l="it" lang="it">Forme</span></span> <!--forms-nav--><a href="loss-landscape.html"><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a> · <a href="shells.html"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></a> · <a href="phyllotaxis.html"><span data-l="en">Phyllotaxis</span><span data-l="it" lang="it">Fillotassi</span></a> · <a href="radiolarian.html"><span data-l="en">Radiolarians</span><span data-l="it" lang="it">Radiolari</span></a> · <a href="coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a> · <a href="plants.html"><span data-l="en">Plants</span><span data-l="it" lang="it">Piante</span></a> · <a href="snowflakes.html"><span data-l="en">Snowflakes</span><span data-l="it" lang="it">Fiocchi di neve</span></a> · <a href="batman.html">Batman</a> · <a href="minimal-surfaces.html"><span data-l="en">Minimal surfaces</span><span data-l="it" lang="it">Superfici minime</span></a> · <a href="knots.html"><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></a> · <a href="attractors.html"><span data-l="en">Attractors</span><span data-l="it" lang="it">Attrattori</span></a> · <a href="polytopes.html"><span data-l="en">4D polytopes</span><span data-l="it" lang="it">Politopi 4D</span></a> · <a href="chladni.html">Chladni</a> · <a href="equations.html"><span data-l="en">Equations</span><span data-l="it" lang="it">Equazioni</span></a> · <a href="dice.html"><span data-l="en">Fair dice</span><span data-l="it" lang="it">Dadi equi</span></a> · <a href="hat.html"><span data-l="en">The hat</span><span data-l="it" lang="it">Il cappello</span></a> · <a href="fractals.html"><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></a> · <a href="lithophane.html"><span data-l="en">Lithophanes</span><span data-l="it" lang="it">Litofanie</span></a> · <a href="monsters.html"><span data-l="en">Monsters</span><span data-l="it" lang="it">Mostri</span></a> · <a href="monster-cards.html"><span data-l="en">Monster cards</span><span data-l="it" lang="it">Carte dei mostri</span></a> · <a href="dragon-curve.html"><span data-l="en">Dragon curve</span><span data-l="it" lang="it">Curva del drago</span></a> · <a href="robots.html" aria-current="page"><span data-l="en">Robots</span><span data-l="it" lang="it">Robot</span></a> · <a href="magic-circles.html"><span data-l="en">Magic circles</span><span data-l="it" lang="it">Cerchi magici</span></a> · <a href="origami.html">Origami</a> · <a href="wagara.html"><span data-l="en">Japanese patterns</span><span data-l="it" lang="it">Motivi giapponesi</span></a> · <a href="twisty.html"><span data-l="en">Twisty puzzles</span><span data-l="it" lang="it">Rompicapi a rotazione</span></a> · <a href="wang-dungeon.html"><span data-l="en">Wang dungeon</span><span data-l="it" lang="it">Dungeon di Wang</span></a> · <a href="mana-crystals.html"><span data-l="en">Wulff crystals</span><span data-l="it" lang="it">Cristalli di Wulff</span></a> · <a href="dragon-eggs.html"><span data-l="en">Dragon eggs</span><span data-l="it" lang="it">Uova di drago</span></a> · <a href="galton-tower.html"><span data-l="en">Galton tower</span><span data-l="it" lang="it">Torre di Galton</span></a> · <a href="escher-monsters.html"><span data-l="en">Escher monsters</span><span data-l="it" lang="it">Mostri alla Escher</span></a> · <a href="minotaur-sphere.html"><span data-l="en">Sphere labyrinth</span><span data-l="it" lang="it">Labirinto sferico</span></a> · <a href="elven-knots.html"><span data-l="en">Elven amulets</span><span data-l="it" lang="it">Amuleti elfici</span></a> · <a href="slime-den.html"><span data-l="en">Slime den</span><span data-l="it" lang="it">Tana degli slime</span></a> · <a href="biomorphs.html"><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></a><!--/forms-nav--></nav>
+<header>
+  <h1><span data-l="en">Giant robots from a shape grammar</span><span data-l="it" lang="it">Robot giganti da una grammatica di forme</span></h1>
+  <p class="lede" data-l="en">Each seed gives a different robot. A grammar rewrites the robot into legs,
+  pelvis, torso, head and arms, and these into armour, joints and details, choosing among a few
+  alternatives at every rule; every part is a superquadric, the solid that goes from a box to a
+  cylinder and an ellipsoid as two exponents change, and the left side is the mirror image of the
+  right one.</p>
+  <p class="lede" data-l="it" lang="it">Ogni seme dà un robot diverso. Una grammatica riscrive il
+  robot in gambe, bacino, torso, testa e braccia, e queste in corazza, giunti e dettagli, scegliendo
+  fra poche alternative a ogni regola; ogni parte è una superquadrica, il solido che passa da una
+  scatola a un cilindro e a un ellissoide al variare di due esponenti, e il lato sinistro è
+  l'immagine speculare del destro.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span data-l="en">seed</span><span data-l="it" lang="it">seme</span>
+      <span class="inline"><button id="prev" type="button">&minus;</button><input id="seed" type="number" min="0" max="999999" step="1" value="14"><button id="next" type="button">+</button><button id="random" type="button"><span data-l="en">Random</span><span data-l="it" lang="it">A caso</span></button></span></label>
+    <label class="check"><span data-l="en">turning</span><span data-l="it" lang="it">in rotazione</span><input id="spin" type="checkbox" checked></label>
+  </div>
+</section>
+<main class="rb">
+  <figure>
+    <figcaption><span data-l="en">The robot of the seed: frame in grey, armour in violet, joints dark, lights in gold; drag to turn.</span><span data-l="it" lang="it">Il robot del seme: telaio in grigio, corazza in viola, giunti scuri, luci in oro; trascina per ruotare.</span></figcaption>
+    <div id="stage" class="stage"></div>
+  </figure>
+  <div>
+    <h2 style="font-size:18px;margin:0 0 6px;color:var(--accent)"><span data-l="en">Its derivation</span><span data-l="it" lang="it">La sua derivazione</span></h2>
+    <dl class="facts" id="derivation"></dl>
+    <h2 style="font-size:18px;margin:14px 0 6px;color:var(--accent)"><span data-l="en">The next seeds</span><span data-l="it" lang="it">I semi successivi</span></h2>
+    <div class="sib" id="siblings"></div>
+  </div>
+</main>
+<section class="note">
+  <p data-l="en">Barr (Superquadrics and angle-preserving transformations, <i>IEEE Computer Graphics
+  and Applications</i> 1, 1981) defined the superquadric by the inside-outside function
+  \[ F(x, y, z) = \Big( \big|\tfrac{x}{a}\big|^{2/\varepsilon_2} + \big|\tfrac{y}{b}\big|^{2/\varepsilon_2} \Big)^{\varepsilon_2/\varepsilon_1} + \big|\tfrac{z}{c}\big|^{2/\varepsilon_1}, \]
+  which is smaller than 1 inside; \(\varepsilon_1\) shapes the profile along the axis and
+  \(\varepsilon_2\) the section across it, both near 0 giving a box, both 1 an ellipsoid, and
+  \(\varepsilon_1\) near 0 with \(\varepsilon_2 = 1\) a cylinder. The solid of the robot is the
+  union of its parts, i.e., the smallest of the functions \((F^{\varepsilon_1/2} - 1)\min(a, b, c)\)
+  of the parts, whose zero set is traced by marching tetrahedra. The grammar follows the shape
+  grammars of Stiny and Gips (1972), in which rules replace a shape by an arrangement of smaller ones,
+  in the form that Müller, Wonka, Haegler, Ulmer and Van Gool (Procedural modeling of buildings,
+  <i>ACM Transactions on Graphics</i> 25, 2006) gave them for buildings: a nonterminal is a box with a
+  label, and its rule places the boxes of its parts; here each rule has two to four alternatives, the
+  seed picks one at every rule and draws the proportions, and the symmetry rule copies the left side
+  onto the right. With 3 · 3 · 3 · 3 · 4 · 3 · 2 · 3 = 5832 derivations and continuous proportions,
+  two seeds rarely give the same robot.</p>
+  <p data-l="it" lang="it">Barr (Superquadrics and angle-preserving transformations, <i>IEEE Computer
+  Graphics and Applications</i> 1, 1981) ha definito la superquadrica con la funzione dentro-fuori
+  \[ F(x, y, z) = \Big( \big|\tfrac{x}{a}\big|^{2/\varepsilon_2} + \big|\tfrac{y}{b}\big|^{2/\varepsilon_2} \Big)^{\varepsilon_2/\varepsilon_1} + \big|\tfrac{z}{c}\big|^{2/\varepsilon_1}, \]
+  che è minore di 1 all'interno; \(\varepsilon_1\) dà forma al profilo lungo l'asse e
+  \(\varepsilon_2\) alla sezione, entrambi vicini a 0 danno una scatola, entrambi 1 un ellissoide, e
+  \(\varepsilon_1\) vicino a 0 con \(\varepsilon_2 = 1\) un cilindro. Il solido del robot è
+  l'unione delle sue parti, cioè la più piccola delle funzioni \((F^{\varepsilon_1/2} - 1)\min(a, b, c)\)
+  delle parti, il cui insieme di zeri si traccia con i tetraedri marcianti. La grammatica segue le
+  grammatiche di forme di Stiny e Gips (1972), in cui le regole sostituiscono una forma con una
+  disposizione di forme più piccole, nella versione che Müller, Wonka, Haegler, Ulmer e Van Gool
+  (Procedural modeling of buildings, <i>ACM Transactions on Graphics</i> 25, 2006) ne hanno dato per gli
+  edifici: un non terminale è una scatola con un'etichetta, e la sua regola dispone le scatole delle sue
+  parti; qui ogni regola ha da due a quattro alternative, il seme ne sceglie una a ogni regola ed
+  estrae le proporzioni, e la regola di simmetria copia il lato sinistro sul destro. Con
+  3 · 3 · 3 · 3 · 4 · 3 · 2 · 3 = 5832 derivazioni e proporzioni continue, due semi danno di rado lo
+  stesso robot.</p>
+</section>
+<section id="print">
+  <h2 class="owner-only"><span data-l="en">Download for 3D printing</span><span data-l="it" lang="it">Scarica per la stampa 3D</span></h2>
+  <h2 class="public-only"><span data-l="en">A 3D print of this robot</span><span data-l="it" lang="it">Una stampa 3D di questo robot</span></h2>
+  <p class="lede public-only" data-l="en">The robot above can be ordered as a 3D print, as one figure
+  on a base or as four parts (body, head and two arms) joined by pins, so that the arms and the head
+  turn. The request sends the link with the seed, which gives the same robot again.</p>
+  <p class="lede public-only" data-l="it" lang="it">Il robot qui sopra si può ordinare come stampa 3D,
+  come una figura su una base o come quattro pezzi (corpo, testa e due braccia) uniti da perni, così che
+  le braccia e la testa girino. La richiesta manda il link con il seme, che dà di nuovo lo stesso
+  robot.</p>
+  <p class="lede owner-only" data-l="en">One body: a single closed solid as tall as the size, standing
+  on an oval plate into which the feet are sunk (or cut flat underneath without the plate). Four parts:
+  the body, the head and two arms side by side on the bed, as separate solids. The arms are cut 0.6 mm
+  outside the torso and carry a pin of the given radius on the axis of the shoulder, which enters a hole
+  in the torso; the head sits on a pin that rises from the neck. The holes are wider than the pins by
+  the clearance: 0.15 to 0.25 mm gives a joint that turns and holds its pose on most FDM printers, 0.3
+  mm or more a loose one, and less than 0.1 mm usually needs sanding. The arms are printed lying on
+  their side with the pin up, the body and the head standing; arms held out and shoulder plates
+  overhang, so that tree supports are usually needed under them.</p>
+  <p class="lede owner-only" data-l="it" lang="it">Un corpo: un solo solido chiuso alto quanto la
+  dimensione, in piedi su una base ovale in cui affondano i piedi (o tagliato in piano sotto, senza
+  base). Quattro pezzi: il corpo, la testa e le due braccia affiancati sul piano, come solidi separati.
+  Le braccia sono tagliate 0.6 mm fuori dal torso e portano un perno del raggio dato sull'asse della
+  spalla, che entra in un foro nel torso; la testa sta su un perno che sale dal collo. I fori sono più
+  larghi dei perni del gioco: da 0.15 a 0.25 mm dà un giunto che gira e tiene la posa sulla maggior parte
+  delle stampanti FDM, da 0.3 mm in su un giunto lasco, e meno di 0.1 mm di solito richiede di
+  carteggiare. Le braccia si stampano coricate sul fianco con il perno in alto, il corpo e la testa in
+  piedi; braccia scostate e spallacci sporgono, così che di solito servono supporti ad albero sotto di
+  essi.</p>
+</section>
+<script type="module" src="src/forms/robots/robots.js"></script>
+</body>
+</html>

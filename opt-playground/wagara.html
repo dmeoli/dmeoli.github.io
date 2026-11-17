@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forms-group" content="anime">
+<title>Japanese patterns</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<style>
+main.wg { align-items: start; }
+@media (max-width: 860px) { main.wg { grid-template-columns: minmax(0, 1fr); } }
+main.wg figcaption { min-height: 0; }
+#flat { width: 100%; height: auto; display: block; border: 1px solid var(--rule); border-radius: 8px; image-rendering: auto; }
+#stage canvas { border-radius: 8px; touch-action: none; }
+.facts { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 14px; margin: 14px 0; font-size: 15px; }
+.facts dt { font: 11px 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-soft); padding-top: 4px; }
+.facts dd { margin: 0; }
+.note { font-size: 15px; color: var(--ink-soft); max-width: 80ch; }
+#print { margin-top: 28px; }
+#print h2 { font-weight: 600; font-size: 22px; margin: 0 0 6px; color: var(--accent); }
+#print .lede { max-width: 80ch; font-size: 15px; }
+</style>
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="lagrangian-dual.html"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="simplex-path.html"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a> · <a href="packing-mip.html"><span data-l="en">Packing</span><span data-l="it" lang="it">Impaccamento</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attenzione</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Misture di esperti</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Hebbiano</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html">Talk</a><br><span class="group"><span data-l="en">Forms</span><span data-l="it" lang="it">Forme</span></span> <!--forms-nav--><a href="loss-landscape.html"><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a> · <a href="shells.html"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></a> · <a href="phyllotaxis.html"><span data-l="en">Phyllotaxis</span><span data-l="it" lang="it">Fillotassi</span></a> · <a href="radiolarian.html"><span data-l="en">Radiolarians</span><span data-l="it" lang="it">Radiolari</span></a> · <a href="coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a> · <a href="plants.html"><span data-l="en">Plants</span><span data-l="it" lang="it">Piante</span></a> · <a href="snowflakes.html"><span data-l="en">Snowflakes</span><span data-l="it" lang="it">Fiocchi di neve</span></a> · <a href="batman.html">Batman</a> · <a href="minimal-surfaces.html"><span data-l="en">Minimal surfaces</span><span data-l="it" lang="it">Superfici minime</span></a> · <a href="knots.html"><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></a> · <a href="attractors.html"><span data-l="en">Attractors</span><span data-l="it" lang="it">Attrattori</span></a> · <a href="polytopes.html"><span data-l="en">4D polytopes</span><span data-l="it" lang="it">Politopi 4D</span></a> · <a href="chladni.html">Chladni</a> · <a href="equations.html"><span data-l="en">Equations</span><span data-l="it" lang="it">Equazioni</span></a> · <a href="dice.html"><span data-l="en">Fair dice</span><span data-l="it" lang="it">Dadi equi</span></a> · <a href="hat.html"><span data-l="en">The hat</span><span data-l="it" lang="it">Il cappello</span></a> · <a href="fractals.html"><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></a> · <a href="lithophane.html"><span data-l="en">Lithophanes</span><span data-l="it" lang="it">Litofanie</span></a> · <a href="monsters.html"><span data-l="en">Monsters</span><span data-l="it" lang="it">Mostri</span></a> · <a href="monster-cards.html"><span data-l="en">Monster cards</span><span data-l="it" lang="it">Carte dei mostri</span></a> · <a href="dragon-curve.html"><span data-l="en">Dragon curve</span><span data-l="it" lang="it">Curva del drago</span></a> · <a href="robots.html"><span data-l="en">Robots</span><span data-l="it" lang="it">Robot</span></a> · <a href="magic-circles.html"><span data-l="en">Magic circles</span><span data-l="it" lang="it">Cerchi magici</span></a> · <a href="origami.html">Origami</a> · <a href="wagara.html" aria-current="page"><span data-l="en">Japanese patterns</span><span data-l="it" lang="it">Motivi giapponesi</span></a> · <a href="twisty.html"><span data-l="en">Twisty puzzles</span><span data-l="it" lang="it">Rompicapi a rotazione</span></a> · <a href="wang-dungeon.html"><span data-l="en">Wang dungeon</span><span data-l="it" lang="it">Dungeon di Wang</span></a> · <a href="mana-crystals.html"><span data-l="en">Wulff crystals</span><span data-l="it" lang="it">Cristalli di Wulff</span></a> · <a href="dragon-eggs.html"><span data-l="en">Dragon eggs</span><span data-l="it" lang="it">Uova di drago</span></a> · <a href="galton-tower.html"><span data-l="en">Galton tower</span><span data-l="it" lang="it">Torre di Galton</span></a> · <a href="escher-monsters.html"><span data-l="en">Escher monsters</span><span data-l="it" lang="it">Mostri alla Escher</span></a> · <a href="minotaur-sphere.html"><span data-l="en">Sphere labyrinth</span><span data-l="it" lang="it">Labirinto sferico</span></a> · <a href="elven-knots.html"><span data-l="en">Elven amulets</span><span data-l="it" lang="it">Amuleti elfici</span></a> · <a href="slime-den.html"><span data-l="en">Slime den</span><span data-l="it" lang="it">Tana degli slime</span></a> · <a href="biomorphs.html"><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></a><!--/forms-nav--></nav>
+<header>
+  <h1><span data-l="en">Japanese patterns</span><span data-l="it" lang="it">Motivi giapponesi</span></h1>
+  <p class="lede" data-l="en">The traditional patterns of Japanese textiles (<i>wagara</i>), many of
+  which are also stitched in <i>sashiko</i>, repeat in two directions, and each of them has one of the 17
+  wallpaper groups as its group of symmetries. Here every pattern is generated from that group: a motif of
+  one or two segments in a fundamental domain is copied by the rotations and reflections of the group and
+  by the translations of its lattice, and the result becomes a tile in relief.</p>
+  <p class="lede" data-l="it" lang="it">I motivi tradizionali dei tessuti giapponesi (<i>wagara</i>),
+  molti dei quali si cuciono anche nel <i>sashiko</i>, si ripetono in due direzioni, e ognuno ha come
+  gruppo di simmetrie uno dei 17 gruppi cristallografici piani. Qui ogni motivo è generato da quel gruppo:
+  un tratto di uno o due segmenti in un dominio fondamentale viene copiato dalle rotazioni e riflessioni del
+  gruppo e dalle traslazioni del suo reticolo, e il risultato diventa una piastrella in rilievo.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span data-l="en">pattern</span><span data-l="it" lang="it">motivo</span><select id="pattern"></select></label>
+    <label><span data-l="en">repeats across</span><span data-l="it" lang="it">ripetizioni</span><input id="repeats" type="range" min="1" max="8" step="1" value="3"><output id="repeatsout">3</output></label>
+    <label id="ringslab"><span data-l="en">arcs per fan</span><span data-l="it" lang="it">archi per ventaglio</span><input id="rings" type="range" min="2" max="7" step="1" value="4"><output id="ringsout">4</output></label>
+    <label id="innerlab"><span data-l="en">inner hexagon</span><span data-l="it" lang="it">esagono interno</span><input id="inner" type="range" min="0" max="0.9" step="0.02" value="0.72"><output id="innerout">0.72</output></label>
+    <label><span data-l="en">shape</span><span data-l="it" lang="it">forma</span><select id="shape"><option value="tile">tile</option><option value="square">square</option><option value="round">round</option></select></label>
+    <label class="check"><span data-l="en">cell and motif</span><span data-l="it" lang="it">cella e motivo</span><input id="cell" type="checkbox" checked></label>
+  </div>
+</section>
+<main class="wg">
+  <figure>
+    <figcaption><span data-l="en">Four tiles side by side (dashed), which meet without a seam. In gold, a cell of the lattice, the fundamental domain (shaded) and the motif in it, from which the group builds everything else.</span><span data-l="it" lang="it">Quattro piastrelle affiancate (tratteggio), che si uniscono senza giunta. In oro, una cella del reticolo, il dominio fondamentale (ombreggiato) e il tratto in esso, da cui il gruppo costruisce tutto il resto.</span></figcaption>
+    <canvas id="flat" width="420" height="420"></canvas>
+    <dl class="facts" id="facts"></dl>
+  </figure>
+  <figure>
+    <figcaption><span data-l="en">The tile that is printed; drag to turn.</span><span data-l="it" lang="it">La piastrella che si stampa; trascina per ruotare.</span></figcaption>
+    <div id="stage" class="stage"></div>
+  </figure>
+</main>
+<section class="note">
+  <p data-l="en">A wallpaper group is a group of isometries of the plane whose translations form a
+  lattice; Fedorov (1891) and Pólya (1924) proved that there are 17 of them up to equivalence. The names
+  used here are those of the International Tables (p6m, p4m, pmg, cm) and, in brackets, Conway's orbifold
+  notation, in which a star marks the mirrors, the digits after it the orders of the rotations whose
+  centres lie on mirrors, and a cross a glide reflection (J. H. Conway, H. Burgiel and C. Goodman-Strauss,
+  <i>The Symmetries of Things</i>, A K Peters, 2008; D. Schattschneider, The plane symmetry groups: their
+  recognition and notation, <i>American Mathematical Monthly</i> 85, 1978). Asanoha, kikkō and kagome share
+  the group p6m of the triangular lattice and differ only in the motif: half an edge of the triangles and
+  a spoke to their centres, half a side of a hexagon, half a side of the small triangles of the weave.
+  Seigaiha is the exception, since its fans overlap: the copies of the fan are placed by the group cm and
+  each point takes the arcs of the lowest fan that covers it.</p>
+  <p data-l="it" lang="it">Un gruppo cristallografico piano è un gruppo di isometrie del piano le cui
+  traslazioni formano un reticolo; Fedorov (1891) e Pólya (1924) hanno dimostrato che sono 17 a meno di
+  equivalenze. I nomi usati qui sono quelli delle International Tables (p6m, p4m, pmg, cm) e, fra
+  parentesi, la notazione orbifold di Conway, in cui una stella indica gli specchi, le cifre dopo di essa
+  gli ordini delle rotazioni con il centro sugli specchi, e una croce una glissoriflessione (J. H. Conway,
+  H. Burgiel e C. Goodman-Strauss, <i>The Symmetries of Things</i>, A K Peters, 2008; D. Schattschneider,
+  The plane symmetry groups: their recognition and notation, <i>American Mathematical Monthly</i> 85,
+  1978). Asanoha, kikkō e kagome hanno lo stesso gruppo p6m del reticolo triangolare e differiscono solo
+  nel tratto: mezzo lato dei triangoli e un raggio verso i loro centri, mezzo lato di un esagono, mezzo
+  lato dei triangolini dell'intreccio. Seigaiha fa eccezione, perché i suoi ventagli si sovrappongono: le
+  copie del ventaglio sono disposte dal gruppo cm e ogni punto prende gli archi del ventaglio più basso
+  che lo copre.</p>
+</section>
+<section id="print">
+  <h2 class="owner-only"><span data-l="en">Download for 3D printing</span><span data-l="it" lang="it">Scarica per la stampa 3D</span></h2>
+  <h2 class="public-only"><span data-l="en">A 3D print of this tile</span><span data-l="it" lang="it">Una stampa 3D di questa piastrella</span></h2>
+  <p class="lede public-only" data-l="en">The tile above can be ordered as a 3D print: a seamless tile
+  (several of them laid side by side continue the pattern), a square with a frame, or a round coaster,
+  in the size and colors you prefer. The request sends the link to the pattern with its settings.</p>
+  <p class="lede public-only" data-l="it" lang="it">La piastrella qui sopra si può ordinare come stampa
+  3D: una piastrella continua (più piastrelle affiancate continuano il motivo), un quadrato con cornice
+  o un sottobicchiere tondo, nella dimensione e nei colori che preferisci. La richiesta manda il link al
+  motivo con le sue impostazioni.</p>
+  <p class="lede owner-only" data-l="en">One closed solid: a flat plate with the lines raised on it, their
+  flanks sloping over 0.35 mm. The seamless tile is a whole number of repeating rectangles of the pattern,
+  so that its edges match those of a copy placed beside it; its height follows from the width and the
+  lattice, and is close to it. The frame is used by the square and the round shapes. It prints flat
+  without supports; a filament change at the top of the plate gives the lines a color of their own.</p>
+  <p class="lede owner-only" data-l="it" lang="it">Un solo solido chiuso: una piastra piatta con le linee
+  in rilievo, i fianchi inclinati su 0.35 mm. La piastrella continua è un numero intero di rettangoli che
+  ripetono il motivo, così che i suoi bordi combaciano con quelli di una copia affiancata; la sua altezza
+  segue dalla larghezza e dal reticolo, ed è vicina a essa. La cornice vale per il quadrato e per il
+  tondo. Si stampa in piano senza supporti; un cambio di filamento in cima alla piastra dà alle linee un
+  colore proprio.</p>
+</section>
+<script type="module" src="src/forms/wagara/wagara.js"></script>
+</body>
+</html>

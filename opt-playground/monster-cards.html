@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forms-group" content="anime">
+<title>Monster cards as lithophanes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<link rel="stylesheet" href="src/forms/biomorphs/biomorphs.css">
+<link rel="stylesheet" href="src/forms/monsters/monsters.css">
+<style>
+main.cards { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; gap: 22px; }
+@media (max-width: 760px) { main.cards { grid-template-columns: minmax(0, 1fr); } }
+main.cards canvas { width: 100%; max-width: 380px; aspect-ratio: 63 / 88; display: block; margin: 0 auto; border-radius: 10px; box-shadow: 0 4px 16px rgba(30, 10, 50, .25); image-rendering: auto; }
+#lit { background: #000; }
+#cap { margin: 0 0 12px; }
+#cap b { color: var(--accent); font-weight: 600; font-size: 19px; }
+.stats { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 14px 0 0; }
+.stats dd { margin: 0; }
+.stats dd b { font-weight: 500; color: var(--accent); }
+.rules, .inv { max-width: 80ch; }
+.rules h2, .inv h2 { font-weight: 600; font-size: 22px; margin: 28px 0 6px; color: var(--accent); }
+.rules p, .inv p { font-size: 15px; color: var(--ink-soft); }
+.rules ol { font-size: 15px; color: var(--ink-soft); padding-left: 1.4em; }
+body.thumb > :not(main), body.thumb figcaption { display: none !important; }
+body.thumb { margin: 0; padding: 0; max-width: none; }
+body.thumb main.cards { display: flex; justify-content: center; align-items: center; gap: 4vw; margin: 0; padding: 4vh 0; }
+body.thumb main.cards figure { margin: 0; }
+body.thumb main.cards canvas { height: 88vh; width: auto; max-width: none; }
+</style>
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="lagrangian-dual.html"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="simplex-path.html"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a> · <a href="packing-mip.html"><span data-l="en">Packing</span><span data-l="it" lang="it">Impaccamento</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attenzione</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Misture di esperti</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Hebbiano</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html">Talk</a><br><span class="group"><span data-l="en">Forms</span><span data-l="it" lang="it">Forme</span></span> <!--forms-nav--><a href="loss-landscape.html"><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a> · <a href="shells.html"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></a> · <a href="phyllotaxis.html"><span data-l="en">Phyllotaxis</span><span data-l="it" lang="it">Fillotassi</span></a> · <a href="radiolarian.html"><span data-l="en">Radiolarians</span><span data-l="it" lang="it">Radiolari</span></a> · <a href="coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a> · <a href="plants.html"><span data-l="en">Plants</span><span data-l="it" lang="it">Piante</span></a> · <a href="snowflakes.html"><span data-l="en">Snowflakes</span><span data-l="it" lang="it">Fiocchi di neve</span></a> · <a href="batman.html">Batman</a> · <a href="minimal-surfaces.html"><span data-l="en">Minimal surfaces</span><span data-l="it" lang="it">Superfici minime</span></a> · <a href="knots.html"><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></a> · <a href="attractors.html"><span data-l="en">Attractors</span><span data-l="it" lang="it">Attrattori</span></a> · <a href="polytopes.html"><span data-l="en">4D polytopes</span><span data-l="it" lang="it">Politopi 4D</span></a> · <a href="chladni.html">Chladni</a> · <a href="equations.html"><span data-l="en">Equations</span><span data-l="it" lang="it">Equazioni</span></a> · <a href="dice.html"><span data-l="en">Fair dice</span><span data-l="it" lang="it">Dadi equi</span></a> · <a href="hat.html"><span data-l="en">The hat</span><span data-l="it" lang="it">Il cappello</span></a> · <a href="fractals.html"><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></a> · <a href="lithophane.html"><span data-l="en">Lithophanes</span><span data-l="it" lang="it">Litofanie</span></a> · <a href="monsters.html"><span data-l="en">Monsters</span><span data-l="it" lang="it">Mostri</span></a> · <a href="monster-cards.html" aria-current="page"><span data-l="en">Monster cards</span><span data-l="it" lang="it">Carte dei mostri</span></a> · <a href="dragon-curve.html"><span data-l="en">Dragon curve</span><span data-l="it" lang="it">Curva del drago</span></a> · <a href="robots.html"><span data-l="en">Robots</span><span data-l="it" lang="it">Robot</span></a> · <a href="magic-circles.html"><span data-l="en">Magic circles</span><span data-l="it" lang="it">Cerchi magici</span></a> · <a href="origami.html">Origami</a> · <a href="wagara.html"><span data-l="en">Japanese patterns</span><span data-l="it" lang="it">Motivi giapponesi</span></a> · <a href="twisty.html"><span data-l="en">Twisty puzzles</span><span data-l="it" lang="it">Rompicapi a rotazione</span></a> · <a href="wang-dungeon.html"><span data-l="en">Wang dungeon</span><span data-l="it" lang="it">Dungeon di Wang</span></a> · <a href="mana-crystals.html"><span data-l="en">Wulff crystals</span><span data-l="it" lang="it">Cristalli di Wulff</span></a> · <a href="dragon-eggs.html"><span data-l="en">Dragon eggs</span><span data-l="it" lang="it">Uova di drago</span></a> · <a href="galton-tower.html"><span data-l="en">Galton tower</span><span data-l="it" lang="it">Torre di Galton</span></a> · <a href="escher-monsters.html"><span data-l="en">Escher monsters</span><span data-l="it" lang="it">Mostri alla Escher</span></a> · <a href="minotaur-sphere.html"><span data-l="en">Sphere labyrinth</span><span data-l="it" lang="it">Labirinto sferico</span></a> · <a href="elven-knots.html"><span data-l="en">Elven amulets</span><span data-l="it" lang="it">Amuleti elfici</span></a> · <a href="slime-den.html"><span data-l="en">Slime den</span><span data-l="it" lang="it">Tana degli slime</span></a> · <a href="biomorphs.html"><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></a><!--/forms-nav--></nav>
+<header>
+  <h1><span data-l="en">Monster cards as lithophanes</span><span data-l="it" lang="it">Carte dei mostri come litofanie</span></h1>
+  <p class="lede" data-l="en">A card for each <a href="monsters.html">monster</a>, printed as a
+  lithophane: a plate of white plastic whose thickness follows the darkness of the face of the card,
+  as in the scene <a href="lithophane.html">Lithophanes</a>. Since the light through a thickness \(t\)
+  falls about as \(e^{-\mu t}\), the plate shows the picture and the text against a lamp. Its picture
+  is the figurine of the monster seen from the front. Its numbers are not drawn at random: they are
+  invariants of the closed mesh of the figurine, measured as it would be printed, 60 mm tall.</p>
+  <p class="lede" data-l="it" lang="it">Una carta per ogni <a href="monsters.html">mostro</a>, stampata come
+  litofania: una piastra di plastica bianca il cui spessore segue lo scuro della faccia della carta,
+  come nella scena <a href="lithophane.html">Litofanie</a>. Poiché la luce che attraversa uno spessore
+  \(t\) cala circa come \(e^{-\mu t}\), controluce la piastra mostra l'immagine e il testo. L'immagine è
+  la statuina del mostro vista di fronte. I suoi numeri non sono estratti a caso: sono invarianti della
+  mesh chiusa della statuina, misurata come verrebbe stampata, alta 60 mm.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span data-l="en">type</span><span data-l="it" lang="it">tipo</span>
+      <span class="seg" id="types" role="group"></span></label>
+    <label><span data-l="en">seed</span><span data-l="it" lang="it">seme</span>
+      <span class="inline"><input id="seed" type="number" min="0" max="999999" step="1" value="21"><button id="random" type="button"><span data-l="en">Random</span><span data-l="it" lang="it">A caso</span></button></span></label>
+    <label><span data-l="en">stage</span><span data-l="it" lang="it">stadio</span>
+      <span class="seg" id="stages" role="group">
+        <button type="button" data-s="1">1</button><button type="button" data-s="2">2</button><button type="button" data-s="3">3</button>
+      </span></label>
+  </div>
+  <div class="transport">
+    <button id="share" type="button"><span data-l="en">Copy link</span><span data-l="it" lang="it">Copia link</span></button>
+  </div>
+  <p class="row status" id="status" aria-live="polite"></p>
+</section>
+<p id="cap"></p>
+<main class="cards">
+  <figure>
+    <figcaption><span data-l="en">The plate against a lamp: the thin parts let the light through.</span><span data-l="it" lang="it">La piastra controluce: le parti sottili lasciano passare la luce.</span></figcaption>
+    <canvas id="lit" role="img" aria-label="The card against a lamp"></canvas>
+  </figure>
+  <figure>
+    <figcaption><span data-l="en">The same plate on a table, its relief lit from the upper left.</span><span data-l="it" lang="it">La stessa piastra su un tavolo, con il rilievo illuminato da in alto a sinistra.</span></figcaption>
+    <canvas id="table" role="img" aria-label="The card on a table"></canvas>
+  </figure>
+</main>
+<dl class="stats" id="stats"></dl>
+<section class="inv">
+  <h2><span data-l="en">The numbers of the card</span><span data-l="it" lang="it">I numeri della carta</span></h2>
+  <p data-l="en">The figurine is the solid of the monster without its base, 60 mm tall, traced
+  by marching tetrahedra on cells of 0.7 mm (the draft resolution of the print). Its mass is the volume
+  enclosed by the triangles, \(\frac16 \sum_{abc} p_a \cdot (p_b \times p_c)\) by the divergence theorem,
+  and its skin is the sum of the areas of the triangles; both grow with the size, and therefore all
+  cards measure the figurine at the same height. Holes are counted by the genus \(g\) of the surface. With
+  \(V\) vertices, \(E\) edges and \(F\) triangles, the Euler characteristic \(\chi = V - E + F\) of a
+  closed orientable surface with \(c\) components equals \(2c - 2g\) (Euler 1758 for the polyhedra, and
+  the classification of surfaces in general); a ball has \(g = 0\), a ring \(g = 1\), and the lattice of
+  a water sail usually many. Stretching the solid does not change the genus, but the resolution may,
+  since a hole narrower than a cell closes and a bridge thinner than a cell breaks. Symmetry is the
+  order of the group of isometries that keep the vertical axis through the middle of the figurine
+  (rotations by \(360/k\) degrees and mirrors in vertical planes), each counted when 99% of the vertices
+  land within a cell of a vertex. As the bodies are bilateral it is 2 for most monsters, and 1 when the
+  parts of the type are not mirrored (about a third of the seeds).</p>
+  <p data-l="it" lang="it">La statuina è il solido del mostro senza la base, alto 60 mm, tracciato con i
+  tetraedri in marcia su celle di 0.7 mm (la risoluzione di bozza della stampa). La sua massa è il
+  volume racchiuso dai triangoli, \(\frac16 \sum_{abc} p_a \cdot (p_b \times p_c)\) per il teorema della
+  divergenza, e la sua pelle è la somma delle aree dei triangoli; entrambe crescono con la dimensione,
+  e quindi tutte le carte misurano la statuina alla stessa altezza. I buchi sono il genere \(g\) della
+  superficie. Con \(V\) vertici, \(E\) spigoli e \(F\) triangoli, la caratteristica di Eulero
+  \(\chi = V - E + F\) di una superficie chiusa orientabile con \(c\) componenti vale \(2c - 2g\) (Eulero
+  1758 per i poliedri, e la classificazione delle superfici in generale); una palla ha \(g = 0\), un
+  anello \(g = 1\), e il reticolo di una vela d'acqua di solito molti. Stirare il solido non cambia il
+  genere, ma la risoluzione può cambiarlo, perché un foro più stretto di una cella si chiude e un ponte
+  più sottile di una cella si rompe. La simmetria è l'ordine del gruppo delle isometrie che tengono
+  fermo l'asse verticale al centro della statuina (rotazioni di \(360/k\) gradi e specchi in piani
+  verticali), ognuna contata quando il 99% dei vertici cade entro una cella da un vertice. Poiché i
+  corpi sono bilaterali vale 2 per quasi tutti i mostri, e 1 quando le parti del tipo non sono
+  specchiate (circa un terzo dei semi).</p>
+</section>
+<section class="rules">
+  <h2><span data-l="en">The duel</span><span data-l="it" lang="it">Il duello</span></h2>
+  <ol data-l="en">
+    <li>Two players, each with a deck of cards face down.</li>
+    <li>In each round both turn the top card at the same time.</li>
+    <li>If the type of one card beats the type of the other (each type beats the next two on the
+    circle water, fire, ice, plant, rock), its player chooses the number to compare: mass, skin, holes or
+    symmetry. Otherwise the player whose monster is at the lower stage chooses, and between equal
+    stages a coin.</li>
+    <li>The higher number wins: its player takes both cards and puts them under the deck. On a tie
+    both cards go back under their decks.</li>
+    <li>A player without cards loses; after 30 rounds the larger deck wins.</li>
+  </ol>
+  <ol data-l="it" lang="it">
+    <li>Due giocatori, ognuno con un mazzo di carte coperte.</li>
+    <li>A ogni turno entrambi scoprono insieme la prima carta.</li>
+    <li>Se il tipo di una carta batte quello dell'altra (ogni tipo batte i due successivi sul cerchio
+    acqua, fuoco, ghiaccio, pianta, roccia), il suo giocatore sceglie il numero da confrontare: massa,
+    pelle, buchi o simmetria. Altrimenti sceglie il giocatore il cui mostro è allo stadio più basso, e a
+    parità di stadio una moneta.</li>
+    <li>Vince il numero più alto: il suo giocatore prende le due carte e le mette in fondo al mazzo. A
+    parità ognuna torna in fondo al mazzo del suo giocatore.</li>
+    <li>Chi resta senza carte perde; dopo 30 turni vince il mazzo più grande.</li>
+  </ol>
+  <p data-l="en">The advantage of the type is the right to choose, which pays off only with a
+  card strong in at least one number: a young monster has little mass and skin, and its best chance
+  may be its holes. The rules are original to this page.</p>
+  <p data-l="it" lang="it">Il vantaggio del tipo è il diritto di scegliere, che rende solo con una carta
+  forte in almeno un numero: un mostro giovane ha poca massa e poca pelle, e la sua occasione migliore
+  possono essere i buchi. Le regole sono originali di questa pagina.</p>
+</section>
+<section id="print">
+  <h2><span data-l="en">The card for 3D printing</span><span data-l="it" lang="it">La carta per la stampa 3D</span></h2>
+  <p class="lede" data-l="en">The plate is as long as the size (by default 88 mm, the height of a playing
+  card), its thickness between the thinnest and the thickest wall, and its face reads from the smooth
+  side. It prints lying flat on that side, without supports, in white or natural filament with 100%
+  infill. The text is about 3.5 mm tall at 88 mm, and a nozzle of 0.4 mm is the largest that keeps it
+  sharp.</p>
+  <p class="lede" data-l="it" lang="it">La piastra è lunga quanto la dimensione (di default 88 mm, l'altezza di una
+  carta da gioco), con lo spessore fra la parete più sottile e la più spessa, e la faccia si legge dal
+  lato liscio. Si stampa distesa su quel lato, senza supporti, in filamento bianco o naturale con
+  riempimento al 100%. Il testo è alto circa 3.5 mm a 88 mm, e un ugello da 0.4 mm è il più grande che
+  lo mantiene nitido.</p>
+  <p class="lede public-only" data-l="en">The card on the screen can be ordered as a 3D print: the
+  request sends the link to it and the fields above.</p>
+  <p class="lede public-only" data-l="it" lang="it">La carta sullo schermo si può ordinare come stampa
+  3D: la richiesta manda il link e i campi qui sopra.</p>
+</section>
+<script type="module" src="src/forms/monster-cards/cards.js"></script>
+</body>
+</html>

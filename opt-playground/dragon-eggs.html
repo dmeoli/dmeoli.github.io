@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forms-group" content="fantasy">
+<title>Dragon eggs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<link rel="stylesheet" href="src/forms/fantasy/fantasy.css">
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="lagrangian-dual.html"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="simplex-path.html"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a> · <a href="packing-mip.html"><span data-l="en">Packing</span><span data-l="it" lang="it">Impaccamento</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attenzione</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Misture di esperti</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Hebbiano</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html">Talk</a><br><span class="group"><span data-l="en">Forms</span><span data-l="it" lang="it">Forme</span></span> <!--forms-nav--><a href="loss-landscape.html"><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a> · <a href="shells.html"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></a> · <a href="phyllotaxis.html"><span data-l="en">Phyllotaxis</span><span data-l="it" lang="it">Fillotassi</span></a> · <a href="radiolarian.html"><span data-l="en">Radiolarians</span><span data-l="it" lang="it">Radiolari</span></a> · <a href="coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a> · <a href="plants.html"><span data-l="en">Plants</span><span data-l="it" lang="it">Piante</span></a> · <a href="snowflakes.html"><span data-l="en">Snowflakes</span><span data-l="it" lang="it">Fiocchi di neve</span></a> · <a href="batman.html">Batman</a> · <a href="minimal-surfaces.html"><span data-l="en">Minimal surfaces</span><span data-l="it" lang="it">Superfici minime</span></a> · <a href="knots.html"><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></a> · <a href="attractors.html"><span data-l="en">Attractors</span><span data-l="it" lang="it">Attrattori</span></a> · <a href="polytopes.html"><span data-l="en">4D polytopes</span><span data-l="it" lang="it">Politopi 4D</span></a> · <a href="chladni.html">Chladni</a> · <a href="equations.html"><span data-l="en">Equations</span><span data-l="it" lang="it">Equazioni</span></a> · <a href="dice.html"><span data-l="en">Fair dice</span><span data-l="it" lang="it">Dadi equi</span></a> · <a href="hat.html"><span data-l="en">The hat</span><span data-l="it" lang="it">Il cappello</span></a> · <a href="fractals.html"><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></a> · <a href="lithophane.html"><span data-l="en">Lithophanes</span><span data-l="it" lang="it">Litofanie</span></a> · <a href="monsters.html"><span data-l="en">Monsters</span><span data-l="it" lang="it">Mostri</span></a> · <a href="monster-cards.html"><span data-l="en">Monster cards</span><span data-l="it" lang="it">Carte dei mostri</span></a> · <a href="dragon-curve.html"><span data-l="en">Dragon curve</span><span data-l="it" lang="it">Curva del drago</span></a> · <a href="robots.html"><span data-l="en">Robots</span><span data-l="it" lang="it">Robot</span></a> · <a href="magic-circles.html"><span data-l="en">Magic circles</span><span data-l="it" lang="it">Cerchi magici</span></a> · <a href="origami.html">Origami</a> · <a href="wagara.html"><span data-l="en">Japanese patterns</span><span data-l="it" lang="it">Motivi giapponesi</span></a> · <a href="twisty.html"><span data-l="en">Twisty puzzles</span><span data-l="it" lang="it">Rompicapi a rotazione</span></a> · <a href="wang-dungeon.html"><span data-l="en">Wang dungeon</span><span data-l="it" lang="it">Dungeon di Wang</span></a> · <a href="mana-crystals.html"><span data-l="en">Wulff crystals</span><span data-l="it" lang="it">Cristalli di Wulff</span></a> · <a href="dragon-eggs.html" aria-current="page"><span data-l="en">Dragon eggs</span><span data-l="it" lang="it">Uova di drago</span></a> · <a href="galton-tower.html"><span data-l="en">Galton tower</span><span data-l="it" lang="it">Torre di Galton</span></a> · <a href="escher-monsters.html"><span data-l="en">Escher monsters</span><span data-l="it" lang="it">Mostri alla Escher</span></a> · <a href="minotaur-sphere.html"><span data-l="en">Sphere labyrinth</span><span data-l="it" lang="it">Labirinto sferico</span></a> · <a href="elven-knots.html"><span data-l="en">Elven amulets</span><span data-l="it" lang="it">Amuleti elfici</span></a> · <a href="slime-den.html"><span data-l="en">Slime den</span><span data-l="it" lang="it">Tana degli slime</span></a> · <a href="biomorphs.html"><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></a><!--/forms-nav--></nav>
+<header>
+  <h1><span data-l="en">Dragon eggs</span><span data-l="it" lang="it">Uova di drago</span></h1>
+  <p class="lede" data-l="en">The outline of a bird's egg, from the nearly round egg of an owl to the pear-shaped egg of
+  a guillemot, is fitted by one formula of four measures, given by <a href="https://doi.org/10.1111/nyas.14680">Narushin,
+  Romanov and Griffin (2021)</a>: the length L, the largest breadth B, the shift w of the largest breadth from the
+  middle, and the diameter D<sub>L/4</sub> at a quarter of the length from the pointed end. Here the egg is the surface
+  of revolution of that outline, covered with the scales of a dragon in low relief, and cut flat at the blunt end so
+  that it stands on the bed.</p>
+  <p class="lede" data-l="it" lang="it">Il profilo di un uovo di uccello, dall'uovo quasi rotondo di un gufo a quello a
+  forma di pera di un uria, è descritto da una sola formula di quattro misure, data da
+  <a href="https://doi.org/10.1111/nyas.14680">Narushin, Romanov e Griffin (2021)</a>: la lunghezza L, la larghezza
+  massima B, lo spostamento w della larghezza massima dal centro, e il diametro D<sub>L/4</sub> a un quarto della
+  lunghezza dalla punta. Qui l'uovo è la superficie di rotazione di quel profilo, coperta dalle squame di un drago in
+  basso rilievo, e tagliata in piano all'estremità larga perché stia in piedi sul piatto.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span data-l="en">shape</span><span data-l="it" lang="it">forma</span><select id="shape">
+      <option value="">—</option><option value="hen">hen · gallina</option><option value="round">owl · gufo</option>
+      <option value="pear">guillemot · uria</option><option value="dragon">dragon · drago</option></select></label>
+    <label><span>B / L</span><input id="B" type="range" min="0.5" max="0.95" step="0.01" value="0.64"><output id="Bout">0.64</output></label>
+    <label><span>w / L</span><input id="w" type="range" min="0" max="0.16" step="0.005" value="0.07"><output id="wout">0.07</output></label>
+    <label><span>D / L</span><input id="D" type="range" min="0.3" max="0.85" step="0.01" value="0.5"><output id="Dout">0.5</output></label>
+    <label><span data-l="en">scales</span><span data-l="it" lang="it">squame</span><select id="pattern">
+      <option value="phyllotaxis">phyllotaxis · fillotassi</option><option value="voronoi">random · a caso</option><option value="smooth">none · nessuna</option></select></label>
+    <label><span data-l="en">number</span><span data-l="it" lang="it">numero</span><input id="scales" type="range" min="40" max="600" step="10" value="240"><output id="scalesout">240</output></label>
+    <label><span data-l="en">seed</span><span data-l="it" lang="it">seme</span>
+      <span class="inline"><input id="seed" type="number" min="1" max="99999" step="1" value="1"><button id="random" type="button"><span data-l="en">Random</span><span data-l="it" lang="it">A caso</span></button></span></label>
+    <label><span data-l="en">base</span><span data-l="it" lang="it">base</span><select id="cut">
+      <option value="45">cut at 45° · taglio a 45°</option><option value="small">small cut · taglio piccolo</option></select></label>
+    <label class="check"><span data-l="en">spin</span><span data-l="it" lang="it">rotazione</span><input id="spin" type="checkbox"></label>
+  </div>
+</section>
+<main class="form">
+  <figure>
+    <figcaption><span data-l="en">The solid that is printed; drag to turn, use the wheel or pinch to zoom.</span><span data-l="it" lang="it">Il
+    solido che si stampa; trascina per ruotare, usa la rotella o il pizzico per lo zoom.</span></figcaption>
+    <div id="stage" class="stage"></div>
+  </figure>
+  <div class="about">
+    <h2><span data-l="en">The outline</span><span data-l="it" lang="it">Il profilo</span></h2>
+    <svg id="outline" class="plane" viewBox="0 0 330 240" role="img" aria-label="egg outline"></svg>
+    <div class="stats" id="stats"></div>
+    <div class="formula" id="formula"></div>
+    <p data-l="en">Here x runs from −L/2 at the blunt end to L/2 at the pointed end, and y is the radius. The first
+    factor is Hügelschäffer's ovoid, an ellipse whose largest breadth is moved by w toward the
+    blunt end; the second bends it until its diameter at L/4 from the pointed end is D<sub>L/4</sub>, and this lets the
+    formula reach the pear-shaped eggs. The authors fitted it to the eggs of many species, measuring only these four
+    quantities on each.</p>
+    <p data-l="it" lang="it">Qui x va da −L/2 all'estremità larga a L/2 alla punta, e y è il raggio. Il primo
+    fattore è l'ovoide di Hügelschäffer, un'ellisse la cui larghezza massima è spostata
+    di w verso l'estremità larga; il secondo lo piega in modo che il diametro a L/4 dalla punta sia D<sub>L/4</sub>, ed è
+    questo che permette alla formula di arrivare alle uova a forma di pera. Gli autori l'hanno adattata alle uova di
+    molte specie, misurando su ciascuna solo queste quattro quantità.</p>
+    <p data-l="en">The centers of the scales are spread over the area of the shell: with phyllotaxis the k-th center lies
+    at the height that leaves a fraction (k + 1/2)/n of the area below it and is turned by k times the golden angle
+    137.5°, the rule of <a href="https://doi.org/10.1016/0025-5564(79)90080-4">Vogel (1979)</a> for the head of a
+    sunflower, which shows as spirals in two directions; at random the centers are drawn by area and kept at a
+    distance from each other. Each scale is the Voronoi cell of its center, raised most along its lower edge, as
+    shingles overlap.</p>
+    <p data-l="it" lang="it">I centri delle squame sono distribuiti sull'area del guscio: con la fillotassi il k-esimo
+    centro sta all'altezza che lascia sotto di sé una frazione (k + 1/2)/n dell'area ed è ruotato di k volte l'angolo
+    aureo 137.5°, la regola di <a href="https://doi.org/10.1016/0025-5564(79)90080-4">Vogel (1979)</a> per il capolino
+    del girasole, che si vede come spirali in due direzioni; a caso i centri sono estratti secondo l'area e tenuti a
+    distanza fra loro. Ogni squama è la cella di Voronoi del suo centro, più alta lungo il bordo inferiore, come le
+    tegole che si sovrappongono.</p>
+  </div>
+</main>
+<section id="print">
+  <h2 class="owner-only"><span data-l="en">Download for 3D printing</span><span data-l="it" lang="it">Scarica per la stampa 3D</span></h2>
+  <h2 class="public-only"><span data-l="en">A 3D print of this egg</span><span data-l="it" lang="it">Una stampa 3D di questo uovo</span></h2>
+  <p class="lede public-only" data-l="en">The egg can be ordered as a 3D print, standing on its flat cut, with the scales
+  and the shape chosen above. The request sends the link to the egg as it is on the screen.</p>
+  <p class="lede public-only" data-l="it" lang="it">L'uovo si può ordinare come stampa 3D, in piedi sul suo taglio
+  piano, con le squame e la forma scelte sopra. La richiesta manda il link all'uovo così com'è sullo schermo.</p>
+  <p class="lede owner-only" data-l="en">One closed solid, as long as the size before the cut. The cut at 45° lies at
+  the highest point of the lower part where the outline widens by more than 1 mm per mm of height; thus nothing
+  below the equator overhangs by more than 45 degrees and the egg prints without supports (the scales add small ledges
+  of about their relief); the small cut, at 4% of the length, keeps more of the egg and needs supports or a stand.</p>
+  <p class="lede owner-only" data-l="it" lang="it">Un solo solido chiuso, lungo quanto la dimensione prima del taglio.
+  Il taglio a 45° sta nel punto più alto della parte inferiore in cui il profilo si allarga di più di 1 mm per mm di
+  altezza, così niente sotto l'equatore sporge di più di 45 gradi e l'uovo si stampa senza supporti (le squame
+  aggiungono piccoli gradini dell'altezza del loro rilievo); il taglio piccolo, al 4% della lunghezza, tiene più
+  dell'uovo e richiede supporti o un sostegno.</p>
+</section>
+<footer><span data-l="en">The scene evaluates the formula of Narushin, Romanov and Griffin as printed in their paper.</span><span data-l="it" lang="it">La
+scena calcola la formula di Narushin, Romanov e Griffin come è stampata nel loro articolo.</span></footer>
+<script type="module" src="src/forms/dragon-eggs/dragon-eggs.js"></script>
+</body>
+</html>

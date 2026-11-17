@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forms-group" content="anime">
+<title>The dragon of the folded paper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<style>
+main.dragon { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); align-items: start; }
+@media (max-width: 860px) { main.dragon { grid-template-columns: minmax(0, 1fr); } }
+#stage { position: relative; background: var(--panel); border: 1px solid var(--rule); border-radius: 8px; }
+#stage canvas { display: block; border-radius: 8px; touch-action: none; width: 100%; }
+.seg { display: inline-flex; flex-wrap: wrap; }
+.seg button { border-radius: 0; margin-left: -1px; }
+.seg button:first-child { border-radius: 6px 0 0 6px; margin-left: 0; }
+.seg button:last-child { border-radius: 0 6px 6px 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--ground); border-color: var(--accent); }
+.controls .main { color: var(--ground); background: var(--accent); border-color: var(--accent); font-weight: 500; }
+.controls .main.on { background: var(--accent-2); }
+.controls input[type=range] { width: 130px; }
+.controls .status { margin: 0; min-height: 1.3em; color: var(--ink-soft); }
+.side p { font-family: Spectral, Georgia, serif; font-size: 15px; color: var(--ink-soft); margin: 0 0 10px; }
+.stats { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 0 0 12px; }
+.stats dd { margin: 0; }
+.stats dd b { font-weight: 500; color: var(--accent); }
+#seq { font: 12px 'IBM Plex Mono', monospace; color: var(--ink); overflow-wrap: anywhere; letter-spacing: .06em; }
+#print { margin-top: 28px; }
+#print h2 { font-weight: 600; font-size: 22px; margin: 0 0 6px; color: var(--accent); }
+#print .lede { max-width: 80ch; font-size: 15px; }
+body.thumb > :not(main), body.thumb main > :not(figure) { display: none !important; }
+body.thumb { margin: 0; padding: 0; max-width: none; }
+body.thumb main { display: block; margin: 0; padding: 0; }
+body.thumb figure { margin: 0; }
+body.thumb #stage { border: 0; background: none; border-radius: 0; }
+</style>
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="lagrangian-dual.html"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="simplex-path.html"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a> · <a href="packing-mip.html"><span data-l="en">Packing</span><span data-l="it" lang="it">Impaccamento</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attenzione</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Misture di esperti</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Hebbiano</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html">Talk</a><br><span class="group"><span data-l="en">Forms</span><span data-l="it" lang="it">Forme</span></span> <!--forms-nav--><a href="loss-landscape.html"><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a> · <a href="shells.html"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></a> · <a href="phyllotaxis.html"><span data-l="en">Phyllotaxis</span><span data-l="it" lang="it">Fillotassi</span></a> · <a href="radiolarian.html"><span data-l="en">Radiolarians</span><span data-l="it" lang="it">Radiolari</span></a> · <a href="coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a> · <a href="plants.html"><span data-l="en">Plants</span><span data-l="it" lang="it">Piante</span></a> · <a href="snowflakes.html"><span data-l="en">Snowflakes</span><span data-l="it" lang="it">Fiocchi di neve</span></a> · <a href="batman.html">Batman</a> · <a href="minimal-surfaces.html"><span data-l="en">Minimal surfaces</span><span data-l="it" lang="it">Superfici minime</span></a> · <a href="knots.html"><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></a> · <a href="attractors.html"><span data-l="en">Attractors</span><span data-l="it" lang="it">Attrattori</span></a> · <a href="polytopes.html"><span data-l="en">4D polytopes</span><span data-l="it" lang="it">Politopi 4D</span></a> · <a href="chladni.html">Chladni</a> · <a href="equations.html"><span data-l="en">Equations</span><span data-l="it" lang="it">Equazioni</span></a> · <a href="dice.html"><span data-l="en">Fair dice</span><span data-l="it" lang="it">Dadi equi</span></a> · <a href="hat.html"><span data-l="en">The hat</span><span data-l="it" lang="it">Il cappello</span></a> · <a href="fractals.html"><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></a> · <a href="lithophane.html"><span data-l="en">Lithophanes</span><span data-l="it" lang="it">Litofanie</span></a> · <a href="monsters.html"><span data-l="en">Monsters</span><span data-l="it" lang="it">Mostri</span></a> · <a href="monster-cards.html"><span data-l="en">Monster cards</span><span data-l="it" lang="it">Carte dei mostri</span></a> · <a href="dragon-curve.html" aria-current="page"><span data-l="en">Dragon curve</span><span data-l="it" lang="it">Curva del drago</span></a> · <a href="robots.html"><span data-l="en">Robots</span><span data-l="it" lang="it">Robot</span></a> · <a href="magic-circles.html"><span data-l="en">Magic circles</span><span data-l="it" lang="it">Cerchi magici</span></a> · <a href="origami.html">Origami</a> · <a href="wagara.html"><span data-l="en">Japanese patterns</span><span data-l="it" lang="it">Motivi giapponesi</span></a> · <a href="twisty.html"><span data-l="en">Twisty puzzles</span><span data-l="it" lang="it">Rompicapi a rotazione</span></a> · <a href="wang-dungeon.html"><span data-l="en">Wang dungeon</span><span data-l="it" lang="it">Dungeon di Wang</span></a> · <a href="mana-crystals.html"><span data-l="en">Wulff crystals</span><span data-l="it" lang="it">Cristalli di Wulff</span></a> · <a href="dragon-eggs.html"><span data-l="en">Dragon eggs</span><span data-l="it" lang="it">Uova di drago</span></a> · <a href="galton-tower.html"><span data-l="en">Galton tower</span><span data-l="it" lang="it">Torre di Galton</span></a> · <a href="escher-monsters.html"><span data-l="en">Escher monsters</span><span data-l="it" lang="it">Mostri alla Escher</span></a> · <a href="minotaur-sphere.html"><span data-l="en">Sphere labyrinth</span><span data-l="it" lang="it">Labirinto sferico</span></a> · <a href="elven-knots.html"><span data-l="en">Elven amulets</span><span data-l="it" lang="it">Amuleti elfici</span></a> · <a href="slime-den.html"><span data-l="en">Slime den</span><span data-l="it" lang="it">Tana degli slime</span></a> · <a href="biomorphs.html"><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></a><!--/forms-nav--></nav>
+<header>
+  <h1><span data-l="en">The dragon of the folded paper</span><span data-l="it" lang="it">Il drago della carta piegata</span></h1>
+  <p class="lede" data-l="en">Fold a strip of paper in half \(n\) times, always the same way, then open
+  every crease to a right angle: seen edge-on, the strip traces the dragon curve that the NASA
+  physicists John Heighway, Bruce Banks and William Harter found in the 1960s and Martin Gardner
+  published in 1967. Its \(2^n\) segments turn by the paper-folding sequence. After the \(k\)-th
+  segment, with \(k = 2^j m\) and \(m\) odd, the turn is to the left when \(m \equiv 1 \pmod 4\) and to
+  the right when \(m \equiv 3 \pmod 4\) (Davis and Knuth 1970). Two dragons joined back to back give the
+  twindragon, and turns of 120 degrees ruled by the last nonzero ternary digit of \(k\) give the
+  terdragon, both studied by Davis and Knuth. Here the number of folds is the level of the dragon, and
+  the creases open together from the folded strip to the curve. The creases of the right turns may
+  also be oblique: with \(H\) along the strip, \(W\) across it and \(N = H \times W\), the strip turns left
+  about \(W\) and right about \(\cos\tau\,W + \sin\tau\,N\), so that \(\tau &gt; 0\) lifts it out of the plane
+  and \(\tau = 90°\) puts it on the cubic lattice.</p>
+  <p class="lede" data-l="it" lang="it">Piega a metà una striscia di carta \(n\) volte, sempre nello stesso verso, poi
+  apri ogni piega ad angolo retto: vista di taglio, la striscia traccia la curva del drago che i fisici
+  della NASA John Heighway, Bruce Banks e William Harter trovarono negli anni Sessanta e che Martin
+  Gardner pubblicò nel 1967. I suoi \(2^n\) segmenti girano secondo la successione della piegatura.
+  Dopo il \(k\)-esimo segmento, con \(k = 2^j m\) e \(m\) dispari, la svolta è a sinistra quando
+  \(m \equiv 1 \pmod 4\) e a destra quando \(m \equiv 3 \pmod 4\) (Davis e Knuth 1970). Due draghi uniti
+  schiena contro schiena danno il drago gemello, e svolte di 120 gradi decise dall'ultima cifra ternaria
+  non nulla di \(k\) danno il terdrago, studiati entrambi da Davis e Knuth. Qui il numero di pieghe è il
+  livello del drago, e le pieghe si aprono insieme dalla striscia piegata alla curva. Le pieghe delle
+  svolte a destra possono anche essere oblique: con \(H\) lungo la striscia, \(W\) di traverso e
+  \(N = H \times W\), la striscia gira a sinistra attorno a \(W\) e a destra attorno a
+  \(\cos\tau\,W + \sin\tau\,N\), sicché \(\tau &gt; 0\) la solleva dal piano e \(\tau = 90°\) la mette
+  sul reticolo cubico.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span data-l="en">curve</span><span data-l="it" lang="it">curva</span><span class="seg" id="kinds" role="group"></span></label>
+    <label><span data-l="en">level n</span><span data-l="it" lang="it">livello n</span><input id="n" type="range" min="1" max="12" step="1"><output id="nv"></output></label>
+    <label><span data-l="en">opening</span><span data-l="it" lang="it">apertura</span><input id="fold" type="range" min="0" max="1" step="0.01"><output id="foldv"></output></label>
+    <label><span data-l="en">oblique crease τ</span><span data-l="it" lang="it">piega obliqua τ</span><input id="tilt" type="range" min="0" max="90" step="1"><output id="tiltv"></output></label>
+  </div>
+  <div class="transport">
+    <button id="play" type="button" class="main"><span data-l="en">Unfold</span><span data-l="it" lang="it">Apri</span></button>
+    <button id="share" type="button"><span data-l="en">Copy link</span><span data-l="it" lang="it">Copia link</span></button>
+  </div>
+  <p class="row status" id="status" aria-live="polite"></p>
+</section>
+<main class="dragon">
+  <figure><div id="stage" class="stage"></div></figure>
+  <div class="side">
+    <dl class="stats">
+      <div><dt><span data-l="en">segments</span><span data-l="it" lang="it">segmenti</span></dt><dd><b id="segs"></b> = <span id="folds"></span></dd></div>
+      <div><dt><span data-l="en">turn at each crease</span><span data-l="it" lang="it">svolta a ogni piega</span></dt><dd><b id="angle"></b></dd></div>
+    </dl>
+    <p><span data-l="en">The first turns (L left, R right):</span><span data-l="it" lang="it">Le prime svolte (L sinistra, R destra):</span><br><span id="seq"></span></p>
+    <p data-l="en">Color runs from the first segment, violet, to the last, gold. With the
+    creases at a right angle the Heighway dragon never crosses itself, although it touches itself at
+    corners; as \(n\) grows it fills a region of the plane whose boundary is a fractal, four copies of it
+    around a point tile the plane, and the twindragon tiles it by translations alone. With the creases
+    half open the strip winds into a spiral. With oblique creases it curls up in space into a tangle
+    whose segments may pass through each other, and the print fuses them into one solid.</p>
+    <p data-l="it" lang="it">Il colore va dal primo segmento, viola, all'ultimo, oro. Con le pieghe ad
+    angolo retto il drago di Heighway non si incrocia mai, anche se si tocca negli angoli; al crescere di
+    \(n\) riempie una regione del piano il cui bordo è un frattale, quattro sue copie attorno a un punto
+    pavimentano il piano, e il drago gemello lo pavimenta con le sole traslazioni. Con le pieghe aperte a
+    metà la striscia si avvolge a spirale. Con le pieghe oblique si raccoglie nello spazio in un groviglio
+    i cui segmenti possono attraversarsi, e la stampa li fonde in un solo solido.</p>
+  </div>
+</main>
+<section id="print">
+  <h2><span data-l="en">For 3D printing</span><span data-l="it" lang="it">Per la stampa 3D</span></h2>
+  <p class="lede" data-l="en">The strip is printed as one closed solid whose largest side is the size, made
+  of one thin box per segment, as wide as the strip and as thick as the wall, lengthened by half a wall
+  at each end so that the corners close. Flat and fully open (\(\tau = 0\)) it stands on its edge and
+  prints as a maze of walls without supports. A status line gives the length of a segment: when it
+  gets close to the wall (a high level at a small size), the corridors of the dragon close up. Curled
+  in space the strip needs the base, a plate under its lowest point, and tree supports under the
+  arches.</p>
+  <p class="lede" data-l="it" lang="it">La striscia si stampa come un solo solido chiuso il cui lato maggiore è la
+  dimensione, fatto di una scatola sottile per segmento, larga quanto la striscia e spessa quanto la
+  parete, allungata di mezza parete a ogni capo perché gli angoli si chiudano. Piatta e tutta aperta
+  (\(\tau = 0\)) sta in piedi sul bordo e si stampa come un labirinto di pareti senza supporti. La riga
+  di stato dà la lunghezza di un segmento: quando si avvicina alla parete (un livello alto a una
+  dimensione piccola), i corridoi del drago si chiudono. Raccolta nello spazio la striscia ha bisogno
+  della base, una piastra sotto il suo punto più basso, e di supporti ad albero sotto gli archi.</p>
+  <p class="lede public-only" data-l="en">The dragon on the screen can be ordered as a 3D print: the
+  request sends the link to it, with the curve, the level, the opening and the crease, and the fields
+  above.</p>
+  <p class="lede public-only" data-l="it" lang="it">Il drago sullo schermo si può ordinare come stampa
+  3D: la richiesta manda il link, con la curva, il livello, l'apertura e la piega, e i campi qui sopra.</p>
+</section>
+<script type="module" src="src/forms/dragon-curve/dragon.js"></script>
+</body>
+</html>

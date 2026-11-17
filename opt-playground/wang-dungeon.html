@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forms-group" content="fantasy">
+<title>A dungeon of Wang tiles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<link rel="stylesheet" href="src/forms/fantasy/fantasy.css">
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="lagrangian-dual.html"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="simplex-path.html"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a> · <a href="packing-mip.html"><span data-l="en">Packing</span><span data-l="it" lang="it">Impaccamento</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attenzione</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Misture di esperti</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Hebbiano</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html">Talk</a><br><span class="group"><span data-l="en">Forms</span><span data-l="it" lang="it">Forme</span></span> <!--forms-nav--><a href="loss-landscape.html"><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a> · <a href="shells.html"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></a> · <a href="phyllotaxis.html"><span data-l="en">Phyllotaxis</span><span data-l="it" lang="it">Fillotassi</span></a> · <a href="radiolarian.html"><span data-l="en">Radiolarians</span><span data-l="it" lang="it">Radiolari</span></a> · <a href="coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a> · <a href="plants.html"><span data-l="en">Plants</span><span data-l="it" lang="it">Piante</span></a> · <a href="snowflakes.html"><span data-l="en">Snowflakes</span><span data-l="it" lang="it">Fiocchi di neve</span></a> · <a href="batman.html">Batman</a> · <a href="minimal-surfaces.html"><span data-l="en">Minimal surfaces</span><span data-l="it" lang="it">Superfici minime</span></a> · <a href="knots.html"><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></a> · <a href="attractors.html"><span data-l="en">Attractors</span><span data-l="it" lang="it">Attrattori</span></a> · <a href="polytopes.html"><span data-l="en">4D polytopes</span><span data-l="it" lang="it">Politopi 4D</span></a> · <a href="chladni.html">Chladni</a> · <a href="equations.html"><span data-l="en">Equations</span><span data-l="it" lang="it">Equazioni</span></a> · <a href="dice.html"><span data-l="en">Fair dice</span><span data-l="it" lang="it">Dadi equi</span></a> · <a href="hat.html"><span data-l="en">The hat</span><span data-l="it" lang="it">Il cappello</span></a> · <a href="fractals.html"><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></a> · <a href="lithophane.html"><span data-l="en">Lithophanes</span><span data-l="it" lang="it">Litofanie</span></a> · <a href="monsters.html"><span data-l="en">Monsters</span><span data-l="it" lang="it">Mostri</span></a> · <a href="monster-cards.html"><span data-l="en">Monster cards</span><span data-l="it" lang="it">Carte dei mostri</span></a> · <a href="dragon-curve.html"><span data-l="en">Dragon curve</span><span data-l="it" lang="it">Curva del drago</span></a> · <a href="robots.html"><span data-l="en">Robots</span><span data-l="it" lang="it">Robot</span></a> · <a href="magic-circles.html"><span data-l="en">Magic circles</span><span data-l="it" lang="it">Cerchi magici</span></a> · <a href="origami.html">Origami</a> · <a href="wagara.html"><span data-l="en">Japanese patterns</span><span data-l="it" lang="it">Motivi giapponesi</span></a> · <a href="twisty.html"><span data-l="en">Twisty puzzles</span><span data-l="it" lang="it">Rompicapi a rotazione</span></a> · <a href="wang-dungeon.html" aria-current="page"><span data-l="en">Wang dungeon</span><span data-l="it" lang="it">Dungeon di Wang</span></a> · <a href="mana-crystals.html"><span data-l="en">Wulff crystals</span><span data-l="it" lang="it">Cristalli di Wulff</span></a> · <a href="dragon-eggs.html"><span data-l="en">Dragon eggs</span><span data-l="it" lang="it">Uova di drago</span></a> · <a href="galton-tower.html"><span data-l="en">Galton tower</span><span data-l="it" lang="it">Torre di Galton</span></a> · <a href="escher-monsters.html"><span data-l="en">Escher monsters</span><span data-l="it" lang="it">Mostri alla Escher</span></a> · <a href="minotaur-sphere.html"><span data-l="en">Sphere labyrinth</span><span data-l="it" lang="it">Labirinto sferico</span></a> · <a href="elven-knots.html"><span data-l="en">Elven amulets</span><span data-l="it" lang="it">Amuleti elfici</span></a> · <a href="slime-den.html"><span data-l="en">Slime den</span><span data-l="it" lang="it">Tana degli slime</span></a> · <a href="biomorphs.html"><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></a><!--/forms-nav--></nav>
+<header>
+  <h1><span data-l="en">A dungeon of Wang tiles</span><span data-l="it" lang="it">Un dungeon di tessere di Wang</span></h1>
+  <p class="lede" data-l="en">Wang tiles are squares with a color on each edge, laid side by side only where the
+  colors of the touching edges agree and never turned. <a href="https://doi.org/10.1145/882262.882265">Cohen, Shade,
+  Hiller and Deussen (2003)</a> used a set of 8 of them to cover large areas with texture: the tiles are laid row by
+  row, each one drawn at random among those whose north and west colors agree with the tiles already in place, and with
+  two tiles for every pair of colors the choice never runs out. Here the color of an edge is the position of its door,
+  so that every tile of the set fits every neighbor it can meet, and the inside of each tile is a small cave or a
+  set of corridors and rooms grown by one of two generators of game levels.</p>
+  <p class="lede" data-l="it" lang="it">Le tessere di Wang sono quadrati con un colore su ogni lato, che si accostano
+  solo dove i colori dei lati a contatto coincidono e non si girano mai. <a href="https://doi.org/10.1145/882262.882265">Cohen,
+  Shade, Hiller e Deussen (2003)</a> ne hanno usato un set di 8 per coprire grandi superfici di texture: le tessere si
+  posano riga per riga, ciascuna estratta a caso fra quelle i cui colori a nord e a ovest coincidono con le tessere già
+  posate, e con due tessere per ogni coppia di colori la scelta non manca mai. Qui il colore di un lato è la posizione
+  della sua porta, così ogni tessera del set combacia con ogni vicina che può incontrare, e l'interno di ogni tessera è
+  una piccola grotta o un insieme di corridoi e stanze fatti crescere da uno di due generatori di livelli di gioco.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span data-l="en">seed</span><span data-l="it" lang="it">seme</span>
+      <span class="inline"><input id="seed" type="number" min="1" max="99999" step="1" value="1"><button id="random" type="button"><span data-l="en">Random</span><span data-l="it" lang="it">A caso</span></button></span></label>
+    <label><span data-l="en">tile set</span><span data-l="it" lang="it">set di tessere</span><select id="set">
+      <option value="cohen8">8 · Cohen et al.</option><option value="full16">16 · completo / complete</option></select></label>
+    <label><span data-l="en">inside</span><span data-l="it" lang="it">interno</span><select id="fill">
+      <option value="caves">caves · grotte (CA)</option><option value="wfc">rooms · stanze (WFC)</option></select></label>
+    <label><span data-l="en">columns</span><span data-l="it" lang="it">colonne</span><input id="cols" type="range" min="2" max="10" step="1" value="6"><output id="colsout">6</output></label>
+    <label><span data-l="en">rows</span><span data-l="it" lang="it">righe</span><input id="rows" type="range" min="2" max="8" step="1" value="4"><output id="rowsout">4</output></label>
+    <label><span data-l="en">in 3D</span><span data-l="it" lang="it">in 3D</span><select id="what">
+      <option value="set">tile set · set di tessere</option><option value="dungeon">dungeon</option></select></label>
+    <label class="check"><span data-l="en">spin</span><span data-l="it" lang="it">rotazione</span><input id="spin" type="checkbox"></label>
+  </div>
+</section>
+<main class="form">
+  <figure>
+    <figcaption><span data-l="en">A dungeon laid by scanline from the set below: walls in violet, floor in the color of the
+    panel, tile borders as thin lines.</span><span data-l="it" lang="it">Un dungeon posato riga per riga con il set qui
+    sotto: muri in viola, pavimento nel colore del pannello, bordi delle tessere come linee sottili.</span></figcaption>
+    <canvas id="map" class="plane"></canvas>
+    <div class="stats" id="stats"></div>
+    <figcaption><span data-l="en">The tile set, with the door of each edge marked by its color (gold for the door at the
+    fifth cell, lilac for the door at the eighth).</span><span data-l="it" lang="it">Il set di tessere, con la porta di ogni
+    lato segnata dal suo colore (oro per la porta alla quinta cella, lilla per quella all'ottava).</span></figcaption>
+    <canvas id="tiles" class="plane"></canvas>
+  </figure>
+  <div>
+    <figure>
+      <figcaption><span data-l="en">The relief tiles that are printed; drag to turn.</span><span data-l="it" lang="it">Le
+      tessere in rilievo che si stampano; trascina per ruotare.</span></figcaption>
+      <div id="stage" class="stage"></div>
+    </figure>
+    <div class="about">
+      <h2><span data-l="en">Inside a tile</span><span data-l="it" lang="it">Dentro una tessera</span></h2>
+      <p data-l="en">A tile is a grid of 12 by 12 cells, whose border is wall except at its four doors. The caves are
+      those of <a href="https://doi.org/10.1145/1814256.1814266">Johnson, Yannakakis and Togelius (2010)</a>: every
+      inner cell is rock with probability 1/2, and in each of four steps a cell becomes rock when at least 5 of the 9
+      cells around it (itself included) are rock, which smooths the noise into caverns. The rooms come from the simple
+      tiled model of <a href="https://github.com/mxgmn/WaveFunctionCollapse">wave function collapse (Gumin 2016)</a>,
+      studied as constraint solving by <a href="https://doi.org/10.1145/3102071.3110566">Karth and Smith (2017)</a>: the
+      tile is split into 4 by 4 blocks, each block keeps the list of modules (corridors and rooms with a given set of open
+      sides) still compatible with its neighbors, and the block with fewest options is fixed at random, by weight, until
+      none is left open.</p>
+      <p data-l="it" lang="it">Una tessera è una griglia di 12 per 12 celle, il cui bordo è muro tranne che alle sue
+      quattro porte. Le grotte sono quelle di <a href="https://doi.org/10.1145/1814256.1814266">Johnson, Yannakakis e
+      Togelius (2010)</a>: ogni cella interna è roccia con probabilità 1/2, e in ognuno di quattro passi una cella
+      diventa roccia se almeno 5 delle 9 celle attorno (lei compresa) sono roccia, il che leviga il rumore in caverne. Le
+      stanze vengono dal modello a tessere semplici del <a href="https://github.com/mxgmn/WaveFunctionCollapse">wave
+      function collapse (Gumin 2016)</a>, studiato come soddisfacimento di vincoli da
+      <a href="https://doi.org/10.1145/3102071.3110566">Karth e Smith (2017)</a>: la tessera è divisa in 4 per 4
+      blocchi, ogni blocco tiene la lista dei moduli (corridoi e stanze con un dato insieme di lati aperti) ancora
+      compatibili con i vicini, e il blocco con meno opzioni viene fissato a caso, secondo i pesi, finché non ne resta
+      nessuno aperto.</p>
+      <p data-l="en">Both generators may leave a door cut off; the regions of floor that hold a door are then joined by
+      the path that digs the fewest cells of rock, and the floor that no door reaches is filled; hence every door of a
+      tile leads to every other one and any dungeon laid with the set is connected.</p>
+      <p data-l="it" lang="it">Entrambi i generatori possono lasciare isolata una porta; le regioni di pavimento che
+      contengono una porta vengono allora unite dal cammino che scava meno celle di roccia, e il pavimento che nessuna
+      porta raggiunge viene riempito, così ogni porta di una tessera porta a tutte le altre e ogni dungeon posato con il
+      set è connesso.</p>
+    </div>
+  </div>
+</main>
+<section id="print">
+  <h2 class="owner-only"><span data-l="en">Download for 3D printing</span><span data-l="it" lang="it">Scarica per la stampa 3D</span></h2>
+  <h2 class="public-only"><span data-l="en">A 3D print of this tile set</span><span data-l="it" lang="it">Una stampa 3D di questo set di tessere</span></h2>
+  <p class="lede public-only" data-l="en">The tile set (or the dungeon shown above, tile by tile) can be ordered as a 3D
+  print: each tile is a flat piece with a floor and walls about 10 mm high, which prints without supports, and the
+  tiles can be laid in any order that matches the colors. The request sends the link to the set as it is on the screen.</p>
+  <p class="lede public-only" data-l="it" lang="it">Il set di tessere (o il dungeon mostrato sopra, tessera per tessera)
+  si può ordinare come stampa 3D: ogni tessera è un pezzo piatto con un pavimento e muri alti circa 10 mm, che si stampa
+  senza supporti, e le tessere si possono posare in ogni ordine che rispetti i colori. La richiesta manda il link al set
+  così com'è sullo schermo.</p>
+  <p class="lede owner-only" data-l="en">The tiles as separate closed solids on one plate (the set, or every tile of the
+  dungeon), each a floor with walls on top, flat underneath and with vertical sides only, hence printable without
+  supports. A door is one cell wide (a twelfth of the side); since the door of color 0 sits at the fifth cell and that of
+  color 1 at the eighth, a tile turned by a half turn has its doors at the same positions with the colors swapped, so
+  the printed pieces allow more layouts than the Wang rule.</p>
+  <p class="lede owner-only" data-l="it" lang="it">Le tessere come solidi chiusi separati su un solo piatto (il set, o
+  ogni tessera del dungeon), ciascuna un pavimento con i muri sopra, piatta sotto e con soli lati verticali, quindi
+  stampabile senza supporti. Una porta è larga una cella (un dodicesimo del lato); poiché la porta del colore 0 sta alla
+  quinta cella e quella del colore 1 all'ottava, una tessera girata di mezzo giro ha le porte nelle stesse posizioni con
+  i colori scambiati, quindi i pezzi stampati consentono più disposizioni della regola di Wang.</p>
+</section>
+<footer><span data-l="en">The scene reimplements the scanline of Cohen et al., the caves of Johnson et al. and the
+simple tiled model of WFC from their descriptions; the code is not taken from those works.</span><span data-l="it" lang="it">La
+scena reimplementa la posa per righe di Cohen et al., le grotte di Johnson et al. e il modello a tessere semplici del
+WFC dalle loro descrizioni; il codice non è preso da quei lavori.</span></footer>
+<script type="module" src="src/forms/wang-dungeon/wang-dungeon.js"></script>
+</body>
+</html>

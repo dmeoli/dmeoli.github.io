@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forms-group" content="fantasy">
+<title>Escher monster tiles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<link rel="stylesheet" href="src/forms/fantasy/fantasy.css">
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="lagrangian-dual.html"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="simplex-path.html"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a> · <a href="packing-mip.html"><span data-l="en">Packing</span><span data-l="it" lang="it">Impaccamento</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attenzione</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Misture di esperti</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Hebbiano</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html">Talk</a><br><span class="group"><span data-l="en">Forms</span><span data-l="it" lang="it">Forme</span></span> <!--forms-nav--><a href="loss-landscape.html"><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a> · <a href="shells.html"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></a> · <a href="phyllotaxis.html"><span data-l="en">Phyllotaxis</span><span data-l="it" lang="it">Fillotassi</span></a> · <a href="radiolarian.html"><span data-l="en">Radiolarians</span><span data-l="it" lang="it">Radiolari</span></a> · <a href="coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a> · <a href="plants.html"><span data-l="en">Plants</span><span data-l="it" lang="it">Piante</span></a> · <a href="snowflakes.html"><span data-l="en">Snowflakes</span><span data-l="it" lang="it">Fiocchi di neve</span></a> · <a href="batman.html">Batman</a> · <a href="minimal-surfaces.html"><span data-l="en">Minimal surfaces</span><span data-l="it" lang="it">Superfici minime</span></a> · <a href="knots.html"><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></a> · <a href="attractors.html"><span data-l="en">Attractors</span><span data-l="it" lang="it">Attrattori</span></a> · <a href="polytopes.html"><span data-l="en">4D polytopes</span><span data-l="it" lang="it">Politopi 4D</span></a> · <a href="chladni.html">Chladni</a> · <a href="equations.html"><span data-l="en">Equations</span><span data-l="it" lang="it">Equazioni</span></a> · <a href="dice.html"><span data-l="en">Fair dice</span><span data-l="it" lang="it">Dadi equi</span></a> · <a href="hat.html"><span data-l="en">The hat</span><span data-l="it" lang="it">Il cappello</span></a> · <a href="fractals.html"><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></a> · <a href="lithophane.html"><span data-l="en">Lithophanes</span><span data-l="it" lang="it">Litofanie</span></a> · <a href="monsters.html"><span data-l="en">Monsters</span><span data-l="it" lang="it">Mostri</span></a> · <a href="monster-cards.html"><span data-l="en">Monster cards</span><span data-l="it" lang="it">Carte dei mostri</span></a> · <a href="dragon-curve.html"><span data-l="en">Dragon curve</span><span data-l="it" lang="it">Curva del drago</span></a> · <a href="robots.html"><span data-l="en">Robots</span><span data-l="it" lang="it">Robot</span></a> · <a href="magic-circles.html"><span data-l="en">Magic circles</span><span data-l="it" lang="it">Cerchi magici</span></a> · <a href="origami.html">Origami</a> · <a href="wagara.html"><span data-l="en">Japanese patterns</span><span data-l="it" lang="it">Motivi giapponesi</span></a> · <a href="twisty.html"><span data-l="en">Twisty puzzles</span><span data-l="it" lang="it">Rompicapi a rotazione</span></a> · <a href="wang-dungeon.html"><span data-l="en">Wang dungeon</span><span data-l="it" lang="it">Dungeon di Wang</span></a> · <a href="mana-crystals.html"><span data-l="en">Wulff crystals</span><span data-l="it" lang="it">Cristalli di Wulff</span></a> · <a href="dragon-eggs.html"><span data-l="en">Dragon eggs</span><span data-l="it" lang="it">Uova di drago</span></a> · <a href="galton-tower.html"><span data-l="en">Galton tower</span><span data-l="it" lang="it">Torre di Galton</span></a> · <a href="escher-monsters.html" aria-current="page"><span data-l="en">Escher monsters</span><span data-l="it" lang="it">Mostri alla Escher</span></a> · <a href="minotaur-sphere.html"><span data-l="en">Sphere labyrinth</span><span data-l="it" lang="it">Labirinto sferico</span></a> · <a href="elven-knots.html"><span data-l="en">Elven amulets</span><span data-l="it" lang="it">Amuleti elfici</span></a> · <a href="slime-den.html"><span data-l="en">Slime den</span><span data-l="it" lang="it">Tana degli slime</span></a> · <a href="biomorphs.html"><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></a><!--/forms-nav--></nav>
+<header>
+  <h1><span data-l="en">Escher monster tiles</span><span data-l="it" lang="it">Tessere di mostri alla Escher</span></h1>
+  <p class="lede" data-l="en">Escher drew lizards, birds and horsemen that cover the plane without gaps by first
+  choosing a tiling of polygons and then bending their edges, each bend repeated on the partner edge that the
+  symmetries of the tiling bring onto it. <a href="https://doi.org/10.1145/344779.345022">Kaplan and Salesin (2000)</a>
+  turned this into an optimization, which they called Escherization: given a goal shape, find the tile of one of the
+  isohedral tilings that is closest to it. Here the goal is the silhouette of a monster drawn from a seed, and the
+  tile found is printed as a set of flat interlocking pieces.</p>
+  <p class="lede" data-l="it" lang="it">Escher disegnava lucertole, uccelli e cavalieri che coprono il piano senza
+  vuoti scegliendo prima una tassellatura di poligoni e poi piegandone i lati, ogni piega ripetuta sul lato compagno
+  che le simmetrie della tassellatura portano su di esso. <a href="https://doi.org/10.1145/344779.345022">Kaplan e
+  Salesin (2000)</a> ne hanno fatto un problema di ottimizzazione, che hanno chiamato escherizzazione: data una forma
+  obiettivo, trovare la tessera di una delle tassellature isoedriche più vicina a essa. Qui l'obiettivo è la sagoma di
+  un mostro estratta da un seme, e la tessera trovata si stampa come un insieme di pezzi piatti a incastro.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span data-l="en">monster</span><span data-l="it" lang="it">mostro</span>
+      <span class="inline"><input id="seed" type="number" min="1" max="99999" step="1" value="1"><button id="random" type="button"><span data-l="en">Random</span><span data-l="it" lang="it">A caso</span></button></span></label>
+    <label><span data-l="en">tiling type</span><span data-l="it" lang="it">tipo di tassellatura</span><select id="type">
+      <option value="auto">best · la migliore</option><option value="TTTT">TTTT</option><option value="TTTTTT">TTTTTT</option>
+      <option value="CCCC">CCCC</option><option value="TCCTCC">TCCTCC</option></select></label>
+    <label><span data-l="en">tiles printed</span><span data-l="it" lang="it">tessere stampate</span><input id="count" type="range" min="2" max="16" step="1" value="6"><output id="countout">6</output></label>
+    <label class="check"><span data-l="en">spin</span><span data-l="it" lang="it">rotazione</span><input id="spin" type="checkbox"></label>
+  </div>
+</section>
+<main class="form">
+  <figure>
+    <figcaption><span data-l="en">The goal (dashed, gold), the tile found (outlined, with its corners) and the tiling it
+    makes; the lighter tiles are those turned by a half turn.</span><span data-l="it" lang="it">L'obiettivo (tratteggio
+    oro), la tessera trovata (bordata, con i suoi vertici) e la tassellatura che forma; le tessere più chiare sono quelle
+    girate di mezzo giro.</span></figcaption>
+    <svg id="tiling" class="plane" viewBox="-6 -4.5 12 9" role="img" aria-label="tiling"></svg>
+    <div class="stats" id="stats"></div>
+  </figure>
+  <div>
+    <figure>
+      <figcaption><span data-l="en">The pieces that are printed, in their places; drag to turn.</span><span data-l="it" lang="it">I
+      pezzi che si stampano, al loro posto; trascina per ruotare.</span></figcaption>
+      <div id="stage" class="stage"></div>
+    </figure>
+    <div class="about">
+      <h2><span data-l="en">The method</span><span data-l="it" lang="it">Il metodo</span></h2>
+      <p data-l="en">A tiling type is named here by the kinds of the edges of its tile, as in Heesch's notation: an edge
+      T is carried onto its partner by a translation, so the two have the same shape, and an edge C is carried onto
+      itself by a half turn about its midpoint, so it is symmetric about that point. TTTT and TTTTTT are the
+      parallelogram and the hexagon tiled by translations alone, CCCC is any quadrilateral tiled by half turns about the
+      midpoints of its sides, and TCCTCC is the hexagon of Conway's criterion. Kaplan and Salesin handle all 93 isohedral
+      types, with the angles of the corners as free parameters; this scene keeps these four.</p>
+      <p data-l="it" lang="it">Un tipo di tassellatura è indicato qui dai tipi dei lati della sua tessera, come nella
+      notazione di Heesch: un lato T è portato sul suo compagno da una traslazione, quindi i due hanno la stessa forma, e
+      un lato C è portato su se stesso da un mezzo giro attorno al suo punto medio, quindi è simmetrico rispetto a quel
+      punto. TTTT e TTTTTT sono il parallelogramma e l'esagono tassellati per sole traslazioni, CCCC è un quadrilatero
+      qualunque tassellato da mezzi giri attorno ai punti medi dei lati, e TCCTCC è l'esagono del criterio di Conway.
+      Kaplan e Salesin trattano tutti i 93 tipi isoedrici, con gli angoli dei vertici come parametri liberi; questa scena
+      ne tiene quattro.</p>
+      <p data-l="en">The state of the search is the choice of the corners among 120 points of the outline of the goal.
+      The corners are moved to the nearest polygon the type allows (for TTTT and TTTTTT the nearest centrally symmetric
+      one); each pair of T edges becomes the average of the two pieces of outline it replaces, one of them moved by the
+      translation, and each C edge the average of its piece and of that piece turned about the midpoint. The cost is the
+      mean squared distance between tile and goal, divided by the area of the goal, and simulated annealing moves one
+      corner at a time by a few points for 2500 steps, rejecting the tiles that cross themselves.</p>
+      <p data-l="it" lang="it">Lo stato della ricerca è la scelta dei vertici fra 120 punti del profilo dell'obiettivo. I
+      vertici sono spostati sul poligono più vicino che il tipo ammette (per TTTT e TTTTTT il più vicino a simmetria
+      centrale); ogni coppia di lati T diventa la media dei due tratti di profilo che sostituisce, uno dei due spostato
+      dalla traslazione, e ogni lato C la media del suo tratto e di quel tratto girato attorno al punto medio. Il costo è
+      la distanza quadratica media fra tessera e obiettivo, divisa per l'area dell'obiettivo, e la ricottura simulata
+      sposta un vertice alla volta di qualche punto per 2500 passi, scartando le tessere che si intersecano.</p>
+    </div>
+  </div>
+</main>
+<section id="print">
+  <h2 class="owner-only"><span data-l="en">Download for 3D printing</span><span data-l="it" lang="it">Scarica per la stampa 3D</span></h2>
+  <h2 class="public-only"><span data-l="en">A 3D print of these tiles</span><span data-l="it" lang="it">Una stampa 3D di queste tessere</span></h2>
+  <p class="lede public-only" data-l="en">The tiles can be ordered as a 3D print: flat pieces in the shape of the monster,
+  printed already fitted together with a small clearance, with two studs for the eyes. The request sends the link to
+  the monster and the tiling chosen above.</p>
+  <p class="lede public-only" data-l="it" lang="it">Le tessere si possono ordinare come stampa 3D: pezzi piatti a forma
+  del mostro, stampati già incastrati con un piccolo gioco, con due bottoncini per gli occhi. La richiesta manda il link
+  al mostro e alla tassellatura scelti sopra.</p>
+  <p class="lede owner-only" data-l="en">The tiles nearest to the center of the patch, each a flat prism moved inwards by
+  half the clearance, laid in their places in the tiling; they print flat and fitted together without
+  supports and come apart after printing; the eyes are two studs 0.8 mm high, left out where they would fall too close
+  to the edge of a deformed tile. The size is the largest side of one tile.</p>
+  <p class="lede owner-only" data-l="it" lang="it">Le tessere più vicine al centro del pezzo di tassellatura, ciascuna un
+  prisma piatto rientrato di metà del gioco, posate al loro posto nella tassellatura, così si stampano piatte e
+  incastrate senza supporti e si separano dopo la stampa; gli occhi sono due bottoncini alti 0.8 mm, omessi dove
+  cadrebbero troppo vicino al bordo di una tessera deformata. La dimensione è il lato maggiore di una tessera.</p>
+</section>
+<footer><span data-l="en">The scene is a simplified reimplementation of Escherization: four tiling types, corners on
+the outline of the goal, and averaged edges instead of the optimization over the full space of tiles of the
+paper.</span><span data-l="it" lang="it">La scena è una reimplementazione semplificata dell'escherizzazione: quattro tipi
+di tassellatura, vertici sul profilo dell'obiettivo, e lati mediati invece dell'ottimizzazione su tutto lo spazio delle
+tessere dell'articolo.</span></footer>
+<script type="module" src="src/forms/escher-monsters/escher-monsters.js"></script>
+</body>
+</html>

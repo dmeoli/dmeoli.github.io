@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forms-group" content="anime">
+<title>Monsters typed by mathematics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<link rel="stylesheet" href="src/forms/biomorphs/biomorphs.css">
+<link rel="stylesheet" href="src/forms/monsters/monsters.css">
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="lagrangian-dual.html"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="simplex-path.html"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a> · <a href="packing-mip.html"><span data-l="en">Packing</span><span data-l="it" lang="it">Impaccamento</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attenzione</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Misture di esperti</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Hebbiano</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html">Talk</a><br><span class="group"><span data-l="en">Forms</span><span data-l="it" lang="it">Forme</span></span> <!--forms-nav--><a href="loss-landscape.html"><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a> · <a href="shells.html"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></a> · <a href="phyllotaxis.html"><span data-l="en">Phyllotaxis</span><span data-l="it" lang="it">Fillotassi</span></a> · <a href="radiolarian.html"><span data-l="en">Radiolarians</span><span data-l="it" lang="it">Radiolari</span></a> · <a href="coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a> · <a href="plants.html"><span data-l="en">Plants</span><span data-l="it" lang="it">Piante</span></a> · <a href="snowflakes.html"><span data-l="en">Snowflakes</span><span data-l="it" lang="it">Fiocchi di neve</span></a> · <a href="batman.html">Batman</a> · <a href="minimal-surfaces.html"><span data-l="en">Minimal surfaces</span><span data-l="it" lang="it">Superfici minime</span></a> · <a href="knots.html"><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></a> · <a href="attractors.html"><span data-l="en">Attractors</span><span data-l="it" lang="it">Attrattori</span></a> · <a href="polytopes.html"><span data-l="en">4D polytopes</span><span data-l="it" lang="it">Politopi 4D</span></a> · <a href="chladni.html">Chladni</a> · <a href="equations.html"><span data-l="en">Equations</span><span data-l="it" lang="it">Equazioni</span></a> · <a href="dice.html"><span data-l="en">Fair dice</span><span data-l="it" lang="it">Dadi equi</span></a> · <a href="hat.html"><span data-l="en">The hat</span><span data-l="it" lang="it">Il cappello</span></a> · <a href="fractals.html"><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></a> · <a href="lithophane.html"><span data-l="en">Lithophanes</span><span data-l="it" lang="it">Litofanie</span></a> · <a href="monsters.html" aria-current="page"><span data-l="en">Monsters</span><span data-l="it" lang="it">Mostri</span></a> · <a href="monster-cards.html"><span data-l="en">Monster cards</span><span data-l="it" lang="it">Carte dei mostri</span></a> · <a href="dragon-curve.html"><span data-l="en">Dragon curve</span><span data-l="it" lang="it">Curva del drago</span></a> · <a href="robots.html"><span data-l="en">Robots</span><span data-l="it" lang="it">Robot</span></a> · <a href="magic-circles.html"><span data-l="en">Magic circles</span><span data-l="it" lang="it">Cerchi magici</span></a> · <a href="origami.html">Origami</a> · <a href="wagara.html"><span data-l="en">Japanese patterns</span><span data-l="it" lang="it">Motivi giapponesi</span></a> · <a href="twisty.html"><span data-l="en">Twisty puzzles</span><span data-l="it" lang="it">Rompicapi a rotazione</span></a> · <a href="wang-dungeon.html"><span data-l="en">Wang dungeon</span><span data-l="it" lang="it">Dungeon di Wang</span></a> · <a href="mana-crystals.html"><span data-l="en">Wulff crystals</span><span data-l="it" lang="it">Cristalli di Wulff</span></a> · <a href="dragon-eggs.html"><span data-l="en">Dragon eggs</span><span data-l="it" lang="it">Uova di drago</span></a> · <a href="galton-tower.html"><span data-l="en">Galton tower</span><span data-l="it" lang="it">Torre di Galton</span></a> · <a href="escher-monsters.html"><span data-l="en">Escher monsters</span><span data-l="it" lang="it">Mostri alla Escher</span></a> · <a href="minotaur-sphere.html"><span data-l="en">Sphere labyrinth</span><span data-l="it" lang="it">Labirinto sferico</span></a> · <a href="elven-knots.html"><span data-l="en">Elven amulets</span><span data-l="it" lang="it">Amuleti elfici</span></a> · <a href="slime-den.html"><span data-l="en">Slime den</span><span data-l="it" lang="it">Tana degli slime</span></a> · <a href="biomorphs.html"><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></a><!--/forms-nav--></nav>
+<header>
+  <h1><span data-l="en">Monsters typed by mathematics</span><span data-l="it" lang="it">Mostri tipizzati dalla matematica</span></h1>
+  <p class="lede" data-l="en">In cartoons and card games of monsters each creature has an element (fire,
+  water, rock and so on), which sets its look and the fights it wins. In this scene the element is a
+  family of generative functions that grows parts on a body made like the <a href="biomorphs.html">biomorphs</a>
+  (spheres, ellipsoids and round cones joined by a smooth union). Ice grows plates of snow crystal by
+  the cellular automaton of Reiter (2005), plant grows bushes by a stochastic L-system (Prusinkiewicz
+  and Lindenmayer 1990), fire grows flames by warping space with fractal noise, rock grows clusters
+  of Voronoi polyhedra, and water grows sails cut from a triply periodic minimal surface. A seed and a
+  type give the creature, whose three stages grow both the body and the parameters of its type; one
+  seed keeps its body in all five types.</p>
+  <p class="lede" data-l="it" lang="it">Nei cartoni e nei giochi di carte con i mostri ogni creatura ha un elemento
+  (fuoco, acqua, roccia e così via), che ne decide l'aspetto e gli scontri che vince. In questa scena
+  l'elemento è una famiglia di funzioni generative che fa crescere delle parti su un corpo fatto come i
+  <a href="biomorphs.html">biomorfi</a> (sfere, ellissoidi e coni arrotondati fusi da un'unione
+  smussata). Il ghiaccio fa crescere piastre di cristallo di neve con l'automa cellulare di Reiter
+  (2005), la pianta cespugli con un sistema L stocastico (Prusinkiewicz e Lindenmayer 1990), il fuoco
+  fiamme deformando lo spazio con un rumore frattale, la roccia grappoli di poliedri di Voronoi, e
+  l'acqua vele ritagliate da una superficie minima triplamente periodica. Un seme e un tipo danno la
+  creatura, i cui tre stadi fanno crescere sia il corpo sia i parametri del suo tipo; uno stesso seme
+  tiene il suo corpo in tutti e cinque i tipi.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span data-l="en">type</span><span data-l="it" lang="it">tipo</span>
+      <span class="seg" id="types" role="group"></span></label>
+    <label><span data-l="en">seed</span><span data-l="it" lang="it">seme</span>
+      <span class="inline"><input id="seed" type="number" min="0" max="999999" step="1" value="21"><button id="random" type="button"><span data-l="en">Random</span><span data-l="it" lang="it">A caso</span></button></span></label>
+    <label><span data-l="en">stage</span><span data-l="it" lang="it">stadio</span>
+      <span class="seg" id="stages" role="group">
+        <button type="button" data-s="1">1</button><button type="button" data-s="2">2</button><button type="button" data-s="3">3</button><button type="button" data-s="c"><span data-l="en">all</span><span data-l="it" lang="it">tutti</span></button>
+      </span></label>
+  </div>
+  <div class="transport">
+    <button id="evolve" type="button" class="main"><span data-l="en">Evolve</span><span data-l="it" lang="it">Evolvi</span></button>
+    <button id="share" type="button"><span data-l="en">Copy link</span><span data-l="it" lang="it">Copia link</span></button>
+  </div>
+  <p class="row status" id="status" aria-live="polite"></p>
+</section>
+<main class="bio">
+  <figure>
+    <figcaption id="cap"></figcaption>
+    <div id="stage" class="stage"></div>
+  </figure>
+  <div class="cardcol"><div id="card"></div></div>
+</main>
+<section class="types">
+  <h2><span data-l="en">The five types</span><span data-l="it" lang="it">I cinque tipi</span></h2>
+  <div class="tgrid">
+  <article>
+    <h3><span data-l="en">Ice: a cellular automaton</span><span data-l="it" lang="it">Ghiaccio: un automa cellulare</span></h3>
+    <p data-l="en">The plates are snow crystals grown by the model of Reiter (2005), as in the
+    scene <a href="snowflakes.html">Snowflakes</a>. On a hexagonal grid each cell holds water \(s\);
+    the receptive cells (frozen, or next to a frozen one) gain \(\gamma\) at each step, the water of the
+    others diffuses with rate \(\alpha\), and a cell freezes when \(s \ge 1\). The seed draws
+    \(\alpha\), \(\beta\) and \(\gamma\) among sectored plates, stars and broad branches. Since the crystal is
+    grown once, the stages show it when it reaches 30%, 62% and all of its radius; from the second
+    stage on, a younger copy sits on the head.</p>
+    <p data-l="it" lang="it">Le piastre sono cristalli di neve cresciuti dal modello di Reiter (2005),
+    come nella scena <a href="snowflakes.html">Fiocchi di neve</a>. Su una griglia esagonale ogni cella
+    contiene acqua \(s\); le celle ricettive (gelate, o accanto a una gelata) ne guadagnano \(\gamma\) a
+    ogni passo, l'acqua delle altre si diffonde con tasso \(\alpha\), e una cella gela quando
+    \(s \ge 1\). Il seme sceglie \(\alpha\), \(\beta\) e \(\gamma\) fra piastre a settori, stelle e rami
+    larghi. Il cristallo cresce una volta sola, e gli stadi lo mostrano quando raggiunge il 30%, il 62%
+    e tutto il suo raggio; dal secondo stadio in poi una sua copia più giovane sta sulla testa.</p>
+  </article>
+  <article>
+    <h3><span data-l="en">Plant: an L-system</span><span data-l="it" lang="it">Pianta: un sistema L</span></h3>
+    <p data-l="en">The bushes are written by the stochastic shrub of the scene <a href="plants.html">Plants</a>
+    (after section 1.7 of <i>The Algorithmic Beauty of Plants</i>, 1990). An apex \(A\) becomes
+    \(F[\&A]/[\&A]/A\), \(F[\&A]/A\) or \(FA\) with probabilities 0.4, 0.35 and 0.25, and each internode
+    grows by 1.25 at each step. A seed fixes the random draws and the branching angle (30 to 46
+    degrees), while the stages derive the word 3, 5 and 7 times: the young carries a sprout, and the
+    adult a crown with a leaf at each tip and the radii given by the rule of Leonardo.</p>
+    <p data-l="it" lang="it">I cespugli sono scritti dall'arbusto stocastico della scena <a href="plants.html">Piante</a>
+    (dalla sezione 1.7 di <i>The Algorithmic Beauty of Plants</i>, 1990). Un apice \(A\) diventa
+    \(F[\&A]/[\&A]/A\), \(F[\&A]/A\) o \(FA\) con probabilità 0.4, 0.35 e 0.25, e ogni internodo cresce
+    di 1.25 a ogni passo. Il seme fissa le estrazioni a caso e l'angolo dei rami (da 30 a 46 gradi),
+    mentre gli stadi derivano la parola 3, 5 e 7 volte: il piccolo porta un germoglio, e l'adulto una
+    chioma con una foglia a ogni punta e i raggi dati dalla regola di Leonardo.</p>
+  </article>
+  <article>
+    <h3><span data-l="en">Fire: fractal noise</span><span data-l="it" lang="it">Fuoco: rumore frattale</span></h3>
+    <p data-l="en">A flame is a cone \(d(p)\) pointing up whose space is warped before it is
+    measured: the flame is the set where \(d(p + W\,h\,(n_1(p), n_2(p), 0)) - a\,h\,n_3(p) &lt; 0\), with
+    \(h\) growing from 0 at the root to 1 at the tip and each \(n_i\) a fractal Brownian motion, i.e.,
+    a sum \(\sum_o 2^{-o} v(2^o p)\) of value noise \(v\) (Perlin 1985). Displacing a solid by noise in
+    this way is the hypertexture of Perlin and Hoffert (1989). The stages add an octave each (2, 3 and
+    4) and make the flames taller, and the adult has a third flame on its back.</p>
+    <p data-l="it" lang="it">Una fiamma è un cono \(d(p)\) rivolto in alto il cui spazio è deformato
+    prima di misurarlo: la fiamma è l'insieme in cui \(d(p + W\,h\,(n_1(p), n_2(p), 0)) - a\,h\,n_3(p) &lt; 0\),
+    con \(h\) che cresce da 0 alla radice a 1 in punta e ogni \(n_i\) un moto browniano frattale, cioè
+    una somma \(\sum_o 2^{-o} v(2^o p)\) di rumore di valore \(v\) (Perlin 1985). Spostare un solido con
+    un rumore in questo modo è l'ipertessitura di Perlin e Hoffert (1989). Gli stadi aggiungono
+    un'ottava ciascuno (2, 3 e 4) e alzano le fiamme, e l'adulto ha una terza fiamma sul dorso.</p>
+  </article>
+  <article>
+    <h3><span data-l="en">Rock: Voronoi polyhedra</span><span data-l="it" lang="it">Roccia: poliedri di Voronoi</span></h3>
+    <p data-l="en">A cluster takes random seeds \(p_i\) in a ball, and the stone of \(p_i\) is
+    its Voronoi cell \(\{x : |x - p_i| \le |x - p_j| \ \forall j\}\) (Voronoi 1908), cut by a plane facing
+    out at a random height. A small gap on each face turns the faces between stones into cracks. Inside a
+    cell, the distance to its stone is the largest of the distances to its planes, and computing it
+    needs only the nearest seed. In the three stages the cluster on the back has 6, 9 and 12 seeds, and the adult has
+    a third cluster on its head.</p>
+    <p data-l="it" lang="it">Un grappolo prende semi a caso \(p_i\) in una palla, e la pietra di \(p_i\) è
+    la sua cella di Voronoi \(\{x : |x - p_i| \le |x - p_j| \ \forall j\}\) (Voronoi 1908), tagliata da un
+    piano rivolto all'esterno a un'altezza casuale. Un piccolo spazio su ogni faccia trasforma le facce
+    fra le pietre in crepe. La distanza da una cella è la più grande delle distanze dai suoi piani, e per
+    calcolarla basta il seme più vicino. Nei tre stadi il grappolo sul dorso ha 6, 9 e 12 semi, e
+    l'adulto ha un terzo grappolo sulla testa.</p>
+  </article>
+  <article>
+    <h3><span data-l="en">Water: minimal surfaces</span><span data-l="it" lang="it">Acqua: superfici minime</span></h3>
+    <p data-l="en">The sails are ellipsoids filled by a sheet of a triply periodic minimal
+    surface: the gyroid \(\sin x \cos y + \sin y \cos z + \sin z \cos x = 0\) of Schoen (1970), the P and
+    D surfaces of Schwarz (1890) or that of Neovius (1883), in their trigonometric approximations as in
+    the scene <a href="minimal-surfaces.html">Minimal surfaces</a>. Its sheet is the set where
+    \(|F| / |\nabla F|\) is below half its thickness. A seed picks the surface, its period and its
+    phase; the stages enlarge the sail and add one over the head (stage 2) and one on the tail (stage
+    3, when there is a tail).</p>
+    <p data-l="it" lang="it">Le vele sono ellissoidi riempiti da una lamina di una superficie minima
+    triplamente periodica: il giroide \(\sin x \cos y + \sin y \cos z + \sin z \cos x = 0\) di Schoen
+    (1970), le superfici P e D di Schwarz (1890) o quella di Neovius (1883), nelle loro approssimazioni
+    trigonometriche come nella scena <a href="minimal-surfaces.html">Superfici minime</a>. La lamina è
+    l'insieme in cui \(|F| / |\nabla F|\) sta sotto metà del suo spessore. Il seme sceglie la superficie,
+    il periodo e la fase; gli stadi allargano la vela e ne aggiungono una sulla testa (stadio 2) e una
+    sulla coda (stadio 3, quando c'è una coda).</p>
+  </article>
+  <article>
+    <h3><span data-l="en">The circle of advantages</span><span data-l="it" lang="it">Il cerchio dei vantaggi</span></h3>
+    <p data-l="en">On a circle of the types (water, fire, ice, plant, rock), each beats the
+    next two. Water puts out fire and melts ice; fire melts ice and burns plants; ice splits rock by
+    frost and freezes plants; plants drink water and split rock with their roots; rock dams water and
+    smothers fire. Thus each type beats two and loses to two, as in rock, paper, scissors with five
+    gestures (a regular tournament on five vertices), and the duel of the <a href="monster-cards.html">cards</a>
+    uses it.</p>
+    <p data-l="it" lang="it">I tipi stanno su un cerchio (acqua, fuoco, ghiaccio, pianta, roccia), e
+    ognuno batte i due successivi. L'acqua spegne il fuoco e scioglie il ghiaccio; il fuoco scioglie il
+    ghiaccio e brucia le piante; il ghiaccio spacca la roccia col gelo e congela le piante; le piante
+    bevono l'acqua e spaccano la roccia con le radici; la roccia sbarra l'acqua e soffoca il fuoco. Così
+    ogni tipo ne batte due e perde con due, come in sasso, carta, forbici con cinque gesti (un torneo
+    regolare su cinque vertici), e il duello delle <a href="monster-cards.html">carte</a> lo usa.</p>
+  </article>
+  </div>
+  <p class="note" data-l="en">Names are drawn from a set of syllables for each type: the young gets
+  two syllables, the middle stage three, and the adult three with an ending. The creatures, their
+  names and the rules are original to this page, and the scene reimplements each model from its
+  equations.</p>
+  <p class="note" data-l="it" lang="it">I nomi sono estratti da un insieme di sillabe per ogni tipo: il piccolo ne
+  ha due, lo stadio di mezzo tre, e l'adulto tre con una desinenza. Le creature, i loro nomi e le
+  regole sono originali di questa pagina, e la scena reimplementa ogni modello dalle sue equazioni.</p>
+</section>
+<section id="print">
+  <h2><span data-l="en">A figurine for 3D printing</span><span data-l="it" lang="it">Una statuina per la stampa 3D</span></h2>
+  <p class="lede" data-l="en">The monster is printed as one closed solid, its body and the parts of its
+  type fused by the smooth union that draws them, standing on a rounded plate (or, without the plate,
+  cut flat underneath). Its size is the height of the tallest figure, and "all" puts the three stages
+  side by side on one plate. Flames, leaves and the edges of the sails overhang; hence, the status
+  line gives the share of the surface facing down by more than 45 degrees. Up to a few percent the
+  figurine usually prints without supports, while beyond that it needs tree supports.</p>
+  <p class="lede" data-l="it" lang="it">Il mostro si stampa come un solo solido chiuso, con il corpo e le parti del
+  suo tipo fusi dall'unione smussata che li disegna, in piedi su una base arrotondata (o, senza la base,
+  tagliato in piano sotto). La dimensione è l'altezza della figura più alta, e "tutti" mette i tre
+  stadi uno accanto all'altro su una sola base. Fiamme, foglie e bordi delle vele sporgono; quindi la
+  riga di stato dà la quota di superficie rivolta in basso di più di 45 gradi. Fino a qualche percento
+  di solito la statuina si stampa senza supporti, mentre oltre servono supporti ad albero.</p>
+  <p class="lede public-only" data-l="en">The monster on the screen can be ordered as a 3D print: the
+  request sends the link to it, with its seed, type and stage, and the fields above.</p>
+  <p class="lede public-only" data-l="it" lang="it">Il mostro sullo schermo si può ordinare come stampa
+  3D: la richiesta manda il link, con il suo seme, il tipo e lo stadio, e i campi qui sopra.</p>
+</section>
+<script type="module" src="src/forms/monsters/monsters.js"></script>
+</body>
+</html>

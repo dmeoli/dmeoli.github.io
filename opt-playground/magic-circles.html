@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forms-group" content="anime">
+<title>Magic circles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<style>
+main.mc { align-items: start; }
+@media (max-width: 860px) { main.mc { grid-template-columns: minmax(0, 1fr); } }
+main.mc figcaption { min-height: 0; }
+#flat { width: 100%; aspect-ratio: 1; display: block; background: var(--panel); border: 1px solid var(--rule); border-radius: 8px; }
+#stage canvas { border-radius: 8px; touch-action: none; }
+.inline { display: inline-flex; gap: 6px; }
+.controls input[type=number] { width: 6.5em; }
+.facts { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 14px; margin: 14px 0; font-size: 15px; }
+.facts dt { font: 11px 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-soft); padding-top: 4px; }
+.facts dd { margin: 0; }
+.eq { overflow-x: auto; }
+.note { font-size: 15px; color: var(--ink-soft); max-width: 80ch; }
+#print { margin-top: 28px; }
+#print h2 { font-weight: 600; font-size: 22px; margin: 0 0 6px; color: var(--accent); }
+#print .lede { max-width: 80ch; font-size: 15px; }
+</style>
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="lagrangian-dual.html"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="simplex-path.html"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a> · <a href="packing-mip.html"><span data-l="en">Packing</span><span data-l="it" lang="it">Impaccamento</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attenzione</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Misture di esperti</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Hebbiano</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html">Talk</a><br><span class="group"><span data-l="en">Forms</span><span data-l="it" lang="it">Forme</span></span> <!--forms-nav--><a href="loss-landscape.html"><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a> · <a href="shells.html"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></a> · <a href="phyllotaxis.html"><span data-l="en">Phyllotaxis</span><span data-l="it" lang="it">Fillotassi</span></a> · <a href="radiolarian.html"><span data-l="en">Radiolarians</span><span data-l="it" lang="it">Radiolari</span></a> · <a href="coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a> · <a href="plants.html"><span data-l="en">Plants</span><span data-l="it" lang="it">Piante</span></a> · <a href="snowflakes.html"><span data-l="en">Snowflakes</span><span data-l="it" lang="it">Fiocchi di neve</span></a> · <a href="batman.html">Batman</a> · <a href="minimal-surfaces.html"><span data-l="en">Minimal surfaces</span><span data-l="it" lang="it">Superfici minime</span></a> · <a href="knots.html"><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></a> · <a href="attractors.html"><span data-l="en">Attractors</span><span data-l="it" lang="it">Attrattori</span></a> · <a href="polytopes.html"><span data-l="en">4D polytopes</span><span data-l="it" lang="it">Politopi 4D</span></a> · <a href="chladni.html">Chladni</a> · <a href="equations.html"><span data-l="en">Equations</span><span data-l="it" lang="it">Equazioni</span></a> · <a href="dice.html"><span data-l="en">Fair dice</span><span data-l="it" lang="it">Dadi equi</span></a> · <a href="hat.html"><span data-l="en">The hat</span><span data-l="it" lang="it">Il cappello</span></a> · <a href="fractals.html"><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></a> · <a href="lithophane.html"><span data-l="en">Lithophanes</span><span data-l="it" lang="it">Litofanie</span></a> · <a href="monsters.html"><span data-l="en">Monsters</span><span data-l="it" lang="it">Mostri</span></a> · <a href="monster-cards.html"><span data-l="en">Monster cards</span><span data-l="it" lang="it">Carte dei mostri</span></a> · <a href="dragon-curve.html"><span data-l="en">Dragon curve</span><span data-l="it" lang="it">Curva del drago</span></a> · <a href="robots.html"><span data-l="en">Robots</span><span data-l="it" lang="it">Robot</span></a> · <a href="magic-circles.html" aria-current="page"><span data-l="en">Magic circles</span><span data-l="it" lang="it">Cerchi magici</span></a> · <a href="origami.html">Origami</a> · <a href="wagara.html"><span data-l="en">Japanese patterns</span><span data-l="it" lang="it">Motivi giapponesi</span></a> · <a href="twisty.html"><span data-l="en">Twisty puzzles</span><span data-l="it" lang="it">Rompicapi a rotazione</span></a> · <a href="wang-dungeon.html"><span data-l="en">Wang dungeon</span><span data-l="it" lang="it">Dungeon di Wang</span></a> · <a href="mana-crystals.html"><span data-l="en">Wulff crystals</span><span data-l="it" lang="it">Cristalli di Wulff</span></a> · <a href="dragon-eggs.html"><span data-l="en">Dragon eggs</span><span data-l="it" lang="it">Uova di drago</span></a> · <a href="galton-tower.html"><span data-l="en">Galton tower</span><span data-l="it" lang="it">Torre di Galton</span></a> · <a href="escher-monsters.html"><span data-l="en">Escher monsters</span><span data-l="it" lang="it">Mostri alla Escher</span></a> · <a href="minotaur-sphere.html"><span data-l="en">Sphere labyrinth</span><span data-l="it" lang="it">Labirinto sferico</span></a> · <a href="elven-knots.html"><span data-l="en">Elven amulets</span><span data-l="it" lang="it">Amuleti elfici</span></a> · <a href="slime-den.html"><span data-l="en">Slime den</span><span data-l="it" lang="it">Tana degli slime</span></a> · <a href="biomorphs.html"><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></a><!--/forms-nav--></nav>
+<header>
+  <h1><span data-l="en">Magic circles</span><span data-l="it" lang="it">Cerchi magici</span></h1>
+  <p class="lede" data-l="en">The magic circles of anime are usually built from a few plane figures with
+  rotational symmetry: concentric rings, a star polygon, small circles on its corners, a curve of the
+  spirograph and a band of glyphs. Here a seed and the order \(n\) of the symmetry draw one, which turns
+  as in the films and becomes a medallion in relief.</p>
+  <p class="lede" data-l="it" lang="it">I cerchi magici degli anime sono di solito fatti di poche figure piane con
+  simmetria di rotazione: anelli concentrici, un poligono stellato, piccoli cerchi sui suoi vertici, una
+  curva dello spirografo e una fascia di glifi. Qui un seme e l'ordine \(n\) della simmetria ne disegnano
+  uno, che gira come nei film e diventa un medaglione in rilievo.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span data-l="en">seed</span><span data-l="it" lang="it">seme</span>
+      <span class="inline"><input id="seed" type="number" min="0" max="999999" step="1" value="7"><button id="random" type="button"><span data-l="en">Random</span><span data-l="it" lang="it">A caso</span></button></span></label>
+    <label><span data-l="en">symmetry n</span><span data-l="it" lang="it">simmetria n</span><input id="n" type="range" min="3" max="12" step="1" value="6"><output id="nout">6</output></label>
+    <label><span data-l="en">star step k</span><span data-l="it" lang="it">passo k</span><input id="k" type="range" min="1" max="5" step="1" value="2"><output id="kout">2</output></label>
+    <label><span data-l="en">curve</span><span data-l="it" lang="it">curva</span><select id="curve">
+      <option value="hypo">hypotrochoid</option><option value="epi">epitrochoid</option><option value="none">star</option></select></label>
+    <label class="check"><span data-l="en">glyphs</span><span data-l="it" lang="it">glifi</span><input id="glyphs" type="checkbox" checked></label>
+    <label class="check"><span data-l="en">turning</span><span data-l="it" lang="it">in rotazione</span><input id="spin" type="checkbox" checked></label>
+  </div>
+</section>
+<main class="mc">
+  <figure>
+    <figcaption><span data-l="en">The lines of the circle; the rings turn at different speeds.</span><span data-l="it" lang="it">Le linee del cerchio; gli anelli girano a velocità diverse.</span></figcaption>
+    <canvas id="flat" width="600" height="600"></canvas>
+    <dl class="facts" id="facts"></dl>
+  </figure>
+  <figure>
+    <figcaption><span data-l="en">The medallion that is printed; drag to turn.</span><span data-l="it" lang="it">Il medaglione che si stampa; trascina per ruotare.</span></figcaption>
+    <div id="stage" class="stage"></div>
+  </figure>
+</main>
+<section class="note">
+  <p data-l="en">A star polygon \(\{n/k\}\) (Poinsot 1809; the notation is that of Coxeter, <i>Regular
+  Polytopes</i>, 1948) joins every \(k\)-th of \(n\) points equally spaced on a circle; when
+  \(d = \gcd(n, k) > 1\) the line closes before visiting all of them, and the figure is \(d\) copies of
+  \(\{n/d\,/\,k/d\}\), as the hexagram \(\{6/2\}\) is two triangles. Its sides stay at distance
+  \(r\cos(\pi k / n)\) from the centre, which is the radius of the inner ring. The curve inside is a
+  roulette: a circle of radius \(q\) rolls inside (hypotrochoid) or outside (epitrochoid) a circle of
+  radius \(p\), and a pen at distance \(d\) from its centre draws</p>
+  <p data-l="it" lang="it">Un poligono stellato \(\{n/k\}\) (Poinsot 1809; la notazione è quella di
+  Coxeter, <i>Regular Polytopes</i>, 1948) unisce un punto ogni \(k\) fra \(n\) punti equidistanti su
+  un cerchio; quando \(d = \gcd(n, k) > 1\) la linea si chiude prima di averli visitati tutti, e la
+  figura è fatta di \(d\) copie di \(\{n/d\,/\,k/d\}\), come l'esagramma \(\{6/2\}\) è fatto di due
+  triangoli. I suoi lati restano a distanza \(r\cos(\pi k / n)\) dal centro, che è il raggio
+  dell'anello interno. La curva all'interno è una rulletta: un cerchio di raggio \(q\) rotola dentro
+  (ipotrocoide) o fuori (epitrocoide) un cerchio di raggio \(p\), e una penna a distanza \(d\) dal suo
+  centro disegna</p>
+  <p class="eq">\[ x(t) = (p \mp q)\cos t \pm d \cos\!\Big(\frac{p \mp q}{q}\, t\Big), \qquad
+  y(t) = (p \mp q)\sin t - d \sin\!\Big(\frac{p \mp q}{q}\, t\Big), \]</p>
+  <p data-l="en">with the upper signs inside and the lower ones outside (see, e.g., E. H. Lockwood,
+  <i>A Book of Curves</i>, Cambridge University Press, 1961). With \(\gcd(p, q) = 1\) the curve closes
+  after \(t = 2\pi q\) and is invariant under rotations by \(2\pi/p\); here \(p\) is a multiple of
+  \(n\), so that the curve keeps the symmetry of the star. The glyphs are strokes between the points of
+  a \(3 \times 3\) lattice drawn from the seed; they are not a script, and they are the only part of the
+  circle without the \(n\)-fold symmetry.</p>
+  <p data-l="it" lang="it">con i segni di sopra dentro e quelli di sotto fuori (si veda, per esempio,
+  E. H. Lockwood, <i>A Book of Curves</i>, Cambridge University Press, 1961). Con \(\gcd(p, q) = 1\)
+  la curva si chiude dopo \(t = 2\pi q\) ed è invariante per rotazioni di \(2\pi/p\); qui \(p\) è un
+  multiplo di \(n\), così che la curva conserva la simmetria della stella. I glifi sono tratti fra i
+  punti di un reticolo \(3 \times 3\) estratti dal seme; non sono una scrittura, e sono l'unica parte
+  del cerchio senza la simmetria di ordine \(n\).</p>
+</section>
+<section id="print">
+  <h2 class="owner-only"><span data-l="en">Download for 3D printing</span><span data-l="it" lang="it">Scarica per la stampa 3D</span></h2>
+  <h2 class="public-only"><span data-l="en">A 3D print of this circle</span><span data-l="it" lang="it">Una stampa 3D di questo cerchio</span></h2>
+  <p class="lede public-only" data-l="en">The circle above can be ordered as a medallion: a disc
+  whose lines stand in relief, in the diameter and color you prefer (two colors work well, the disc in
+  one and the lines in another). The request sends the link to the circle with its seed, so that the
+  print has the same lines as the screen.</p>
+  <p class="lede public-only" data-l="it" lang="it">Il cerchio qui sopra si può ordinare come
+  medaglione: un disco con le linee in rilievo, nel diametro e nel colore che preferisci (due colori
+  funzionano bene, il disco in uno e le linee in un altro). La richiesta manda il link al cerchio con il
+  suo seme, così che la stampa abbia le stesse linee dello schermo.</p>
+  <p class="lede owner-only" data-l="en">One closed solid: a flat disc as wide as the size, with the
+  lines raised on it by the relief, their flanks sloping over 0.35 mm. It prints flat without supports;
+  a filament change at the height of the disc gives the lines a color of their own. Lines narrower than
+  two nozzle widths (about 0.8 mm for a 0.4 mm nozzle) may print broken.</p>
+  <p class="lede owner-only" data-l="it" lang="it">Un solo solido chiuso: un disco piatto largo quanto
+  la dimensione, con le linee in rilievo sopra, i fianchi inclinati su 0.35 mm. Si stampa in piano senza
+  supporti; un cambio di filamento all'altezza del disco dà alle linee un colore proprio. Linee più
+  strette di due larghezze dell'ugello (circa 0.8 mm per un ugello da 0.4 mm) possono uscire
+  interrotte.</p>
+</section>
+<script type="module" src="src/forms/magic-circles/magic-circles.js"></script>
+</body>
+</html>
