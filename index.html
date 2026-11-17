@@ -264,6 +264,36 @@ body::before {
 .lightbox .lb-bar a:hover, .lightbox .lb-bar a:focus-visible { background: rgb(244 238 252 / .16); }
 .lightbox .lb-bar a[hidden] { display: none; }
 #artbox img { max-height: calc(90vh - 3.5rem); }
+/* the back of an opened work: the card turns over on a click of the image or
+   of the button; with reduced motion the back is shown under the image */
+#artbox { cursor: default; }
+#artbox .lb-scene { perspective: 1800px; display: grid; justify-items: center; }
+#artbox .lb-card { position: relative; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.3, .1, .2, 1); cursor: pointer; }
+#artbox.flipped .lb-card { transform: rotateY(180deg); }
+#artbox.instant .lb-card { transition: none; }
+#artbox .lb-face { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+#artbox .lb-back {
+  position: absolute; inset: 0; transform: rotateY(180deg); overflow-y: auto; overscroll-behavior: contain;
+  padding: var(--f21); border-radius: 4px; color: var(--ink); background: var(--tone-2);
+  box-shadow: inset 0 0 0 1px var(--gold-3), 0 24px 80px rgb(0 0 0 / .45); text-align: left;
+}
+#artbox .lb-back h3 { margin: 0 0 var(--f8); font-family: var(--serif); font-weight: 500; color: var(--title); line-height: 1.2; }
+#artbox .lb-back dl { display: grid; grid-template-columns: auto 1fr; gap: var(--f3) var(--f13); margin: 0 0 var(--f13); font-size: var(--s-05); }
+#artbox .lb-back dt { font-family: var(--mono); font-size: var(--s-075); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); align-self: baseline; }
+#artbox .lb-back dd { margin: 0; }
+#artbox .lb-back p { margin: 0 0 var(--f8); font-size: var(--s-025); line-height: 1.5; }
+.lightbox .lb-bar button { font-family: var(--mono); font-size: var(--s-075); letter-spacing: .1em; text-transform: uppercase; color: #f4eefc; background: none; border: 1px solid rgb(244 238 252 / .45); border-radius: 999px; padding: var(--f3, .2rem) var(--f13); cursor: pointer; }
+.lightbox .lb-bar button:hover, .lightbox .lb-bar button:focus-visible { background: rgb(244 238 252 / .16); }
+.lightbox .lb-bar button[aria-expanded="true"] { border-color: var(--gold); background: rgb(244 238 252 / .16); }
+@media (max-width: 480px) { #artbox .lb-back { padding: var(--f13); } #artbox .lb-back p { font-size: var(--s-05); } }
+@media (prefers-reduced-motion: reduce) {
+  #artbox { overflow-y: auto; max-height: 92vh; }
+  #artbox.flipped .lb-card { transform: none; }
+  /* as wide as the image, whatever the length of the text */
+  #artbox .lb-back { position: static; transform: none; display: none; contain: inline-size; margin-top: var(--f13); }
+  #artbox.flipped .lb-back { display: block; }
+  #artbox.flipped img { max-height: 45vh; }
+}
 .art .materico { margin-top: 0; font-size: var(--s-025); color: var(--ink-soft); }
 .eyebrow {
   font-family: var(--mono); font-size: var(--s-075); letter-spacing: .146em;
@@ -2503,7 +2533,7 @@ Decomposition methods and solvers for large-scale
 </footer>
 
 </div>
-<dialog class="lightbox" id="artbox" aria-label="Artwork" data-label-it="Opera"><img alt=""><p class="lb-bar"><a class="hd" download><span data-l="en">Download HD</span><span data-l="it" lang="it">Scarica in HD</span></a><a class="buy"><span data-l="en">Request a Materico 3D print</span><span data-l="it" lang="it">Richiedi una stampa 3D Materico</span></a></p></dialog>
+<dialog class="lightbox" id="artbox" aria-label="Artwork" data-label-it="Opera"><div class="lb-scene"><div class="lb-card"><div class="lb-face lb-front"><img alt=""></div><div class="lb-face lb-back" id="artbox-back" role="region" aria-label="About this work" data-label-it="Retro dell'opera" aria-hidden="true" inert></div></div></div><p class="lb-bar"><button type="button" class="flip" aria-expanded="false" aria-controls="artbox-back"><span data-l="en">About this work</span><span data-l="it" lang="it">Retro</span></button><a class="hd" download><span data-l="en">Download HD</span><span data-l="it" lang="it">Scarica in HD</span></a><a class="buy"><span data-l="en">Request a Materico 3D print</span><span data-l="it" lang="it">Richiedi una stampa 3D Materico</span></a><button type="button" class="close"><span data-l="en">Close</span><span data-l="it" lang="it">Chiudi</span></button></p></dialog>
 <dialog class="agegate" id="agegate" aria-labelledby="agegate-t">
   <h3 id="agegate-t"><span data-l="en">Artistic nudity</span><span data-l="it" lang="it">Nudo artistico</span></h3>
   <p data-l="en">Some works in this exhibition show nude adult figures. To see them, confirm that you are at least 18 years old. The confirmation lasts while you stay on this page and is not stored: when you reload or come back, the works are covered again.</p>
@@ -2952,8 +2982,78 @@ Decomposition methods and solvers for large-scale
         buy.href = 'mailto:donato.meoli@outlook.com?subject=' + encodeURIComponent('Stampa 3D Materico: ' + work) +
           '&body=' + encodeURIComponent((it ? 'Opera: ' : 'Work: ') + work + '\n' + location.origin + b.getAttribute('data-full') +
           '\n\n' + (it ? 'Dimensione: \nNote (personalizzazione): ' : 'Size: \nNotes (personalisation): ') + '\n');
+      turn(false, true);
+      current = b;
+      back.textContent = '';
       box.showModal();
+      fill();
     }
+    /* the back of the work: who it is after, the series and its story, from
+       assets/art/retro.json (written by the builder), read at the first opening */
+    var back = document.getElementById('artbox-back'), flip = box.querySelector('.flip'),
+        card = box.querySelector('.lb-card'), retro = null, asked = false, current = null;
+    function both(tag, o, cls) {
+      var e = document.createElement(tag);
+      if (cls) e.className = cls;
+      ['en', 'it'].forEach(function (l) {
+        var s = document.createElement('span');
+        s.setAttribute('data-l', l);
+        if (l === 'it') s.lang = 'it';
+        s.textContent = typeof o === 'string' ? o : (o[l] || o.en || '');
+        e.appendChild(s);
+      });
+      return e;
+    }
+    function fill() {
+      if (!current) return;
+      if (!retro) {
+        if (!asked && window.fetch) {
+          asked = true;
+          fetch('/assets/art/retro.json').then(function (r) { return r.json(); })
+            .then(function (j) { retro = j; fill(); }, function () {});
+        }
+        return;
+      }
+      var id = current.getAttribute('data-full').split('/').pop().replace(/\.webp$/, ''),
+          r = retro[id] || {}, f = current.parentNode.querySelector('figcaption');
+      back.textContent = '';
+      back.appendChild(both('h3', { en: f.querySelector('[data-l="en"]').textContent,
+                                    it: f.querySelector('[data-l="it"]').textContent }));
+      var dl = document.createElement('dl');
+      function row(k, v) { if (v) { dl.appendChild(both('dt', k)); dl.appendChild(both('dd', v)); } }
+      row({ en: 'After', it: 'Alla maniera di' }, r.after);
+      row({ en: 'Exhibition', it: 'Mostra' }, r.series);
+      /* the exhibitions on disorders: the disorder, why this painter and the
+         grade of the evidence on the painter's experience of it */
+      row({ en: 'Disorder', it: 'Disturbo' }, r.disorder);
+      row({ en: 'Evidence', it: 'Evidenze' }, r.grade);
+      back.appendChild(dl);
+      if (r.why) back.appendChild(both('p', r.why, 'lb-why'));
+      if (r.en) back.appendChild(both('p', r));
+    }
+    function turn(on, now) {
+      if (now || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        box.classList.add('instant'); void card.offsetWidth;
+      }
+      box.classList.toggle('flipped', on);
+      flip.setAttribute('aria-expanded', on);
+      back.setAttribute('aria-hidden', !on);
+      back.inert = !on;
+      if (now) { void card.offsetWidth; box.classList.remove('instant'); }
+      else setTimeout(function () { box.classList.remove('instant'); }, 50);
+    }
+    function toggle() { turn(!box.classList.contains('flipped')); fill(); }
+    flip.addEventListener('click', function (e) { e.stopPropagation(); toggle(); });
+    card.addEventListener('click', function (e) { e.stopPropagation(); toggle(); });
+    box.querySelector('.close').addEventListener('click', function (e) { e.stopPropagation(); box.close(); });
+    /* Esc turns a flipped work back, and closes it only from the front */
+    box.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && box.classList.contains('flipped')) { e.preventDefault(); turn(false); flip.focus(); }
+    });
+    box.addEventListener('cancel', function (e) {
+      if (box.classList.contains('flipped')) { e.preventDefault(); turn(false); }
+    });
+    box.addEventListener('close', function () { turn(false, true); current = null; });
     hd.addEventListener('click', function (e) { e.stopPropagation(); });
     buy.addEventListener('click', function (e) { e.stopPropagation(); });
     for (var i = 0; i < bs.length; i++)
@@ -2969,7 +3069,8 @@ Decomposition methods and solvers for large-scale
       if (pending) open(pending);
     });
     gate.querySelector('.no').addEventListener('click', function () { gate.close(); });
-    box.addEventListener('click', function () { box.close(); });
+    /* a click outside the work (on the backdrop) closes it */
+    box.addEventListener('click', function (e) { if (e.target === box) box.close(); });
 
     var API = 'https://tradutturi-372868569544.europe-west1.run.app/translate';
     /* the service sleeps when nobody uses it and takes some seconds to wake:
