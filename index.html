@@ -805,6 +805,25 @@ footer {
 }
 .aura-presets button[aria-pressed="true"] { color: var(--accent); }
 .aura-presets button[aria-pressed="true"] i { box-shadow: 0 0 0 2px var(--ground), 0 0 0 4px var(--accent); }
+.aura-why-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--f5) var(--f13); margin-top: calc(-1 * var(--f8)); }
+.aura .aura-why-btn {
+  display: inline-flex; align-items: center; gap: var(--f5); background: none; border: 0; padding: 0;
+  color: var(--link); font-size: var(--s-025); text-decoration: underline var(--gold-3) 1px; text-underline-offset: 4px;
+}
+.aura .aura-why-btn:hover { text-decoration-color: var(--gold); }
+.aura .aura-why-btn::after {
+  content: ""; width: .45em; height: .45em; border: solid currentColor; border-width: 0 1.5px 1.5px 0;
+  transform: translateY(-.15em) rotate(45deg); transition: transform .2s ease-out;
+}
+.aura .aura-why-btn[aria-expanded="true"]::after { transform: translateY(.1em) rotate(-135deg); }
+.aura-nd {
+  font-family: var(--mono); font-size: var(--s-075); letter-spacing: .06em; color: var(--ink-faint);
+  border: 1px solid var(--gold-3); border-radius: 999px; padding: 1px var(--f8);
+}
+.aura-why { display: grid; gap: var(--f8); padding: var(--f13); border-radius: 10px; background: var(--surface); box-shadow: inset 3px 0 0 var(--accent); }
+.aura-why[hidden] { display: none; }
+.aura .aura-why p { color: var(--ink); }
+.aura-why a { color: var(--link); }
 .aura .aura-reset {
   justify-self: start; font-family: var(--mono); font-size: var(--s-075); letter-spacing: .12em; text-transform: uppercase;
   border-radius: 999px; padding: var(--f5) var(--f13); border: 1px solid var(--accent); background: none; color: var(--accent);
@@ -2204,6 +2223,16 @@ Decomposition methods and solvers for large-scale
     <button type="button" class="aura-close" aria-label="Close">&times;</button>
   </div>
   <p><span data-l="en">Choose the color you find most comfortable: the colors of the whole site change accordingly, together with their complementary ones.</span><span data-l="it" lang="it">Scegli il colore con cui ti trovi pi&ugrave; a tuo agio: i colori di tutto il sito cambiano di conseguenza, insieme ai loro complementari.</span></p>
+  <div class="aura-why-row">
+    <button type="button" class="aura-why-btn" aria-expanded="false" aria-controls="aura-why"><span data-l="en">Why an aura?</span><span data-l="it" lang="it">Perch&eacute; un&rsquo;aura?</span></button>
+    <span class="aura-nd"><span data-l="en">neurodivergent-friendly</span><span data-l="it" lang="it">pensata per chi &egrave; neurodivergente</span></span>
+  </div>
+  <div class="aura-why" id="aura-why" hidden>
+    <p><span data-l="en">The name comes from the colored &ldquo;auras&rdquo; that some people say they see around others; research has compared these reports with synesthesia (where a stimulus also evokes a color): <a href="https://doi.org/10.1080/02643290342000393">Ward (2004)</a> described a woman in whom the names of people she knows, and words with an emotional charge, evoke colors, while <a href="https://doi.org/10.1016/j.concog.2011.11.010">Mil&aacute;n et al. (2012)</a>, comparing synesthetes who see colors on familiar faces with the descriptions of auras, found the two experiences rather different.</span><span data-l="it" lang="it">Il nome viene dalle &ldquo;aure&rdquo; colorate che alcune persone dicono di vedere intorno agli altri; la ricerca ha confrontato questi racconti con la sinestesia (in cui uno stimolo evoca anche un colore): <a href="https://doi.org/10.1080/02643290342000393">Ward (2004)</a> ha descritto una donna in cui i nomi delle persone che conosce, e le parole cariche di emozione, evocano colori, mentre <a href="https://doi.org/10.1016/j.concog.2011.11.010">Mil&aacute;n et al. (2012)</a>, confrontando sinesteti che vedono colori sui volti familiari con le descrizioni delle aure, hanno trovato le due esperienze piuttosto diverse.</span></p>
+    <p><span data-l="en">Synesthesia is almost three times more frequent in autistic adults (18.9% against 7.2%, <a href="https://doi.org/10.1186/2040-2392-4-40">Baron-Cohen et al. 2013</a>); of course, this does not mean that autistic people see auras, and the aura of this site is only a palette.</span><span data-l="it" lang="it">La sinestesia &egrave; quasi tre volte pi&ugrave; frequente negli adulti autistici (18,9% contro 7,2%, <a href="https://doi.org/10.1186/2040-2392-4-40">Baron-Cohen et al. 2013</a>); questo non vuol dire che le persone autistiche vedano le aure, e l&rsquo;aura di questo sito &egrave; soltanto una tavolozza.</span></p>
+    <p><span data-l="en">Sensitivity to sensory input is common in autism (it is among the DSM-5 criteria for autism, <a href="https://doi.org/10.1176/appi.books.9780890425596">APA 2013</a>) and is associated with ADHD traits as well (<a href="https://doi.org/10.1016/j.comppsych.2017.10.008">Panagiotidi et al. 2018</a>); hence, colors that suit one reader may tire another. Here you choose the hue and its intensity, down to a quiet palette with little color, and for every aura the text colors are recomputed so that their contrast with the background stays at least that of the violet, above the 4.5:1 of WCAG AA.</span><span data-l="it" lang="it">La sensibilit&agrave; agli stimoli sensoriali &egrave; frequente nell&rsquo;autismo (&egrave; fra i criteri del DSM-5 per l&rsquo;autismo, <a href="https://doi.org/10.1176/appi.books.9780890425596">APA 2013</a>) ed &egrave; associata anche ai tratti ADHD (<a href="https://doi.org/10.1016/j.comppsych.2017.10.008">Panagiotidi et al. 2018</a>); per questo, colori adatti a una persona possono stancarne un&rsquo;altra. Qui scegli tu la tinta e l&rsquo;intensit&agrave;, fino a una tavolozza quieta e quasi senza colore, e per ogni aura i colori del testo sono ricalcolati in modo che il contrasto con lo sfondo resti almeno quello del viola, sopra il 4,5:1 del livello AA delle WCAG.</span></p>
+    <p><span data-l="en">Your choice stays in this browser (in localStorage) and is not sent anywhere.</span><span data-l="it" lang="it">La tua scelta resta in questo browser (in localStorage) e non viene inviata da nessuna parte.</span></p>
+  </div>
   <div class="aura-wheel" role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="359" aria-valuenow="0" aria-label="Hue">
     <span class="aura-sample" aria-hidden="true">Aa</span>
     <span class="aura-mark" aria-hidden="true"></span>
@@ -2286,6 +2315,14 @@ Decomposition methods and solvers for large-scale
       mark(); words_();
       dlg.showModal(); wheel.focus();
     });
+    // "Why an aura?": a disclosure inside the dialog, closed at every opening
+    var why = dlg.querySelector('.aura-why-btn'), whyBox = document.getElementById('aura-why');
+    function whyShow(on) { why.setAttribute('aria-expanded', on); whyBox.hidden = !on; }
+    why.addEventListener('click', function () { whyShow(whyBox.hidden); });
+    whyBox.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { e.preventDefault(); whyShow(false); why.focus(); }
+    });
+    dlg.addEventListener('close', function () { whyShow(false); });
     dlg.addEventListener('close', function () { open.focus(); });
     dlg.querySelector('.aura-close').addEventListener('click', function () { dlg.close(); });
     dlg.querySelector('.aura-reset').addEventListener('click', function () {
