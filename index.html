@@ -723,7 +723,242 @@ footer {
   .scene:nth-of-type(even) .media { order: 0; }
 }
 .tabs > .sub > .eyebrow.label:first-child { display: none; }
+
+/* ---- the aura: the palette at another hue, chosen on a wheel ------------ */
+.lang .aura-open { display: flex; align-items: center; }
+.lang .aura-open i {
+  display: block; width: 1.05em; height: 1.05em; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent) 50%, var(--gold) 50%);
+  box-shadow: 0 0 0 1px var(--rule);
+}
+.aura {
+  position: fixed; inset: var(--f55) var(--f21) auto auto; margin: 0;
+  width: min(21rem, calc(100vw - 32px)); max-height: calc(100vh - var(--f89)); overflow: auto;
+  border: 0; border-radius: 14px; padding: var(--f21); color: var(--ink); background: var(--tone-2);
+  box-shadow: inset 0 0 0 1px var(--gold-3), 0 24px 80px rgb(0 0 0 / .35);
+}
+.aura[open] { display: grid; gap: var(--f13); animation: aura-in .2s ease-out; }
+@keyframes aura-in { from { opacity: 0; transform: translateY(-6px); } }
+.aura::backdrop { background: rgb(20 14 30 / .18); }
+.aura .aura-head { display: flex; align-items: start; gap: var(--f8); }
+.aura h3 { margin: 0; margin-right: auto; font-weight: 500; color: var(--title); font-size: var(--s025); line-height: var(--lead-display); }
+.aura p { margin: 0; color: var(--ink-soft); font-size: var(--s-025); line-height: var(--lead-display); }
+.aura button { font: inherit; color: inherit; cursor: pointer; }
+.aura .aura-close { background: none; border: 0; padding: 0 var(--f3); font-size: 1.5em; line-height: 1; color: var(--ink-soft); }
+.aura .aura-close:hover { color: var(--accent); }
+.aura-wheel {
+  --w: min(13rem, 62vw); --t: 28px;
+  position: relative; width: var(--w); height: var(--w); justify-self: center;
+  border-radius: 50%; cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none;
+}
+.aura-wheel::before {
+  content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--ring);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--t) - 1px), #000 calc(100% - var(--t)));
+          mask: radial-gradient(farthest-side, transparent calc(100% - var(--t) - 1px), #000 calc(100% - var(--t)));
+}
+.aura-wheel:focus-visible { border-radius: 50%; outline-offset: 4px; }
+.aura-sample {
+  position: absolute; inset: calc(var(--t) + var(--f13)); border-radius: 50%; display: grid; place-content: center;
+  background: var(--ground); box-shadow: inset 0 0 0 1px var(--rule);
+  font-size: var(--s2); line-height: 1; color: var(--accent);
+  text-decoration: underline var(--gold) 3px; text-underline-offset: 6px;
+}
+.aura-mark {
+  position: absolute; left: 50%; top: 50%; width: calc(var(--t) - 2px); height: calc(var(--t) - 2px);
+  margin: calc(1px - var(--t) / 2) 0 0 calc(1px - var(--t) / 2); border-radius: 50%; pointer-events: none;
+  transform: rotate(var(--h, 0deg)) translateY(calc(var(--t) / 2 - var(--w) / 2));
+  box-shadow: 0 0 0 3px var(--surface), 0 0 0 4px var(--ink-faint), 0 2px 8px rgb(0 0 0 / .3);
+}
+.aura-k { display: grid; gap: var(--f3); font-family: var(--mono); font-size: var(--s-075); letter-spacing: .09em; color: var(--ink-faint); }
+.aura-k input { width: 100%; margin: 0; accent-color: var(--accent); }
+.aura-k .ends { display: flex; justify-content: space-between; }
+.aura-presets { display: flex; flex-wrap: wrap; gap: var(--f8); }
+.aura-presets button {
+  display: grid; justify-items: center; gap: var(--f3); background: none; border: 0; padding: var(--f3);
+  font-family: var(--mono); font-size: var(--s-075); letter-spacing: .06em; color: var(--ink-soft); border-radius: 8px;
+}
+.aura-presets button i {
+  display: block; width: 2em; height: 2em; border-radius: 50%; box-shadow: 0 0 0 1px var(--rule);
+  background: linear-gradient(135deg, var(--a) 50%, var(--g) 50%);
+}
+.aura-presets button[aria-pressed="true"] { color: var(--accent); }
+.aura-presets button[aria-pressed="true"] i { box-shadow: 0 0 0 2px var(--ground), 0 0 0 4px var(--accent); }
+.aura .aura-reset {
+  justify-self: start; font-family: var(--mono); font-size: var(--s-075); letter-spacing: .12em; text-transform: uppercase;
+  border-radius: 999px; padding: var(--f5) var(--f13); border: 1px solid var(--accent); background: none; color: var(--accent);
+}
+.aura .aura-reset:hover { background: var(--accent); color: var(--ground); }
+@media (max-width: 46rem) {
+  .aura { inset: var(--f21) 16px auto 16px; width: auto; max-height: calc(100vh - var(--f34)); }
+}
 </style>
+<script>
+  /* the aura: the visitor may move the whole palette to another hue and
+     make it calmer or more vivid. Each colour of the sheet above goes to
+     OKLCH, its hue turns by the distance of the chosen hue from that of the
+     accent (so the gold stays the counter-colour), its chroma is scaled by
+     the intensity and brought back into sRGB; the text colours then move in
+     lightness until they read against the ground and the surface at least
+     as well as the violet ones do. Nothing stored, nothing changed: the
+     violet is the sheet itself. The choice is kept in localStorage, and
+     ?aura=ocean (a preset) or ?aura=230,0.8 (hue, intensity) shows one for
+     the visit. */
+  (function () {
+    var TOK = ['ground', 'surface', 'ink', 'title', 'ink-soft', 'ink-faint', 'heading',
+               'rule', 'accent', 'link', 'accent-wash', 'code', 'gold'],
+        TEXT = ['ink', 'title', 'ink-soft', 'ink-faint', 'heading', 'link', 'accent', 'code'],
+        PRESETS = [
+          { id: 'wisteria', en: 'Wisteria', it: 'Glicine', h: null, k: 1 },
+          { id: 'ocean',    en: 'Ocean',    it: 'Oceano',  h: 235,  k: 1 },
+          { id: 'sage',     en: 'Sage',     it: 'Salvia',  h: 150,  k: .6 },
+          { id: 'amber',    en: 'Amber',    it: 'Ambra',   h: 75,   k: .9 },
+          { id: 'coral',    en: 'Coral',    it: 'Corallo', h: 28,   k: .9 },
+          { id: 'night',    en: 'Night',    it: 'Notte',   h: 268,  k: .8 },
+          { id: 'calm',     en: 'Calm',     it: 'Quiete',  h: 250,  k: .2 }
+        ],
+        base = { light: {}, dark: {} }, rules = document.styleSheets;
+    // the violet palette, read from the sheet so that it is written once
+    for (var i = rules.length - 1; i >= 0 && !base.light.accent; i--) {
+      var rs; try { rs = rules[i].cssRules; } catch (e) { continue; }
+      for (var j = 0; j < rs.length; j++) {
+        var r = rs[j], which = r.selectorText === ':root' ? 'light' :
+                r.selectorText === ':root[data-theme="dark"]' ? 'dark' : null;
+        if (which && r.style.getPropertyValue('--accent'))
+          TOK.forEach(function (t) { base[which][t] = r.style.getPropertyValue('--' + t).trim(); });
+      }
+    }
+    if (!base.light.accent || !base.dark.accent) return;
+
+    function lin(c) { return c <= .04045 ? c / 12.92 : Math.pow((c + .055) / 1.055, 2.4); }
+    function gam(c) { return c <= .0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - .055; }
+    function rgb(hex) {
+      var n = parseInt(hex.replace('#', ''), 16);
+      return [lin((n >> 16 & 255) / 255), lin((n >> 8 & 255) / 255), lin((n & 255) / 255)];
+    }
+    function lch(c) {
+      var l = Math.cbrt(.4122214708 * c[0] + .5363325363 * c[1] + .0514459929 * c[2]),
+          m = Math.cbrt(.2119034982 * c[0] + .6806995451 * c[1] + .1073969566 * c[2]),
+          s = Math.cbrt(.0883024619 * c[0] + .2817188376 * c[1] + .6299787005 * c[2]),
+          a = 1.9779984951 * l - 2.4285922050 * m + .4505937099 * s,
+          b = .0259040371 * l + .7827717662 * m - .8086757660 * s;
+      return [.2104542553 * l + .7936177850 * m - .0040720468 * s, Math.sqrt(a * a + b * b),
+              (Math.atan2(b, a) * 180 / Math.PI + 360) % 360];
+    }
+    function linear(L, C, H) {
+      var a = C * Math.cos(H * Math.PI / 180), b = C * Math.sin(H * Math.PI / 180),
+          l = L + .3963377774 * a + .2158037573 * b,
+          m = L - .1055613458 * a - .0638541728 * b,
+          s = L - .0894841775 * a - 1.2914855480 * b;
+      l *= l * l; m *= m * m; s *= s * s;
+      return [4.0767416621 * l - 3.3077115913 * m + .2309699292 * s,
+              -1.2684380046 * l + 2.6097574011 * m - .3413193965 * s,
+              -.0041960863 * l - .7034186147 * m + 1.7076147010 * s];
+    }
+    function inside(c) { return c.every(function (v) { return v > -1e-5 && v < 1 + 1e-5; }); }
+    // into sRGB at the same lightness and hue, with the chroma it can hold
+    function fit(L, C, H) {
+      L = Math.min(1, Math.max(0, L));
+      var c = linear(L, C, H);
+      if (!inside(c)) {
+        var lo = 0, hi = C;
+        for (var i = 0; i < 24; i++) {
+          var mid = (lo + hi) / 2;
+          if (inside(linear(L, mid, H))) lo = mid; else hi = mid;
+        }
+        c = linear(L, lo, H);
+      }
+      return c.map(function (v) { return Math.min(1, Math.max(0, v)); });
+    }
+    function hex(c) {
+      return '#' + c.map(function (v) {
+        var s = Math.round(gam(v) * 255).toString(16); return s.length < 2 ? '0' + s : s;
+      }).join('');
+    }
+    function Y(c) { return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]; }
+    function contrast(a, b) {
+      var x = Y(a), y = Y(b);
+      return (Math.max(x, y) + .05) / (Math.min(x, y) + .05);
+    }
+    var H0 = lch(rgb(base.light.accent))[2];
+
+    // the palette of one theme at hue h and intensity k
+    function palette(theme, h, k) {
+      var src = base[theme], p = {}, c = {}, d = h - H0;
+      TOK.forEach(function (t) {
+        var o = lch(rgb(src[t]));
+        c[t] = [o[0], o[1] * k, (o[2] + d + 360) % 360];
+        p[t] = fit(c[t][0], c[t][1], c[t][2]);
+      });
+      TEXT.forEach(function (t) {
+        var o = rgb(src[t]), need = ['ground', 'surface'].map(function (g) {
+              return contrast(o, rgb(src[g])) * .995; }),
+            step = Y(o) < Y(rgb(src.ground)) ? -.004 : .004, L = c[t][0];
+        function short() {
+          return contrast(p[t], p.ground) < need[0] || contrast(p[t], p.surface) < need[1];
+        }
+        while (short() && L > 0 && L < 1) {
+          L += step; p[t] = fit(L, c[t][1], c[t][2]);
+        }
+      });
+      var out = {};
+      TOK.forEach(function (t) { out[t] = hex(p[t]); });
+      return out;
+    }
+    function block(p) {
+      return TOK.map(function (t) { return '--' + t + ':' + p[t]; }).join(';');
+    }
+    var metas = document.querySelectorAll('meta[name="theme-color"]'), now = null;
+    function apply(h, k) {
+      var old = document.getElementById('aura-style');
+      if (h === null) {
+        if (old) old.remove();
+        metas.forEach(function (m) {
+          m.content = base[/dark/.test(m.media) ? 'dark' : 'light'].ground;
+        });
+        now = null;
+        return;
+      }
+      var L = palette('light', h, k), D = palette('dark', h, k),
+          css = ':root{' + block(L) + '}' +
+                '@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){' + block(D) + '}}' +
+                ':root[data-theme="dark"]{' + block(D) + '}';
+      if (!old) {
+        old = document.createElement('style'); old.id = 'aura-style';
+        document.head.appendChild(old);
+      }
+      old.textContent = css;
+      metas.forEach(function (m) { m.content = (/dark/.test(m.media) ? D : L).ground; });
+      now = { h: h, k: k };
+    }
+    function parse(s) {
+      if (!s) return null;
+      var p = PRESETS.filter(function (x) { return x.id === s; })[0];
+      if (p) return p.h === null ? null : { h: p.h, k: p.k };
+      var v = s.split(','), h = parseFloat(v[0]), k = v.length > 1 ? parseFloat(v[1]) : 1;
+      if (!isFinite(h) || !isFinite(k)) return null;
+      return { h: (h % 360 + 360) % 360, k: Math.min(1.5, Math.max(.1, k)) };
+    }
+    window.aura = {
+      H0: H0, presets: PRESETS, palette: palette,
+      swatch: function (L, C, H) { return hex(fit(L, C, H)); },
+      get: function () { return now; },
+      // show an aura; with keep it is also remembered (null is the violet)
+      set: function (h, k, keep) {
+        if (h !== null && Math.abs(((h - H0) % 360 + 540) % 360 - 180) < .5 && Math.abs(k - 1) < .001)
+          h = null;
+        apply(h, k);
+        if (keep) try {
+          if (h === null) localStorage.removeItem('aura');
+          else localStorage.setItem('aura', Math.round(h) + ',' + k);
+        } catch (e) {}
+      }
+    };
+    var asked = parse(new URLSearchParams(location.search).get('aura')), kept = null;
+    try { kept = parse(localStorage.getItem('aura')); } catch (e) {}
+    var a = asked || kept;
+    if (a) apply(a.h, a.k);
+  })();
+</script>
 </head>
 <body>
 <div class="page">
@@ -737,6 +972,8 @@ footer {
     <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>
     <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
   </button>
+  <span aria-hidden="true">&middot;</span>
+  <button type="button" class="aura-open" aria-label="Aura" aria-haspopup="dialog" title="Choose your aura"><i aria-hidden="true"></i></button>
 </div>
 
 <header class="masthead">
@@ -1634,6 +1871,133 @@ Decomposition methods and solvers for large-scale
     if (!link || !box || !box.showModal) return;
     link.addEventListener('click', function (e) { e.preventDefault(); box.showModal(); });
     box.addEventListener('click', function () { box.close(); });
+  })();
+</script>
+<dialog class="aura" id="aura" aria-labelledby="aura-t">
+  <div class="aura-head">
+    <h3 id="aura-t"><span data-l="en">Choose your aura today</span><span data-l="it" lang="it">Scegli la tua aura di oggi</span></h3>
+    <button type="button" class="aura-close" aria-label="Close">&times;</button>
+  </div>
+  <p><span data-l="en">Choose the colour that feels most comfortable: the whole site changes, with its complementary colours.</span><span data-l="it" lang="it">Scegli il colore che senti pi&ugrave; comodo: cambia tutto il sito, con i suoi colori complementari.</span></p>
+  <div class="aura-wheel" role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="359" aria-valuenow="0" aria-label="Hue">
+    <span class="aura-sample" aria-hidden="true">Aa</span>
+    <span class="aura-mark" aria-hidden="true"></span>
+  </div>
+  <label class="aura-k"><span><span data-l="en">Intensity</span><span data-l="it" lang="it">Intensit&agrave;</span></span>
+    <input type="range" min="0.15" max="1.5" step="0.05" value="1">
+    <span class="ends" aria-hidden="true"><span><span data-l="en">Calm</span><span data-l="it" lang="it">Quiete</span></span><span><span data-l="en">Vivid</span><span data-l="it" lang="it">Vivida</span></span></span>
+  </label>
+  <div class="aura-presets" role="group" aria-label="Presets"></div>
+  <button type="button" class="aura-reset"><span data-l="en">Back to violet</span><span data-l="it" lang="it">Ripristina il viola</span></button>
+</dialog>
+<script>
+  /* the aura chooser: the wheel sets the hue (drag, click, arrows), the
+     slider the intensity, the chips are quick picks; every move is shown at
+     once and remembered, the reset button brings the violet back */
+  (function () {
+    var A = window.aura, dlg = document.getElementById('aura'),
+        open = document.querySelector('.lang .aura-open');
+    if (!A || !dlg || !dlg.showModal || !open) { if (open) open.hidden = true; return; }
+    var root = document.documentElement, wheel = dlg.querySelector('.aura-wheel'),
+        range = dlg.querySelector('.aura-k input'), chips = dlg.querySelector('.aura-presets'),
+        words = { en: { hue: 'Hue', close: 'Close', presets: 'Quick picks', title: 'Choose your aura' },
+                  it: { hue: 'Tinta', close: 'Chiudi', presets: 'Scelte rapide', title: 'Scegli la tua aura' } },
+        h = A.H0, k = 1, frame = 0;
+    var ring = [];
+    for (var a = 0; a <= 360; a += 15) ring.push(A.swatch(.68, .15, a) + ' ' + a + 'deg');
+    wheel.style.setProperty('--ring', 'conic-gradient(' + ring.join(',') + ')');
+    A.presets.forEach(function (p) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.dataset.id = p.id;
+      b.innerHTML = '<i aria-hidden="true"></i><span data-l="en">' + p.en +
+                    '</span><span data-l="it" lang="it">' + p.it + '</span>';
+      b.addEventListener('click', function () {
+        h = p.h === null ? A.H0 : p.h; k = p.k; show(true);
+      });
+      chips.appendChild(b);
+    });
+    function dark() {
+      var t = root.getAttribute('data-theme');
+      return t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    function same(x, y) { return Math.abs(((x - y) % 360 + 540) % 360 - 180) < 1; }
+    // the wheel, the slider and the chips as the aura in use
+    function mark() {
+      wheel.style.setProperty('--h', h + 'deg');
+      wheel.setAttribute('aria-valuenow', Math.round(h));
+      wheel.setAttribute('aria-valuetext', Math.round(h) + '°');
+      range.value = k;
+      range.setAttribute('aria-valuetext', Math.round(k * 100) + '%');
+      dlg.querySelector('.aura-mark').style.background = A.swatch(.68, .15, h);
+      chips.querySelectorAll('button').forEach(function (b) {
+        var p = A.presets.filter(function (x) { return x.id === b.dataset.id; })[0];
+        b.setAttribute('aria-pressed', same(h, p.h === null ? A.H0 : p.h) && Math.abs(k - p.k) < .001);
+      });
+    }
+    function show(keep) {
+      mark();
+      if (keep) { cancelAnimationFrame(frame); A.set(h, k, true); return; }
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(function () { A.set(h, k, false); });
+    }
+    function words_() {
+      var w = words[root.getAttribute('data-lang') === 'it' ? 'it' : 'en'];
+      wheel.setAttribute('aria-label', w.hue);
+      dlg.querySelector('.aura-close').setAttribute('aria-label', w.close);
+      chips.setAttribute('aria-label', w.presets);
+      open.title = w.title;
+    }
+    words_();
+    new MutationObserver(words_).observe(root, { attributes: true, attributeFilter: ['data-lang'] });
+
+    open.addEventListener('click', function () {
+      var now = A.get(), t = dark() ? 'dark' : 'light';
+      h = now ? now.h : A.H0; k = now ? now.k : 1;
+      chips.querySelectorAll('button').forEach(function (b) {
+        var p = A.presets.filter(function (x) { return x.id === b.dataset.id; })[0],
+            c = A.palette(t, p.h === null ? A.H0 : p.h, p.k), i = b.querySelector('i');
+        i.style.setProperty('--a', c.accent); i.style.setProperty('--g', c.gold);
+      });
+      mark(); words_();
+      dlg.showModal(); wheel.focus();
+    });
+    dlg.addEventListener('close', function () { open.focus(); });
+    dlg.querySelector('.aura-close').addEventListener('click', function () { dlg.close(); });
+    dlg.querySelector('.aura-reset').addEventListener('click', function () {
+      h = A.H0; k = 1; show(true);
+    });
+    // a click on the backdrop closes it, not one that ends a drag of the wheel
+    var dragging = false;
+    dlg.addEventListener('click', function (e) {
+      if (e.target !== dlg || dragging) return;
+      var r = dlg.getBoundingClientRect();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
+    });
+    function at(e) {
+      var r = wheel.getBoundingClientRect(),
+          x = e.clientX - r.left - r.width / 2, y = e.clientY - r.top - r.height / 2;
+      h = (Math.atan2(x, -y) * 180 / Math.PI + 360) % 360;
+      show(false);
+    }
+    wheel.addEventListener('pointerdown', function (e) {
+      dragging = true; wheel.setPointerCapture(e.pointerId); at(e); e.preventDefault();
+    });
+    wheel.addEventListener('pointermove', function (e) { if (dragging) at(e); });
+    function end() {
+      if (!dragging) return;
+      show(true); setTimeout(function () { dragging = false; }, 0);
+    }
+    wheel.addEventListener('pointerup', end);
+    wheel.addEventListener('pointercancel', end);
+    wheel.addEventListener('keydown', function (e) {
+      var d = { ArrowRight: 5, ArrowUp: 5, ArrowLeft: -5, ArrowDown: -5, PageUp: 30, PageDown: -30 }[e.key];
+      if (e.key === 'Home') { h = A.H0; d = 0; }
+      if (d === undefined) return;
+      e.preventDefault();
+      h = ((h + d) % 360 + 360) % 360; show(true);
+    });
+    range.addEventListener('input', function () { k = parseFloat(range.value); show(false); });
+    range.addEventListener('change', function () { k = parseFloat(range.value); show(true); });
   })();
 </script>
 <script>
