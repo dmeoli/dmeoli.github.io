@@ -23,7 +23,12 @@
 <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
 <link rel="icon" type="image/png" href="favicon.png?v=2">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
-<style>*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}</style>
+<style>*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}/* a paragraph reached from the opening of Research */
+#research [id^="r-"] { scroll-margin-top: var(--f55, 4rem); }
+#research .jumped { animation: jumped 1.6s ease-out; }
+@keyframes jumped { from { background: color-mix(in oklch, var(--accent) 14%, transparent); } }
+@media (prefers-reduced-motion: reduce) { #research .jumped { animation: none; } }
+</style>
 <title>Donato, Maria Meoli</title>
 <script type="application/ld+json">
 {
@@ -1099,7 +1104,7 @@ footer {
     <h2><a href="/research" data-l="en" data-section="research">Research</a><a href="/ricerca" data-l="it" lang="it" data-section="research">Ricerca</a></h2>
     <div class="body">
       <p data-l="en">
-        I came to numerical optimization from symbolic AI, and more precisely from Knowledge
+        I came to <a class="jump" href="#r-opt" data-to="r-opt"><i>numerical optimization</i></a> from <a class="jump" href="#r-sym" data-to="r-sym"><i>symbolic AI</i></a>, and more precisely from Knowledge
         Representation and Reasoning (KR&amp;R), i.e., expert systems, logic programming,
         constraint satisfaction and SAT. In my view, the two fields share one premise:
         the difficulty of a problem depends (often to a large extent) on how it is
@@ -1108,15 +1113,15 @@ footer {
         efficient algorithm is available.
       </p>
       <p data-l="it" lang="it">
-        Sono arrivato all&rsquo;ottimizzazione numerica dall&rsquo;intelligenza
-        artificiale simbolica, e più precisamente dalla rappresentazione della conoscenza e dal ragionamento
+        Sono arrivato all&rsquo;<a class="jump" href="#r-opt-it" data-to="r-opt-it"><i>ottimizzazione numerica</i></a> dall&rsquo;<a class="jump" href="#r-sym-it" data-to="r-sym-it"><i>intelligenza
+        artificiale simbolica</i></a>, e più precisamente dalla rappresentazione della conoscenza e dal ragionamento
         automatico (KR&amp;R), ossia dai sistemi esperti, dalla programmazione logica, dal
         soddisfacimento di vincoli e da SAT. A mio avviso i due campi condividono una
         premessa: la difficoltà di un problema dipende (spesso in larga misura) da come è
         scritto. Per questo conviene, il più delle volte, riscriverlo, come un insieme di problemi più piccoli coordinati da un problema master oppure in un formalismo diverso per
         il quale sia disponibile un algoritmo efficiente.
       </p>
-      <p data-l="en">
+      <p data-l="en" id="r-sym">
         <b>Symbolic AI.</b> I started with expert systems and logic programming, for
         domains whose knowledge is codified and whose reasoning has to remain
         inspectable, and with ontologies as a representation of lexical knowledge; I also
@@ -1131,7 +1136,7 @@ footer {
         direction: whether a satisfiability problem can be decomposed along its structure
         in the way one would decompose a mixed-integer program.
       </p>
-      <p data-l="it" lang="it">
+      <p data-l="it" lang="it" id="r-sym-it">
         <b>IA Simbolica.</b> Ho iniziato con i sistemi esperti e la programmazione logica,
         per domini in cui la conoscenza è codificata e il ragionamento deve restare
         ispezionabile, e con le ontologie come rappresentazione della conoscenza lessicale; mi sono
@@ -1146,7 +1151,7 @@ footer {
         direzione opposta: se un problema di soddisfacibilità possa essere decomposto
         lungo la sua struttura, così come si decompone un problema di programmazione lineare intera mista.
       </p>
-      <p data-l="en">
+      <p data-l="en" id="r-opt">
         <b>Mathematical Optimization.</b> Decomposition performs the same operation on the
         structure of a model instead of on its formalism. This covers Lagrangian
         (Dantzig-Wolfe) Relaxation and Decomposition, Benders Decomposition, the Bundle
@@ -1165,7 +1170,7 @@ footer {
         one, and on enlarging the class of subproblems that dynamic programming can solve
         efficiently.
       </p>
-      <p data-l="it" lang="it">
+      <p data-l="it" lang="it" id="r-opt-it">
         <b>Ottimizzazione Matematica.</b> La decomposizione compie la stessa operazione
         sulla struttura di un modello anziché sul suo formalismo. Vi rientrano il Rilassamento Lagrangiano e la corrispondente
         Decomposizione di Dantzig-Wolfe, la Decomposizione di Benders, i Metodi Bundle che risolvono i duali non differenziabili che ne
@@ -1184,7 +1189,7 @@ footer {
         risoluzione della successiva, e l&rsquo;allargamento della classe di sottoproblemi
         che la programmazione dinamica può risolvere in modo efficiente.
       </p>
-      <p data-l="en">
+      <p data-l="en" id="r-ml">
         <b>Machine Learning, a bridge between the two.</b> I see machine learning mainly as
         a way of learning heuristics, to be placed at the points where an exact algorithm
         makes a choice, and hence of making that algorithm faster. On the symbolic side this is the heuristic that guides a search algorithm such
@@ -1199,7 +1204,7 @@ footer {
         optimization models, to which the same decomposition and re-optimization
         machinery applies.
       </p>
-      <p data-l="it" lang="it">
+      <p data-l="it" lang="it" id="r-ml-it">
         <b>Machine Learning, ponte fra i due ambiti.</b> Vedo il machine learning
         soprattutto come un modo per apprendere euristiche da collocare nei punti in cui
         un algoritmo esatto compie una scelta, e quindi per rendere quell&rsquo;algoritmo
@@ -3095,6 +3100,20 @@ Decomposition methods and solvers for large-scale
       setStatus('online');
     });
   })();
+</script>
+<script>
+  /* the terms of the opening of Research lead to their paragraph below,
+     scrolling without changing the hash, which names sections and tabs */
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a.jump');
+    if (!a) return;
+    var t = document.getElementById(a.getAttribute('data-to'));
+    if (!t) return;
+    e.preventDefault();
+    var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    t.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'start' });
+    t.classList.remove('jumped'); void t.offsetWidth; t.classList.add('jumped');
+  });
 </script>
 </body>
 </html>
