@@ -167,8 +167,8 @@ function readFields(inputs) {
 function requestPanel(cfg, fields, inputs, tr, st, id) {
   const go = mk('a', { class: 'main', id: id('request'), role: 'button' }, bi('Request this print', 'Richiedi questa stampa'));
   tr.append(go);
-  st.innerHTML = bi(`Printed on request, also customised in size, colour and material: the e-mail carries the link to the scene as it is now; or write to <a href="mailto:${MAIL}">${MAIL}</a>.`,
-    `Stampata su richiesta, anche personalizzata in dimensione, colore e materiale: la mail porta il link alla scena così com'è ora; oppure scrivere a <a href="mailto:${MAIL}">${MAIL}</a>.`);
+  st.innerHTML = bi(`Printed on request, also customized in size, color and material: the e-mail contains the link to the scene with its current settings, or you can write to <a href="mailto:${MAIL}">${MAIL}</a>.`,
+    `Stampata su richiesta, anche personalizzata in dimensione, colore e materiale: la mail contiene il link alla scena con le impostazioni attuali, oppure puoi scrivere a <a href="mailto:${MAIL}">${MAIL}</a>.`);
   const mail = () => {
     const o = readFields(inputs), h1 = document.querySelector(`h1 [data-l="${lang()}"]`) || document.querySelector('h1');
     const title = cfg.title ? cfg.title() : (h1 ? h1.textContent.trim() : document.title);

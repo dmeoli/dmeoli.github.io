@@ -741,9 +741,15 @@ footer {
 .tabs > .sub > .eyebrow.label:first-child { display: none; }
 
 /* ---- the aura: the palette at another hue, chosen on a wheel ------------ */
-.lang .aura-open { display: flex; align-items: center; }
+.lang .aura-open { display: flex; align-items: center; gap: var(--f5); }
+.lang .aura-open span { color: inherit; }
+.lang .aura-open .short { display: none; }
+@media (max-width: 46rem) {
+  .lang .aura-open .full { display: none; }
+  .lang .aura-open .short { display: inline; }
+}
 .lang .aura-open i {
-  display: block; width: 1.05em; height: 1.05em; border-radius: 50%;
+  display: block; flex: none; width: .8em; height: .8em; border-radius: 50%;
   background: linear-gradient(135deg, var(--accent) 50%, var(--gold) 50%);
   box-shadow: 0 0 0 1px var(--rule);
 }
@@ -989,7 +995,7 @@ footer {
     <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
   </button>
   <span aria-hidden="true">&middot;</span>
-  <button type="button" class="aura-open" aria-label="Aura" aria-haspopup="dialog" title="Choose your aura"><i aria-hidden="true"></i></button>
+  <button type="button" class="aura-open" aria-haspopup="dialog" aria-label="What's your aura today?" title="What's your aura today?"><i aria-hidden="true"></i><span class="word" aria-hidden="true"><span data-l="en"><span class="full">What's your aura today?</span><span class="short">Aura</span></span><span data-l="it" lang="it"><span class="full">Qual &egrave; la tua aura oggi?</span><span class="short">Aura</span></span></span></button>
 </div>
 
 <header class="masthead">
@@ -1160,7 +1166,7 @@ footer {
         che la programmazione dinamica può risolvere in modo efficiente.
       </p>
       <p data-l="en">
-        <b>Machine Learning, connecting the two.</b> I see machine learning mainly as
+        <b>Machine Learning, a bridge between the two.</b> I see machine learning mainly as
         a way of learning heuristics, to be placed at the points where an exact algorithm
         makes a choice, and hence of making that algorithm faster. On the symbolic side this is the heuristic that guides a search algorithm such
         as A*, or the branching of a SAT solver (as in
@@ -1271,11 +1277,11 @@ footer {
   <div class="grid">
     <h2><a href="/optimization" data-l="en" data-section="optimization">Optimization</a><a href="/ottimizzazione" data-l="it" lang="it" data-section="optimization">Ottimizzazione</a></h2>
     <div class="body">
-      <p data-l="en">Interactive pages, in the browser, on what happens inside an optimization algorithm: the primal polyhedron and the dual model side by side, the path of the iterates, and the real iterates of the solvers of SMS++ replayed on the same pictures. The scenes in sequence, for a talk, are in <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
-      <p data-l="it" lang="it">Pagine interattive, nel browser, su cosa succede dentro un algoritmo di ottimizzazione: il poliedro primale e il modello duale affiancati, il cammino delle iterate, e le iterate vere dei solutori di SMS++ riprodotte sulle stesse figure. Le scene in sequenza, per un seminario, sono in <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
+      <p data-l="en">These interactive pages, which run in the browser, show what happens inside an optimization algorithm: the primal polyhedron is drawn beside the dual model, the iterates leave their path on both, and some scenes replay on the same pictures the iterates of the actual solvers of SMS++. For a talk, the scenes can be shown in sequence from <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
+      <p data-l="it" lang="it">Queste pagine interattive, che girano nel browser, mostrano cosa succede dentro un algoritmo di ottimizzazione: il poliedro primale è disegnato accanto al modello duale, le iterate lasciano il loro cammino su entrambi, e alcune scene riproducono sulle stesse figure le iterate dei veri solutori di SMS++. Per un seminario, le scene si possono mostrare in sequenza da <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
       <div class="subnav" role="tablist">
         <button type="button" role="tab" data-sub="decomposition"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span> <span class="count">4</span></button>
-        <button type="button" role="tab" data-sub="lp"><span data-l="en">Linear and Integer</span><span data-l="it" lang="it">Lineare e intera</span> <span class="count">4</span></button>
+        <button type="button" role="tab" data-sub="lp"><span data-l="en">Linear and Integer</span><span data-l="it" lang="it">Lineare e intera</span> <span class="count">5</span></button>
       </div>
       <div class="sub scenes" data-sub="decomposition" role="tabpanel">
         <article class="scene">
@@ -1283,7 +1289,7 @@ footer {
           <div class="text">
             <p class="num">01 / 04</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/index.html"><span data-l="en">Lagrangian Decomposition</span><span data-l="it" lang="it">Decomposizione lagrangiana</span></a></h3>
-            <p class="desc"><span data-l="en">The coupling rows are relaxed with multipliers, and the dual function is built cut by cut beside the primal polyhedron, where the points that the oracle returns live; bundle, Kelley and the subgradient, with the variants of the dual solvers of SMS++.</span><span data-l="it" lang="it">Le righe di accoppiamento si rilassano con i moltiplicatori, e la funzione duale si costruisce taglio per taglio accanto al poliedro primale, dove vivono i punti che l'oracolo restituisce; bundle, Kelley e subgradiente, con le varianti dei solutori duali di SMS++.</span></p>
+            <p class="desc"><span data-l="en">The coupling rows are relaxed with multipliers and the dual function is built cut by cut, beside the primal polyhedron on which the points returned by the oracle are drawn; the dual is solved by the bundle method, by Kelley's cutting planes or by the subgradient method, in the variants offered by the dual solvers of SMS++.</span><span data-l="it" lang="it">Le righe di accoppiamento si rilassano con i moltiplicatori e la funzione duale si costruisce taglio per taglio, accanto al poliedro primale su cui sono disegnati i punti restituiti dall'oracolo; il duale si risolve con il metodo bundle, con i piani di taglio di Kelley o con il metodo del subgradiente, nelle varianti offerte dai solutori duali di SMS++.</span></p>
             <ul class="tags"><li>Bundle</li><li>Kelley</li><li><span data-l="en">Subgradient</span><span data-l="it" lang="it">Subgradiente</span></li><li>SMS++</li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/index.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -1293,7 +1299,7 @@ footer {
           <div class="text">
             <p class="num">02 / 04</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/components.html"><span data-l="en">A Dual That Is a Sum</span><span data-l="it" lang="it">Un duale somma di componenti</span></a></h3>
-            <p class="desc"><span data-l="en">When the dual is the sum of K independent pieces, one model for each piece is far better than one model of the sum, for the same calls to the oracle; the incremental subgradient moves after every piece instead of after all of them.</span><span data-l="it" lang="it">Quando il duale è la somma di K pezzi indipendenti, un modello per ogni pezzo è molto meglio di un modello della somma, a parità di chiamate all'oracolo; il subgradiente incrementale si muove dopo ogni pezzo invece che dopo tutti.</span></p>
+            <p class="desc"><span data-l="en">When the dual is the sum of K independent components, a model for each component is usually much more accurate than a single model of the sum, for the same number of oracle calls; the incremental subgradient method, in turn, takes a step after each component.</span><span data-l="it" lang="it">Quando il duale è la somma di K componenti indipendenti, un modello per ogni componente è di solito molto più accurato di un solo modello della somma, a parità di chiamate all'oracolo; il subgradiente incrementale, a sua volta, fa un passo dopo ogni componente.</span></p>
             <ul class="tags"><li><span data-l="en">Disaggregated</span><span data-l="it" lang="it">Disaggregato</span></li><li><span data-l="en">Incremental</span><span data-l="it" lang="it">Incrementale</span></li><li><span data-l="en">Oracle Calls</span><span data-l="it" lang="it">Chiamate all'oracolo</span></li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/components.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -1303,7 +1309,7 @@ footer {
           <div class="text">
             <p class="num">03 / 04</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/benders.html"><span data-l="en">Benders Decomposition</span><span data-l="it" lang="it">Decomposizione di Benders</span></a></h3>
-            <p class="desc"><span data-l="en">The master proposes a first-stage decision and the subproblem answers with a cut; every cut is a vertex of the dual of the recourse, and the two pictures move together.</span><span data-l="it" lang="it">Il master propone una decisione di primo stadio e il sottoproblema risponde con un taglio; ogni taglio è un vertice del duale del ricorso, e le due figure si muovono insieme.</span></p>
+            <p class="desc"><span data-l="en">The master problem proposes a first-stage decision and the subproblem returns a cut, which corresponds to a vertex of the dual of the recourse problem; hence, the primal and the dual pictures are updated together.</span><span data-l="it" lang="it">Il master propone una decisione di primo stadio e il sottoproblema restituisce un taglio, che corrisponde a un vertice del duale del problema di ricorso; per questo la figura primale e quella duale si aggiornano insieme.</span></p>
             <ul class="tags"><li>Benders</li><li><span data-l="en">Recourse</span><span data-l="it" lang="it">Ricorso</span></li><li><span data-l="en">Cutting Planes</span><span data-l="it" lang="it">Piani di taglio</span></li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/benders.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -1313,7 +1319,7 @@ footer {
           <div class="text">
             <p class="num">04 / 04</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/index.html#tr=smspp-box-bundle"><span data-l="en">Real Runs of SMS++</span><span data-l="it" lang="it">Esecuzioni reali di SMS++</span></a></h3>
-            <p class="desc"><span data-l="en">Not a simulation: the iterates of BundleSolver and SubGradSolver of SMS++ on a small problem, recorded by smspp_dual_trace and replayed step by step on the same pictures.</span><span data-l="it" lang="it">Non una simulazione: le iterate di BundleSolver e SubGradSolver di SMS++ su un piccolo problema, registrate da smspp_dual_trace e rigiocate passo per passo sulle stesse figure.</span></p>
+            <p class="desc"><span data-l="en">The iterates of BundleSolver and SubGradSolver of SMS++ on a small problem, recorded by smspp_dual_trace during an actual run and replayed step by step on the same pictures as the other scenes.</span><span data-l="it" lang="it">Le iterate di BundleSolver e SubGradSolver di SMS++ su un piccolo problema, registrate da smspp_dual_trace durante un'esecuzione vera e riprodotte passo per passo sulle stesse figure delle altre scene.</span></p>
             <ul class="tags"><li>BundleSolver</li><li>SubGradSolver</li><li><span data-l="en">Traces</span><span data-l="it" lang="it">Tracce</span></li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/index.html#tr=smspp-box-bundle"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -1324,9 +1330,9 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/lp.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/lp.webm" poster="/assets/play/lp.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Linear Programming"></video><video class="th-dark" src="/assets/play/lp-dark.webm" poster="/assets/play/lp-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Linear Programming"></video></a>
           <div class="text">
-            <p class="num">01 / 04</p>
+            <p class="num">01 / 05</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/lp.html"><span data-l="en">Linear Programming</span><span data-l="it" lang="it">Programmazione lineare</span></a></h3>
-            <p class="desc"><span data-l="en">The simplex walks along the vertices and the barrier crosses the interior along the central path; beside them the dual, where the same steps read in another way.</span><span data-l="it" lang="it">Il simplesso cammina sui vertici e la barriera attraversa l'interno lungo il cammino centrale; accanto il duale, dove gli stessi passi si leggono in un altro modo.</span></p>
+            <p class="desc"><span data-l="en">The simplex method moves from vertex to vertex, while the barrier method crosses the interior along the central path; the dual is drawn beside the primal, and each step can be followed in both spaces.</span><span data-l="it" lang="it">Il simplesso si sposta di vertice in vertice, mentre il metodo barriera attraversa l'interno lungo il cammino centrale; accanto al primale è disegnato il duale, e ogni passo si può seguire in entrambi gli spazi.</span></p>
             <ul class="tags"><li><span data-l="en">Simplex</span><span data-l="it" lang="it">Simplesso</span></li><li><span data-l="en">Barrier</span><span data-l="it" lang="it">Barriera</span></li><li><span data-l="en">Duality</span><span data-l="it" lang="it">Dualità</span></li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/lp.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -1334,9 +1340,9 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/integer.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/integer.webm" poster="/assets/play/integer.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Integer Programming"></video><video class="th-dark" src="/assets/play/integer-dark.webm" poster="/assets/play/integer-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Integer Programming"></video></a>
           <div class="text">
-            <p class="num">02 / 04</p>
+            <p class="num">02 / 05</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/integer.html"><span data-l="en">Integer Programming</span><span data-l="it" lang="it">Programmazione intera</span></a></h3>
-            <p class="desc"><span data-l="en">Branch and bound draws its tree while the relaxation shrinks, and Gomory and cover cuts carve the polygon towards its integer hull.</span><span data-l="it" lang="it">Il branch and bound disegna il suo albero mentre il rilassamento si restringe, e i tagli di Gomory e di copertura scavano il poligono verso il suo inviluppo intero.</span></p>
+            <p class="desc"><span data-l="en">Branch and bound draws its tree as the relaxation is tightened, and Gomory and cover cuts cut the polygon down towards its integer hull.</span><span data-l="it" lang="it">Il branch and bound disegna il suo albero mentre il rilassamento si stringe, e i tagli di Gomory e di copertura riducono il poligono verso il suo inviluppo intero.</span></p>
             <ul class="tags"><li>Branch and Bound</li><li>Gomory</li><li><span data-l="en">Cover Cuts</span><span data-l="it" lang="it">Tagli di copertura</span></li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/integer.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -1344,9 +1350,9 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/polarity.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/polarity.webp" width="640" height="442" alt="Polarity" loading="lazy"><img class="th-dark" src="/assets/play/polarity-dark.webp" width="640" height="442" alt="Polarity" loading="lazy"></a>
           <div class="text">
-            <p class="num">03 / 04</p>
+            <p class="num">03 / 05</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a></h3>
-            <p class="desc"><span data-l="en">A polytope and its polar in 3D, where the vertices of one are the facets of the other; it turns with the mouse.</span><span data-l="it" lang="it">Un politopo e il suo polare in 3D, dove i vertici dell'uno sono le facce dell'altro; si ruota col mouse.</span></p>
+            <p class="desc"><span data-l="en">A polytope and its polar in 3D, the vertices of each corresponding to the facets of the other; drag with the mouse to rotate them.</span><span data-l="it" lang="it">Un politopo e il suo polare in 3D, in cui i vertici dell'uno corrispondono alle facce dell'altro; trascina col mouse per ruotarli.</span></p>
             <ul class="tags"><li><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></li><li>3D</li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/polarity.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -1354,11 +1360,21 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/lp3d.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/lp3d.webm" poster="/assets/play/lp3d.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Linear Programming in 3D"></video><video class="th-dark" src="/assets/play/lp3d-dark.webm" poster="/assets/play/lp3d-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Linear Programming in 3D"></video></a>
           <div class="text">
-            <p class="num">04 / 04</p>
+            <p class="num">04 / 05</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/lp3d.html"><span data-l="en">Linear Programming in 3D</span><span data-l="it" lang="it">Programmazione lineare in 3D</span></a></h3>
-            <p class="desc"><span data-l="en">The same linear program with three variables: the polytope in 3D, the level plane rising with the objective, the simplex walking along the edges (all 8 vertices of the Klee-Minty cube with Dantzig's rule) and the barrier method along the central path inside the solid.</span><span data-l="it" lang="it">Lo stesso programma lineare con tre variabili: il politopo in 3D, il piano di livello che sale con l'obiettivo, il simplesso che cammina sugli spigoli (tutti gli 8 vertici del cubo di Klee-Minty con la regola di Dantzig) e il metodo barriera lungo il cammino centrale dentro il solido.</span></p>
+            <p class="desc"><span data-l="en">A linear program with three variables: the polytope in 3D, the level plane of the objective moving as its value improves, the simplex method following the edges (with Dantzig's rule it visits all 8 vertices of the Klee-Minty cube) and the barrier method following the central path inside the solid.</span><span data-l="it" lang="it">Un programma lineare con tre variabili: il politopo in 3D, il piano di livello dell'obiettivo che si sposta man mano che il valore migliora, il simplesso che segue gli spigoli (con la regola di Dantzig visita tutti gli 8 vertici del cubo di Klee-Minty) e il metodo barriera che segue il cammino centrale dentro il solido.</span></p>
             <ul class="tags"><li><span data-l="en">Simplex</span><span data-l="it" lang="it">Simplesso</span></li><li>Klee-Minty</li><li><span data-l="en">Central path</span><span data-l="it" lang="it">Cammino centrale</span></li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/lp3d.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/packing-mip.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/packing-mip.webp" width="640" height="442" alt="A Packing Puzzle by MIP" loading="lazy"><img class="th-dark" src="/assets/play/packing-mip-dark.webp" width="640" height="442" alt="A Packing Puzzle by MIP" loading="lazy"></a>
+          <div class="text">
+            <p class="num">05 / 05</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/packing-mip.html"><span data-l="en">A Packing Puzzle by MIP</span><span data-l="it" lang="it">Un puzzle di impaccamento con la MIP</span></a></h3>
+            <p class="desc"><span data-l="en">The pentominoes and the Soma cube are placed in their tray by an integer program that maximizes the covered area, and therefore the tray is full only at an optimal solution; since the bound of the linear relaxation is already equal to the area of the tray, branch and bound cannot improve it, and its work consists in finding integer placements.</span><span data-l="it" lang="it">I pentamini e il cubo Soma sono sistemati nel loro vassoio da un programma intero che massimizza l'area coperta, e quindi il vassoio è pieno solo in una soluzione ottima; poiché il bound del rilassamento lineare è già uguale all'area del vassoio, il branch and bound non può migliorarlo, e il suo lavoro consiste nel trovare piazzamenti interi.</span></p>
+            <ul class="tags"><li><span data-l="en">Integer Programming</span><span data-l="it" lang="it">Programmazione intera</span></li><li><span data-l="en">Puzzles</span><span data-l="it" lang="it">Rompicapi</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/packing-mip.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
         <a class="next" href="/ml" data-section="ml"><span data-l="en">Next: Machine Learning</span><span data-l="it" lang="it">Avanti: Machine learning</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
@@ -1371,8 +1387,8 @@ footer {
   <div class="grid">
     <h2><a href="/ml" data-l="en" data-section="ml">Machine Learning</a><a href="/ml" data-l="it" lang="it" data-section="ml">Machine learning</a></h2>
     <div class="body">
-      <p data-l="en">Interactive pages, in the browser, on the models of machine learning, which are trained by optimization: the optimizers on test functions, the support vector machine with its dual, what happens inside a network, layer by layer, after the TensorFlow Playground and the essays of C. Olah, and the models inspired by biology, some of them from my <a href="https://github.com/dmeoli/ComputationalNeuroscience">labs of computational neuroscience</a>. The scenes in sequence, for a talk, are in <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
-      <p data-l="it" lang="it">Pagine interattive, nel browser, sui modelli di machine learning, che si addestrano ottimizzando: gli ottimizzatori su funzioni di test, la support vector machine con il suo duale, cosa succede dentro una rete, strato per strato, sul modello del TensorFlow Playground e dei saggi di C. Olah, e i modelli ispirati alla biologia, alcuni dai miei <a href="https://github.com/dmeoli/ComputationalNeuroscience">laboratori di neuroscienze computazionali</a>. Le scene in sequenza, per un seminario, sono in <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
+      <p data-l="en">These interactive pages are about machine learning models, which are trained by solving an optimization problem; they show the optimizers at work on test functions, the support vector machine together with its dual, the layers of a neural network one by one (following the TensorFlow Playground and the essays of C. Olah), and some biologically inspired models, part of which come from my <a href="https://github.com/dmeoli/ComputationalNeuroscience">labs of computational neuroscience</a>. For a talk, the scenes can be shown in sequence from <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
+      <p data-l="it" lang="it">Queste pagine interattive riguardano i modelli di machine learning, che si addestrano risolvendo un problema di ottimizzazione; mostrano gli ottimizzatori al lavoro su funzioni di test, la support vector machine insieme al suo duale, gli strati di una rete neurale uno per uno (sul modello del TensorFlow Playground e dei saggi di C. Olah) e alcuni modelli ispirati alla biologia, in parte presi dai miei <a href="https://github.com/dmeoli/ComputationalNeuroscience">laboratori di neuroscienze computazionali</a>. Per un seminario, le scene si possono mostrare in sequenza da <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
       <div class="subnav" role="tablist">
         <button type="button" role="tab" data-sub="learning"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span> <span class="count">4</span></button>
         <button type="button" role="tab" data-sub="networks"><span data-l="en">Inside Networks</span><span data-l="it" lang="it">Dentro le reti</span> <span class="count">8</span></button>
@@ -1385,7 +1401,7 @@ footer {
           <div class="text">
             <p class="num">01 / 04</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/learning.html"><span data-l="en">Optimizers</span><span data-l="it" lang="it">Ottimizzatori</span></a></h3>
-            <p class="desc"><span data-l="en">The optimizers of optiml, from gradient descent and Adam to Newton, BFGS and the proximal bundle, racing on two-dimensional test functions such as Rosenbrock, animated step by step on the level map and on the 3D surface side by side, with the real runs of optiml replayed.</span><span data-l="it" lang="it">Gli ottimizzatori di optiml, dalla discesa del gradiente e Adam a Newton, BFGS e il bundle prossimale, in gara su funzioni di prova in due dimensioni come Rosenbrock, animati passo per passo sulla mappa di livello e sulla superficie 3D affiancate, con le corse reali di optiml rigiocate.</span></p>
+            <p class="desc"><span data-l="en">The optimizers of optiml, from gradient descent and Adam to Newton, BFGS and the proximal bundle method, compared on two-dimensional test functions such as Rosenbrock's; each run, recorded from optiml, is animated step by step on the contour map and on the 3D surface side by side.</span><span data-l="it" lang="it">Gli ottimizzatori di optiml, dalla discesa del gradiente e Adam a Newton, BFGS e il bundle prossimale, messi a confronto su funzioni di prova in due dimensioni come quella di Rosenbrock; ogni corsa, registrata da optiml, è animata passo per passo sulla mappa delle curve di livello e sulla superficie 3D affiancate.</span></p>
             <ul class="tags"><li><span data-l="en">Gradient</span><span data-l="it" lang="it">Gradiente</span></li><li>Adam</li><li>optiml</li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/learning.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -1395,7 +1411,7 @@ footer {
           <div class="text">
             <p class="num">02 / 04</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/svm.html"><span data-l="en">Support Vector Machines</span><span data-l="it" lang="it">Macchine a vettori di supporto</span></a></h3>
-            <p class="desc"><span data-l="en">The margin of a support vector machine trained by SMO and, beside it, the dual multipliers in their box: the support vectors are the points whose multiplier leaves zero.</span><span data-l="it" lang="it">Il margine di una macchina a vettori di supporto addestrata con SMO e, accanto, i moltiplicatori duali nel loro box: i vettori di supporto sono i punti il cui moltiplicatore lascia lo zero.</span></p>
+            <p class="desc"><span data-l="en">The margin of a support vector machine trained by SMO and, beside it, the dual multipliers in their box: the support vectors are the points whose multiplier is positive.</span><span data-l="it" lang="it">Il margine di una macchina a vettori di supporto addestrata con SMO e, accanto, i moltiplicatori duali nel loro box: i vettori di supporto sono i punti il cui moltiplicatore è positivo.</span></p>
             <ul class="tags"><li>SVM</li><li>SMO</li><li><span data-l="en">Dual</span><span data-l="it" lang="it">Duale</span></li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/svm.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -1405,7 +1421,7 @@ footer {
           <div class="text">
             <p class="num">03 / 04</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/network.html"><span data-l="en">Neural Networks</span><span data-l="it" lang="it">Reti neurali</span></a></h3>
-            <p class="desc"><span data-l="en">A small network trained in the page, each neuron drawn as the function it computes, and the loss landscape around the current weights.</span><span data-l="it" lang="it">Una piccola rete addestrata nella pagina, ogni neurone disegnato come la funzione che calcola, e il paesaggio della loss attorno ai pesi correnti.</span></p>
+            <p class="desc"><span data-l="en">A small network trained in the page, with each neuron drawn as the function it computes and, beside it, the loss landscape around the current weights.</span><span data-l="it" lang="it">Una piccola rete addestrata nella pagina, con ogni neurone disegnato come la funzione che calcola e, accanto, il paesaggio della loss attorno ai pesi correnti.</span></p>
             <ul class="tags"><li>Backpropagation</li><li><span data-l="en">Loss Landscape</span><span data-l="it" lang="it">Paesaggio della loss</span></li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/network.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -1415,7 +1431,7 @@ footer {
           <div class="text">
             <p class="num">04 / 04</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a></h3>
-            <p class="desc"><span data-l="en">Up to 30 layers on a data set of the TensorFlow Playground, with the histograms of activations and gradients layer by layer: weights too small make the signal vanish, weights too large saturate the units, and He initialization, normalization and residual connections keep it alive.</span><span data-l="it" lang="it">Fino a 30 strati su un data set del TensorFlow Playground, con gli istogrammi di attivazioni e gradienti strato per strato: pesi troppo piccoli fanno svanire il segnale, pesi troppo grandi saturano le unità, e l'inizializzazione di He, la normalizzazione e le connessioni residue lo tengono vivo.</span></p>
+            <p class="desc"><span data-l="en">Up to 30 layers on a data set of the TensorFlow Playground, with the histograms of activations and gradients layer by layer: with weights too small the signal vanishes, with weights too large the units saturate, while He initialization, normalization and residual connections keep the signal at a usable scale.</span><span data-l="it" lang="it">Fino a 30 strati su un data set del TensorFlow Playground, con gli istogrammi di attivazioni e gradienti strato per strato: con pesi troppo piccoli il segnale svanisce, con pesi troppo grandi le unità saturano, mentre l'inizializzazione di He, la normalizzazione e le connessioni residue mantengono il segnale su una scala utile.</span></p>
             <ul class="tags"><li><span data-l="en">Initialization</span><span data-l="it" lang="it">Inizializzazione</span></li><li>Batch Norm</li><li><span data-l="en">Residual</span><span data-l="it" lang="it">Residui</span></li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/depth.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -1428,7 +1444,7 @@ footer {
           <div class="text">
             <p class="num">01 / 08</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/manifolds.html"><span data-l="en">Layers as Deformations</span><span data-l="it" lang="it">Strati come deformazioni</span></a></h3>
-            <p class="desc"><span data-l="en">Each hidden layer as a continuous deformation of the plane (the linear map, the translation, the activation) until the two classes can be cut by a line; with width 2 the ring cannot be untied, after Olah.</span><span data-l="it" lang="it">Ogni strato nascosto come una deformazione continua del piano (la mappa lineare, la traslazione, l'attivazione) finché le due classi si separano con una retta; con larghezza 2 l'anello non si scioglie, da Olah.</span></p>
+            <p class="desc"><span data-l="en">Each hidden layer as a continuous deformation of the plane (linear map, translation, activation), applied until the two classes can be separated by a line; with width 2, the ring cannot be untangled (after Olah).</span><span data-l="it" lang="it">Ogni strato nascosto come una deformazione continua del piano (mappa lineare, traslazione, attivazione), applicata finché le due classi non si separano con una retta; con larghezza 2, l'anello non si può sciogliere (da Olah).</span></p>
             <ul class="tags"><li><span data-l="en">Topology</span><span data-l="it" lang="it">Topologia</span></li><li>tanh</li><li>Olah</li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/manifolds.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -1438,7 +1454,7 @@ footer {
           <div class="text">
             <p class="num">02 / 08</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Superposition</span></a></h3>
-            <p class="desc"><span data-l="en">Five features squeezed into two dimensions: when they are dense the model keeps the two most important, when they are sparse it packs all of them in a pentagon and accepts a little interference; after the Toy Models of Anthropic.</span><span data-l="it" lang="it">Cinque caratteristiche compresse in due dimensioni: quando sono dense il modello tiene le due più importanti, quando sono rare le mette tutte in un pentagono e accetta un po' di interferenza; dai Toy Models di Anthropic.</span></p>
+            <p class="desc"><span data-l="en">Five features compressed into two dimensions: when they are dense the model keeps the two most important ones, whereas when they are sparse it arranges all five in a pentagon, at the cost of some interference (after the Toy Models of Anthropic).</span><span data-l="it" lang="it">Cinque caratteristiche compresse in due dimensioni: quando sono dense il modello tiene le due più importanti, mentre quando sono rare le dispone tutte e cinque a pentagono, al prezzo di un po' di interferenza (dai Toy Models di Anthropic).</span></p>
             <ul class="tags"><li>Superposition</li><li><span data-l="en">Interpretability</span><span data-l="it" lang="it">Interpretabilità</span></li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/superposition.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -1448,7 +1464,7 @@ footer {
           <div class="text">
             <p class="num">03 / 08</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a></h3>
-            <p class="desc"><span data-l="en">A small convolutional network trained on digits drawn in the page: the filter slides over the input, the maps of both layers show where each pattern occurs, and hovering a cell lights the part of the image it depends on; draw a digit yourself, after Olah.</span><span data-l="it" lang="it">Una piccola rete convoluzionale addestrata su cifre disegnate nella pagina: il filtro scorre sull'input, le mappe dei due strati mostrano dove compare ogni motivo, e passando su una cella si illumina la parte dell'immagine da cui dipende; la cifra si può disegnare a mano, da Olah.</span></p>
+            <p class="desc"><span data-l="en">A small convolutional network trained on digits drawn in the page: the filter slides over the input, the maps of both layers show where each pattern occurs, and hovering over a cell highlights the part of the image on which it depends; a digit can also be drawn by hand (after Olah).</span><span data-l="it" lang="it">Una piccola rete convoluzionale addestrata su cifre disegnate nella pagina: il filtro scorre sull'input, le mappe dei due strati mostrano dove compare ogni motivo, e passando su una cella si illumina la parte dell'immagine da cui dipende; puoi anche disegnare una cifra a mano (da Olah).</span></p>
             <ul class="tags"><li><span data-l="en">Filters</span><span data-l="it" lang="it">Filtri</span></li><li><span data-l="en">Feature maps</span><span data-l="it" lang="it">Mappe</span></li><li><span data-l="en">Receptive fields</span><span data-l="it" lang="it">Campi recettivi</span></li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/conv.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -1458,7 +1474,7 @@ footer {
           <div class="text">
             <p class="num">04 / 08</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/lstm.html"><span data-l="en">LSTM and GRU</span><span data-l="it" lang="it">LSTM e GRU</span></a></h3>
-            <p class="desc"><span data-l="en">An LSTM, a GRU and a plain recurrent network learn side by side to carry a bit across many steps: the cell is unrolled with the real values of its gates, and the gradient of the plain network vanishes with the delay, after Olah.</span><span data-l="it" lang="it">Una LSTM, una GRU e una rete ricorrente semplice imparano affiancate a portare un bit attraverso molti passi: la cella è srotolata con i valori veri dei suoi gate, e il gradiente della rete semplice svanisce col ritardo, da Olah.</span></p>
+            <p class="desc"><span data-l="en">An LSTM, a GRU and a plain recurrent network learn side by side to carry a bit across many steps: the cell is unrolled with the actual values of its gates, and the gradient of the plain network vanishes as the delay grows (after Olah).</span><span data-l="it" lang="it">Una LSTM, una GRU e una rete ricorrente semplice imparano affiancate a portare un bit attraverso molti passi: la cella è srotolata con i valori effettivi dei suoi gate, e il gradiente della rete semplice svanisce al crescere del ritardo (da Olah).</span></p>
             <ul class="tags"><li><span data-l="en">Gates</span><span data-l="it" lang="it">Gate</span></li><li><span data-l="en">Cell state</span><span data-l="it" lang="it">Stato di cella</span></li><li><span data-l="en">Vanishing gradient</span><span data-l="it" lang="it">Gradiente che svanisce</span></li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/lstm.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -1468,7 +1484,7 @@ footer {
           <div class="text">
             <p class="num">05 / 08</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attention</span></a></h3>
-            <p class="desc"><span data-l="en">A transformer of one or two layers learns to reverse, sort or recall a sequence, and the attention of every head forms under the eyes: the anti-diagonal of the reversal, the induction head of the recall, and q, k, v and the softmax for one query.</span><span data-l="it" lang="it">Un transformer di uno o due strati impara a invertire, ordinare o richiamare una sequenza, e l'attenzione di ogni testa si forma sotto gli occhi: l'antidiagonale dell'inversione, la testa a induzione del richiamo, e q, k, v e la softmax per una query.</span></p>
+            <p class="desc"><span data-l="en">A transformer with one or two layers learns to reverse, sort or recall a sequence, and the attention pattern of each head can be watched as it forms: the anti-diagonal of the reversal, the induction head of the recall and, for a single query, q, k, v and the softmax.</span><span data-l="it" lang="it">Un transformer di uno o due strati impara a invertire, ordinare o richiamare una sequenza, e si vede formarsi l'attenzione di ogni testa: l'antidiagonale dell'inversione, la testa a induzione del richiamo e, per una singola query, q, k, v e la softmax.</span></p>
             <ul class="tags"><li>Self-Attention</li><li><span data-l="en">Heads</span><span data-l="it" lang="it">Teste</span></li><li>Transformer</li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/attention.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -1488,7 +1504,7 @@ footer {
           <div class="text">
             <p class="num">07 / 08</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/gnn.html"><span data-l="en">Graph Networks</span><span data-l="it" lang="it">Reti su grafi</span></a></h3>
-            <p class="desc"><span data-l="en">Message passing round by round: the labels of a few nodes spreading through their communities, the truth values of an assignment reaching the clauses of a formula as in NeuroSAT, and two graphs that no number of rounds can tell apart.</span><span data-l="it" lang="it">Il message passing round per round: le etichette di pochi nodi che si propagano nelle loro comunità, i valori di verità di un assegnamento che raggiungono le clausole di una formula come in NeuroSAT, e due grafi che nessun numero di round distingue.</span></p>
+            <p class="desc"><span data-l="en">Message passing round by round: the labels of a few nodes spreading through their communities, the truth values of an assignment reaching the clauses of a formula as in NeuroSAT, and two non-isomorphic graphs that message passing cannot distinguish, however many rounds it performs.</span><span data-l="it" lang="it">Il message passing round per round: le etichette di pochi nodi che si propagano nelle loro comunità, i valori di verità di un assegnamento che raggiungono le clausole di una formula come in NeuroSAT, e due grafi non isomorfi che il message passing non distingue, per quanti round esegua.</span></p>
             <ul class="tags"><li>GCN</li><li>GIN</li><li><span data-l="en">Weisfeiler-Leman</span><span data-l="it" lang="it">Weisfeiler-Leman</span></li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/gnn.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -1511,7 +1527,7 @@ footer {
           <div class="text">
             <p class="num">01 / 03</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a></h3>
-            <p class="desc"><span data-l="en">Five hundred digits followed through the layers of a network while it trains, each layer drawn with PCA, t-SNE or a linear probe: the classes overlap in the pixels and come apart layer after layer, after Olah.</span><span data-l="it" lang="it">Cinquecento cifre seguite attraverso gli strati di una rete mentre si addestra, ogni strato disegnato con PCA, t-SNE o una sonda lineare: le classi si sovrappongono nei pixel e si separano strato dopo strato, da Olah.</span></p>
+            <p class="desc"><span data-l="en">Five hundred digits followed through the layers of a network while it trains, each layer drawn with PCA, t-SNE or a linear probe: the classes overlap in the pixels and separate layer after layer (after Olah).</span><span data-l="it" lang="it">Cinquecento cifre seguite attraverso gli strati di una rete mentre si addestra, ogni strato disegnato con PCA, t-SNE o una sonda lineare: le classi si sovrappongono nei pixel e si separano strato dopo strato (da Olah).</span></p>
             <ul class="tags"><li>PCA</li><li>t-SNE</li><li><span data-l="en">Nearest neighbours</span><span data-l="it" lang="it">Vicini</span></li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/representations.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -1544,7 +1560,7 @@ footer {
           <div class="text">
             <p class="num">01 / 05</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/hebbian.html"><span data-l="en">Hebbian Learning</span><span data-l="it" lang="it">Apprendimento hebbiano</span></a></h3>
-            <p class="desc"><span data-l="en">A single linear neuron learning from a cloud of points with the rules of Hebb, Oja, subtractive normalization, BCM and covariance: plain Hebb grows without bound along the principal eigenvector, Oja's rule settles on it with unit norm, which is online PCA.</span><span data-l="it" lang="it">Un solo neurone lineare che impara da una nuvola di punti con le regole di Hebb, di Oja, della normalizzazione sottrattiva, BCM e della covarianza: la regola di Hebb cresce senza limite lungo l'autovettore principale, quella di Oja vi si ferma con norma unitaria, ed è la PCA online.</span></p>
+            <p class="desc"><span data-l="en">A single linear neuron learning from a cloud of points with the rules of Hebb, Oja, subtractive normalization, BCM and covariance: plain Hebb grows without bound along the principal eigenvector, while Oja's rule converges to it with unit norm, i.e., it computes the principal component online.</span><span data-l="it" lang="it">Un solo neurone lineare che impara da una nuvola di punti con le regole di Hebb, di Oja, della normalizzazione sottrattiva, BCM e della covarianza: la regola di Hebb cresce senza limite lungo l'autovettore principale, mentre quella di Oja converge a esso con norma unitaria, ossia calcola online la componente principale.</span></p>
             <ul class="tags"><li>Hebb</li><li>Oja</li><li>BCM</li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/hebbian.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -1584,7 +1600,7 @@ footer {
           <div class="text">
             <p class="num">05 / 05</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/esn.html"><span data-l="en">Echo State Networks</span><span data-l="it" lang="it">Echo state network</span></a></h3>
-            <p class="desc"><span data-l="en">A random reservoir that forgets its initial state when its spectral radius is below one, read by a ridge regression, a convex problem solved in closed form, on NARMA10 and Mackey-Glass, against an input-delayed network and a recurrent one trained by backpropagation.</span><span data-l="it" lang="it">Un serbatoio casuale che dimentica il suo stato iniziale quando il raggio spettrale è sotto uno, letto da una ridge regression, un problema convesso risolto in forma chiusa, su NARMA10 e Mackey-Glass, contro una rete a ingressi ritardati e una ricorrente addestrata con la retropropagazione.</span></p>
+            <p class="desc"><span data-l="en">A random reservoir, which forgets its initial state when its spectral radius is below one, read out by a ridge regression (a convex problem solved in closed form) and compared on NARMA10 and Mackey-Glass with an input-delayed network and with a recurrent network trained by backpropagation.</span><span data-l="it" lang="it">Un serbatoio casuale, che dimentica il suo stato iniziale quando il raggio spettrale è sotto uno, letto da una ridge regression (un problema convesso risolto in forma chiusa) e confrontato su NARMA10 e Mackey-Glass con una rete a ingressi ritardati e con una rete ricorrente addestrata con la retropropagazione.</span></p>
             <ul class="tags"><li><span data-l="en">Reservoir</span><span data-l="it" lang="it">Serbatoio</span></li><li><span data-l="en">Ridge</span><span data-l="it" lang="it">Ridge</span></li><li>NARMA10</li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/esn.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
@@ -1598,8 +1614,8 @@ footer {
   <div class="grid">
     <h2><a href="/translate" data-l="en" data-section="translate">Translate</a><a href="/traduci" data-l="it" lang="it" data-section="translate">Traduci</a></h2>
     <div class="body">
-      <p data-l="en">A translator between Sicilian, Italian and English, a neural model for a low-resource language built with Eryk Wdowiak and Arba Sicula on the work of <a href="https://arxiv.org/abs/2110.01938">Tradutturi Sicilianu</a>.</p>
-      <p data-l="it" lang="it">Un traduttore fra siciliano, italiano e inglese, un modello neurale per una lingua con poche risorse, costruito con Eryk Wdowiak e Arba Sicula sul lavoro di <a href="https://arxiv.org/abs/2110.01938">Tradutturi Sicilianu</a>.</p>
+      <p data-l="en">A translator between Sicilian, Italian and English, i.e., a neural model for a low-resource language, which I built with Eryk Wdowiak and Arba Sicula starting from the work of <a href="https://arxiv.org/abs/2110.01938">Tradutturi Sicilianu</a>.</p>
+      <p data-l="it" lang="it">Un traduttore fra siciliano, italiano e inglese, ossia un modello neurale per una lingua con poche risorse, che ho costruito con Eryk Wdowiak e Arba Sicula a partire dal lavoro di <a href="https://arxiv.org/abs/2110.01938">Tradutturi Sicilianu</a>.</p>
       <form id="tr-form">
         <div class="bar">
           <select id="tr-dir" aria-label="Direction">
@@ -1684,15 +1700,15 @@ Decomposition methods and solvers for large-scale
   <div class="grid">
     <h2><a href="/experts" data-l="en" data-section="experts">Expert Systems</a><a href="/esperti" data-l="it" lang="it" data-section="experts">Sistemi esperti</a></h2>
     <div class="body">
-      <p data-l="en">Two rule-based expert systems, the symbolic AI I started from, to talk with as with a chatbot: each asks one question at a time, explains why it asks, and reasons over a knowledge base written from the experts&rsquo; criteria. The same engine answers here and on Telegram.</p>
-      <p data-l="it" lang="it">Due sistemi esperti a regole, l&rsquo;IA simbolica da cui sono partito, con cui parlare come con un chatbot: ciascuno fa una domanda alla volta, spiega perch&eacute; la fa e ragiona su una base di conoscenza scritta dai criteri degli esperti. Lo stesso motore risponde qui e su Telegram.</p>
+      <p data-l="en">Two rule-based expert systems, of the kind of symbolic AI I started from, with which one can talk as with a chatbot: each of them asks one question at a time (explaining, on request, why it asks it) and reasons over a knowledge base written from the criteria of the experts. The same engine answers here and on Telegram.</p>
+      <p data-l="it" lang="it">Due sistemi esperti a regole, del tipo di IA simbolica da cui sono partito, con cui puoi parlare come con un chatbot: ciascuno fa una domanda alla volta (e, se glielo chiedi, spiega perch&eacute; la fa) e ragiona su una base di conoscenza scritta a partire dai criteri degli esperti. Lo stesso motore risponde qui e su Telegram.</p>
       <div class="subnav" role="tablist">
         <button type="button" role="tab" data-sub="beerex">BeerEX</button>
         <button type="button" role="tab" data-sub="pesad">PESAD</button>
       </div>
       <div class="sub" data-sub="beerex" role="tabpanel">
-      <p data-l="en">A beer to drink, chosen from 79 styles by taste, occasion and meal, asked in everyday words, with certainty factors or fuzzy logic (CLIPS). <a href="https://github.com/dmeoli/BeerEX">Code</a> &middot; <a href="https://t.me/BeerEXpertBot">Telegram</a></p>
-      <p data-l="it" lang="it">Una birra da bere, scelta fra 79 stili secondo gusto, occasione e pasto, chiesti in parole di tutti i giorni, con fattori di certezza o logica fuzzy (CLIPS). <a href="https://github.com/dmeoli/BeerEX">Codice</a> &middot; <a href="https://t.me/BeerEXpertBot">Telegram</a></p>
+      <p data-l="en">A beer chosen among 79 styles according to taste, occasion and meal, which are asked about in everyday words; the reasoning uses certainty factors or fuzzy logic (CLIPS). <a href="https://github.com/dmeoli/BeerEX">Code</a> &middot; <a href="https://t.me/BeerEXpertBot">Telegram</a></p>
+      <p data-l="it" lang="it">Una birra scelta fra 79 stili secondo gusto, occasione e pasto, su cui ti fa domande in parole di tutti i giorni; il ragionamento usa fattori di certezza o logica fuzzy (CLIPS). <a href="https://github.com/dmeoli/BeerEX">Codice</a> &middot; <a href="https://t.me/BeerEXpertBot">Telegram</a></p>
       <div class="chat" data-bot="beerex">
         <div class="chat-head">
           <span class="chat-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h11v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/><path d="M16 11h2a2 2 0 0 1 0 4h-2"/><path d="M5 8a3 3 0 0 1 3-4 3 3 0 0 1 5 0 3 3 0 0 1 3 4"/><path d="M9 12v5M12 12v5"/></svg></span>
@@ -1705,8 +1721,8 @@ Decomposition methods and solvers for large-scale
       </div>
       </div>
       <div class="sub" data-sub="pesad" role="tabpanel">
-      <p data-l="en">Neurodevelopmental, anxiety, obsessive-compulsive and trauma-related disorders after the criteria of the DSM-5-TR (Prolog), with six ways of combining the uncertainty of the answers, from certainty factors to the t-norms of &#321;ukasiewicz, Hamacher and Einstein. An educational tool, not a diagnosis. <a href="https://github.com/dmeoli/PESAD">Code</a> &middot; <a href="https://t.me/PESADBot">Telegram</a></p>
-      <p data-l="it" lang="it">Disturbi del neurosviluppo, d&rsquo;ansia, ossessivo-compulsivi e correlati a traumi secondo i criteri del DSM-5-TR (Prolog), con sei modi di combinare l&rsquo;incertezza delle risposte, dai fattori di certezza alle t-norme di &#321;ukasiewicz, Hamacher ed Einstein. Uno strumento didattico, non una diagnosi. <a href="https://github.com/dmeoli/PESAD">Codice</a> &middot; <a href="https://t.me/PESADBot">Telegram</a></p>
+      <p data-l="en">Neurodevelopmental, anxiety, obsessive-compulsive and trauma-related disorders after the criteria of the DSM-5-TR (Prolog), with six ways of combining the uncertainty of the answers, from certainty factors to the t-norms of &#321;ukasiewicz, Hamacher and Einstein. It is an educational tool, and it does not give a diagnosis. <a href="https://github.com/dmeoli/PESAD">Code</a> &middot; <a href="https://t.me/PESADBot">Telegram</a></p>
+      <p data-l="it" lang="it">Disturbi del neurosviluppo, d&rsquo;ansia, ossessivo-compulsivi e correlati a traumi secondo i criteri del DSM-5-TR (Prolog), con sei modi di combinare l&rsquo;incertezza delle risposte, dai fattori di certezza alle t-norme di &#321;ukasiewicz, Hamacher ed Einstein. &Egrave; uno strumento didattico e non fornisce una diagnosi. <a href="https://github.com/dmeoli/PESAD">Codice</a> &middot; <a href="https://t.me/PESADBot">Telegram</a></p>
       <div class="chat" data-bot="pesad">
         <div class="chat-head">
           <span class="chat-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M17.599 6.5a3 3 0 0 0 .399-1.375"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M19.938 10.5a4 4 0 0 1 .585.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M19.967 17.484A4 4 0 0 1 18 18"/></svg></span>
@@ -1727,12 +1743,12 @@ Decomposition methods and solvers for large-scale
   <div class="grid">
     <h2><a href="/forms" data-l="en" data-section="forms">Forms</a><a href="/forme" data-l="it" lang="it" data-section="forms">Forme</a></h2>
     <div class="body">
-      <p data-l="en">Mathematics to hold in the hand: shapes generated by formulas, turned in 3D in the browser and printed in 3D on request.</p>
-      <p data-l="it" lang="it">Matematica da tenere in mano: forme generate da formule, che si girano in 3D nel browser e si stampano in 3D su richiesta.</p>
-      <p class="order" data-l="en">Every shape on this page can be ordered as a 3D print, also customised in size, colour and parameters: write to me at <a href="mailto:donato.meoli@outlook.com?subject=Stampa%203D">donato.meoli@outlook.com</a>, or use the button "Request this print" in its scene, which sends the link to the shape as you set it.</p>
-      <p class="order" data-l="it" lang="it">Ogni forma di questa pagina si può ordinare come stampa 3D, anche personalizzata in dimensione, colore e parametri: basta scrivermi a <a href="mailto:donato.meoli@outlook.com?subject=Stampa%203D">donato.meoli@outlook.com</a>, o usare nella sua scena il pulsante "Richiedi questa stampa", che manda il link alla forma come la si è impostata.</p>
+      <p data-l="en">Shapes generated by formulae, which can be turned in 3D in the browser and ordered as 3D prints.</p>
+      <p data-l="it" lang="it">Forme generate da formule, che puoi girare in 3D nel browser e ordinare come stampe 3D.</p>
+      <p class="order" data-l="en">Every shape on this page can be ordered as a 3D print, also customized in size, color and parameters: write to me at <a href="mailto:donato.meoli@outlook.com?subject=Stampa%203D">donato.meoli@outlook.com</a>, or use the button "Request this print" in its scene, which sends the link to the shape with the settings you chose.</p>
+      <p class="order" data-l="it" lang="it">Ogni forma di questa pagina si può ordinare come stampa 3D, anche personalizzata in dimensione, colore e parametri: scrivimi a <a href="mailto:donato.meoli@outlook.com?subject=Stampa%203D">donato.meoli@outlook.com</a>, oppure usa nella sua scena il pulsante "Richiedi questa stampa", che manda il link alla forma con le impostazioni che hai scelto.</p>
       <div class="subnav" role="tablist">
-        <button type="button" role="tab" data-sub="research"><span data-l="en">Research</span><span data-l="it" lang="it">Ricerca</span> <span class="count">4</span></button>
+        <button type="button" role="tab" data-sub="research"><span data-l="en">Research</span><span data-l="it" lang="it">Ricerca</span> <span class="count">1</span></button>
         <button type="button" role="tab" data-sub="nature"><span data-l="en">Nature</span><span data-l="it" lang="it">Natura</span> <span class="count">6</span></button>
         <button type="button" role="tab" data-sub="mathematics"><span data-l="en">Mathematics</span><span data-l="it" lang="it">Matematica</span> <span class="count">7</span></button>
         <button type="button" role="tab" data-sub="nerd">Nerd <span class="count">4</span></button>
@@ -1742,55 +1758,22 @@ Decomposition methods and solvers for large-scale
       <p class="eyebrow label"><span data-l="en">Research</span><span data-l="it" lang="it">Ricerca</span></p>
       <div class="scenes">
         <article class="scene">
-          <a class="media" href="https://dmeoli.github.io/opt-playground/simplex-path.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/forms/simplex-path.webp" width="640" height="442" alt="The Simplex on a Polytope" loading="lazy"><img class="th-dark" src="/assets/forms/simplex-path-dark.webp" width="640" height="442" alt="The Simplex on a Polytope" loading="lazy"></a>
-          <div class="text">
-            <p class="num">01 / 04</p>
-            <h3><a href="https://dmeoli.github.io/opt-playground/simplex-path.html"><span data-l="en">The Simplex on a Polytope</span><span data-l="it" lang="it">Il simplesso su un politopo</span></a></h3>
-            <p class="desc"><span data-l="en">The feasible region of a linear program in three variables as a solid, with the path of the simplex method raised on its edges; on the Klee-Minty cube the rule of Dantzig visits all 8 vertices.</span><span data-l="it" lang="it">La regione ammissibile di un programma lineare in tre variabili come solido, con il cammino del metodo del simplesso in rilievo sui suoi spigoli; sul cubo di Klee-Minty la regola di Dantzig visita tutti gli 8 vertici.</span></p>
-            <ul class="tags"><li><span data-l="en">Linear programming</span><span data-l="it" lang="it">Programmazione lineare</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
-            <a class="go" href="https://dmeoli.github.io/opt-playground/simplex-path.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
-          </div>
-        </article>
-        <article class="scene">
-          <a class="media" href="https://dmeoli.github.io/opt-playground/lagrangian-dual.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/forms/lagrangian-dual.webp" width="640" height="442" alt="The Lagrangian Dual" loading="lazy"><img class="th-dark" src="/assets/forms/lagrangian-dual-dark.webp" width="640" height="442" alt="The Lagrangian Dual" loading="lazy"></a>
-          <div class="text">
-            <p class="num">02 / 04</p>
-            <h3><a href="https://dmeoli.github.io/opt-playground/lagrangian-dual.html"><span data-l="en">The Lagrangian Dual</span><span data-l="it" lang="it">Il duale lagrangiano</span></a></h3>
-            <p class="desc"><span data-l="en">The dual function of a small knapsack problem with two relaxed constraints, a concave polyhedral roof with one facet per point, climbed by a bundle method whose path is engraved on it.</span><span data-l="it" lang="it">La funzione duale di un piccolo problema di zaino con due vincoli rilassati, un tetto poliedrico concavo con una faccia per punto, scalato da un metodo bundle il cui cammino vi è inciso.</span></p>
-            <ul class="tags"><li><span data-l="en">Lagrangian relaxation</span><span data-l="it" lang="it">Rilassamento lagrangiano</span></li><li><span data-l="en">Bundle methods</span><span data-l="it" lang="it">Metodi bundle</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
-            <a class="go" href="https://dmeoli.github.io/opt-playground/lagrangian-dual.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
-          </div>
-        </article>
-        <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/loss-landscape.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/forms/loss-landscape.webp" width="640" height="442" alt="Loss Landscapes" loading="lazy"><img class="th-dark" src="/assets/forms/loss-landscape-dark.webp" width="640" height="442" alt="Loss Landscapes" loading="lazy"></a>
           <div class="text">
-            <p class="num">03 / 04</p>
+            <p class="num">01 / 01</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/loss-landscape.html"><span data-l="en">Loss Landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a></h3>
-            <p class="desc"><span data-l="en">The loss of a deep network and of a logistic regression on planes through their trained weights, after Li et al. (2018), side by side as reliefs with the path of gradient descent: one rugged, one convex.</span><span data-l="it" lang="it">La loss di una rete profonda e di una regressione logistica su piani per i loro pesi addestrati, secondo Li et al. (2018), affiancate come rilievi con il cammino della discesa del gradiente: una accidentata, l'altra convessa.</span></p>
+            <p class="desc"><span data-l="en">The loss of a deep network and of a logistic regression on planes through their trained weights, after Li et al. (2018), side by side as reliefs with the path of gradient descent; the first surface is rugged, while the second is convex.</span><span data-l="it" lang="it">La loss di una rete profonda e di una regressione logistica su piani per i loro pesi addestrati, secondo Li et al. (2018), affiancate come rilievi con il cammino della discesa del gradiente; la prima superficie è accidentata, mentre la seconda è convessa.</span></p>
             <ul class="tags"><li>Machine learning</li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
+            <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
             <a class="go" href="https://dmeoli.github.io/opt-playground/loss-landscape.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
-          </div>
-        </article>
-        <article class="scene">
-          <a class="media" href="https://dmeoli.github.io/opt-playground/packing-mip.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/forms/packing-mip.webp" width="640" height="442" alt="A Packing Puzzle by MIP" loading="lazy"><img class="th-dark" src="/assets/forms/packing-mip-dark.webp" width="640" height="442" alt="A Packing Puzzle by MIP" loading="lazy"></a>
-          <div class="text">
-            <p class="num">04 / 04</p>
-            <h3><a href="https://dmeoli.github.io/opt-playground/packing-mip.html"><span data-l="en">A Packing Puzzle by MIP</span><span data-l="it" lang="it">Un puzzle di impaccamento con la MIP</span></a></h3>
-            <p class="desc"><span data-l="en">Pentominoes and the Soma cube placed in their tray by an integer program that maximizes the area covered, so that the tray is full only at the optimum; tray and pieces can be ordered as a 3D print.</span><span data-l="it" lang="it">Pentamini e cubo Soma messi nel loro vassoio da un programma intero che massimizza l'area coperta, così che il vassoio è pieno solo all'ottimo; vassoio e pezzi si possono ordinare come stampa 3D.</span></p>
-            <ul class="tags"><li><span data-l="en">Integer programming</span><span data-l="it" lang="it">Programmazione intera</span></li><li><span data-l="en">Puzzles</span><span data-l="it" lang="it">Rompicapi</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
-            <a class="go" href="https://dmeoli.github.io/opt-playground/packing-mip.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
       </div>
       </div>
       <div class="sub" data-sub="nature" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">Nature</span><span data-l="it" lang="it">Natura</span></p>
-      <p class="intro" data-l="en">Shapes of living things generated from a few numbers, in the browser, after the models of theoretical morphology: the shell, which grows only at its margin, the spirals of the sunflower and the pine cone set by the golden angle, the lattice skeletons of Haeckel's radiolarians, corals grown by aggregation and Turing's patterns on a vase, plants written as L-systems, and snowflakes grown by a cellular automaton. Each one turns in 3D and can be ordered as a 3D print.</p>
-      <p class="intro" data-l="it" lang="it">Forme di esseri viventi generate da pochi numeri, nel browser, secondo i modelli della morfologia teorica: la conchiglia, che cresce solo sul margine, le spirali del girasole e della pigna dettate dall'angolo aureo, gli scheletri a reticolo dei radiolari di Haeckel, i coralli che crescono per aggregazione e le macchie di Turing su un vaso, le piante scritte come sistemi L e i fiocchi di neve cresciuti da un automa cellulare. Ognuna si gira in 3D e si può ordinare come stampa 3D.</p>
+      <p class="intro" data-l="en">Shapes of living things generated from a few numbers, in the browser, after the models of theoretical morphology: the shell, which grows only at its margin, the spirals of the sunflower and the pine cone set by the golden angle, the lattice skeletons of Haeckel's radiolarians, corals grown by aggregation and Turing's patterns on a vase, plants written as L-systems, and snowflakes grown by a cellular automaton. Each of them can be turned in 3D and ordered as a 3D print.</p>
+      <p class="intro" data-l="it" lang="it">Forme di esseri viventi generate da pochi numeri, nel browser, secondo i modelli della morfologia teorica: la conchiglia, che cresce solo sul margine, le spirali del girasole e della pigna dettate dall'angolo aureo, gli scheletri a reticolo dei radiolari di Haeckel, i coralli che crescono per aggregazione e le macchie di Turing su un vaso, le piante scritte come sistemi L e i fiocchi di neve cresciuti da un automa cellulare. Ognuna puoi girarla in 3D e ordinarla come stampa 3D.</p>
       <div class="scenes">
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/shells.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/forms/shells.webm" poster="/assets/forms/shells.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Shells from Three Numbers"></video><video class="th-dark" src="/assets/forms/shells-dark.webm" poster="/assets/forms/shells-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Shells from Three Numbers"></video></a>
@@ -1799,7 +1782,7 @@ Decomposition methods and solvers for large-scale
             <h3><a href="https://dmeoli.github.io/opt-playground/shells.html"><span data-l="en">Shells from Three Numbers</span><span data-l="it" lang="it">Conchiglie da tre numeri</span></a></h3>
             <p class="desc"><span data-l="en">The model of shell coiling of Raup (1966) in 3D: an aperture swept along a logarithmic helico-spiral by the expansion W, the distance D from the axis and the translation T, from the nautilus to the turritella and the valve of a bivalve, with the spiral seen from above against that of Fibonacci, which the nautilus, with W close to 3, does not follow; any shell of the scene can be ordered as a 3D print.</span><span data-l="it" lang="it">Il modello di avvolgimento delle conchiglie di Raup (1966) in 3D: un'apertura trascinata lungo una spirale elicoidale logaritmica dall'espansione W, dalla distanza D dall'asse e dalla traslazione T, dal nautilus alla turritella e alla valva di un bivalve, con la spirale vista dall'alto contro quella di Fibonacci, che il nautilus, con W vicino a 3, non segue; ogni conchiglia della scena si può ordinare come stampa 3D.</span></p>
             <ul class="tags"><li>Raup</li><li><span data-l="en">Logarithmic spiral</span><span data-l="it" lang="it">Spirale logaritmica</span></li><li>Fibonacci</li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
+            <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
             <a class="go" href="https://dmeoli.github.io/opt-playground/shells.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
@@ -1810,7 +1793,7 @@ Decomposition methods and solvers for large-scale
             <h3><a href="https://dmeoli.github.io/opt-playground/phyllotaxis.html"><span data-l="en">Phyllotaxis and the Golden Angle</span><span data-l="it" lang="it">La fillotassi e l'angolo aureo</span></a></h3>
             <p class="desc"><span data-l="en">Vogel's model of the sunflower, each floret turned by the golden angle from the one before, on a disc, a pine cone, a pineapple and a globular cactus, with the Fibonacci numbers of the spirals and a divergence angle to change, which shows why only the golden angle packs the florets evenly at every size; the form can be ordered as a 3D print, the florets as bumps.</span><span data-l="it" lang="it">Il modello del girasole di Vogel, ogni fiore ruotato dell'angolo aureo rispetto al precedente, su un disco, una pigna, un ananas e un cactus globoso, con i numeri di Fibonacci delle spirali e un angolo di divergenza da cambiare, che mostra perché solo l'angolo aureo dispone i fiori in modo uniforme a ogni dimensione; la forma si può ordinare come stampa 3D, con i fiori in rilievo.</span></p>
             <ul class="tags"><li>Vogel</li><li><span data-l="en">Golden angle</span><span data-l="it" lang="it">Angolo aureo</span></li><li>Fibonacci</li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
+            <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
             <a class="go" href="https://dmeoli.github.io/opt-playground/phyllotaxis.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
@@ -1821,7 +1804,7 @@ Decomposition methods and solvers for large-scale
             <h3><a href="https://dmeoli.github.io/opt-playground/radiolarian.html"><span data-l="en">Radiolarians after Haeckel</span><span data-l="it" lang="it">Radiolari da Haeckel</span></a></h3>
             <p class="desc"><span data-l="en">Lattice spheres like the skeletons that Haeckel drew in Kunstformen der Natur: the spherical Voronoi diagram of a Fibonacci sphere or of a subdivided icosahedron as a net of bars, one to three nested shells joined by radial beams, spines after Müller's law and thorns, with the count of pentagons and heptagons that Euler's formula fixes at a difference of twelve; each skeleton can be ordered as a 3D print.</span><span data-l="it" lang="it">Sfere a reticolo come gli scheletri che Haeckel disegnò in Kunstformen der Natur: il diagramma di Voronoi sferico di una sfera di Fibonacci o di un icosaedro suddiviso come rete di barre, da uno a tre gusci annidati uniti da travi radiali, spine secondo la legge di Müller e aculei, con il conto dei pentagoni e degli ettagoni, la cui differenza la formula di Eulero fissa a dodici; ogni scheletro si può ordinare come stampa 3D.</span></p>
             <ul class="tags"><li>Haeckel</li><li><span data-l="en">Spherical Voronoi</span><span data-l="it" lang="it">Voronoi sferico</span></li><li><span data-l="en">Euler's formula</span><span data-l="it" lang="it">Formula di Eulero</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
+            <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
             <a class="go" href="https://dmeoli.github.io/opt-playground/radiolarian.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
@@ -1832,7 +1815,7 @@ Decomposition methods and solvers for large-scale
             <h3><a href="https://dmeoli.github.io/opt-playground/coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a></h3>
             <p class="desc"><span data-l="en">Two forms that grow from local rules: a coral built in 3D by diffusion-limited aggregation (Witten and Sander 1981), with its fractal dimension measured as it grows, and a vase whose wall carries the spots, stripes or labyrinths of the reaction-diffusion of Gray and Scott, chosen on the map of Pearson (1993); both can be ordered as a 3D print.</span><span data-l="it" lang="it">Due forme che crescono da regole locali: un corallo costruito in 3D per aggregazione limitata dalla diffusione (Witten e Sander 1981), con la sua dimensione frattale misurata mentre cresce, e un vaso la cui parete porta le macchie, le strisce o i labirinti della reazione e diffusione di Gray e Scott, scelti sulla mappa di Pearson (1993); entrambi si possono ordinare come stampa 3D.</span></p>
             <ul class="tags"><li><span data-l="en">Aggregation</span><span data-l="it" lang="it">Aggregazione</span></li><li><span data-l="en">Turing patterns</span><span data-l="it" lang="it">Disegni di Turing</span></li><li><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
+            <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
             <a class="go" href="https://dmeoli.github.io/opt-playground/coral.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
@@ -1843,7 +1826,7 @@ Decomposition methods and solvers for large-scale
             <h3><a href="https://dmeoli.github.io/opt-playground/plants.html"><span data-l="en">Plants from Rewriting Rules</span><span data-l="it" lang="it">Piante da regole di riscrittura</span></a></h3>
             <p class="desc"><span data-l="en">Lindenmayer systems in three dimensions, read by a turtle: the trees of Honda and of Aono and Kunii, the ternary tree bent by gravity, a bush with leaves and a stochastic shrub from The Algorithmic Beauty of Plants (1990), with editable rules and branches as thick as the rule of Leonardo makes them; every plant can be ordered as a 3D print, standing on a disc or lying flat.</span><span data-l="it" lang="it">Sistemi di Lindenmayer in tre dimensioni, letti da una tartaruga: gli alberi di Honda e di Aono e Kunii, l'albero ternario piegato dalla gravità, un cespuglio con foglie e un arbusto stocastico da The Algorithmic Beauty of Plants (1990), con regole modificabili e rami spessi quanto li fa la regola di Leonardo; ogni pianta si può ordinare come stampa 3D, in piedi su un disco o distesa.</span></p>
             <ul class="tags"><li><span data-l="en">L-systems</span><span data-l="it" lang="it">Sistemi L</span></li><li>Lindenmayer</li><li><span data-l="en">Trees</span><span data-l="it" lang="it">Alberi</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
+            <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
             <a class="go" href="https://dmeoli.github.io/opt-playground/plants.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
@@ -1852,9 +1835,9 @@ Decomposition methods and solvers for large-scale
           <div class="text">
             <p class="num">06 / 06</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/snowflakes.html"><span data-l="en">Snowflakes from a Cellular Model</span><span data-l="it" lang="it">Fiocchi di neve da un modello cellulare</span></a></h3>
-            <p class="desc"><span data-l="en">The cellular automaton of Reiter (2005) on a hexagonal grid, in which vapour diffuses and freezes on the crystal, grows plates, stars, ferns and dendrites from three numbers; a seed draws the humidity of the layers of air the flake falls through, so that every seed grows a different flake, and each flake can be ordered as a 3D print, a flat plate with a ring to hang it.</span><span data-l="it" lang="it">L'automa cellulare di Reiter (2005) su una griglia esagonale, in cui il vapore si diffonde e gela sul cristallo, fa crescere piastre, stelle, felci e dendriti da tre numeri; un seme estrae l'umidità degli strati d'aria attraverso cui cade il fiocco, sicché ogni seme fa crescere un fiocco diverso, e ogni fiocco si può ordinare come stampa 3D, una piastra piatta con un anello per appenderlo.</span></p>
+            <p class="desc"><span data-l="en">The cellular automaton of Reiter (2005) on a hexagonal grid, in which vapor diffuses and freezes on the crystal, grows plates, stars, ferns and dendrites from three numbers; a seed draws the humidity of the layers of air the flake falls through, so that every seed grows a different flake, and each flake can be ordered as a 3D print, a flat plate with a ring to hang it.</span><span data-l="it" lang="it">L'automa cellulare di Reiter (2005) su una griglia esagonale, in cui il vapore si diffonde e gela sul cristallo, fa crescere piastre, stelle, felci e dendriti da tre numeri; un seme estrae l'umidità degli strati d'aria attraverso cui cade il fiocco, sicché ogni seme fa crescere un fiocco diverso, e ogni fiocco si può ordinare come stampa 3D, una piastra piatta con un anello per appenderlo.</span></p>
             <ul class="tags"><li>Reiter</li><li><span data-l="en">Cellular automata</span><span data-l="it" lang="it">Automi cellulari</span></li><li><span data-l="en">Snow crystals</span><span data-l="it" lang="it">Cristalli di neve</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
+            <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
             <a class="go" href="https://dmeoli.github.io/opt-playground/snowflakes.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
@@ -1862,17 +1845,17 @@ Decomposition methods and solvers for large-scale
       </div>
       <div class="sub" data-sub="mathematics" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">Mathematics</span><span data-l="it" lang="it">Matematica</span></p>
-      <p class="intro" data-l="en">Shapes drawn by equations, to turn in 3D in the browser and to hold in the hand as prints: the Batman emblem of 2011 as the region between seven functions, the minimal surfaces of soap films from the gyroid to Costa's surface, knots and one-sided surfaces, the Lorenz attractor, the regular polytopes of four dimensions, the Chladni figures of a vibrating plate, and a few famous curves and surfaces, each with its formula and a line of its history.</p>
-      <p class="intro" data-l="it" lang="it">Forme disegnate da equazioni, da girare in 3D nel browser e da tenere in mano come stampe: lo stemma di Batman del 2011 come regione fra sette funzioni, le superfici minime delle lamine di sapone dal giroide alla superficie di Costa, nodi e superfici a una sola faccia, l'attrattore di Lorenz, i politopi regolari a quattro dimensioni, le figure di Chladni di una piastra che vibra e alcune curve e superfici famose, ognuna con la sua formula e una riga della sua storia.</p>
+      <p class="intro" data-l="en">Shapes drawn by equations, which can be turned in 3D in the browser and ordered as 3D prints: the Batman emblem of 2011 as the region between seven functions, the minimal surfaces of soap films from the gyroid to Costa's surface, knots and one-sided surfaces, the Lorenz attractor, the regular polytopes of four dimensions, the Chladni figures of a vibrating plate, and a few famous curves and surfaces, each with its formula and a line of its history.</p>
+      <p class="intro" data-l="it" lang="it">Forme disegnate da equazioni, che puoi girare in 3D nel browser e ordinare come stampe 3D: lo stemma di Batman del 2011 come regione fra sette funzioni, le superfici minime delle lamine di sapone dal giroide alla superficie di Costa, nodi e superfici a una sola faccia, l'attrattore di Lorenz, i politopi regolari a quattro dimensioni, le figure di Chladni di una piastra che vibra e alcune curve e superfici famose, ognuna con la sua formula e una riga della sua storia.</p>
       <div class="scenes">
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/batman.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/forms/batman.webm" poster="/assets/forms/batman.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="The Batman Equation"></video><video class="th-dark" src="/assets/forms/batman-dark.webm" poster="/assets/forms/batman-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="The Batman Equation"></video></a>
           <div class="text">
             <p class="num">01 / 07</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/batman.html"><span data-l="en">The Batman Equation</span><span data-l="it" lang="it">L'equazione di Batman</span></a></h3>
-            <p class="desc"><span data-l="en">The equation posted on Reddit in July 2011 and credited to the teacher J. Matthew Register, as two inequalities on seven functions, each of which exists only where its step t(x) = √(|x|/x) is real: the functions drawn one by one with their formulas, the region they bound, and the logo extruded in 3D on the gold oval; the GeoGebra file, the curve in SVG and the emblem as a 3D print on request.</span><span data-l="it" lang="it">L'equazione pubblicata su Reddit nel luglio 2011 e attribuita all'insegnante J. Matthew Register, come due disuguaglianze su sette funzioni, ciascuna delle quali esiste solo dove il suo gradino t(x) = √(|x|/x) è reale: le funzioni disegnate una per una con le loro formule, la regione che delimitano e il logo estruso in 3D sull'ovale d'oro; il file di GeoGebra, la curva in SVG e lo stemma come stampa 3D su richiesta.</span></p>
+            <p class="desc"><span data-l="en">The equation posted on Reddit in July 2011 and credited to the teacher J. Matthew Register, as two inequalities on seven functions, each of which exists only where its step t(x) = √(|x|/x) is real: the functions drawn one by one with their formulae, the region they bound, and the logo extruded in 3D on the gold oval; the GeoGebra file, the curve in SVG and the emblem as a 3D print on request.</span><span data-l="it" lang="it">L'equazione pubblicata su Reddit nel luglio 2011 e attribuita all'insegnante J. Matthew Register, come due disuguaglianze su sette funzioni, ciascuna delle quali esiste solo dove il suo gradino t(x) = √(|x|/x) è reale: le funzioni disegnate una per una con le loro formule, la regione che delimitano e il logo estruso in 3D sull'ovale d'oro; il file di GeoGebra, la curva in SVG e lo stemma come stampa 3D su richiesta.</span></p>
             <ul class="tags"><li>GeoGebra</li><li><span data-l="en">Inequalities</span><span data-l="it" lang="it">Disuguaglianze</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
+            <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
             <a class="go" href="https://dmeoli.github.io/opt-playground/batman.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
@@ -1881,9 +1864,9 @@ Decomposition methods and solvers for large-scale
           <div class="text">
             <p class="num">02 / 07</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/minimal-surfaces.html"><span data-l="en">Minimal Surfaces</span><span data-l="it" lang="it">Superfici minime</span></a></h3>
-            <p class="desc"><span data-l="en">The surfaces of soap films, with zero mean curvature: the gyroid of Schoen, which is also the infill of 3D printers, Schwarz P and D and Neovius, which repeat in space and divide it into two labyrinths, as sheets cut by a cube, a sphere or a cylinder, and the surfaces of Costa (1982) and Enneper (1864) from their Weierstrass formulas; each can be ordered as a 3D print, also customised.</span><span data-l="it" lang="it">Le superfici delle lamine di sapone, a curvatura media nulla: il giroide di Schoen, che è anche il riempimento delle stampanti 3D, la P e la D di Schwarz e quella di Neovius, che si ripetono nello spazio e lo dividono in due labirinti, come lamine tagliate da un cubo, una sfera o un cilindro, e le superfici di Costa (1982) ed Enneper (1864) dalle loro formule di Weierstrass; ognuna si può ordinare come stampa 3D, anche personalizzata.</span></p>
+            <p class="desc"><span data-l="en">The surfaces of soap films, with zero mean curvature: the gyroid of Schoen, which is also the infill of 3D printers, Schwarz P and D and Neovius, which repeat in space and divide it into two labyrinths, as sheets cut by a cube, a sphere or a cylinder, and the surfaces of Costa (1982) and Enneper (1864) from their Weierstrass formulae; each can be ordered as a 3D print, also customized.</span><span data-l="it" lang="it">Le superfici delle lamine di sapone, a curvatura media nulla: il giroide di Schoen, che è anche il riempimento delle stampanti 3D, la P e la D di Schwarz e quella di Neovius, che si ripetono nello spazio e lo dividono in due labirinti, come lamine tagliate da un cubo, una sfera o un cilindro, e le superfici di Costa (1982) ed Enneper (1864) dalle loro formule di Weierstrass; ognuna si può ordinare come stampa 3D, anche personalizzata.</span></p>
             <ul class="tags"><li><span data-l="en">Differential geometry</span><span data-l="it" lang="it">Geometria differenziale</span></li><li><span data-l="en">Gyroid</span><span data-l="it" lang="it">Giroide</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
+            <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
             <a class="go" href="https://dmeoli.github.io/opt-playground/minimal-surfaces.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
@@ -1894,7 +1877,7 @@ Decomposition methods and solvers for large-scale
             <h3><a href="https://dmeoli.github.io/opt-playground/knots.html"><span data-l="en">Knots and One-Sided Surfaces</span><span data-l="it" lang="it">Nodi e superfici a una faccia</span></a></h3>
             <p class="desc"><span data-l="en">Torus knots and links, the trefoil and the figure-eight knot as tubes; the Möbius band, the Klein bottle, whole or cut into its two Möbius halves, and Boy's surface, the projective plane in space, as walls fused where they cross themselves; each with its formula and a line of history.</span><span data-l="it" lang="it">Nodi e allacciamenti torici, il trifoglio e il nodo a otto come tubi; il nastro di Möbius, la bottiglia di Klein, intera o tagliata nelle sue due metà di Möbius, e la superficie di Boy, il piano proiettivo nello spazio, come pareti fuse dove attraversano se stesse; ognuno con la sua formula e una riga di storia.</span></p>
             <ul class="tags"><li><span data-l="en">Topology</span><span data-l="it" lang="it">Topologia</span></li><li><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
+            <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
             <a class="go" href="https://dmeoli.github.io/opt-playground/knots.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
@@ -1903,9 +1886,9 @@ Decomposition methods and solvers for large-scale
           <div class="text">
             <p class="num">04 / 07</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/attractors.html"><span data-l="en">Strange Attractors</span><span data-l="it" lang="it">Attrattori strani</span></a></h3>
-            <p class="desc"><span data-l="en">The trajectory of three equations that never repeats and never settles: the butterfly of Lorenz (1963), born from a model of convection in the air, the folded band of Rössler (1976) and the cyclic labyrinth of Thomas (1999), integrated by Runge-Kutta with their parameters at hand; any of them can be ordered as a 3D print, also customised, as a tube on posts.</span><span data-l="it" lang="it">La traiettoria di tre equazioni che non si ripete e non si ferma mai: la farfalla di Lorenz (1963), nata da un modello della convezione nell'aria, la banda ripiegata di Rössler (1976) e il labirinto ciclico di Thomas (1999), integrate con Runge-Kutta con i loro parametri a portata di mano; ognuna si può ordinare come stampa 3D, anche personalizzata, come un tubo su colonne.</span></p>
+            <p class="desc"><span data-l="en">Trajectories of three differential equations that neither repeat nor converge to a point: the butterfly of Lorenz (1963), born from a model of convection in the air, the folded band of Rössler (1976) and the cyclic labyrinth of Thomas (1999), integrated by Runge-Kutta with their parameters at hand; any of them can be ordered as a 3D print, also customized, as a tube on posts.</span><span data-l="it" lang="it">Traiettorie di tre equazioni differenziali che non si ripetono e non convergono a un punto: la farfalla di Lorenz (1963), nata da un modello della convezione nell'aria, la banda ripiegata di Rössler (1976) e il labirinto ciclico di Thomas (1999), integrate con Runge-Kutta con i loro parametri a portata di mano; ognuna si può ordinare come stampa 3D, anche personalizzata, come un tubo su colonne.</span></p>
             <ul class="tags"><li><span data-l="en">Chaos</span><span data-l="it" lang="it">Caos</span></li><li><span data-l="en">Differential equations</span><span data-l="it" lang="it">Equazioni differenziali</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
+            <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
             <a class="go" href="https://dmeoli.github.io/opt-playground/attractors.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
@@ -1914,9 +1897,9 @@ Decomposition methods and solvers for large-scale
           <div class="text">
             <p class="num">05 / 07</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/polytopes.html"><span data-l="en">Polytopes of Four Dimensions</span><span data-l="it" lang="it">Politopi a quattro dimensioni</span></a></h3>
-            <p class="desc"><span data-l="en">The six regular polytopes of four dimensions found by Schläfli around 1852, from the tesseract to the 120-cell with its 1200 edges, turned in 4D and projected into space in perspective, as Schlegel diagrams, or stereographically, with the edges bent into arcs of circles; any of them can be ordered as a 3D print of struts and balls, also customised.</span><span data-l="it" lang="it">I sei politopi regolari a quattro dimensioni trovati da Schläfli attorno al 1852, dal tesseratto al 120-celle con i suoi 1200 spigoli, ruotati in 4D e proiettati nello spazio in prospettiva, come diagrammi di Schlegel, o stereograficamente, con gli spigoli piegati in archi di cerchio; ognuno si può ordinare come stampa 3D di aste e sfere, anche personalizzata.</span></p>
+            <p class="desc"><span data-l="en">The six regular polytopes of four dimensions found by Schläfli around 1852, from the tesseract to the 120-cell with its 1200 edges, turned in 4D and projected into space in perspective, as Schlegel diagrams, or stereographically, with the edges bent into arcs of circles; any of them can be ordered as a 3D print of struts and balls, also customized.</span><span data-l="it" lang="it">I sei politopi regolari a quattro dimensioni trovati da Schläfli attorno al 1852, dal tesseratto al 120-celle con i suoi 1200 spigoli, ruotati in 4D e proiettati nello spazio in prospettiva, come diagrammi di Schlegel, o stereograficamente, con gli spigoli piegati in archi di cerchio; ognuno si può ordinare come stampa 3D di aste e sfere, anche personalizzata.</span></p>
             <ul class="tags"><li><span data-l="en">Four dimensions</span><span data-l="it" lang="it">Quattro dimensioni</span></li><li><span data-l="en">Polytopes</span><span data-l="it" lang="it">Politopi</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
+            <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
             <a class="go" href="https://dmeoli.github.io/opt-playground/polytopes.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
@@ -1925,9 +1908,9 @@ Decomposition methods and solvers for large-scale
           <div class="text">
             <p class="num">06 / 07</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/chladni.html"><span data-l="en">Chladni Figures</span><span data-l="it" lang="it">Figure di Chladni</span></a></h3>
-            <p class="desc"><span data-l="en">The figures that sand draws on a vibrating plate, gathering along the lines that stay still, as Ernst Chladni showed in 1787: the nodal lines of a square and of a circular plate for the mode chosen, the note they sing, and a plate with the sand raised in relief, which can be ordered as a 3D print.</span><span data-l="it" lang="it">Le figure che la sabbia disegna su una piastra che vibra, raccogliendosi lungo le linee che restano ferme, come mostrò Ernst Chladni nel 1787: le linee nodali di una piastra quadrata e di una circolare per il modo scelto, la nota che cantano, e una piastra con la sabbia in rilievo, che si può ordinare come stampa 3D.</span></p>
+            <p class="desc"><span data-l="en">The figures that sand draws on a vibrating plate, gathering along the lines that stay still, as Ernst Chladni showed in 1787: the nodal lines of a square and of a circular plate for the mode chosen, the pitch of the note, and a plate with the sand raised in relief, which can be ordered as a 3D print.</span><span data-l="it" lang="it">Le figure che la sabbia disegna su una piastra che vibra, raccogliendosi lungo le linee che restano ferme, come mostrò Ernst Chladni nel 1787: le linee nodali di una piastra quadrata e di una circolare per il modo scelto, l'altezza della nota, e una piastra con la sabbia in rilievo, che si può ordinare come stampa 3D.</span></p>
             <ul class="tags"><li><span data-l="en">Waves</span><span data-l="it" lang="it">Onde</span></li><li><span data-l="en">Sound</span><span data-l="it" lang="it">Suono</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
+            <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
             <a class="go" href="https://dmeoli.github.io/opt-playground/chladni.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
@@ -1936,9 +1919,9 @@ Decomposition methods and solvers for large-scale
           <div class="text">
             <p class="num">07 / 07</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/equations.html"><span data-l="en">Famous Equations</span><span data-l="it" lang="it">Equazioni famose</span></a></h3>
-            <p class="desc"><span data-l="en">Three equations known for the shape they draw: Taubin's heart, the zero set of a polynomial of degree 6, standing on a disc; the butterfly curve that Temple H. Fay published in 1989, as a line in relief; and the knots of Lissajous, three cosines of coprime frequencies, as a tube; each can be printed on request, also customised.</span><span data-l="it" lang="it">Tre equazioni note per la forma che disegnano: il cuore di Taubin, insieme degli zeri di un polinomio di grado 6, su un disco; la curva farfalla che Temple H. Fay pubblicò nel 1989, come una linea in rilievo; e i nodi di Lissajous, tre coseni di frequenze prime fra loro, come un tubo; ognuna si può stampare su richiesta, anche personalizzata.</span></p>
+            <p class="desc"><span data-l="en">Three equations known for the shape they draw: Taubin's heart, the zero set of a polynomial of degree 6, standing on a disc; the butterfly curve that Temple H. Fay published in 1989, as a line in relief; and the knots of Lissajous, three cosines of coprime frequencies, as a tube; each can be printed on request, also customized.</span><span data-l="it" lang="it">Tre equazioni note per la forma che disegnano: il cuore di Taubin, insieme degli zeri di un polinomio di grado 6, su un disco; la curva farfalla che Temple H. Fay pubblicò nel 1989, come una linea in rilievo; e i nodi di Lissajous, tre coseni di frequenze prime fra loro, come un tubo; ognuna si può stampare su richiesta, anche personalizzata.</span></p>
             <ul class="tags"><li><span data-l="en">Algebraic surfaces</span><span data-l="it" lang="it">Superfici algebriche</span></li><li><span data-l="en">Curves</span><span data-l="it" lang="it">Curve</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
+            <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
             <a class="go" href="https://dmeoli.github.io/opt-playground/equations.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
@@ -1952,9 +1935,9 @@ Decomposition methods and solvers for large-scale
           <div class="text">
             <p class="num">01 / 04</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/dice.html"><span data-l="en">Fair Dice</span><span data-l="it" lang="it">Dadi equi</span></a></h3>
-            <p class="desc"><span data-l="en">Dice fair by symmetry, after Diaconis and Keller (1989): the Platonic d4 to d20, the d10, bipyramids and trapezohedra for any even number of faces, Catalan solids up to the d120, and long dice for odd numbers, with numbers engraved as strokes, opposite faces adding to n + 1, pips on the d6 and rounded edges; each one printed in 3D on request, also customised.</span><span data-l="it" lang="it">Dadi equi per simmetria, secondo Diaconis e Keller (1989): dal d4 al d20 platonici, il d10, bipiramidi e trapezoedri per ogni numero pari di facce, solidi di Catalan fino al d120 e dadi lunghi per i numeri dispari, con i numeri incisi a tratti, le facce opposte che sommano n + 1, i punti sul d6 e gli spigoli arrotondati; ognuno si stampa in 3D su richiesta, anche personalizzato.</span></p>
+            <p class="desc"><span data-l="en">Dice fair by symmetry, after Diaconis and Keller (1989): the Platonic d4 to d20, the d10, bipyramids and trapezohedra for any even number of faces, Catalan solids up to the d120, and long dice for odd numbers, with numbers engraved as strokes, opposite faces adding to n + 1, pips on the d6 and rounded edges; each one printed in 3D on request, also customized.</span><span data-l="it" lang="it">Dadi equi per simmetria, secondo Diaconis e Keller (1989): dal d4 al d20 platonici, il d10, bipiramidi e trapezoedri per ogni numero pari di facce, solidi di Catalan fino al d120 e dadi lunghi per i numeri dispari, con i numeri incisi a tratti, le facce opposte che sommano n + 1, i punti sul d6 e gli spigoli arrotondati; ognuno si stampa in 3D su richiesta, anche personalizzato.</span></p>
             <ul class="tags"><li><span data-l="en">Isohedra</span><span data-l="it" lang="it">Isoedri</span></li><li><span data-l="en">Probability</span><span data-l="it" lang="it">Probabilità</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
+            <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
             <a class="go" href="https://dmeoli.github.io/opt-playground/dice.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
@@ -1963,20 +1946,20 @@ Decomposition methods and solvers for large-scale
           <div class="text">
             <p class="num">02 / 04</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/hat.html"><span data-l="en">The Hat and the Spectre</span><span data-l="it" lang="it">Il cappello e lo Spettro</span></a></h3>
-            <p class="desc"><span data-l="en">The aperiodic monotiles of Smith, Myers, Kaplan and Goodman-Strauss (2023): a supertile of the tiling built by substitution, the family Tile(a, b) from the hat through Tile(1, 1) to the turtle, with the mirror images marked, and a puzzle printed in 3D on request, also customised: a tray shaped as a patch of the tiling and its tiles.</span><span data-l="it" lang="it">Le monotessere aperiodiche di Smith, Myers, Kaplan e Goodman-Strauss (2023): una supertessera della tassellatura costruita per sostituzione, la famiglia Tile(a, b) dal cappello per Tile(1, 1) fino alla tartaruga, con le immagini speculari segnate, e un puzzle stampato in 3D su richiesta, anche personalizzato: un vassoio a forma di un pezzo della tassellatura e le sue tessere.</span></p>
+            <p class="desc"><span data-l="en">The aperiodic monotiles of Smith, Myers, Kaplan and Goodman-Strauss (2023): a supertile of the tiling built by substitution, the family Tile(a, b) from the hat through Tile(1, 1) to the turtle, with the mirror images marked, and a puzzle printed in 3D on request, also customized: a tray shaped as a patch of the tiling and its tiles.</span><span data-l="it" lang="it">Le monotessere aperiodiche di Smith, Myers, Kaplan e Goodman-Strauss (2023): una supertessera della tassellatura costruita per sostituzione, la famiglia Tile(a, b) dal cappello per Tile(1, 1) fino alla tartaruga, con le immagini speculari segnate, e un puzzle stampato in 3D su richiesta, anche personalizzato: un vassoio a forma di un pezzo della tassellatura e le sue tessere.</span></p>
             <ul class="tags"><li><span data-l="en">Aperiodic tilings</span><span data-l="it" lang="it">Tassellature aperiodiche</span></li><li>Puzzle</li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
+            <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
             <a class="go" href="https://dmeoli.github.io/opt-playground/hat.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
         <article class="scene">
-          <a class="media" href="https://dmeoli.github.io/opt-playground/fractals.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/forms/fractals.webp" width="640" height="442" alt="Fractals in the Hand" loading="lazy"><img class="th-dark" src="/assets/forms/fractals-dark.webp" width="640" height="442" alt="Fractals in the Hand" loading="lazy"></a>
+          <a class="media" href="https://dmeoli.github.io/opt-playground/fractals.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/forms/fractals.webp" width="640" height="442" alt="Printable Fractals" loading="lazy"><img class="th-dark" src="/assets/forms/fractals-dark.webp" width="640" height="442" alt="Printable Fractals" loading="lazy"></a>
           <div class="text">
             <p class="num">03 / 04</p>
-            <h3><a href="https://dmeoli.github.io/opt-playground/fractals.html"><span data-l="en">Fractals in the Hand</span><span data-l="it" lang="it">Frattali in mano</span></a></h3>
-            <p class="desc"><span data-l="en">The Menger sponge to level 3, the Sierpinski tetrahedron standing on an edge so that it prints without supports, and the Mandelbulb of power 8 traced from its distance estimator, with their dimensions; each one printed in 3D on request, also customised.</span><span data-l="it" lang="it">La spugna di Menger fino al livello 3, il tetraedro di Sierpinski in piedi su uno spigolo così che si stampi senza supporti, e il Mandelbulb di potenza 8 tracciato dal suo stimatore di distanza, con le loro dimensioni; ognuno si stampa in 3D su richiesta, anche personalizzato.</span></p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/fractals.html"><span data-l="en">Printable Fractals</span><span data-l="it" lang="it">Frattali da stampare</span></a></h3>
+            <p class="desc"><span data-l="en">The Menger sponge to level 3, the Sierpinski tetrahedron standing on an edge so that it prints without supports, and the Mandelbulb of power 8 traced from its distance estimator, with their dimensions; each one printed in 3D on request, also customized.</span><span data-l="it" lang="it">La spugna di Menger fino al livello 3, il tetraedro di Sierpinski in piedi su uno spigolo così che si stampi senza supporti, e il Mandelbulb di potenza 8 tracciato dal suo stimatore di distanza, con le loro dimensioni; ognuno si stampa in 3D su richiesta, anche personalizzato.</span></p>
             <ul class="tags"><li><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></li><li><span data-l="en">Self-similarity</span><span data-l="it" lang="it">Autosimilarità</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
+            <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
             <a class="go" href="https://dmeoli.github.io/opt-playground/fractals.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
@@ -1985,9 +1968,9 @@ Decomposition methods and solvers for large-scale
           <div class="text">
             <p class="num">04 / 04</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/lithophane.html"><span data-l="en">Lithophanes of the Exhibitions</span><span data-l="it" lang="it">Litofanie delle mostre</span></a></h3>
-            <p class="desc"><span data-l="en">Works of the exhibitions of generative art, or a picture of yours read only in the browser, turned into a plate whose thickness lets through as much light as the picture is bright, flat or curved, in a frame: a relief in daylight and the picture against a lamp, printed in 3D on request, also customised.</span><span data-l="it" lang="it">Opere delle mostre di arte generativa, o una tua immagine letta solo nel browser, trasformate in una lastra il cui spessore lascia passare tanta luce quanto è chiara l'immagine, piana o curva, in una cornice: un rilievo alla luce del giorno e l'immagine controluce, stampata in 3D su richiesta, anche personalizzata.</span></p>
+            <p class="desc"><span data-l="en">Works of the exhibitions of generative art, or a picture of yours read only in the browser, turned into a plate whose thickness lets through as much light as the picture is bright, flat or curved, in a frame: a relief in daylight and the picture against a lamp, printed in 3D on request, also customized.</span><span data-l="it" lang="it">Opere delle mostre di arte generativa, o una tua immagine letta solo nel browser, trasformate in una lastra il cui spessore lascia passare tanta luce quanto è chiara l'immagine, piana o curva, in una cornice: un rilievo alla luce del giorno e l'immagine controluce, stampata in 3D su richiesta, anche personalizzata.</span></p>
             <ul class="tags"><li><span data-l="en">Lithophane</span><span data-l="it" lang="it">Litofania</span></li><li><span data-l="en">Generative art</span><span data-l="it" lang="it">Arte generativa</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
+            <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
             <a class="go" href="https://dmeoli.github.io/opt-playground/lithophane.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
@@ -2003,7 +1986,7 @@ Decomposition methods and solvers for large-scale
             <h3><a href="https://dmeoli.github.io/opt-playground/biomorphs.html"><span data-l="en">Biomorphs that Evolve</span><span data-l="it" lang="it">Biomorfi che evolvono</span></a></h3>
             <p class="desc"><span data-l="en">The biomorphs of Dawkins (1986) in 3D: 23 genes grow a creature from smoothly joined spheres and cones, eight mutants of it wait around the parent, and picking one child after another builds up a lineage by cumulative selection; each creature grows in three stages, has a card with its names and genes, is shared as a code in a link, and becomes a figurine for a 3D printer.</span><span data-l="it" lang="it">I biomorfi di Dawkins (1986) in 3D: 23 geni fanno crescere una creatura di sfere e coni fusi dolcemente, otto suoi mutanti aspettano attorno al genitore, e scegliendo un figlio dopo l'altro si costruisce una discendenza per selezione cumulativa; ogni creatura cresce in tre stadi, ha una scheda con i suoi nomi e i suoi geni, si condivide come codice in un link e diventa una statuina per una stampante 3D.</span></p>
             <ul class="tags"><li>Dawkins</li><li><span data-l="en">Cumulative selection</span><span data-l="it" lang="it">Selezione cumulativa</span></li><li><span data-l="en">Implicit surfaces</span><span data-l="it" lang="it">Superfici implicite</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
-            <p class="print"><span data-l="en">On request, also customised</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
+            <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
             <a class="go" href="https://dmeoli.github.io/opt-playground/biomorphs.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
@@ -2018,10 +2001,10 @@ Decomposition methods and solvers for large-scale
   <div class="grid">
     <h2><a href="/art" data-l="en" data-section="art">Art</a><a href="/arte" data-l="it" lang="it" data-section="art">Arte</a></h2>
     <div class="body">
-      <p data-l="en">Generative art: paintings and music made with generative models that I train and steer, in exhibitions devoted each to a painter and to the way of seeing of that painter.</p>
-      <p data-l="it" lang="it">Arte generativa: quadri e musica fatti con modelli generativi che addestro e guido, in mostre dedicate ciascuna a un pittore e al suo modo di vedere.</p>
-      <p class="materico" data-l="en">Every work on this page can be ordered as a 3D textured print, with the relief of the brushstrokes, made in collaboration with Materico, and so can a work made to measure: write to me at <a href="mailto:donato.meoli@outlook.com?subject=Stampa%203D%20Materico">donato.meoli@outlook.com</a>, or use the link under a work when it is open.</p>
-      <p class="materico" data-l="it" lang="it">Ogni opera di questa pagina si può ordinare come stampa 3D materica, con il rilievo delle pennellate, fatta in collaborazione con Materico, e così un'opera su misura: basta scrivermi a <a href="mailto:donato.meoli@outlook.com?subject=Stampa%203D%20Materico">donato.meoli@outlook.com</a>, o usare il link sotto un'opera quando è aperta.</p>
+      <p data-l="en">Paintings and music made with generative models that I train and guide, grouped in exhibitions each of which is devoted to one painter and to the way of seeing of that painter.</p>
+      <p data-l="it" lang="it">Quadri e musica fatti con modelli generativi che addestro e guido, raccolti in mostre dedicate ciascuna a un pittore e al suo modo di vedere.</p>
+      <p class="materico" data-l="en">Each work on this page, as well as a work made to measure, can be ordered as a textured 3D print that reproduces the relief of the brushstrokes, made in collaboration with Materico; to order one, write to me at <a href="mailto:donato.meoli@outlook.com?subject=Stampa%203D%20Materico">donato.meoli@outlook.com</a> or use the link shown under a work when it is open.</p>
+      <p class="materico" data-l="it" lang="it">Ogni opera di questa pagina, e anche un'opera su misura, si può ordinare come stampa 3D materica che riproduce il rilievo delle pennellate, realizzata in collaborazione con Materico; per ordinarla scrivimi a <a href="mailto:donato.meoli@outlook.com?subject=Stampa%203D%20Materico">donato.meoli@outlook.com</a> oppure usa il link che compare sotto un'opera quando è aperta.</p>
       <div class="subnav" role="tablist">
         <button type="button" role="tab" data-sub="modigliani">Modigliani <span class="count">12</span></button>
         <button type="button" role="tab" data-sub="van_gogh">Van Gogh <span class="count">10</span></button>
@@ -2178,7 +2161,7 @@ Decomposition methods and solvers for large-scale
 <dialog class="agegate" id="agegate" aria-labelledby="agegate-t">
   <h3 id="agegate-t"><span data-l="en">Artistic nudity</span><span data-l="it" lang="it">Nudo artistico</span></h3>
   <p data-l="en">Some works in this exhibition show nude adult figures. To see them, confirm that you are at least 18 years old. The confirmation lasts while you stay on this page and is not stored: when you reload or come back, the works are covered again.</p>
-  <p data-l="it" lang="it">Alcune opere di questa mostra mostrano figure adulte nude. Per vederle conferma di avere almeno 18 anni. La conferma vale finché resti su questa pagina e non viene salvata: quando ricarichi o torni, le opere sono di nuovo coperte.</p>
+  <p data-l="it" lang="it">Alcune opere di questa mostra ritraggono figure adulte nude. Per vederle, conferma di avere almeno 18 anni. La conferma vale finché resti su questa pagina e non viene salvata: quando ricarichi o torni, le opere sono di nuovo coperte.</p>
   <div class="row">
     <button type="button" class="no"><span data-l="en">Cancel</span><span data-l="it" lang="it">Annulla</span></button>
     <button type="button" class="yes"><span data-l="en">I am 18 or older</span><span data-l="it" lang="it">Ho almeno 18 anni</span></button>
@@ -2200,10 +2183,10 @@ Decomposition methods and solvers for large-scale
 </script>
 <dialog class="aura" id="aura" aria-labelledby="aura-t">
   <div class="aura-head">
-    <h3 id="aura-t"><span data-l="en">Choose your aura today</span><span data-l="it" lang="it">Scegli la tua aura di oggi</span></h3>
+    <h3 id="aura-t"><span data-l="en">What's your aura today?</span><span data-l="it" lang="it">Qual &egrave; la tua aura oggi?</span></h3>
     <button type="button" class="aura-close" aria-label="Close">&times;</button>
   </div>
-  <p><span data-l="en">Choose the colour that feels most comfortable: the whole site changes, with its complementary colours.</span><span data-l="it" lang="it">Scegli il colore che senti pi&ugrave; comodo: cambia tutto il sito, con i suoi colori complementari.</span></p>
+  <p><span data-l="en">Choose the color you find most comfortable: the colors of the whole site change accordingly, together with their complementary ones.</span><span data-l="it" lang="it">Scegli il colore con cui ti trovi pi&ugrave; a tuo agio: i colori di tutto il sito cambiano di conseguenza, insieme ai loro complementari.</span></p>
   <div class="aura-wheel" role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="359" aria-valuenow="0" aria-label="Hue">
     <span class="aura-sample" aria-hidden="true">Aa</span>
     <span class="aura-mark" aria-hidden="true"></span>
@@ -2225,8 +2208,8 @@ Decomposition methods and solvers for large-scale
     if (!A || !dlg || !dlg.showModal || !open) { if (open) open.hidden = true; return; }
     var root = document.documentElement, wheel = dlg.querySelector('.aura-wheel'),
         range = dlg.querySelector('.aura-k input'), chips = dlg.querySelector('.aura-presets'),
-        words = { en: { hue: 'Hue', close: 'Close', presets: 'Quick picks', title: 'Choose your aura' },
-                  it: { hue: 'Tinta', close: 'Chiudi', presets: 'Scelte rapide', title: 'Scegli la tua aura' } },
+        words = { en: { hue: 'Hue', close: 'Close', presets: 'Quick picks', title: 'What\'s your aura today?' },
+                  it: { hue: 'Tinta', close: 'Chiudi', presets: 'Scelte rapide', title: 'Qual è la tua aura oggi?' } },
         h = A.H0, k = 1, frame = 0;
     var ring = [];
     for (var a = 0; a <= 360; a += 15) ring.push(A.swatch(.68, .15, a) + ' ' + a + 'deg');
@@ -2270,7 +2253,7 @@ Decomposition methods and solvers for large-scale
       wheel.setAttribute('aria-label', w.hue);
       dlg.querySelector('.aura-close').setAttribute('aria-label', w.close);
       chips.setAttribute('aria-label', w.presets);
-      open.title = w.title;
+      open.title = w.title; open.setAttribute('aria-label', w.title);
     }
     words_();
     new MutationObserver(words_).observe(root, { attributes: true, attributeFilter: ['data-lang'] });
@@ -2642,8 +2625,8 @@ Decomposition methods and solvers for large-scale
       var out = document.getElementById('tr-out'),
           it = document.documentElement.getAttribute('data-lang') === 'it';
       if (!API) {
-        out.textContent = it ? 'Il servizio del modello non è ancora in linea.'
-                             : 'The service of the model is not online yet.';
+        out.textContent = it ? 'Il servizio di traduzione non è ancora in linea.'
+                             : 'The translation service is not online yet.';
         return;
       }
       var d = document.getElementById('tr-dir').value.split('-');
