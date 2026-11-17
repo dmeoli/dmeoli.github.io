@@ -4,7 +4,7 @@
 
 import { t, onTheme } from '../../i18n.js';
 import { setTex } from '../../tex.js';
-import { printPanel } from '../../print/index.js';
+import { printPanel, readState, writeState, shareUrl } from '../../print/index.js';
 import * as THREE from 'three';
 import { createView, workerBuilder, building } from '../mathematics/view.js';
 import { fileName, sand, mode, degenerate } from './model.js';
@@ -12,7 +12,15 @@ import { fileName, sand, mode, degenerate } from './model.js';
 const $ = id => document.getElementById(id);
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const MODEL = new URL('./model.js', import.meta.url).href;
-const state = { shape: 'square', n: 5, m: 3, sign: -1 };
+// every parameter of the scene, kept in the address (src/print/state.js)
+const SPEC = {
+  shape: { def: 'square', values: ['square', 'circle'] },
+  n: { def: 5, min: 0, max: 9, int: true },
+  m: { def: 3, min: 1, max: 9, int: true },
+  sign: { def: -1, min: -1, max: 1, int: true },
+  spin: { def: false },
+};
+const state = readState(SPEC);
 const LIM = { square: { n: [0, 9], m: [1, 9] }, circle: { n: [0, 8], m: [1, 6] } };
 
 const view = createView($('stage'), { eye: [0.22, -1.05, 1.15] });
@@ -39,19 +47,11 @@ function paint() {
 const build = workerBuilder(f => view.status(building(f)));
 let panel;
 
-function readHash() {
-  const h = new URLSearchParams(location.hash.slice(1));
-  if (['square', 'circle'].includes(h.get('sh'))) state.shape = h.get('sh');
-  for (const k of ['n', 'm']) if (h.get(k) !== null && Number.isFinite(+h.get(k))) state[k] = Math.round(+h.get(k));
-  if (h.get('s') === '+' || h.get('s') === 'plus') state.sign = 1;
-  if (h.get('s') === '-' || h.get('s') === 'minus') state.sign = -1;
-  clamp();
-}
 const clamp = () => {
   const L = LIM[state.shape];
   state.n = Math.min(L.n[1], Math.max(L.n[0], state.n)); state.m = Math.min(L.m[1], Math.max(L.m[0], state.m));
+  state.sign = state.sign < 0 ? -1 : 1;
 };
-const writeHash = () => history.replaceState(null, '', '#' + new URLSearchParams({ sh: state.shape, n: state.n, m: state.m, s: state.sign < 0 ? 'minus' : 'plus' }));
 
 /* ------------------------------------------------------------- 2D sand -- */
 
@@ -113,8 +113,8 @@ function sync() {
 }
 
 async function rebuild() {
-  clamp(); writeHash(); sync(); drawSand();
-  const o = { ...state, ...(panel ? panel.read() : { size: 80, base: 2, ridge: 1.6, width: 2.4 }), res: 'preview' };
+  clamp(); writeState(SPEC, state); sync(); drawSand();
+  const o = { shape: state.shape, n: state.n, m: state.m, sign: state.sign, ...(panel ? panel.read() : { size: 80, base: 2, ridge: 1.6, width: 2.4 }), res: 'preview' };
   view.status(building(0));
   try {
     const m = await build(MODEL, 'solid', [o]);
@@ -128,7 +128,7 @@ async function rebuild() {
 }
 
 function init() {
-  readHash();
+  clamp();
   $('shape').addEventListener('change', e => { state.shape = e.target.value; rebuild(); });
   $('sign').addEventListener('change', e => { state.sign = +e.target.value; rebuild(); });
   for (const k of ['n', 'm']) {
@@ -136,7 +136,8 @@ function init() {
     $(k).addEventListener('change', rebuild);
   }
   $('tone').addEventListener('click', tone);
-  $('spin').addEventListener('change', e => view.spin(e.target.checked));
+  $('spin').checked = state.spin; view.spin(state.spin);
+  $('spin').addEventListener('change', e => { state.spin = e.target.checked; view.spin(state.spin); writeState(SPEC, state); });
   $('view').addEventListener('click', () => { view.reset(); closer(); });
   panel = printPanel($('print'), {
     size: { value: 80, min: 30, max: 250, what: { en: 'side of the square, or diameter', it: 'lato del quadrato, o diametro' } },
@@ -151,6 +152,7 @@ function init() {
     name: o => fileName({ ...state, ...o }),
     head: 'binary STL, millimetres, a Chladni figure',
     object: 'Chladni plate',
+    share: () => shareUrl(SPEC, state),
   });
   for (const k of ['base', 'ridge', 'width']) $('p' + k).addEventListener('change', rebuild);
   onTheme(() => { drawSand(); paint(); });

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forms-group" content="creatures">
+<title>Biomorphs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<link rel="stylesheet" href="src/forms/biomorphs/biomorphs.css">
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attenzione</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Misture di esperti</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Hebbiano</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html">Talk</a><br><span class="group"><span data-l="en">Forms</span><span data-l="it" lang="it">Forme</span></span> <!--forms-nav--><a href="simplex-path.html"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="lagrangian-dual.html"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="loss-landscape.html"><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a> · <a href="packing-mip.html"><span data-l="en">Packing by MIP</span><span data-l="it" lang="it">Impaccamento con MIP</span></a> · <a href="shells.html"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></a> · <a href="phyllotaxis.html"><span data-l="en">Phyllotaxis</span><span data-l="it" lang="it">Fillotassi</span></a> · <a href="radiolarian.html"><span data-l="en">Radiolarians</span><span data-l="it" lang="it">Radiolari</span></a> · <a href="coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a> · <a href="plants.html"><span data-l="en">Plants</span><span data-l="it" lang="it">Piante</span></a> · <a href="snowflakes.html"><span data-l="en">Snowflakes</span><span data-l="it" lang="it">Fiocchi di neve</span></a> · <a href="batman.html">Batman</a> · <a href="minimal-surfaces.html"><span data-l="en">Minimal surfaces</span><span data-l="it" lang="it">Superfici minime</span></a> · <a href="knots.html"><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></a> · <a href="attractors.html"><span data-l="en">Attractors</span><span data-l="it" lang="it">Attrattori</span></a> · <a href="polytopes.html"><span data-l="en">4D polytopes</span><span data-l="it" lang="it">Politopi 4D</span></a> · <a href="chladni.html">Chladni</a> · <a href="equations.html"><span data-l="en">Equations</span><span data-l="it" lang="it">Equazioni</span></a> · <a href="dice.html"><span data-l="en">Fair dice</span><span data-l="it" lang="it">Dadi equi</span></a> · <a href="hat.html"><span data-l="en">The hat</span><span data-l="it" lang="it">Il cappello</span></a> · <a href="fractals.html"><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></a> · <a href="lithophane.html"><span data-l="en">Lithophanes</span><span data-l="it" lang="it">Litofanie</span></a> · <a href="biomorphs.html" aria-current="page"><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></a><!--/forms-nav--></nav>
+<header>
+  <h1><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></h1>
+  <p class="lede" data-l="en">In <i>The Blind Watchmaker</i> (1986) Richard Dawkins let a few genes
+  drive a recursive drawing: the computer breeds mutants of a parent, one picks a child, and its
+  children are the next generation. No single step designs anything, but selection accumulated
+  over generations turns a dot into insects, trees and creatures; here the genes grow a body in 3D.</p>
+  <p class="lede" data-l="it" lang="it">In <i>L'orologiaio cieco</i> (1986) Richard Dawkins faceva
+  guidare a pochi geni un disegno ricorsivo: il computer genera mutanti di un genitore, se ne sceglie
+  uno, e i suoi figli sono la generazione successiva. Nessun passo progetta nulla, ma la selezione
+  accumulata per generazioni trasforma un punto in insetti, alberi e creature; qui i geni fanno
+  crescere un corpo in 3D.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span data-l="en">gallery</span><span data-l="it" lang="it">galleria</span><select id="gallery"></select></label>
+    <label><span data-l="en">seed</span><span data-l="it" lang="it">seme</span>
+      <span class="inline"><input id="seed" type="number" min="0" max="999999" step="1" value="1"><button id="random" type="button"><span data-l="en">Random</span><span data-l="it" lang="it">A caso</span></button></span></label>
+    <label><span data-l="en">stage</span><span data-l="it" lang="it">stadio</span>
+      <span class="seg" id="stages" role="group">
+        <button type="button" data-s="1">1</button><button type="button" data-s="2">2</button><button type="button" data-s="3">3</button><button type="button" data-s="c"><span data-l="en">all</span><span data-l="it" lang="it">tutti</span></button>
+      </span></label>
+    <label><span data-l="en">genes per child</span><span data-l="it" lang="it">geni per figlio</span>
+      <select id="genes"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label>
+  </div>
+  <div class="transport">
+    <button id="evolve" type="button" class="main"><span data-l="en">Evolve</span><span data-l="it" lang="it">Evolvi</span></button>
+    <button id="back" type="button"><span data-l="en">Back</span><span data-l="it" lang="it">Indietro</span></button>
+    <button id="litterBtn" type="button"><span data-l="en">New litter</span><span data-l="it" lang="it">Nuova cucciolata</span></button>
+    <button id="share" type="button"><span data-l="en">Copy link</span><span data-l="it" lang="it">Copia link</span></button>
+  </div>
+  <p class="row status" id="status" aria-live="polite"></p>
+</section>
+<main class="bio">
+  <figure>
+    <figcaption id="cap"></figcaption>
+    <div id="stage" class="stage"></div>
+  </figure>
+  <figure>
+    <figcaption><span data-l="en">The parent in the middle, its eight children around it, each with one gene changed by one
+      step. Click a child to make it the parent of the next generation.</span><span data-l="it" lang="it">Il genitore
+      al centro, gli otto figli attorno, ciascuno con un gene cambiato di un passo. Un clic su un figlio
+      ne fa il genitore della generazione successiva.</span></figcaption>
+    <div id="litter" class="litter"></div>
+  </figure>
+</main>
+<section class="lineage-wrap">
+  <h2><span data-l="en">Lineage</span><span data-l="it" lang="it">Discendenza</span></h2>
+  <div id="lineage" class="lineage"></div>
+</section>
+<section class="cardrow">
+  <div id="card"></div>
+  <div class="cardtext">
+    <h2><span data-l="en">The creature card</span><span data-l="it" lang="it">La scheda della creatura</span></h2>
+    <p data-l="en">The 23 genes are numbers from 0 to 15, one hexadecimal digit each, so that the
+    whole genome is the code at the bottom of the card, which the address of the page carries too:
+    a link brings back the same creature, and a seed gives always the same genome. The genes set
+    the segments of the body and their taper, the posture, the rings of legs and their symmetry
+    (2 for left and right, up to 6 around the body), the depth and the angle of the branching arms,
+    the head, eyes, ears, horns, tail, spikes and snout, and the colours; the stage, from the young
+    to the adult, adds segments and branches and lets horns and spikes grow. The three names, one
+    per stage, are drawn from the body genes.</p>
+    <p data-l="it" lang="it">I 23 geni sono numeri da 0 a 15, una cifra esadecimale ciascuno, così
+    che l'intero genoma è il codice in fondo alla scheda, che sta anche nell'indirizzo della pagina:
+    un link riporta la stessa creatura, e un seme dà sempre lo stesso genoma. I geni fissano i
+    segmenti del corpo e la loro rastremazione, la postura, gli anelli di zampe e la loro simmetria
+    (2 per destra e sinistra, fino a 6 attorno al corpo), la profondità e l'angolo delle braccia
+    ramificate, la testa, gli occhi, le orecchie, le corna, la coda, gli aculei e il muso, e i
+    colori; lo stadio, dal piccolo all'adulto, aggiunge segmenti e rami e fa crescere corna e
+    aculei. I tre nomi, uno per stadio, sono estratti dai geni del corpo.</p>
+    <p><button id="printcard" type="button"><span data-l="en">Print the card</span><span data-l="it" lang="it">Stampa la scheda</span></button></p>
+  </div>
+</section>
+<section id="print">
+  <h2><span data-l="en">A figurine for 3D printing</span><span data-l="it" lang="it">Una statuina per la stampa 3D</span></h2>
+  <p class="lede" data-l="en">The creature as one closed solid, its parts fused by the same smooth
+  union that draws it, standing on a rounded plate (or cut flat underneath without it); the size
+  is the height of the tallest figure, and "all" puts the three stages side by side on one plate.
+  The status line tells how much of the surface overhangs by more than 45 degrees: up to a few
+  percent (chins, the underside of the head) prints without supports, more (long arms held out,
+  branches, a tail curled up) wants tree supports.</p>
+  <p class="lede" data-l="it" lang="it">La creatura come un solo solido chiuso, le parti fuse dalla
+  stessa unione smussata che la disegna, in piedi su una base arrotondata (o tagliata in piano
+  sotto, senza base); la dimensione è l'altezza della figura più alta, e "tutti" mette i tre stadi
+  uno accanto all'altro su una sola base. La riga di stato dice quanta superficie sporge di più di
+  45 gradi: fino a qualche percento (il mento, il sotto della testa) si stampa senza supporti, di
+  più (braccia tese, rami, una coda arricciata in alto) vuole supporti ad albero.</p>
+</section>
+<script type="module" src="src/forms/biomorphs/biomorphs.js"></script>
+</body>
+</html>

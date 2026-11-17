@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forms-group" content="mathematics">
+<title>4D polytopes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<style>
+main.form { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: start; }
+@media (max-width: 860px) { main.form { grid-template-columns: minmax(0, 1fr); } }
+main.form figcaption { min-height: 0; }
+#stage canvas { border-radius: 6px; touch-action: none; display: block; }
+.about h2 { font-weight: 600; font-size: 18px; margin: 0 0 8px; color: var(--accent); }
+.about p { color: var(--ink-soft); margin: 0 0 12px; font-size: 15px; }
+.about .stats { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 0 0 14px; }
+.about .stats dd { margin: 0; font: 15px 'IBM Plex Mono', monospace; color: var(--ink); }
+.about .stats dd b { font-weight: 500; color: var(--accent); }
+.controls input[type=range] { width: 130px; }
+#print { margin-top: 28px; }
+#print h2 { font-weight: 600; font-size: 22px; margin: 0 0 6px; color: var(--accent); }
+#print .lede { max-width: 80ch; font-size: 15px; }
+</style>
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attenzione</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Misture di esperti</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Hebbiano</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html">Talk</a><br><span class="group"><span data-l="en">Forms</span><span data-l="it" lang="it">Forme</span></span> <!--forms-nav--><a href="simplex-path.html"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="lagrangian-dual.html"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="loss-landscape.html"><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a> · <a href="packing-mip.html"><span data-l="en">Packing by MIP</span><span data-l="it" lang="it">Impaccamento con MIP</span></a> · <a href="shells.html"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></a> · <a href="phyllotaxis.html"><span data-l="en">Phyllotaxis</span><span data-l="it" lang="it">Fillotassi</span></a> · <a href="radiolarian.html"><span data-l="en">Radiolarians</span><span data-l="it" lang="it">Radiolari</span></a> · <a href="coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a> · <a href="plants.html"><span data-l="en">Plants</span><span data-l="it" lang="it">Piante</span></a> · <a href="snowflakes.html"><span data-l="en">Snowflakes</span><span data-l="it" lang="it">Fiocchi di neve</span></a> · <a href="batman.html">Batman</a> · <a href="minimal-surfaces.html"><span data-l="en">Minimal surfaces</span><span data-l="it" lang="it">Superfici minime</span></a> · <a href="knots.html"><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></a> · <a href="attractors.html"><span data-l="en">Attractors</span><span data-l="it" lang="it">Attrattori</span></a> · <a href="polytopes.html" aria-current="page"><span data-l="en">4D polytopes</span><span data-l="it" lang="it">Politopi 4D</span></a> · <a href="chladni.html">Chladni</a> · <a href="equations.html"><span data-l="en">Equations</span><span data-l="it" lang="it">Equazioni</span></a> · <a href="dice.html"><span data-l="en">Fair dice</span><span data-l="it" lang="it">Dadi equi</span></a> · <a href="hat.html"><span data-l="en">The hat</span><span data-l="it" lang="it">Il cappello</span></a> · <a href="fractals.html"><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></a> · <a href="lithophane.html"><span data-l="en">Lithophanes</span><span data-l="it" lang="it">Litofanie</span></a> · <a href="biomorphs.html"><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></a><!--/forms-nav--></nav>
+<header>
+  <h1><span data-l="en">Polytopes of four dimensions</span><span data-l="it" lang="it">Politopi a quattro dimensioni</span></h1>
+  <p class="lede" data-l="en">In the plane there are infinitely many regular polygons, in space five
+  regular solids, and in four dimensions six regular polytopes, bounded by regular solids that meet
+  three or more at every edge: the 5-cell, the tesseract, the 16-cell, the 24-cell, which has no
+  analogue in any other dimension, the 120-cell and the 600-cell. Their vertices lie on the
+  3-sphere; here they are turned in four dimensions, in the planes that mix the fourth coordinate
+  \(w\) with the other three, and then projected into space, as a cube is drawn on paper, either in
+  perspective from a point on the \(w\) axis or stereographically from the pole of the 3-sphere.</p>
+  <p class="lede" data-l="it" lang="it">Nel piano i poligoni regolari sono infiniti, nello spazio i
+  solidi regolari sono cinque, e in quattro dimensioni i politopi regolari sono sei, delimitati da
+  solidi regolari che si incontrano a tre o più su ogni spigolo: il 5-celle, il tesseratto, il
+  16-celle, il 24-celle, che non ha analoghi in nessun'altra dimensione, il 120-celle e il 600-celle.
+  I loro vertici stanno sulla 3-sfera; qui vengono ruotati in quattro dimensioni, nei piani che
+  mescolano la quarta coordinata \(w\) con le altre tre, e poi proiettati nello spazio, come si
+  disegna un cubo su un foglio, in prospettiva da un punto dell'asse \(w\) oppure
+  stereograficamente dal polo della 3-sfera.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span data-l="en">polytope</span><span data-l="it" lang="it">politopo</span><select id="shape">
+      <option value="5-cell">5-cell · 5-celle</option>
+      <option value="tesseract">tesseract · tesseratto</option>
+      <option value="16-cell">16-cell · 16-celle</option>
+      <option value="24-cell">24-cell · 24-celle</option>
+      <option value="120-cell">120-cell · 120-celle</option>
+      <option value="600-cell">600-cell · 600-celle</option>
+    </select></label>
+    <label><span data-l="en">projection</span><span data-l="it" lang="it">proiezione</span><select id="proj">
+      <option value="stereographic">stereographic · stereografica</option>
+      <option value="perspective">perspective · prospettiva</option>
+    </select></label>
+    <label><span data-l="en">towards the eye</span><span data-l="it" lang="it">verso l'occhio</span><select id="first">
+      <option value="cell">a cell · una cella</option>
+      <option value="vertex">a vertex · un vertice</option>
+    </select></label>
+    <label id="eyebox"><span data-l="en">eye beyond the cell</span><span data-l="it" lang="it">occhio oltre la cella</span><input id="eye" type="range" min="0.02" max="2" step="0.01" value="0.25"><output id="eyeout">0.25</output></label>
+    <label><span><span data-l="en">turn</span><span data-l="it" lang="it">rotazione</span> xw</span><input id="xw" type="range" min="-180" max="180" step="1" value="0"><output id="xwout">0°</output></label>
+    <label><span><span data-l="en">turn</span><span data-l="it" lang="it">rotazione</span> yw</span><input id="yw" type="range" min="-180" max="180" step="1" value="0"><output id="ywout">0°</output></label>
+    <label><span><span data-l="en">turn</span><span data-l="it" lang="it">rotazione</span> zw</span><input id="zw" type="range" min="-180" max="180" step="1" value="0"><output id="zwout">0°</output></label>
+    <label class="check"><span data-l="en">thicker where enlarged</span><span data-l="it" lang="it">più spesse dove ingrandite</span><input id="taper" type="checkbox" checked></label>
+    <label class="check"><span data-l="en">spin</span><span data-l="it" lang="it">rotazione 3D</span><input id="spin" type="checkbox"></label>
+    <button type="button" id="view"><span data-l="en">Reset view</span><span data-l="it" lang="it">Vista iniziale</span></button>
+  </div>
+</section>
+<main class="form">
+  <figure>
+    <figcaption><span data-l="en">The solid that is printed, at the resolution of the view; while a
+    turn in 4D is dragged, and until the solid is ready, the edges are drawn as lines. Drag to turn
+    in space, wheel or pinch to zoom.</span><span data-l="it" lang="it">Il solido che si stampa, alla
+    risoluzione della vista; mentre si trascina una rotazione in 4D, e finché il solido non è pronto,
+    gli spigoli sono disegnati come linee. Trascinare per ruotare nello spazio, rotella o pizzico per
+    lo zoom.</span></figcaption>
+    <div id="stage" class="stage"></div>
+  </figure>
+  <div class="about">
+    <h2><span data-l="en">The polytope</span><span data-l="it" lang="it">Il politopo</span></h2>
+    <dl class="stats">
+      <div><dt><span data-l="en">Schläfli symbol</span><span data-l="it" lang="it">simbolo di Schläfli</span></dt><dd><b id="sym"></b></dd></div>
+      <div><dt><span data-l="en">vertices</span><span data-l="it" lang="it">vertici</span></dt><dd id="nV"></dd></div>
+      <div><dt><span data-l="en">edges</span><span data-l="it" lang="it">spigoli</span></dt><dd id="nE"></dd></div>
+      <div><dt><span data-l="en">faces</span><span data-l="it" lang="it">facce</span></dt><dd id="nF"></dd></div>
+      <div><dt><span data-l="en">cells</span><span data-l="it" lang="it">celle</span></dt><dd><span id="nC"></span> <span id="cells"></span></dd></div>
+    </dl>
+    <p><span data-l="en">Ludwig Schläfli found the six regular polytopes of four dimensions around
+    1852, in a work that was published only in 1901, after his death; Washington Irving Stringham
+    found them again in 1880 and published the first drawings of them, and Victor Schlegel gave in
+    1886 the projection that bears his name, from a point just beyond one cell, which then encloses
+    all the others. The 120-cell and the 600-cell, with 120 dodecahedra and 600 tetrahedra, are dual
+    to each other, as the cube and the octahedron are.</span><span data-l="it" lang="it">Ludwig
+    Schläfli trovò i sei politopi regolari a quattro dimensioni attorno al 1852, in un lavoro
+    pubblicato solo nel 1901, dopo la sua morte; Washington Irving Stringham li ritrovò nel 1880 e ne
+    pubblicò i primi disegni, e Victor Schlegel diede nel 1886 la proiezione che porta il suo nome, da
+    un punto appena oltre una cella, che allora racchiude tutte le altre. Il 120-celle e il 600-celle,
+    con 120 dodecaedri e 600 tetraedri, sono duali l'uno dell'altro, come il cubo e
+    l'ottaedro.</span></p>
+    <p><span data-l="en">With a cell towards the eye and no turn, the perspective is a Schlegel
+    diagram. The stereographic projection keeps angles, so the edges, arcs of great circles on the
+    3-sphere, become arcs of circles, and it enlarges by \(1/(1-w)\) near the pole: the struts are
+    thickened by the same factor (at most twice), so that they look as they would on the
+    sphere.</span><span data-l="it" lang="it">Con una cella verso l'occhio e senza rotazioni, la
+    prospettiva è un diagramma di Schlegel. La proiezione stereografica conserva gli angoli, sicché
+    gli spigoli, archi di cerchio massimo sulla 3-sfera, diventano archi di cerchio, e ingrandisce di
+    \(1/(1-w)\) vicino al polo: le aste sono ispessite dello stesso fattore (al massimo il doppio),
+    così che appaiono come sarebbero sulla sfera.</span></p>
+  </div>
+</main>
+<section id="print">
+  <h2 class="owner-only"><span data-l="en">Download for 3D printing</span><span data-l="it" lang="it">Scarica per la stampa 3D</span></h2>
+  <h2 class="public-only"><span data-l="en">A 3D print of this polytope</span><span data-l="it" lang="it">Una stampa 3D di questo politopo</span></h2>
+  <p class="lede public-only" data-l="en">The polytope as it is on the screen, turned and projected,
+  can be ordered as a 3D print: struts and balls fused into one piece, as wide as the size, standing
+  on a flat cut under its lowest ball or on a disc. The middle of the 120-cell and of the 600-cell,
+  where the projection shrinks the edges most, fuses into a knot of struts below about 100 mm. The
+  request sends the link to the scene as it is.</p>
+  <p class="lede public-only" data-l="it" lang="it">Il politopo così com'è sullo schermo, ruotato e
+  proiettato, si può ordinare come stampa 3D: aste e sfere fuse in un solo pezzo, largo quanto la
+  dimensione, appoggiato su un taglio piano sotto la sfera più bassa o su un disco. Il centro del
+  120-celle e del 600-celle, dove la proiezione accorcia di più gli spigoli, si fonde in un groviglio
+  di aste sotto i 100 mm circa. La richiesta manda il link alla scena così com'è.</p>
+  <p class="lede owner-only" data-l="en">Struts and balls as one closed solid, as wide as the size,
+  standing on a flat cut under its lowest ball or strut, or on a disc into which that is sunk. A
+  cage of struts always overhangs: print it with supports (tree supports remove more cleanly), and
+  keep the struts at least 1.2 mm thick in radius for a 0.4 mm nozzle. The middle of the 120-cell
+  and of the 600-cell, where the projection shrinks the edges most, fuses into a knot of struts
+  below about 100 mm. The grid is coarser for the larger cages, so that a draft stays under about
+  a million triangles.</p>
+  <p class="lede owner-only" data-l="it" lang="it">Aste e sfere come un solo solido chiuso, largo
+  quanto la dimensione, appoggiato su un taglio piano sotto la sfera o l'asta più bassa, o su un
+  disco in cui questa affonda. Una gabbia di aste ha sempre degli sbalzi: va stampata con supporti
+  (quelli ad albero si staccano più facilmente), con aste di raggio almeno 1.2 mm per un ugello da
+  0.4 mm. Il centro del 120-celle e del 600-celle, dove la proiezione accorcia di più gli spigoli, si
+  fonde in un groviglio di aste sotto i 100 mm circa. La griglia è più rada per le gabbie più grandi,
+  così che una bozza resti sotto il milione di triangoli circa.</p>
+</section>
+<script type="module" src="src/forms/polytopes/polytopes.js"></script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forms-group" content="mathematics">
+<title>Knots and one-sided surfaces</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<style>
+main.form { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: start; }
+@media (max-width: 860px) { main.form { grid-template-columns: minmax(0, 1fr); } }
+main.form figcaption { min-height: 0; }
+#stage canvas { border-radius: 6px; touch-action: none; display: block; }
+.about h2 { font-weight: 600; font-size: 18px; margin: 0 0 8px; color: var(--accent); }
+.formula { overflow-x: auto; overflow-y: hidden; padding: 4px 0 10px; color: var(--ink); font-size: 14px; }
+.about p { color: var(--ink-soft); margin: 0 0 12px; font-size: 15px; }
+#kind { font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); align-self: end; padding-bottom: 6px; }
+#print { margin-top: 28px; }
+#print h2 { font-weight: 600; font-size: 22px; margin: 0 0 6px; color: var(--accent); }
+#print .lede { max-width: 80ch; font-size: 15px; }
+</style>
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attenzione</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Misture di esperti</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Hebbiano</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html">Talk</a><br><span class="group"><span data-l="en">Forms</span><span data-l="it" lang="it">Forme</span></span> <!--forms-nav--><a href="simplex-path.html"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="lagrangian-dual.html"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="loss-landscape.html"><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a> · <a href="packing-mip.html"><span data-l="en">Packing by MIP</span><span data-l="it" lang="it">Impaccamento con MIP</span></a> · <a href="shells.html"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></a> · <a href="phyllotaxis.html"><span data-l="en">Phyllotaxis</span><span data-l="it" lang="it">Fillotassi</span></a> · <a href="radiolarian.html"><span data-l="en">Radiolarians</span><span data-l="it" lang="it">Radiolari</span></a> · <a href="coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a> · <a href="plants.html"><span data-l="en">Plants</span><span data-l="it" lang="it">Piante</span></a> · <a href="snowflakes.html"><span data-l="en">Snowflakes</span><span data-l="it" lang="it">Fiocchi di neve</span></a> · <a href="batman.html">Batman</a> · <a href="minimal-surfaces.html"><span data-l="en">Minimal surfaces</span><span data-l="it" lang="it">Superfici minime</span></a> · <a href="knots.html" aria-current="page"><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></a> · <a href="attractors.html"><span data-l="en">Attractors</span><span data-l="it" lang="it">Attrattori</span></a> · <a href="polytopes.html"><span data-l="en">4D polytopes</span><span data-l="it" lang="it">Politopi 4D</span></a> · <a href="chladni.html">Chladni</a> · <a href="equations.html"><span data-l="en">Equations</span><span data-l="it" lang="it">Equazioni</span></a> · <a href="dice.html"><span data-l="en">Fair dice</span><span data-l="it" lang="it">Dadi equi</span></a> · <a href="hat.html"><span data-l="en">The hat</span><span data-l="it" lang="it">Il cappello</span></a> · <a href="fractals.html"><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></a> · <a href="lithophane.html"><span data-l="en">Lithophanes</span><span data-l="it" lang="it">Litofanie</span></a> · <a href="biomorphs.html"><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></a><!--/forms-nav--></nav>
+<header>
+  <h1><span data-l="en">Knots and one-sided surfaces</span><span data-l="it" lang="it">Nodi e superfici a una faccia</span></h1>
+  <p class="lede" data-l="en">A knot is a closed curve in space considered up to deformations
+  that do not cut it, and two knots are the same when one can be moved into the other; the torus
+  knots, the trefoil and the figure-eight knot are the first examples, printed here as tubes. A
+  surface is one-sided, or non-orientable, when an ant walking on it can come back to its starting
+  point upside down: the Möbius band, which has an edge, and the Klein bottle and the projective
+  plane, which are closed and cannot be built in space without crossing themselves. Here they are
+  printed as walls of the thickness chosen below, and where a surface crosses itself the two walls
+  are fused into one solid.</p>
+  <p class="lede" data-l="it" lang="it">Un nodo è una curva chiusa nello spazio considerata a meno
+  di deformazioni che non la taglino, e due nodi sono lo stesso quando l'uno si può portare
+  nell'altro; i nodi torici, il trifoglio e il nodo a otto sono i primi esempi, stampati qui come
+  tubi. Una superficie ha una sola faccia, o non è orientabile, quando una formica che vi cammina
+  sopra può tornare al punto di partenza a testa in giù: il nastro di Möbius, che ha un bordo, e la
+  bottiglia di Klein e il piano proiettivo, che sono chiusi e non si possono costruire nello spazio
+  senza che attraversino se stessi. Qui sono stampati come pareti dello spessore scelto sotto, e
+  dove una superficie attraversa se stessa le due pareti sono fuse in un solo solido.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span data-l="en">object</span><span data-l="it" lang="it">oggetto</span><select id="object">
+      <option value="torus-knot">torus knot · nodo torico</option>
+      <option value="trefoil">trefoil · trifoglio</option>
+      <option value="figure-eight">figure-eight knot · nodo a otto</option>
+      <option value="moebius">Möbius band · nastro di Möbius</option>
+      <option value="klein">Klein bottle · bottiglia di Klein</option>
+      <option value="klein8">figure-8 Klein bottle · bottiglia di Klein a otto</option>
+      <option value="boy">Boy's surface · superficie di Boy</option>
+    </select></label>
+    <label id="pbox"><span>p</span><input id="p" type="range" min="1" max="9" step="1" value="3"><output id="pout">3</output></label>
+    <label id="qbox"><span>q</span><input id="q" type="range" min="1" max="9" step="1" value="5"><output id="qout">5</output></label>
+    <label id="kbox" hidden><span data-l="en">half twists k</span><span data-l="it" lang="it">mezzi giri k</span><input id="twists" type="range" min="1" max="5" step="1" value="1"><output id="twistsout">1</output></label>
+    <label id="halfbox" class="check" hidden><span data-l="en">cut in half</span><span data-l="it" lang="it">tagliata a metà</span><input id="half" type="checkbox"></label>
+    <span id="kind"></span>
+    <label class="check"><span data-l="en">spin</span><span data-l="it" lang="it">rotazione</span><input id="spin" type="checkbox"></label>
+    <button type="button" id="view"><span data-l="en">Reset view</span><span data-l="it" lang="it">Vista iniziale</span></button>
+  </div>
+</section>
+<main class="form">
+  <figure>
+    <figcaption><span data-l="en">The solid that is printed, at the resolution of the view. Drag to
+    turn, wheel or pinch to zoom.</span><span data-l="it" lang="it">Il solido che si stampa, alla
+    risoluzione della vista. Trascinare per ruotare, rotella o pizzico per lo zoom.</span></figcaption>
+    <div id="stage" class="stage"></div>
+  </figure>
+  <div class="about">
+    <h2><span data-l="en">The formula</span><span data-l="it" lang="it">La formula</span></h2>
+    <div class="formula" id="formula"></div>
+    <p id="history"></p>
+  </div>
+</main>
+<section id="print">
+  <h2 class="owner-only"><span data-l="en">Download for 3D printing</span><span data-l="it" lang="it">Scarica per la stampa 3D</span></h2>
+  <h2 class="public-only"><span data-l="en">A 3D print of this form</span><span data-l="it" lang="it">Una stampa 3D di questa forma</span></h2>
+  <p class="lede public-only" data-l="en">The knot or the surface above can be ordered as a 3D print,
+  with the tube or the wall of the thickness chosen and, where the surface crosses itself, the two
+  walls fused into one solid. The knots lie flat or sink into a disc, the surfaces stand on a post
+  on a disc, and the half Klein bottle lies on its cut. The request sends the link to the form as it
+  is on the screen.</p>
+  <p class="lede public-only" data-l="it" lang="it">Il nodo o la superficie qui sopra si può ordinare
+  come stampa 3D, con il tubo o la parete dello spessore scelto e, dove la superficie attraversa se
+  stessa, le due pareti fuse in un solo solido. I nodi stanno distesi o affondano in un disco, le
+  superfici stanno su un perno sopra un disco, e la mezza bottiglia di Klein poggia sul taglio. La
+  richiesta manda il link alla forma così com'è sullo schermo.</p>
+  <p class="lede owner-only" data-l="en">The tube or the wall as one closed solid, whose largest side is the
+  size. The knots lie on the bed, or sink by a quarter of the tube into a disc; the surfaces stand
+  on a post on a disc, and the half Klein bottle lies on its cut. Everything but the half bottle
+  wants supports (tree supports are the easiest to remove).</p>
+  <p class="lede owner-only" data-l="it" lang="it">Il tubo o la parete come un solo solido chiuso, il cui lato
+  maggiore è la dimensione. I nodi stanno sul piano, o affondano di un quarto del tubo in un disco;
+  le superfici stanno su un perno sopra un disco, e la mezza bottiglia di Klein poggia sul taglio.
+  Tutto tranne la mezza bottiglia vuole supporti (quelli ad albero si tolgono più facilmente).</p>
+</section>
+<script type="module" src="src/forms/knots/knots.js"></script>
+</body>
+</html>

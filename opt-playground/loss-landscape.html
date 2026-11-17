@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forms-group" content="research">
+<title>Loss landscapes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<style>
+main.form { grid-template-columns: minmax(0, 1fr); }
+#stage canvas { border-radius: 6px; touch-action: none; }
+#print { margin-top: 28px; }
+#print h2 { font-weight: 600; font-size: 22px; margin: 0 0 6px; color: var(--accent); }
+#print .lede { max-width: 80ch; font-size: 15px; }
+#stats { display: flex; flex-wrap: wrap; gap: 10px 28px; font: 13px 'IBM Plex Mono', monospace; margin: 8px 0 0; }
+#stats dt { color: var(--ink-soft); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+#stats dd { margin: 0; }
+blockquote.motto { margin: 0 0 18px; font-style: italic; color: var(--accent); }
+</style>
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attenzione</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Misture di esperti</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Hebbiano</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html">Talk</a><br><span class="group"><span data-l="en">Forms</span><span data-l="it" lang="it">Forme</span></span> <!--forms-nav--><a href="simplex-path.html"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="lagrangian-dual.html"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="loss-landscape.html" aria-current="page"><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a> · <a href="packing-mip.html"><span data-l="en">Packing by MIP</span><span data-l="it" lang="it">Impaccamento con MIP</span></a> · <a href="shells.html"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></a> · <a href="phyllotaxis.html"><span data-l="en">Phyllotaxis</span><span data-l="it" lang="it">Fillotassi</span></a> · <a href="radiolarian.html"><span data-l="en">Radiolarians</span><span data-l="it" lang="it">Radiolari</span></a> · <a href="coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a> · <a href="plants.html"><span data-l="en">Plants</span><span data-l="it" lang="it">Piante</span></a> · <a href="snowflakes.html"><span data-l="en">Snowflakes</span><span data-l="it" lang="it">Fiocchi di neve</span></a> · <a href="batman.html">Batman</a> · <a href="minimal-surfaces.html"><span data-l="en">Minimal surfaces</span><span data-l="it" lang="it">Superfici minime</span></a> · <a href="knots.html"><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></a> · <a href="attractors.html"><span data-l="en">Attractors</span><span data-l="it" lang="it">Attrattori</span></a> · <a href="polytopes.html"><span data-l="en">4D polytopes</span><span data-l="it" lang="it">Politopi 4D</span></a> · <a href="chladni.html">Chladni</a> · <a href="equations.html"><span data-l="en">Equations</span><span data-l="it" lang="it">Equazioni</span></a> · <a href="dice.html"><span data-l="en">Fair dice</span><span data-l="it" lang="it">Dadi equi</span></a> · <a href="hat.html"><span data-l="en">The hat</span><span data-l="it" lang="it">Il cappello</span></a> · <a href="fractals.html"><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></a> · <a href="lithophane.html"><span data-l="en">Lithophanes</span><span data-l="it" lang="it">Litofanie</span></a> · <a href="biomorphs.html"><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></a><!--/forms-nav--></nav>
+<header>
+  <h1><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></h1>
+  <blockquote class="motto">I need a superficial thought.. that makes my loss convex</blockquote>
+  <p class="lede" data-l="en">The loss of a model is a function of all its weights, hundreds of
+  about two thousand for this small network, and can be seen only on a slice: the plane
+  \(\theta^* + \alpha\, d_1 + \beta\, d_2\) through the trained weights \(\theta^*\). After Li, Xu,
+  Taylor, Studer and Goldstein, "Visualizing the Loss Landscape of Neural Nets" (2018), the two
+  directions are random and filter-normalized (each row of a weight matrix rescaled to the norm of
+  the same row of \(\theta^*\), so that the scale of every unit counts alike), or the two principal
+  components of the path of gradient descent, the plane on which the path lies best; a third plane
+  holds the segment from \(\theta^*\) to the initial weights \(\theta_0\) (as in Goodfellow,
+  Vinyals and Saxe, 2015) and a random filter-normalized direction, so that both ends of the path
+  lie on it.
+  On the left a network with eight hidden layers of 16 tanh units and no skip connections, on
+  the right a logistic regression, both trained by gradient descent on the same 200 points of two
+  half moons: the network reaches a loss near zero in a narrow basin among ridges and plateaus, the
+  kind of landscape that Li et al. found in deep networks without skip connections, the regression a
+  worse loss at the bottom of a convex bowl.</p>
+  <p class="lede" data-l="it" lang="it">La loss di un modello è una funzione di tutti i suoi pesi,
+  circa duemila per questa piccola rete, e si può vedere solo su una sezione: il piano
+  \(\theta^* + \alpha\, d_1 + \beta\, d_2\) per i pesi addestrati \(\theta^*\). Secondo Li, Xu, Taylor,
+  Studer e Goldstein, "Visualizing the Loss Landscape of Neural Nets" (2018), le due direzioni sono
+  casuali e normalizzate per filtro (ogni riga di una matrice dei pesi riscalata alla norma della
+  stessa riga di \(\theta^*\), così che la scala di ogni unità conti allo stesso modo), oppure le due
+  componenti principali del cammino della discesa del gradiente, il piano su cui il cammino giace
+  meglio; un terzo piano contiene il segmento da \(\theta^*\) ai pesi iniziali \(\theta_0\) (come in
+  Goodfellow, Vinyals e Saxe, 2015) e una direzione casuale normalizzata per filtro, così che entrambi
+  gli estremi del cammino vi giacciano. A sinistra una rete con otto strati nascosti di 16 unità tanh e senza connessioni residue, a
+  destra una regressione logistica, entrambe addestrate con la discesa del gradiente sugli stessi
+  200 punti di due mezzelune: la rete arriva a una loss quasi nulla in un bacino stretto fra creste e
+  altipiani, il tipo di paesaggio che Li et al. hanno trovato nelle reti profonde senza connessioni
+  residue, la regressione a una loss peggiore in fondo a una scodella convessa.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span data-l="en">directions</span><span data-l="it" lang="it">direzioni</span><select id="dirs">
+      <option value="interp">to the initial weights, and random</option><option value="pca">principal components of the path</option><option value="random">random, filter-normalized</option></select></label>
+    <label><span data-l="en">heights</span><span data-l="it" lang="it">altezze</span><select id="scale">
+      <option value="log">log of the loss</option><option value="linear">loss</option></select></label>
+  </div>
+</section>
+<main class="form">
+  <figure>
+    <figcaption><span data-l="en">The two reliefs as they are printed, low where the loss is low; in
+    gold the path of gradient descent from the initial weights (the ball) to the minimum, projected
+    on the plane. On random directions the path is a short stroke: in hundreds of dimensions two
+    random directions are almost orthogonal to it, as Li et al. remark, and that is why they plot
+    paths on the principal components. Heights are capped at the 97th percentile. Drag to turn,
+    wheel or pinch to zoom.</span><span data-l="it" lang="it">I due rilievi come vengono stampati,
+    bassi dove la loss è bassa; in oro il cammino della discesa del gradiente dai pesi iniziali (la
+    sfera) al minimo, proiettato sul piano. Sulle direzioni casuali il cammino è un tratto breve: in
+    centinaia di dimensioni due direzioni casuali gli sono quasi ortogonali, come osservano Li et al.,
+    ed è per questo che i cammini si disegnano sulle componenti principali. Le altezze sono tagliate al
+    97-esimo percentile. Trascinare per ruotare, rotella o pizzico per lo zoom.</span></figcaption>
+    <div id="stage" class="stage"></div>
+    <dl id="stats"></dl>
+  </figure>
+</main>
+<section id="print">
+  <h2 class="owner-only"><span data-l="en">Download for 3D printing</span><span data-l="it" lang="it">Scarica per la stampa 3D</span></h2>
+  <h2 class="public-only"><span data-l="en">A 3D print of these landscapes</span><span data-l="it" lang="it">Una stampa 3D di questi paesaggi</span></h2>
+  <p class="lede public-only" data-l="en">Either landscape, or both side by side on one block, can be ordered as a 3D print, on the
+  directions and the scale chosen above, with the path of gradient descent engraved from a small
+  cone (the initial weights) to a pit (the minimum). The request sends the link to the scene as it
+  is on the screen.</p>
+  <p class="lede public-only" data-l="it" lang="it">Uno dei due paesaggi, o entrambi affiancati su un unico blocco, si può ordinare come stampa 3D,
+  sulle direzioni e la scala scelte sopra, con il cammino della discesa del gradiente inciso da un
+  piccolo cono (i pesi iniziali) a una fossetta (il minimo). La richiesta manda il link alla scena
+  così com'è sullo schermo.</p>
+  <p class="lede owner-only" data-l="en">One landscape, or both on one block with a flat strip between them, on
+  the directions and the scale chosen above; the path is engraved as a groove that starts at a small
+  cone (the initial weights) and ends in a pit (the minimum).</p>
+  <p class="lede owner-only" data-l="it" lang="it">Un paesaggio, o entrambi su un unico blocco con una striscia
+  piana in mezzo, sulle direzioni e la scala scelte sopra; il cammino è inciso come un solco che
+  parte da un piccolo cono (i pesi iniziali) e finisce in una fossetta (il minimo).</p>
+</section>
+<footer><span data-l="en">Computed offline by src/forms/loss-landscape/landscape.py in plain numpy:
+full-batch gradient descent, 3000 steps with momentum for the network, 300 for the regression, the
+loss sampled on 121 x 121 points of each plane.</span><span data-l="it" lang="it">Calcolato offline da
+src/forms/loss-landscape/landscape.py in numpy: discesa del gradiente su tutto il dataset, 3000 passi
+con momento per la rete, 300 per la regressione, la loss campionata su 121 x 121 punti di ogni
+piano.</span></footer>
+<script type="module" src="src/forms/loss-landscape/loss-landscape.js"></script>
+</body>
+</html>

@@ -4,16 +4,24 @@
 
 import { t } from '../../i18n.js';
 import { setTex, texClear, texSet } from '../../tex.js';
-import { printPanel } from '../../print/index.js';
+import { printPanel, readState, writeState, shareUrl } from '../../print/index.js';
 import { createView, workerBuilder, building } from '../mathematics/view.js';
 import { fileName, coprime } from './model.js';
 
 const $ = id => document.getElementById(id);
 const MODEL = new URL('./model.js', import.meta.url).href;
-const state = { eq: 'heart', turns: 12, nx: 3, ny: 2, nz: 7, px: 0.7, py: 0.2, pz: 0 };
 // the size that each form takes when it is chosen
 const SIZE = { heart: 60, butterfly: 100, lissajous: 70 };
 const INTS = ['turns', 'nx', 'ny', 'nz'], PHASES = ['px', 'py', 'pz'];
+// every parameter of the scene, kept in the address
+const SPEC = {
+  e: { def: 'heart', values: ['heart', 'butterfly', 'lissajous'] },
+  turns: { def: 12, min: 1, max: 12, int: true },
+  nx: { def: 3, min: 1, max: 9, int: true }, ny: { def: 2, min: 1, max: 9, int: true }, nz: { def: 7, min: 1, max: 11, int: true },
+  px: { def: 0.7, min: 0, max: 3.14 }, py: { def: 0.2, min: 0, max: 3.14 }, pz: { def: 0, min: 0, max: 3.14 },
+  spin: { def: false },
+};
+const state = readState(SPEC);
 
 const INFO = {
   heart: {
@@ -37,34 +45,26 @@ const view = createView($('stage'), { eye: [0.35, -1.6, 0.55] });
 const build = workerBuilder(f => view.status(building(f)));
 let panel;
 
-function readHash() {
-  const h = new URLSearchParams(location.hash.slice(1));
-  if (INFO[h.get('e')]) state.eq = h.get('e');
-  for (const k of INTS) if (h.get(k)) state[k] = Math.min(+$(k).max, Math.max(+$(k).min, Math.round(+h.get(k)) || state[k]));
-  for (const k of PHASES) if (h.get(k)) state[k] = Math.min(3.14, Math.max(0, +h.get(k) || 0));
-}
-const writeHash = () => history.replaceState(null, '', '#' + new URLSearchParams({ e: state.eq, ...Object.fromEntries([...INTS, ...PHASES].map(k => [k, state[k]])) }));
-
 function sync() {
-  $('eq').value = state.eq;
+  $('eq').value = state.e;
   for (const k of [...INTS, ...PHASES]) { $(k).value = state[k]; $(k + 'out').textContent = PHASES.includes(k) ? state[k].toFixed(2) : state[k]; }
-  $('fly').hidden = state.eq !== 'butterfly'; $('knot').hidden = state.eq !== 'lissajous';
-  $('warn').hidden = state.eq !== 'lissajous' || coprime(state);
-  for (const k of ['stroke', 'relief']) $('p' + k).closest('label').hidden = state.eq !== 'butterfly';
-  $('ptube').closest('label').hidden = state.eq !== 'lissajous';
-  $('pbase').closest('label').hidden = state.eq === 'butterfly';
-  const I = INFO[state.eq];
+  $('fly').hidden = state.e !== 'butterfly'; $('knot').hidden = state.e !== 'lissajous';
+  $('warn').hidden = state.e !== 'lissajous' || coprime(state);
+  for (const k of ['stroke', 'relief']) $('p' + k).closest('label').hidden = state.e !== 'butterfly';
+  $('ptube').closest('label').hidden = state.e !== 'lissajous';
+  $('pbase').closest('label').hidden = state.e === 'butterfly';
+  const I = INFO[state.e];
   setTex($('formula'), `\\[${I.tex}\\]`);
-  if ($('history').dataset.s !== state.eq) {
+  if ($('history').dataset.s !== state.e) {
     texClear($('history'));
     $('history').innerHTML = `<span data-l="en">${I.en}</span><span data-l="it" lang="it">${I.it}</span>`;
-    $('history').dataset.s = state.eq; texSet($('history'));
+    $('history').dataset.s = state.e; texSet($('history'));
   }
 }
 
 async function rebuild() {
-  writeHash(); sync();
-  const o = { ...state, ...panel.read(), res: 'preview' };
+  writeState(SPEC, state); sync();
+  const o = { ...state, eq: state.e, ...panel.read(), res: 'preview' };
   view.status(building(0));
   try {
     const m = await build(MODEL, 'solid', [o]);
@@ -78,16 +78,16 @@ async function rebuild() {
 }
 
 function init() {
-  readHash();
-  $('eq').addEventListener('change', e => { state.eq = e.target.value; $('psize').value = SIZE[state.eq]; view.reset(); rebuild(); });
+  $('spin').checked = state.spin; view.spin(state.spin);
+  $('eq').addEventListener('change', e => { state.e = e.target.value; $('psize').value = SIZE[state.e]; view.reset(); rebuild(); });
   for (const k of [...INTS, ...PHASES]) {
     $(k).addEventListener('input', e => { state[k] = +e.target.value; $(k + 'out').textContent = PHASES.includes(k) ? state[k].toFixed(2) : state[k]; });
     $(k).addEventListener('change', rebuild);
   }
-  $('spin').addEventListener('change', e => view.spin(e.target.checked));
+  $('spin').addEventListener('change', e => { state.spin = e.target.checked; view.spin(state.spin); writeState(SPEC, state); });
   $('view').addEventListener('click', () => view.reset());
   panel = printPanel($('print'), {
-    size: { value: SIZE[state.eq], min: 20, max: 250, what: { en: 'largest width', it: 'larghezza massima' } },
+    size: { value: SIZE[state.e], min: 20, max: 250, what: { en: 'largest width', it: 'larghezza massima' } },
     fields: [
       { key: 'stroke', label: { en: 'stroke, mm', it: 'tratto, mm' }, value: 1.6, min: 0.8, max: 5, step: 0.1 },
       { key: 'relief', label: { en: 'relief, mm', it: 'rilievo, mm' }, value: 3, min: 1, max: 10, step: 0.5 },
@@ -96,9 +96,10 @@ function init() {
       { key: 'res', type: 'select', label: { en: 'resolution', it: 'risoluzione' }, value: 'draft',
         options: [{ value: 'draft', en: 'draft', it: 'bozza' }, { value: 'fine', en: 'fine', it: 'alta' }] },
     ],
-    worker: { module: MODEL, fn: 'solid', args: o => [{ ...state, ...o }] },
-    name: o => fileName({ ...state, ...o }),
-    head: () => `binary STL, millimetres, ${state.eq}`,
+    worker: { module: MODEL, fn: 'solid', args: o => [{ ...state, eq: state.e, ...o }] },
+    share: () => shareUrl(SPEC, state),
+    name: o => fileName({ ...state, eq: state.e, ...o }),
+    head: () => `binary STL, millimetres, ${state.e}`,
     object: 'famous equation',
   });
   for (const k of ['size', 'stroke', 'relief', 'tube', 'base']) $('p' + k).addEventListener('change', rebuild);

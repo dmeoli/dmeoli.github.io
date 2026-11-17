@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forms-group" content="nature">
+<title>Plants from rewriting rules</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<style>
+main.plants { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: start; }
+@media (max-width: 860px) { main.plants { grid-template-columns: 1fr; } }
+main.plants figcaption { min-height: 0; }
+#stage canvas { border-radius: 6px; touch-action: none; }
+.controls input[type=range] { width: 120px; }
+.rules { display: grid; gap: 8px; }
+.rules h3 { margin: 0; font: 500 11px 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+#text { width: 100%; box-sizing: border-box; min-height: 13em; resize: vertical; font: 12.5px/1.5 'IBM Plex Mono', monospace;
+  color: var(--ink); background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 10px; white-space: pre; overflow-x: auto; tab-size: 2; }
+#text:focus { outline: 2px solid var(--accent-2); outline-offset: -1px; }
+.rules .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+#err { color: var(--accent); font: 12px 'IBM Plex Mono', monospace; margin: 0; min-height: 1.2em; }
+.stats { flex-wrap: wrap; gap: 8px 22px; }
+.stats dd b { font-weight: 500; color: var(--accent); }
+#steps { display: flex; gap: 2px; align-items: end; height: 46px; margin: 4px 0 0; }
+#steps i { display: block; flex: 1; background: var(--lilac); border-top: 2px solid var(--accent); min-height: 2px; position: relative; }
+#steps i span { position: absolute; bottom: -16px; left: 0; right: 0; text-align: center; font: 10px 'IBM Plex Mono', monospace; color: var(--ink-soft); font-style: normal; }
+.symbols { font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); line-height: 1.6; margin: 18px 0 0; }
+.symbols code { color: var(--accent); font: inherit; }
+/* #thumb=1: the plant alone, filling the window, for the card of the site */
+body.thumb > :not(main), body.thumb main > :not(figure), body.thumb figure > :not(#stage) { display: none; }
+body.thumb { margin: 0; padding: 0; max-width: none; }
+body.thumb main { display: block; margin: 0; padding: 0; }
+#print { margin-top: 28px; }
+#print h2 { font-weight: 600; font-size: 22px; margin: 0 0 6px; color: var(--accent); }
+#print .lede { max-width: 80ch; font-size: 15px; }
+</style>
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attenzione</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Misture di esperti</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Hebbiano</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html">Talk</a><br><span class="group"><span data-l="en">Forms</span><span data-l="it" lang="it">Forme</span></span> <!--forms-nav--><a href="simplex-path.html"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="lagrangian-dual.html"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="loss-landscape.html"><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a> · <a href="packing-mip.html"><span data-l="en">Packing by MIP</span><span data-l="it" lang="it">Impaccamento con MIP</span></a> · <a href="shells.html"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></a> · <a href="phyllotaxis.html"><span data-l="en">Phyllotaxis</span><span data-l="it" lang="it">Fillotassi</span></a> · <a href="radiolarian.html"><span data-l="en">Radiolarians</span><span data-l="it" lang="it">Radiolari</span></a> · <a href="coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a> · <a href="plants.html" aria-current="page"><span data-l="en">Plants</span><span data-l="it" lang="it">Piante</span></a> · <a href="snowflakes.html"><span data-l="en">Snowflakes</span><span data-l="it" lang="it">Fiocchi di neve</span></a> · <a href="batman.html">Batman</a> · <a href="minimal-surfaces.html"><span data-l="en">Minimal surfaces</span><span data-l="it" lang="it">Superfici minime</span></a> · <a href="knots.html"><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></a> · <a href="attractors.html"><span data-l="en">Attractors</span><span data-l="it" lang="it">Attrattori</span></a> · <a href="polytopes.html"><span data-l="en">4D polytopes</span><span data-l="it" lang="it">Politopi 4D</span></a> · <a href="chladni.html">Chladni</a> · <a href="equations.html"><span data-l="en">Equations</span><span data-l="it" lang="it">Equazioni</span></a> · <a href="dice.html"><span data-l="en">Fair dice</span><span data-l="it" lang="it">Dadi equi</span></a> · <a href="hat.html"><span data-l="en">The hat</span><span data-l="it" lang="it">Il cappello</span></a> · <a href="fractals.html"><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></a> · <a href="lithophane.html"><span data-l="en">Lithophanes</span><span data-l="it" lang="it">Litofanie</span></a> · <a href="biomorphs.html"><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></a><!--/forms-nav--></nav>
+<header>
+  <h1><span data-l="en">Plants from rewriting rules</span><span data-l="it" lang="it">Piante da regole di riscrittura</span></h1>
+  <p class="lede" data-l="en">Lindenmayer (1968) described the growth of simple multicellular organisms by
+  rules that rewrite, in parallel and at every step, each symbol of a word into a word, as every cell of a
+  filament divides at the same time; with brackets that open and close a branch, and with a turtle that reads
+  the word as a sequence of moves, turns and branchings, a few rules and a few steps give the architecture of a
+  tree, of a bush or of a weed. The plants below are those of Prusinkiewicz and Lindenmayer, <i>The Algorithmic
+  Beauty of Plants</i> (Springer, 1990), chapters 1 and 2, with the rules of the book in the box at the side,
+  which can be changed, and the thickness of every branch given by the rule of Leonardo: the cross section of a
+  branch equals the sum of those of the branches it carries.</p>
+  <p class="lede" data-l="it" lang="it">Lindenmayer (1968) ha descritto la crescita di semplici organismi
+  pluricellulari con regole che riscrivono, in parallelo e a ogni passo, ciascun simbolo di una parola in una
+  parola, come ogni cellula di un filamento si divide nello stesso istante; con parentesi che aprono e chiudono
+  un ramo, e con una tartaruga che legge la parola come una sequenza di passi, rotazioni e ramificazioni, poche
+  regole e pochi passi danno l'architettura di un albero, di un cespuglio o di un'erba. Le piante qui sotto sono
+  quelle di Prusinkiewicz e Lindenmayer, <i>The Algorithmic Beauty of Plants</i> (Springer, 1990), capitoli 1 e
+  2, con le regole del libro nel riquadro a lato, che si possono cambiare, e lo spessore di ogni ramo dato
+  dalla regola di Leonardo: la sezione di un ramo è la somma di quelle dei rami che porta.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span data-l="en">plant</span><span data-l="it" lang="it">pianta</span><select id="preset"></select></label>
+    <label><span data-l="en">steps</span><span data-l="it" lang="it">passi</span><input id="n" type="range" min="0" max="12" step="1" value="6"><output id="nout">6</output></label>
+    <label><span data-l="en">angle δ</span><span data-l="it" lang="it">angolo δ</span><input id="delta" type="range" min="5" max="90" step="0.05" value="18.95"><output id="deltaout">18.95°</output></label>
+    <label><span data-l="en">tropism e</span><span data-l="it" lang="it">tropismo e</span><input id="tropism" type="range" min="-0.4" max="0.4" step="0.01" value="0.22"><output id="tropismout">0.22</output></label>
+    <label><span data-l="en">Leonardo exponent</span><span data-l="it" lang="it">esponente di Leonardo</span><input id="exp" type="range" min="1.6" max="4" step="0.05" value="2.4"><output id="expout">2.4</output></label>
+    <label><span data-l="en">twigs, mm</span><span data-l="it" lang="it">rametti, mm</span><input id="tip" type="range" min="0.5" max="2" step="0.05" value="0.8"><output id="tipout">0.8</output></label>
+    <label><span data-l="en">seed</span><span data-l="it" lang="it">seme</span><input id="seed" type="range" min="1" max="60" step="1" value="1"><output id="seedout">1</output></label>
+    <label class="check"><span data-l="en">leaves</span><span data-l="it" lang="it">foglie</span><input id="leaves" type="checkbox" checked></label>
+    <label class="check"><span data-l="en">spin</span><span data-l="it" lang="it">rotazione</span><input id="spin" type="checkbox"></label>
+    <button type="button" id="view"><span data-l="en">Reset view</span><span data-l="it" lang="it">Vista iniziale</span></button>
+  </div>
+</section>
+<main class="plants">
+  <figure>
+    <figcaption><span data-l="en">The plant of the rules at the side, as it is printed at 80 mm: every F a
+    round cone from the radius of its branch to that of its largest child, the leaves (violet) only in the view.
+    Drag to turn, wheel or pinch to zoom.</span><span data-l="it" lang="it">La pianta delle regole a lato, come
+    viene stampata a 80 mm: ogni F un tronco di cono dal raggio del suo ramo a quello del figlio più grande, le
+    foglie (viola) solo nella vista. Trascinare per ruotare, rotella o pizzico per lo zoom.</span></figcaption>
+    <div id="stage" class="stage"></div>
+    <dl class="stats">
+      <div><dt><span data-l="en">modules</span><span data-l="it" lang="it">moduli</span></dt><dd><b id="nmod">0</b></dd></div>
+      <div><dt><span data-l="en">branches F</span><span data-l="it" lang="it">rami F</span></dt><dd><b id="nseg">0</b></dd></div>
+      <div><dt><span data-l="en">tips</span><span data-l="it" lang="it">apici</span></dt><dd><b id="ntip">0</b></dd></div>
+      <div><dt><span data-l="en">trunk / twig</span><span data-l="it" lang="it">tronco / rametto</span></dt><dd><b id="ratio">0</b></dd></div>
+      <div><dt><span data-l="en">over 55° from vertical</span><span data-l="it" lang="it">oltre 55° dalla verticale</span></dt><dd><b id="steep">0</b></dd></div>
+    </dl>
+  </figure>
+  <div class="rules">
+    <h3><span data-l="en">Rules</span><span data-l="it" lang="it">Regole</span></h3>
+    <textarea id="text" spellcheck="false" aria-label="L-system rules"></textarea>
+    <div class="row">
+      <button type="button" id="apply"><span data-l="en">Grow these rules</span><span data-l="it" lang="it">Fai crescere queste regole</span></button>
+      <button type="button" id="restore"><span data-l="en">Rules of the book</span><span data-l="it" lang="it">Regole del libro</span></button>
+    </div>
+    <p id="err" aria-live="polite"></p>
+    <h3><span data-l="en">Length of the word, step by step</span><span data-l="it" lang="it">Lunghezza della parola, passo per passo</span></h3>
+    <div id="steps" aria-label="word length per step"></div>
+    <p class="explain" id="note"></p>
+    <p class="symbols" data-l="en"><code>F(l)</code> step drawing a branch, <code>f</code> step without,
+    <code>+ -</code> turn, <code>&amp; ^</code> pitch, <code>\ /</code> roll (by δ or by the angle in brackets),
+    <code>|</code> turn back, <code>$</code> level, <code>[ ]</code> branch, <code>{ . }</code> leaf polygon;
+    other letters only grow. <code>#define</code> names a constant, <code>A(l) : l &gt; 1 -&gt;</code> sets a condition,
+    <code>-&gt;(.33)</code> a probability; <code>delta</code> is the angle of the slider.</p>
+    <p class="symbols" data-l="it" lang="it"><code>F(l)</code>
+    passo che disegna un ramo, <code>f</code> passo senza, <code>+ -</code> virata, <code>&amp; ^</code> beccheggio,
+    <code>\ /</code> rollio (di δ o dell'angolo fra parentesi), <code>|</code> inversione, <code>$</code> livella,
+    <code>[ ]</code> ramo, <code>{ . }</code> poligono di foglia; le altre lettere crescono soltanto. <code>#define</code>
+    dà nome a una costante, <code>A(l) : l &gt; 1 -&gt;</code> pone una condizione, <code>-&gt;(.33)</code> una
+    probabilità; <code>delta</code> è l'angolo del cursore.</p>
+  </div>
+</main>
+<section id="print">
+  <h2 class="owner-only"><span data-l="en">Download for 3D printing</span><span data-l="it" lang="it">Scarica per la stampa 3D</span></h2>
+  <h2 class="public-only"><span data-l="en">A 3D print of this plant</span><span data-l="it" lang="it">Una stampa 3D di questa pianta</span></h2>
+  <p class="lede public-only" data-l="en">The plant of the rules above can be ordered as a 3D print, as one closed solid, every branch a round cone joined to the others
+  with a small fillet, the twigs never thinner than 0.6 mm in radius; standing, it is as tall as the size and
+  grows from a disc, with the trunk up, and since a printer lays every layer on the one below, the branches
+  that lean more than about 55 degrees from the vertical (their share is given under the view) need supports: the shrub needs few, the sympodial tree and the bush some, the ternary tree, bent by gravity (unless its tropism is turned negative), and the monopodial tree of Honda, whose lateral branches spread almost horizontally, many. A plant in a plane, as the fractal
+  plant, is better printed lying flat, as a plate that needs none. The request sends the link to the plant as it is on the screen, with its rules.</p>
+  <p class="lede public-only" data-l="it" lang="it">La pianta delle regole qui sopra si può ordinare come stampa 3D, come un solo solido chiuso, ogni ramo un tronco di cono unito
+  agli altri da un piccolo raccordo, i rametti mai più sottili di 0.6 mm di raggio; in piedi, è alta quanto la
+  dimensione e cresce da un disco, con il tronco in alto, e poiché una stampante posa ogni strato su quello
+  sottostante, i rami che si inclinano più di circa 55 gradi dalla verticale (la loro quota è data sotto la
+  vista) richiedono supporti: l'arbusto ne richiede pochi, l'albero simpodiale e il cespuglio qualcuno, l'albero ternario, piegato dalla gravità (a meno di rendere negativo il suo tropismo), e l'albero monopodiale di Honda, i cui rami laterali si allargano quasi in orizzontale, molti. Una pianta in un piano, come la pianta frattale, si stampa meglio distesa, come una lastra che non ne
+  richiede. La richiesta manda il link alla pianta così com'è sullo schermo, con le sue regole.</p>
+  <p class="lede owner-only" data-l="en">The plant as one closed solid, every branch a round cone joined to the others
+  with a small fillet, the twigs never thinner than 0.6 mm in radius; standing, it is as tall as the size and
+  grows from a disc, with the trunk up, and since a printer lays every layer on the one below, the branches
+  that lean more than about 55 degrees from the vertical (their share is given under the view, and in the line
+  below after the download) need supports: the shrub needs few, the sympodial tree and the bush some, the ternary tree, bent by gravity (unless its tropism is turned negative), and the monopodial tree of Honda, whose lateral branches spread almost horizontally, many. A plant in a plane, as the fractal
+  plant, is better printed lying flat, as a plate that needs none.</p>
+  <p class="lede owner-only" data-l="it" lang="it">La pianta come un solo solido chiuso, ogni ramo un tronco di cono unito
+  agli altri da un piccolo raccordo, i rametti mai più sottili di 0.6 mm di raggio; in piedi, è alta quanto la
+  dimensione e cresce da un disco, con il tronco in alto, e poiché una stampante posa ogni strato su quello
+  sottostante, i rami che si inclinano più di circa 55 gradi dalla verticale (la loro quota è data sotto la
+  vista, e nella riga qui sotto dopo lo scaricamento) richiedono supporti: l'arbusto ne richiede pochi, l'albero simpodiale e il cespuglio qualcuno, l'albero ternario, piegato dalla gravità (a meno di rendere negativo il suo tropismo), e l'albero monopodiale di Honda, i cui rami laterali si allargano quasi in orizzontale, molti. Una pianta in un piano, come la pianta frattale, si stampa meglio distesa, come una lastra che non ne
+  richiede.</p>
+</section>
+<script type="module" src="src/forms/plants/plants.js"></script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forms-group" content="nature">
+<title>Phyllotaxis and the golden angle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<style>
+main.phyllo { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: start; }
+@media (max-width: 860px) { main.phyllo { grid-template-columns: 1fr; } }
+main.phyllo figcaption { min-height: 0; }
+.side2 { display: grid; gap: 22px; }
+#stage canvas { border-radius: 6px; touch-action: none; }
+.controls input[type=range] { width: 130px; }
+.inline button { padding: 3px 8px; }
+#disc, #pack { width: 100%; height: auto; display: block; }
+#disc .pt { fill: var(--ink-soft); }
+#disc .l0, #disc .l1, #disc .l2 { fill: none; stroke-linecap: round; }
+#disc .l0 { stroke: var(--accent); stroke-width: 1.6; }
+#disc .l1 { stroke: var(--gold); stroke-width: 1.6; }
+#disc .l2 { stroke: var(--rule); stroke-width: 1; }
+body.thumb > :not(main), body.thumb main > :not(:first-child), body.thumb figcaption, body.thumb .stats { display: none !important; }
+body.thumb main.phyllo { grid-template-columns: 1fr; }
+#pack { cursor: crosshair; touch-action: none; }
+#pack .curve { fill: none; stroke: var(--accent-2); stroke-width: 1; }
+#pack .area { fill: var(--lilac); opacity: .5; }
+#pack .gold { stroke: var(--gold); stroke-width: 1.5; stroke-dasharray: 4 3; }
+#pack .now { stroke: var(--accent); stroke-width: 2; }
+#pack .frame { fill: none; stroke: var(--rule); }
+#pack .tick { font: 10px 'IBM Plex Mono', monospace; fill: var(--ink-soft); text-anchor: middle; }
+#pack .tick.end { text-anchor: end; }
+#pack .lab { font: 11px 'IBM Plex Mono', monospace; fill: var(--gold); }
+.stats { flex-wrap: wrap; gap: 8px 22px; }
+.stats dd b { font-weight: 500; color: var(--accent); }
+.stats dd b.g { color: var(--gold); }
+#print { margin-top: 28px; }
+#print h2 { font-weight: 600; font-size: 22px; margin: 0 0 6px; color: var(--accent); }
+#print .lede { max-width: 80ch; font-size: 15px; }
+</style>
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attenzione</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Misture di esperti</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Hebbiano</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html">Talk</a><br><span class="group"><span data-l="en">Forms</span><span data-l="it" lang="it">Forme</span></span> <!--forms-nav--><a href="simplex-path.html"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="lagrangian-dual.html"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="loss-landscape.html"><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a> · <a href="packing-mip.html"><span data-l="en">Packing by MIP</span><span data-l="it" lang="it">Impaccamento con MIP</span></a> · <a href="shells.html"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></a> · <a href="phyllotaxis.html" aria-current="page"><span data-l="en">Phyllotaxis</span><span data-l="it" lang="it">Fillotassi</span></a> · <a href="radiolarian.html"><span data-l="en">Radiolarians</span><span data-l="it" lang="it">Radiolari</span></a> · <a href="coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a> · <a href="plants.html"><span data-l="en">Plants</span><span data-l="it" lang="it">Piante</span></a> · <a href="snowflakes.html"><span data-l="en">Snowflakes</span><span data-l="it" lang="it">Fiocchi di neve</span></a> · <a href="batman.html">Batman</a> · <a href="minimal-surfaces.html"><span data-l="en">Minimal surfaces</span><span data-l="it" lang="it">Superfici minime</span></a> · <a href="knots.html"><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></a> · <a href="attractors.html"><span data-l="en">Attractors</span><span data-l="it" lang="it">Attrattori</span></a> · <a href="polytopes.html"><span data-l="en">4D polytopes</span><span data-l="it" lang="it">Politopi 4D</span></a> · <a href="chladni.html">Chladni</a> · <a href="equations.html"><span data-l="en">Equations</span><span data-l="it" lang="it">Equazioni</span></a> · <a href="dice.html"><span data-l="en">Fair dice</span><span data-l="it" lang="it">Dadi equi</span></a> · <a href="hat.html"><span data-l="en">The hat</span><span data-l="it" lang="it">Il cappello</span></a> · <a href="fractals.html"><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></a> · <a href="lithophane.html"><span data-l="en">Lithophanes</span><span data-l="it" lang="it">Litofanie</span></a> · <a href="biomorphs.html"><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></a><!--/forms-nav--></nav>
+<header>
+  <h1><span data-l="en">Phyllotaxis and the golden angle</span><span data-l="it" lang="it">La fillotassi e l'angolo aureo</span></h1>
+  <p class="lede" data-l="en">The florets of a sunflower, the scales of a pine cone, the fruitlets
+  of a pineapple and the tubercles of a cactus are laid down one at a time at the tip of the growing
+  shoot, each turned from the previous one by the same divergence angle \(\alpha\), and then pushed
+  outwards by the newer ones. Vogel (1979) reduced this to two lines: the \(n\)-th floret sits at the
+  angle \(n\alpha\) and at the distance \(c\sqrt{n}\) from the centre, so that each takes the same
+  area. With \(\alpha\) equal to the golden angle \(360^\circ(2-\varphi) \approx 137.508^\circ\), where
+  \(\varphi = (1+\sqrt5)/2\), the florets fill the disc evenly at every size, and the eye picks out two
+  families of spirals, the parastichies, whose numbers are consecutive Fibonacci numbers (21 and 34, or
+  34 and 55, in a large sunflower). Here the same rule is applied, by area measured from the apex, to a
+  disc, an ovoid, a barrel and a sphere; on the sphere it is the Fibonacci sphere.</p>
+  <p class="lede" data-l="it" lang="it">I fiori di un girasole, le squame di una pigna, i frutticini
+  di un ananas e i tubercoli di un cactus nascono uno alla volta all'apice del germoglio che cresce,
+  ciascuno ruotato rispetto al precedente dello stesso angolo di divergenza \(\alpha\), e sono poi spinti
+  verso l'esterno da quelli più giovani. Vogel (1979) ha ridotto tutto questo a due righe: il fiore
+  \(n\)-esimo sta all'angolo \(n\alpha\) e alla distanza \(c\sqrt{n}\) dal centro, sicché ognuno occupa
+  la stessa area. Con \(\alpha\) uguale all'angolo aureo \(360^\circ(2-\varphi) \approx 137.508^\circ\),
+  dove \(\varphi = (1+\sqrt5)/2\), i fiori riempiono il disco in modo uniforme a ogni dimensione, e
+  l'occhio vi distingue due famiglie di spirali, le parastiche, il cui numero è dato da due numeri di
+  Fibonacci consecutivi (21 e 34, o 34 e 55, in un girasole grande). Qui la stessa regola è applicata,
+  per area misurata dall'apice, a un disco, a un ovoide, a una botte e a una sfera; sulla sfera è la
+  sfera di Fibonacci.</p>
+  <p class="lede">\(\theta_n = n\,\alpha\), \(r_n = c\sqrt{n}\), \(\alpha = 360^\circ(2-\varphi) = 137.5077...^\circ\)</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span data-l="en">form</span><span data-l="it" lang="it">forma</span><select id="preset"></select></label>
+    <div class="inline">
+      <label><span><span data-l="en">divergence</span><span data-l="it" lang="it">divergenza</span> \(\alpha\)</span><input id="alpha" type="range" min="90" max="180" step="0.001" value="137.508"><output id="alphaout">137.508°</output></label>
+      <button type="button" id="golden" title="360° (2 − φ)">137.508°</button>
+    </div>
+    <label><span data-l="en">florets</span><span data-l="it" lang="it">fiori</span><input id="N" type="range" min="40" max="1500" step="1" value="420"><output id="Nout">420</output></label>
+    <label><span data-l="en">relief</span><span data-l="it" lang="it">rilievo</span><input id="relief" type="range" min="0.2" max="2" step="0.05" value="1"><output id="reliefout">1</output></label>
+    <label><span data-l="en">colour</span><span data-l="it" lang="it">colore</span><select id="col"></select></label>
+    <label class="check" id="petalsbox"><span data-l="en">petals</span><span data-l="it" lang="it">petali</span><input id="petals" type="checkbox" checked></label>
+    <label class="check"><span data-l="en">spin</span><span data-l="it" lang="it">rotazione</span><input id="spin" type="checkbox"></label>
+    <button type="button" id="view"><span data-l="en">Reset view</span><span data-l="it" lang="it">Vista iniziale</span></button>
+  </div>
+</section>
+<main class="phyllo">
+  <figure>
+    <figcaption><span data-l="en">The form of the choices above, each floret a bump on the surface,
+    the very mesh that is printed. With the colour set to a family of parastichies, the florets
+    \(n\) and \(n + k\) of each spiral of the family get the same colour, and the spirals alternate.
+    Drag to turn, wheel or pinch to zoom.</span><span data-l="it" lang="it">La forma delle scelte qui
+    sopra, ogni fiore un rilievo sulla superficie, la stessa mesh che si stampa. Con il colore impostato
+    su una famiglia di parastiche, i fiori \(n\) e \(n + k\) di ogni spirale della famiglia hanno lo
+    stesso colore, e le spirali si alternano. Trascinare per ruotare, rotella o pizzico per lo
+    zoom.</span></figcaption>
+    <div id="stage" class="stage"></div>
+    <dl class="stats">
+      <div><dt><span data-l="en">on the solid</span><span data-l="it" lang="it">sul solido</span></dt><dd><span data-l="en">parastichies</span><span data-l="it" lang="it">parastiche</span> <b id="fa">21</b> · <b id="fb" class="g">34</b></dd></div>
+      <div><dt><span data-l="en">Vogel's disc, inside</span><span data-l="it" lang="it">disco di Vogel, interno</span></dt><dd><b id="ia">13</b> · <b id="ib" class="g">21</b></dd></div>
+      <div><dt><span data-l="en">at the rim</span><span data-l="it" lang="it">al bordo</span></dt><dd><b id="oa">21</b> · <b id="ob" class="g">34</b></dd></div>
+      <div><dt><span data-l="en">Fibonacci</span><span data-l="it" lang="it">Fibonacci</span></dt><dd id="isfib"></dd></div>
+    </dl>
+  </figure>
+  <div class="side2">
+    <figure>
+      <figcaption><span data-l="en">Vogel's disc of the same florets, \(r = \sqrt{n}\), each joined
+      to its nearest neighbours: the lines of one family of parastichies in violet, those of the next
+      in gold. Going outwards the florets are farther from the centre but no farther from each other,
+      so the families change, from 8 and 13 to 13 and 21 and on, through a ring where three families
+      are equally near.</span><span data-l="it" lang="it">Il disco di Vogel degli stessi fiori,
+      \(r = \sqrt{n}\), ognuno unito ai più vicini: le linee di una famiglia di parastiche in viola,
+      quelle della successiva in oro. Andando verso l'esterno i fiori sono più lontani dal centro ma non
+      più lontani fra loro, sicché le famiglie cambiano, da 8 e 13 a 13 e 21 e oltre, attraverso un
+      anello in cui tre famiglie sono ugualmente vicine.</span></figcaption>
+      <svg id="disc" viewBox="-160 -160 320 320" role="img" aria-label="Vogel's disc with the parastichies"></svg>
+    </figure>
+    <figure>
+      <figcaption><span data-l="en">How well 300 florets are packed against the divergence angle:
+      the smallest distance between two of them, over the side of the hexagonal lattice of the same
+      density (1 would be a perfect packing). A rational angle \(360^\circ p/q\) puts the florets on
+      \(q\) straight spokes with empty gaps between them, and every angle close to a rational one does
+      so for a while; the golden angle is the one worst approximated by fractions, since \(\varphi\)
+      has the continued fraction \([1; 1, 1, 1, \ldots]\), and it packs best. Click or drag to choose
+      \(\alpha\).</span><span data-l="it" lang="it">Quanto bene sono impacchettati 300 fiori in funzione
+      dell'angolo di divergenza: la distanza minima fra due di essi, divisa per il lato del reticolo
+      esagonale della stessa densità (1 sarebbe un impacchettamento perfetto). Un angolo razionale
+      \(360^\circ p/q\) mette i fiori su \(q\) raggi diritti con spazi vuoti fra l'uno e l'altro, e ogni
+      angolo vicino a uno razionale fa lo stesso per un tratto; l'angolo aureo è quello approssimato
+      peggio dalle frazioni, poiché \(\varphi\) ha la frazione continua \([1; 1, 1, 1, \ldots]\), ed è
+      quello che impacchetta meglio. Cliccare o trascinare per scegliere \(\alpha\).</span></figcaption>
+      <svg id="pack" viewBox="0 0 320 170" role="img" aria-label="Packing against the divergence angle"></svg>
+      <p class="explain" id="why"></p>
+    </figure>
+  </div>
+</main>
+<section id="print">
+  <h2><span data-l="en">For 3D printing</span><span data-l="it" lang="it">Per la stampa 3D</span></h2>
+  <p class="lede" data-l="en">The form as a closed solid, its largest side equal to the size, with
+  the florets as bumps about a third of their spacing high (at 80 mm the florets of the sunflower are
+  about 2 mm apart, so a 0.4 mm nozzle draws them, and fewer florets give coarser bumps). Every form
+  has a flat bottom and stands on the bed. The sunflower, with its petals flat on the bed, and the
+  cactus, whose wall overhangs by at most 30 degrees, print without supports; the pine cone and the
+  pineapple narrow towards their bottom, so their lowest centimetre overhangs by more than 45 degrees and
+  needs a few supports, or the stand, which widens the footprint but not the overhang.</p>
+  <p class="lede" data-l="it" lang="it">La forma come solido chiuso, con il lato maggiore uguale alla
+  dimensione e i fiori come rilievi alti circa un terzo della loro distanza (a 80 mm i fiori del
+  girasole distano circa 2 mm, sicché un ugello da 0.4 mm li disegna, e meno fiori danno rilievi più
+  grossi). Ogni forma ha il fondo piatto e sta sul piatto. Il girasole, con i petali stesi sul piatto,
+  e il cactus, la cui parete sporge al più di 30 gradi, si stampano senza supporti; la pigna e l'ananas
+  si restringono verso il fondo, sicché il loro centimetro più basso sporge di più di 45 gradi e chiede
+  qualche supporto, oppure il piedistallo, che allarga l'appoggio ma non lo sbalzo.</p>
+  <p class="lede public-only" data-l="en">The form of the choices above can be ordered as a 3D print, also with other
+  sizes or thicknesses: the request sends the link to it as it is on the screen, with the fields
+  above.</p>
+  <p class="lede public-only" data-l="it" lang="it">La forma delle scelte qui sopra si può ordinare come stampa 3D, anche
+  con altre dimensioni o spessori: la richiesta manda il link così com'è sullo schermo, con i campi
+  qui sopra.</p>
+  <p class="lede owner-only" data-l="en">STL has no unit (slicers read millimetres), 3MF states
+  millimetres.</p>
+  <p class="lede owner-only" data-l="it" lang="it">L'STL non ha unità (gli slicer leggono millimetri),
+  il 3MF dichiara i millimetri.</p>
+</section>
+<script type="module" src="src/forms/phyllotaxis/phyllotaxis.js"></script>
+</body>
+</html>
