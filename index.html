@@ -2751,12 +2751,18 @@ Decomposition methods and solvers for large-scale
     function name() {
       try { return frame.contentDocument.title || ''; } catch (e) { return ''; }
     }
-    frame.addEventListener('load', function () {
+    function loaded() {
       var n = name(); if (n) title.textContent = n;
       try { tab.href = frame.contentWindow.location.href; } catch (e) {}
-    });
+    }
     function open(href, label) {
-      frame.src = href.replace(base, '/opt-playground/');
+      // a new iframe each time: navigating an iframe that already exists adds
+      // an entry to the history of the page, which a touch inside the scene
+      // makes unskippable, so that the first back emptied the frame and only
+      // the second closed the scene
+      var f = frame.cloneNode(false);
+      f.src = href.replace(base, '/opt-playground/');
+      frame.replaceWith(f); frame = f; frame.addEventListener('load', loaded);
       title.textContent = label || ''; tab.href = href;
       document.querySelectorAll('video').forEach(function (v) { v.pause(); });
       dlg.showModal(); document.documentElement.style.overflow = 'hidden';
@@ -2766,13 +2772,14 @@ Decomposition methods and solvers for large-scale
       if (!dlg.open) return;
       dlg.close();
     }
+    function blank() { var f = frame.cloneNode(false); f.removeAttribute('src'); frame.replaceWith(f); frame = f; }
     dlg.addEventListener('close', function () {
-      frame.src = 'about:blank'; document.documentElement.style.overflow = '';
+      blank(); document.documentElement.style.overflow = '';
       if (history.state && history.state.scene) history.back();
     });
     dlg.addEventListener('cancel', function (e) { e.preventDefault(); shut(); });
     dlg.querySelector('.sv-close').addEventListener('click', shut);
-    window.addEventListener('popstate', function () { if (dlg.open && !(history.state && history.state.scene)) { frame.src = 'about:blank'; dlg.close(); } });
+    window.addEventListener('popstate', function () { if (dlg.open && !(history.state && history.state.scene)) { blank(); dlg.close(); } });
     // the buttons of the bar act as those of the page, which store the choice
     var main = document.querySelector('.lang:not(.sv-lang)');
     dlg.querySelector('.sv-theme').addEventListener('click', function () { main.querySelector('.theme').click(); });
