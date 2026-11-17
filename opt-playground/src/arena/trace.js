@@ -136,6 +136,10 @@ export class Replay {
   board() {
     const { k } = this, cols = this.tr.header.instance.colours, out = [];
     const sym = this.tr.header.encoding ? this.tr.header.encoding.symbols : null;
+    // after the last event, the solution of the result (or its model, the
+    // true variables in the numbering of DIMACS)
+    const r = this.tr.result, last = this.pos === this.tr.events.length && r && /^(sat|optimal|feasible)$/.test(r.status);
+    const end = last && r.solution ? { solution: r.solution } : last && r.model && sym ? { model: new Set(r.model) } : null;
     this.verts.forEach((v, i) => {
       let colour = -1, mask = 0, frac = null;
       if (sym) {
@@ -147,6 +151,10 @@ export class Replay {
         if (this.x) frac = cols.map((_, j) => this.x[i * k + j] || 0);
       }
       if (this.set.has(v)) { colour = cols.indexOf(this.set.get(v)); mask = 1 << colour; }
+      if (end) {
+        const c = end.solution ? cols.indexOf(end.solution[v]) : cols.findIndex((_, j) => end.model.has(i * k + j + 1));
+        if (c >= 0) { colour = c; mask = 1 << c; frac = null; }
+      }
       out.push({ id: v, colour, mask, frac });
     });
     return out;

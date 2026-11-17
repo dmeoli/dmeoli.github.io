@@ -1349,7 +1349,7 @@ footer {
       <div class="subnav" role="tablist">
         <button type="button" role="tab" data-sub="decomposition"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span> <span class="count">5</span></button>
         <button type="button" role="tab" data-sub="lp"><span data-l="en">Linear and Integer</span><span data-l="it" lang="it">Lineare e intera</span> <span class="count">6</span></button>
-        <button type="button" role="tab" data-sub="arena"><span data-l="en">Solver Arena</span><span data-l="it" lang="it">Arena dei solutori</span> <span class="count">1</span></button>
+        <button type="button" role="tab" data-sub="arena"><span data-l="en">Solver Arena</span><span data-l="it" lang="it">Arena dei solutori</span> <span class="count">7</span></button>
       </div>
       <div class="sub scenes" data-sub="decomposition" role="tabpanel">
         <article class="scene">
@@ -1469,13 +1469,73 @@ footer {
       </div>
       <div class="sub scenes" data-sub="arena" role="tabpanel">
         <article class="scene">
-          <a class="media" href="https://dmeoli.github.io/opt-playground/arena.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/arena.webp" width="640" height="442" alt="Solver Arena" loading="lazy"><img class="th-dark" src="/assets/play/arena-dark.webp" width="640" height="442" alt="Solver Arena" loading="lazy"></a>
+          <a class="media" href="https://dmeoli.github.io/opt-playground/arena-coloring.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/arena-coloring.webp" width="640" height="442" alt="Map colouring" loading="lazy"><img class="th-dark" src="/assets/play/arena-coloring-dark.webp" width="640" height="442" alt="Map colouring" loading="lazy"></a>
           <div class="text">
-            <p class="num">01 / 01</p>
-            <h3><a href="https://dmeoli.github.io/opt-playground/arena.html"><span data-l="en">Solver Arena</span><span data-l="it" lang="it">Arena dei solutori</span></a></h3>
-            <p class="desc"><span data-l="en">Up to four solvers run side by side on the same game, each lane replaying event by event the trace of a real run, on one timeline: the regions of a map are coloured by the SAT, MIP and branch-and-bound solvers of SMS++ (CaDiCaL, MiniSat, HiGHS, SCIP and BranchAndXSolver, on the CNF that aima-python writes from the constraint satisfaction problem), and the 8- and 15-puzzle and grid pathfinding are solved by the A* family of PBeFS, sequential and parallel; the page solves nothing, so that what one sees is what the solvers did.</span><span data-l="it" lang="it">Fino a quattro solutori girano affiancati sullo stesso gioco, e ogni corsia ripete evento per evento la traccia di un'esecuzione reale, su una sola linea del tempo: le regioni di una mappa sono colorate dai solutori SAT, MIP e di branch and bound di SMS++ (CaDiCaL, MiniSat, HiGHS, SCIP e BranchAndXSolver, sulla CNF che aima-python scrive dal problema di soddisfacimento di vincoli), e il gioco del 8 e del 15 e i cammini su griglia sono risolti dalla famiglia A* di PBeFS, sequenziale e parallela; la pagina non risolve nulla, così che ciò che si vede è ciò che i solutori hanno fatto.</span></p>
-            <ul class="tags"><li>SAT</li><li>MIP</li><li>A*</li><li>SMS++</li><li>PBeFS</li></ul>
-            <a class="go" href="https://dmeoli.github.io/opt-playground/arena.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+            <p class="num">01 / 07</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/arena-coloring.html"><span data-l="en">Map colouring</span><span data-l="it" lang="it">Colorazione di mappe</span></a></h3>
+            <p class="desc"><span data-l="en">The regions of a map coloured by the SAT, MIP and branch-and-bound solvers of SMS++ (CaDiCaL, MiniSat, HiGHS, SCIP and BranchAndXSolver), on the CNF that the page writes from the constraint satisfaction problem of aima-python; the map rises where a literal is set and the tree of CDCL grows beside it.</span><span data-l="it" lang="it">Le regioni di una mappa colorate dai solutori SAT, MIP e di branch and bound di SMS++ (CaDiCaL, MiniSat, HiGHS, SCIP e BranchAndXSolver), sulla CNF che la pagina scrive dal problema di soddisfacimento di vincoli di aima-python; la mappa si solleva dove un letterale viene fissato e accanto cresce l'albero del CDCL.</span></p>
+            <ul class="tags"><li>SAT</li><li>MIP</li><li>SMS++</li><li>aima</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/arena-coloring.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/arena-queens.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/arena-queens.webp" width="640" height="442" alt="The n queens" loading="lazy"><img class="th-dark" src="/assets/play/arena-queens-dark.webp" width="640" height="442" alt="The n queens" loading="lazy"></a>
+          <div class="text">
+            <p class="num">02 / 07</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/arena-queens.html"><span data-l="en">The n queens</span><span data-l="it" lang="it">Le n regine</span></a></h3>
+            <p class="desc"><span data-l="en">The n queens of aima-python, 8, 12 and 20, in the direct encoding of their CSP, solved by the same solvers of SMS++: a queen rises on its cell when the solver sets its literal, a cell sinks when it is excluded, and the columns of a conflict glow red.</span><span data-l="it" lang="it">Le n regine di aima-python, 8, 12 e 20, nella codifica diretta del loro CSP, risolte dagli stessi solutori di SMS++: una regina si solleva sulla sua casella quando il solutore fissa il suo letterale, una casella si abbassa quando viene esclusa, e le colonne di un conflitto si accendono di rosso.</span></p>
+            <ul class="tags"><li>SAT</li><li>MIP</li><li>SMS++</li><li>aima</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/arena-queens.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/arena-sudoku.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/arena-sudoku.webp" width="640" height="442" alt="Sudoku" loading="lazy"><img class="th-dark" src="/assets/play/arena-sudoku-dark.webp" width="640" height="442" alt="Sudoku" loading="lazy"></a>
+          <div class="text">
+            <p class="num">03 / 07</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/arena-sudoku.html"><span data-l="en">Sudoku</span><span data-l="it" lang="it">Sudoku</span></a></h3>
+            <p class="desc"><span data-l="en">Two Sudoku of aima-python, an easy one and a harder one, solved by the solvers of SMS++ on the direct encoding of the CSP; each of the 81 cells shows its candidates, which shrink as the solver excludes them, and rises with its digit once the digit is set.</span><span data-l="it" lang="it">Due Sudoku di aima-python, uno facile e uno più difficile, risolti dai solutori di SMS++ sulla codifica diretta del CSP; ognuna delle 81 celle mostra i suoi candidati, che si riducono man mano che il solutore li esclude, e si solleva con la sua cifra quando la cifra è fissata.</span></p>
+            <ul class="tags"><li>SAT</li><li>MIP</li><li>SMS++</li><li>aima</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/arena-sudoku.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/arena-puzzle.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/arena-puzzle.webp" width="640" height="442" alt="Sliding puzzle" loading="lazy"><img class="th-dark" src="/assets/play/arena-puzzle-dark.webp" width="640" height="442" alt="Sliding puzzle" loading="lazy"></a>
+          <div class="text">
+            <p class="num">04 / 07</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/arena-puzzle.html"><span data-l="en">Sliding puzzle</span><span data-l="it" lang="it">Gioco del 15</span></a></h3>
+            <p class="desc"><span data-l="en">The 8- and 15-puzzle solved by the A* family of PBeFS (A*, IDA* and the parallel HDA*), each lane sliding the tiles to the state it expands while the strip under the board shows the frontier by f; once the search ends, each lane walks its solution path.</span><span data-l="it" lang="it">Il gioco dell'8 e del 15 risolti dalla famiglia A* di PBeFS (A*, IDA* e HDA* parallelo), con le tessere di ogni corsia che scorrono fino allo stato espanso mentre la striscia sotto la tavola mostra la frontiera per f; a ricerca finita, ogni corsia percorre il suo cammino soluzione.</span></p>
+            <ul class="tags"><li>A*</li><li>PBeFS</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/arena-puzzle.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/arena-grid.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/arena-grid.webp" width="640" height="442" alt="Grid paths" loading="lazy"><img class="th-dark" src="/assets/play/arena-grid-dark.webp" width="640" height="442" alt="Grid paths" loading="lazy"></a>
+          <div class="text">
+            <p class="num">05 / 07</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/arena-grid.html"><span data-l="en">Grid paths</span><span data-l="it" lang="it">Cammini su griglia</span></a></h3>
+            <p class="desc"><span data-l="en">Shortest paths on a grid with obstacles, searched by A* and by HDA* with 2 and 4 threads of PBeFS: every cell expanded rises in the colour of the worker that expanded it, so that one sees how the parallel search shares the space.</span><span data-l="it" lang="it">Cammini minimi su una griglia con ostacoli, cercati da A* e da HDA* di PBeFS con 2 e 4 thread: ogni cella espansa si solleva nel colore del worker che l'ha espansa, così che si vede come la ricerca parallela si divide lo spazio.</span></p>
+            <ul class="tags"><li>A*</li><li>PBeFS</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/arena-grid.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/arena-hanoi.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/arena-hanoi.webp" width="640" height="442" alt="Towers of Hanoi" loading="lazy"><img class="th-dark" src="/assets/play/arena-hanoi-dark.webp" width="640" height="442" alt="Towers of Hanoi" loading="lazy"></a>
+          <div class="text">
+            <p class="num">06 / 07</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/arena-hanoi.html"><span data-l="en">Towers of Hanoi</span><span data-l="it" lang="it">Torri di Hanoi</span></a></h3>
+            <p class="desc"><span data-l="en">The Towers of Hanoi with four pegs, 8 and 10 disks, searched by PBeFS blind or with additive pattern databases on the two halves of the disks; the disks move to every state expanded, and the lanes show how much of the blind search the tables spare.</span><span data-l="it" lang="it">Le torri di Hanoi a quattro pioli, con 8 e 10 dischi, cercate da PBeFS alla cieca o con pattern database additivi sulle due metà dei dischi; i dischi si spostano in ogni stato espanso, e le corsie mostrano quanta parte della ricerca cieca le tabelle risparmiano.</span></p>
+            <ul class="tags"><li>A*</li><li>PBeFS</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/arena-hanoi.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/arena-cube.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/arena-cube.webp" width="640" height="442" alt="The cube" loading="lazy"><img class="th-dark" src="/assets/play/arena-cube-dark.webp" width="640" height="442" alt="The cube" loading="lazy"></a>
+          <div class="text">
+            <p class="num">07 / 07</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/arena-cube.html"><span data-l="en">The cube</span><span data-l="it" lang="it">Il cubo</span></a></h3>
+            <p class="desc"><span data-l="en">A scrambled 3x3x3 cube solved by IDA*, A* and HDA* of PBeFS with the pattern databases of Korf (1997); during the search the base takes the colour of the worker that expands, and once the search ends the cube makes the moves of the solution path.</span><span data-l="it" lang="it">Un cubo 3x3x3 rimescolato, risolto da IDA*, A* e HDA* di PBeFS con i pattern database di Korf (1997); durante la ricerca la base prende il colore del worker che espande, e a ricerca finita il cubo esegue le mosse del cammino soluzione.</span></p>
+            <ul class="tags"><li>A*</li><li>IDA*</li><li>PBeFS</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/arena-cube.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
         <a class="next" href="/ml" data-section="ml"><span data-l="en">Next: Machine Learning</span><span data-l="it" lang="it">Avanti: Machine learning</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>

@@ -254,14 +254,16 @@ export function drawStrip(cv, rep) {
     g.fillRect(X(f) - bw / 2, 10, bw, 12);
   }
   g.globalAlpha = 1;
-  const mark = (f, col, lab) => {
+  // the label of a mark on its right, or on its left (left), kept inside the strip
+  const mark = (f, col, lab, left) => {
     if (typeof f !== 'number') return;
     g.fillStyle = col; g.fillRect(X(f) - 1, 4, 2, 24);
     g.font = '10px "IBM Plex Mono", monospace'; g.textBaseline = 'top';
-    g.fillText(lab, Math.min(W - 40, X(f) + 3), 23);
+    const w = g.measureText(lab).width;
+    g.fillText(lab, Math.max(0, Math.min(W - w, left ? X(f) - 6 - w : X(f) + 5)), 23);
   };
   const e = rep.last;
-  if (rep.threshold !== null) mark(rep.threshold, css('--gold') || '#6c5920', t('bound ', 'soglia ') + rep.threshold);
+  if (rep.threshold !== null) mark(rep.threshold, css('--gold') || '#6c5920', t('threshold ', 'soglia ') + rep.threshold, true);
   if (e && e.type === 'expand') mark(e.f, css('--ink') || '#2e2040', 'f ' + e.f);
   g.fillStyle = css('--ink-soft') || '#5f4b76'; g.font = '10px "IBM Plex Mono", monospace'; g.textBaseline = 'top';
   g.fillText(String(lo), 4, 0); const s = String(hi); g.fillText(s, W - 4 - g.measureText(s).width, 0);

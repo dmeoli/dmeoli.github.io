@@ -1,0 +1,75 @@
+/* The scenes of the solver arena (arena-*.html). The lanes stand on one row,
+   of equal width, and every lane is a subgrid of the same five rows (header,
+   counters, event, board, the panel of its paradigm), so that each part
+   sits on the same line in every lane; on a narrow screen the row scrolls
+   inside its box, a lane at a time, and the page never does. */
+h2.part { font: 500 12px 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin: 0 0 6px; }
+#lanes {
+  display: grid; grid-template-rows: repeat(5, auto); grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr); column-gap: 14px;
+  overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory;
+  padding-bottom: 4px; margin-bottom: 10px;
+}
+#lanes[data-n="1"] { max-width: 520px; }
+#lanes[data-n="2"] { max-width: 1040px; }
+@media (max-width: 700px) {
+  #lanes { grid-auto-columns: 84%; }
+  #lanes[data-n="1"] { grid-auto-columns: 100%; }
+}
+.lane {
+  grid-row: 1 / span 5; display: grid; grid-template-rows: subgrid; row-gap: 6px;
+  min-width: 0; scroll-snap-align: start;
+  background: var(--panel); border: 1px solid var(--rule); border-radius: 8px; padding: 10px 12px;
+}
+.lane header { min-width: 0; }
+.lane h3 { margin: 0; font: 500 14px/1.35 'IBM Plex Mono', monospace; color: var(--accent); overflow-wrap: anywhere; }
+.lane .where { margin: 2px 0 0; font: 11px/1.4 'IBM Plex Mono', monospace; color: var(--ink-soft); overflow-wrap: anywhere; }
+.badge { display: inline-block; margin-top: 3px; font: 500 11px 'IBM Plex Mono', monospace; color: var(--gold); border: 1px solid var(--gold); border-radius: 4px; padding: 0 5px; }
+.lane .counters { display: grid; grid-template-columns: repeat(auto-fill, minmax(10.5ch, 1fr)); gap: 4px 10px; margin: 0; align-content: start; }
+.lane .counters dt { white-space: nowrap; }
+.lane .counters dd { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.evline { font-size: 14px; line-height: 1.4; color: var(--ink-soft); margin: 0; height: 4.2em; overflow: hidden; }
+.lane.conflict .evline { color: #c0281e; }
+.lane .board { min-width: 0; }
+.lane .panel { min-width: 0; display: grid; gap: 4px; align-content: start; }
+.stripbox { margin: 0; }
+.stripbox figcaption { font-size: 12px; line-height: 1.35; min-height: 2.7em; }
+canvas.strip { display: block; width: 100%; height: 34px; }
+.lane .workers, .bounds { font: 12px/1.4 'IBM Plex Mono', monospace; color: var(--ink-soft); margin: 0; }
+.wchip { white-space: nowrap; }
+.wchip::before { content: ''; display: inline-block; width: 9px; height: 9px; border-radius: 2px; background: var(--w); margin-right: 3px; vertical-align: -1px; }
+.treebox { margin: 0; }
+.treebox figcaption { font-size: 12px; }
+svg.tree { display: block; margin: 0 auto; max-width: 100%; height: auto; max-height: 180px; }
+.anode circle { fill: var(--lilac); stroke: var(--accent-2); stroke-width: 1.5; }
+.anode.branched circle { fill: var(--accent-2); }
+.anode.feasible circle { fill: var(--gold); stroke: var(--gold); }
+.anode.infeasible circle, .anode.pruned circle { fill: var(--rule); stroke: var(--ink-soft); }
+.anode.hot circle { stroke: var(--ink); stroke-width: 3; }
+.anode .tval { fill: var(--ink); }
+/* the timeline and the scoreboard, under the row and as wide as it */
+.timeline { display: flex; gap: 10px; align-items: center; margin: 0 0 6px; }
+#time { width: 100%; }
+#score { margin-top: 12px; }
+#score .wrap { overflow-x: auto; }
+#score table { border-collapse: collapse; font: 12px 'IBM Plex Mono', monospace; width: 100%; }
+#score th, #score td { padding: 3px 6px; text-align: right; border-bottom: 1px solid var(--rule); font-variant-numeric: tabular-nums; white-space: nowrap; }
+#score th { color: var(--ink-soft); font-weight: 400; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; }
+#score th:first-child, #score td:first-child { text-align: left; }
+#laneselects { display: contents; }
+option:disabled { color: var(--ink-soft); }
+/* the model of map colouring: CSP, CNF and the rows of SATBlock */
+.model { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1.4fr); gap: 18px; margin-bottom: 18px; }
+@media (max-width: 860px) { .model { grid-template-columns: 1fr; } }
+.model .stats { flex-wrap: wrap; margin: 0; }
+.model .note { font-size: 14px; color: var(--ink-soft); margin: 6px 0; }
+.model .kind { font: 11px 'IBM Plex Mono', monospace; color: var(--ink-soft); margin: 8px 0 2px; text-transform: uppercase; letter-spacing: .06em; }
+ul.cl { list-style: none; padding: 0; margin: 0; font: 12px/1.45 'IBM Plex Mono', monospace; }
+ul.cl code { white-space: pre-wrap; word-break: break-word; }
+#mstatus { font-size: 14px; color: var(--ink-soft); font-style: italic; margin: 0 0 10px; }
+#model[data-state="loading"] .model { opacity: .4; }
+/* the index of the scenes (arena.html) */
+ul.scenes { list-style: none; padding: 0; margin: 0 0 18px; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+ul.scenes li { background: var(--panel); border: 1px solid var(--rule); border-radius: 8px; padding: 12px 14px; }
+ul.scenes a { font: 500 14px 'IBM Plex Mono', monospace; color: var(--accent); }
+ul.scenes p { margin: 6px 0 0; font-size: 15px; color: var(--ink-soft); }

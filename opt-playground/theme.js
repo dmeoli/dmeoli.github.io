@@ -46,7 +46,7 @@
   // the way back goes to the section of the site that lists the scene: a form
   // says its group in <meta name="forms-group" content="nature">
   var path = location.pathname.replace(/\/$/, '/index.html'),
-      back = /^\/opt-playground\/(index|components|benders|lp|lp3d|integer|polarity|packing-mip|simplex-path|lagrangian-dual|arena)?(\.html)?$/.test(path)
+      back = /^\/opt-playground\/(index|components|benders|lp|lp3d|integer|polarity|packing-mip|simplex-path|lagrangian-dual|arena(?:-[a-z]+)?)?(\.html)?$/.test(path)
         ? '<a class="home" href="/optimization"><span data-l="en">&larr; Optimization</span><span data-l="it" lang="it">&larr; Ottimizzazione</span></a>'
         : '<a class="home" href="/ml"><span data-l="en">&larr; Machine Learning</span><span data-l="it" lang="it">&larr; Machine learning</span></a>';
   document.addEventListener('DOMContentLoaded', function () {
