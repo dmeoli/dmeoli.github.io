@@ -20,12 +20,24 @@
 //     before: [nodes],                                      // other buttons first in the bar
 //     prefix: 'p',                                          // ids: psize, pthick, ..., pboth, pstl, p3mf, pstatus
 //   })
+//     title:  () => 'name of the form',                    // subject of a request (default the h1)
+//     share:  () => url,                                   // link to the scene as it is (default location.href)
 // o holds size and every field by its key (numbers clamped to their range,
 // checkboxes as booleans); returns { el, read: () => o, download(what) }.
+//
+// On the site (OWNER false, see mode.js) the same fields stay, and the three
+// buttons become one, "Request this print", which opens an e-mail with the
+// link to the scene, every field and a line for notes; the root gets the
+// class print-public, which shows the elements .public-only of the page and
+// hides the .owner-only ones.
 
-import { t, bi, onLang } from '../i18n.js';
-import { printFiles, save } from './files.js';
+import { t, bi, onLang, lang } from '../i18n.js';
+import { save } from './save.js';
 import { dims } from './mesh.js';
+import { OWNER } from './mode.js';
+
+// where the requests of prints go
+export const MAIL = 'donato.meoli@outlook.com';
 
 let styled = false;
 function style() {
@@ -34,6 +46,11 @@ function style() {
   const l = document.createElement('link');
   l.rel = 'stylesheet'; l.href = new URL('./print.css', import.meta.url).href;
   document.head.appendChild(l);
+  // at once, before the sheet arrives: which of the texts of the page to show
+  const st = document.createElement('style');
+  st.textContent = OWNER ? '.public-only { display: none !important; }' : '.owner-only { display: none !important; }';
+  document.head.appendChild(st);
+  if (!OWNER) document.documentElement.classList.add('print-public');
 }
 
 const mk = (tag, attrs = {}, html = '') => {
@@ -75,25 +92,15 @@ export function printPanel(host, cfg) {
   const names = () => { for (const [f, sel] of selects) f.options.forEach((o, i) => { sel.options[i].textContent = t(o.en, o.it); }); };
   names(); onLang(names);
   const tr = mk('div', { class: 'transport' });
-  const both = mk('button', { type: 'button', class: 'main', id: id('both') }, bi('Download STL + 3MF', 'Scarica STL + 3MF'));
-  const bstl = mk('button', { type: 'button', id: id('stl') }, 'STL'), b3mf = mk('button', { type: 'button', id: id('3mf') }, '3MF');
-  tr.append(both, bstl, b3mf);
   const st = mk('p', { class: 'row pstatus', id: id('status'), 'aria-live': 'polite' });
   wrap.append(set, tr, st);
   host.appendChild(wrap);
+  if (!OWNER) return requestPanel(cfg, fields, inputs, tr, st, id);
+  const both = mk('button', { type: 'button', class: 'main', id: id('both') }, bi('Download STL + 3MF', 'Scarica STL + 3MF'));
+  const bstl = mk('button', { type: 'button', id: id('stl') }, 'STL'), b3mf = mk('button', { type: 'button', id: id('3mf') }, '3MF');
+  tr.append(both, bstl, b3mf);
 
-  const read = () => {
-    const o = {};
-    for (const [f, inp] of inputs) {
-      if (f.type === 'check') o[f.key] = inp.checked;
-      else if (f.type === 'select') o[f.key] = inp.value;
-      else {
-        const v = Math.min(f.max ?? Infinity, Math.max(f.min ?? -Infinity, +inp.value || f.value));
-        inp.value = v; o[f.key] = v;
-      }
-    }
-    return o;
-  };
+  const read = () => readFields(inputs);
   const buttons = [both, bstl, b3mf];
   const busy = on => buttons.forEach(b => { b.disabled = on; });
   const report = (file, bytes, tris, d, info, o) => {
@@ -129,6 +136,7 @@ export function printPanel(host, cfg) {
     }
     try {
       busy(true);
+      const { printFiles } = await import('./files.js');
       const m = await cfg.build(o), { file, bytes } = await printFiles(m, what, opts(o));
       save(bytes, file);
       report(file, bytes, m.idx.length / 3, m.dims || dims(m), m, o);
@@ -140,4 +148,47 @@ export function printPanel(host, cfg) {
   bstl.addEventListener('click', () => download('stl'));
   b3mf.addEventListener('click', () => download('3mf'));
   return { el: wrap, read, download };
+}
+
+function readFields(inputs) {
+  const o = {};
+  for (const [f, inp] of inputs) {
+    if (f.type === 'check') o[f.key] = inp.checked;
+    else if (f.type === 'select') o[f.key] = inp.value;
+    else {
+      const v = Math.min(f.max ?? Infinity, Math.max(f.min ?? -Infinity, +inp.value || f.value));
+      inp.value = v; o[f.key] = v;
+    }
+  }
+  return o;
+}
+
+// the panel of the site: the fields, and a request by e-mail
+function requestPanel(cfg, fields, inputs, tr, st, id) {
+  const go = mk('a', { class: 'main', id: id('request'), role: 'button' }, bi('Request this print', 'Richiedi questa stampa'));
+  tr.append(go);
+  st.innerHTML = bi(`Printed on request, also customised in size, colour and material: the e-mail carries the link to the scene as it is now; or write to <a href="mailto:${MAIL}">${MAIL}</a>.`,
+    `Stampata su richiesta, anche personalizzata in dimensione, colore e materiale: la mail porta il link alla scena così com'è ora; oppure scrivere a <a href="mailto:${MAIL}">${MAIL}</a>.`);
+  const mail = () => {
+    const o = readFields(inputs), h1 = document.querySelector(`h1 [data-l="${lang()}"]`) || document.querySelector('h1');
+    const title = cfg.title ? cfg.title() : (h1 ? h1.textContent.trim() : document.title);
+    const lines = [t(`I would like a 3D print of: ${title}`, `Vorrei una stampa 3D di: ${title}`), '',
+      t('The scene with its parameters:', 'La scena con i suoi parametri:'), cfg.share ? cfg.share() : location.href, ''];
+    for (const f of fields) {
+      const lab = t(f.label.en, f.label.it);
+      if (f.type === 'check') lines.push(`${lab}: ${o[f.key] ? t('yes', 'sì') : t('no', 'no')}`);
+      else if (f.type === 'select') { const op = f.options.find(x => x.value === o[f.key]); lines.push(`${lab}: ${op ? t(op.en, op.it) : o[f.key]}`); }
+      else lines.push(`${lab}: ${o[f.key]}`);
+      if (f.type === 'check' && f.thick && o[f.key]) lines.push(`${t(f.thick.label.en, f.thick.label.it)}: ${o[f.thick.key]}`);
+    }
+    lines.push('', t('Notes (colour, material, personalisation): ', 'Note (colore, materiale, personalizzazione): '), '');
+    return `mailto:${MAIL}?subject=${encodeURIComponent('Stampa 3D: ' + title)}&body=${encodeURIComponent(lines.join('\n'))}`;
+  };
+  // the link is written again just before it is followed, so that it carries
+  // the scene and the fields as they are at that moment
+  const fresh = () => { go.href = mail(); };
+  fresh();
+  for (const ev of ['click', 'pointerenter', 'focus']) go.addEventListener(ev, fresh);
+  onLang(fresh);
+  return { el: tr.parentNode, read: () => readFields(inputs), mailto: mail };
 }
