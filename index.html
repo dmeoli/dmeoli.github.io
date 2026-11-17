@@ -1304,14 +1304,14 @@ footer {
       <p data-l="en">These interactive pages, which run in the browser, show what happens inside an optimization algorithm: the primal polyhedron is drawn beside the dual model, the iterates leave their path on both, and some scenes replay on the same pictures the iterates of the actual solvers of SMS++. For a talk, the scenes can be shown in sequence from <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
       <p data-l="it" lang="it">Queste pagine interattive, che girano nel browser, mostrano cosa succede dentro un algoritmo di ottimizzazione: il poliedro primale è disegnato accanto al modello duale, le iterate lasciano il loro cammino su entrambi, e alcune scene riproducono sulle stesse figure le iterate dei veri solutori di SMS++. Per un seminario, le scene si possono mostrare in sequenza da <a href="https://dmeoli.github.io/opt-playground/present.html">Talk</a>.</p>
       <div class="subnav" role="tablist">
-        <button type="button" role="tab" data-sub="decomposition"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span> <span class="count">4</span></button>
-        <button type="button" role="tab" data-sub="lp"><span data-l="en">Linear and Integer</span><span data-l="it" lang="it">Lineare e intera</span> <span class="count">5</span></button>
+        <button type="button" role="tab" data-sub="decomposition"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span> <span class="count">5</span></button>
+        <button type="button" role="tab" data-sub="lp"><span data-l="en">Linear and Integer</span><span data-l="it" lang="it">Lineare e intera</span> <span class="count">6</span></button>
       </div>
       <div class="sub scenes" data-sub="decomposition" role="tabpanel">
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/index.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/index.webm" poster="/assets/play/index.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Lagrangian Decomposition"></video><video class="th-dark" src="/assets/play/index-dark.webm" poster="/assets/play/index-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Lagrangian Decomposition"></video></a>
           <div class="text">
-            <p class="num">01 / 04</p>
+            <p class="num">01 / 05</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/index.html"><span data-l="en">Lagrangian Decomposition</span><span data-l="it" lang="it">Decomposizione lagrangiana</span></a></h3>
             <p class="desc"><span data-l="en">The coupling rows are relaxed with multipliers and the dual function is built cut by cut, beside the primal polyhedron on which the points returned by the oracle are drawn; the dual is solved by the bundle method, by Kelley's cutting planes or by the subgradient method, in the variants offered by the dual solvers of SMS++.</span><span data-l="it" lang="it">Le righe di accoppiamento si rilassano con i moltiplicatori e la funzione duale si costruisce taglio per taglio, accanto al poliedro primale su cui sono disegnati i punti restituiti dall'oracolo; il duale si risolve con il metodo bundle, con i piani di taglio di Kelley o con il metodo del subgradiente, nelle varianti offerte dai solutori duali di SMS++.</span></p>
             <ul class="tags"><li>Bundle</li><li>Kelley</li><li><span data-l="en">Subgradient</span><span data-l="it" lang="it">Subgradiente</span></li><li>SMS++</li></ul>
@@ -1319,9 +1319,19 @@ footer {
           </div>
         </article>
         <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/lagrangian-dual.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/lagrangian-dual.webp" width="640" height="442" alt="The Lagrangian Dual" loading="lazy"><img class="th-dark" src="/assets/play/lagrangian-dual-dark.webp" width="640" height="442" alt="The Lagrangian Dual" loading="lazy"></a>
+          <div class="text">
+            <p class="num">02 / 05</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/lagrangian-dual.html"><span data-l="en">The Lagrangian Dual</span><span data-l="it" lang="it">Il duale lagrangiano</span></a></h3>
+            <p class="desc"><span data-l="en">The dual function of a small knapsack problem with two relaxed constraints, drawn as a concave polyhedral roof with one facet per point of the knapsack, whose top is the best lower bound; a bundle method climbs it knowing only the plane of each point it evaluates, and its path and its model can be followed on the roof.</span><span data-l="it" lang="it">La funzione duale di un piccolo problema di zaino con due vincoli rilassati, disegnata come un tetto poliedrico concavo con una faccia per ogni punto dello zaino, la cui cima è il miglior bound inferiore; un metodo bundle lo scala conoscendo solo il piano di ogni punto che valuta, e sul tetto puoi seguire il suo cammino e il suo modello.</span></p>
+            <ul class="tags"><li><span data-l="en">Lagrangian Relaxation</span><span data-l="it" lang="it">Rilassamento lagrangiano</span></li><li>Bundle</li><li><span data-l="en">Dual Function</span><span data-l="it" lang="it">Funzione duale</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/lagrangian-dual.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/components.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/components.webm" poster="/assets/play/components.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="A Dual That Is a Sum"></video><video class="th-dark" src="/assets/play/components-dark.webm" poster="/assets/play/components-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="A Dual That Is a Sum"></video></a>
           <div class="text">
-            <p class="num">02 / 04</p>
+            <p class="num">03 / 05</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/components.html"><span data-l="en">A Dual That Is a Sum</span><span data-l="it" lang="it">Un duale somma di componenti</span></a></h3>
             <p class="desc"><span data-l="en">When the dual is the sum of K independent components, a model for each component is usually much more accurate than a single model of the sum, for the same number of oracle calls; the incremental subgradient method, in turn, takes a step after each component.</span><span data-l="it" lang="it">Quando il duale è la somma di K componenti indipendenti, un modello per ogni componente è di solito molto più accurato di un solo modello della somma, a parità di chiamate all'oracolo; il subgradiente incrementale, a sua volta, fa un passo dopo ogni componente.</span></p>
             <ul class="tags"><li><span data-l="en">Disaggregated</span><span data-l="it" lang="it">Disaggregato</span></li><li><span data-l="en">Incremental</span><span data-l="it" lang="it">Incrementale</span></li><li><span data-l="en">Oracle Calls</span><span data-l="it" lang="it">Chiamate all'oracolo</span></li></ul>
@@ -1331,7 +1341,7 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/benders.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/benders.webm" poster="/assets/play/benders.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Benders Decomposition"></video><video class="th-dark" src="/assets/play/benders-dark.webm" poster="/assets/play/benders-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Benders Decomposition"></video></a>
           <div class="text">
-            <p class="num">03 / 04</p>
+            <p class="num">04 / 05</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/benders.html"><span data-l="en">Benders Decomposition</span><span data-l="it" lang="it">Decomposizione di Benders</span></a></h3>
             <p class="desc"><span data-l="en">The master problem proposes a first-stage decision and the subproblem returns a cut, which corresponds to a vertex of the dual of the recourse problem; hence, the primal and the dual pictures are updated together.</span><span data-l="it" lang="it">Il master propone una decisione di primo stadio e il sottoproblema restituisce un taglio, che corrisponde a un vertice del duale del problema di ricorso; per questo la figura primale e quella duale si aggiornano insieme.</span></p>
             <ul class="tags"><li>Benders</li><li><span data-l="en">Recourse</span><span data-l="it" lang="it">Ricorso</span></li><li><span data-l="en">Cutting Planes</span><span data-l="it" lang="it">Piani di taglio</span></li></ul>
@@ -1341,7 +1351,7 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/index.html#tr=smspp-box-bundle" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/runs.webm" poster="/assets/play/runs.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Real Runs of SMS++"></video><video class="th-dark" src="/assets/play/runs-dark.webm" poster="/assets/play/runs-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Real Runs of SMS++"></video></a>
           <div class="text">
-            <p class="num">04 / 04</p>
+            <p class="num">05 / 05</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/index.html#tr=smspp-box-bundle"><span data-l="en">Real Runs of SMS++</span><span data-l="it" lang="it">Esecuzioni reali di SMS++</span></a></h3>
             <p class="desc"><span data-l="en">The iterates of BundleSolver and SubGradSolver of SMS++ on a small problem, recorded by smspp_dual_trace during an actual run and replayed step by step on the same pictures as the other scenes.</span><span data-l="it" lang="it">Le iterate di BundleSolver e SubGradSolver di SMS++ su un piccolo problema, registrate da smspp_dual_trace durante un'esecuzione vera e riprodotte passo per passo sulle stesse figure delle altre scene.</span></p>
             <ul class="tags"><li>BundleSolver</li><li>SubGradSolver</li><li><span data-l="en">Traces</span><span data-l="it" lang="it">Tracce</span></li></ul>
@@ -1354,7 +1364,7 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/lp.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/lp.webm" poster="/assets/play/lp.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Linear Programming"></video><video class="th-dark" src="/assets/play/lp-dark.webm" poster="/assets/play/lp-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Linear Programming"></video></a>
           <div class="text">
-            <p class="num">01 / 05</p>
+            <p class="num">01 / 06</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/lp.html"><span data-l="en">Linear Programming</span><span data-l="it" lang="it">Programmazione lineare</span></a></h3>
             <p class="desc"><span data-l="en">The simplex method moves from vertex to vertex, while the barrier method crosses the interior along the central path; the dual is drawn beside the primal, and each step can be followed in both spaces.</span><span data-l="it" lang="it">Il simplesso si sposta di vertice in vertice, mentre il metodo barriera attraversa l'interno lungo il cammino centrale; accanto al primale è disegnato il duale, e ogni passo si può seguire in entrambi gli spazi.</span></p>
             <ul class="tags"><li><span data-l="en">Simplex</span><span data-l="it" lang="it">Simplesso</span></li><li><span data-l="en">Barrier</span><span data-l="it" lang="it">Barriera</span></li><li><span data-l="en">Duality</span><span data-l="it" lang="it">Dualità</span></li></ul>
@@ -1364,7 +1374,7 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/integer.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/integer.webm" poster="/assets/play/integer.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Integer Programming"></video><video class="th-dark" src="/assets/play/integer-dark.webm" poster="/assets/play/integer-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Integer Programming"></video></a>
           <div class="text">
-            <p class="num">02 / 05</p>
+            <p class="num">02 / 06</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/integer.html"><span data-l="en">Integer Programming</span><span data-l="it" lang="it">Programmazione intera</span></a></h3>
             <p class="desc"><span data-l="en">Branch and bound draws its tree as the relaxation is tightened, and Gomory and cover cuts cut the polygon down towards its integer hull.</span><span data-l="it" lang="it">Il branch and bound disegna il suo albero mentre il rilassamento si stringe, e i tagli di Gomory e di copertura riducono il poligono verso il suo inviluppo intero.</span></p>
             <ul class="tags"><li>Branch and Bound</li><li>Gomory</li><li><span data-l="en">Cover Cuts</span><span data-l="it" lang="it">Tagli di copertura</span></li></ul>
@@ -1374,7 +1384,7 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/polarity.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/polarity.webp" width="640" height="442" alt="Polarity" loading="lazy"><img class="th-dark" src="/assets/play/polarity-dark.webp" width="640" height="442" alt="Polarity" loading="lazy"></a>
           <div class="text">
-            <p class="num">03 / 05</p>
+            <p class="num">03 / 06</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a></h3>
             <p class="desc"><span data-l="en">A polytope and its polar in 3D, the vertices of each corresponding to the facets of the other; drag with the mouse to rotate them.</span><span data-l="it" lang="it">Un politopo e il suo polare in 3D, in cui i vertici dell'uno corrispondono alle facce dell'altro; trascina col mouse per ruotarli.</span></p>
             <ul class="tags"><li><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></li><li>3D</li></ul>
@@ -1384,7 +1394,7 @@ footer {
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/lp3d.html" tabindex="-1" aria-hidden="true"><video class="th-light" src="/assets/play/lp3d.webm" poster="/assets/play/lp3d.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Linear Programming in 3D"></video><video class="th-dark" src="/assets/play/lp3d-dark.webm" poster="/assets/play/lp3d-dark.webp" width="640" height="442" muted loop playsinline preload="none" aria-label="Linear Programming in 3D"></video></a>
           <div class="text">
-            <p class="num">04 / 05</p>
+            <p class="num">04 / 06</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/lp3d.html"><span data-l="en">Linear Programming in 3D</span><span data-l="it" lang="it">Programmazione lineare in 3D</span></a></h3>
             <p class="desc"><span data-l="en">A linear program with three variables: the polytope in 3D, the level plane of the objective moving as its value improves, the simplex method following the edges (with Dantzig's rule it visits all 8 vertices of the Klee-Minty cube) and the barrier method following the central path inside the solid.</span><span data-l="it" lang="it">Un programma lineare con tre variabili: il politopo in 3D, il piano di livello dell'obiettivo che si sposta man mano che il valore migliora, il simplesso che segue gli spigoli (con la regola di Dantzig visita tutti gli 8 vertici del cubo di Klee-Minty) e il metodo barriera che segue il cammino centrale dentro il solido.</span></p>
             <ul class="tags"><li><span data-l="en">Simplex</span><span data-l="it" lang="it">Simplesso</span></li><li>Klee-Minty</li><li><span data-l="en">Central path</span><span data-l="it" lang="it">Cammino centrale</span></li></ul>
@@ -1392,9 +1402,19 @@ footer {
           </div>
         </article>
         <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/simplex-path.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/simplex-path.webp" width="640" height="442" alt="The Simplex on a Polytope" loading="lazy"><img class="th-dark" src="/assets/play/simplex-path-dark.webp" width="640" height="442" alt="The Simplex on a Polytope" loading="lazy"></a>
+          <div class="text">
+            <p class="num">05 / 06</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/simplex-path.html"><span data-l="en">The Simplex on a Polytope</span><span data-l="it" lang="it">Il simplesso su un politopo</span></a></h3>
+            <p class="desc"><span data-l="en">The feasible region of a linear program in three variables as a solid, with the path of the simplex method raised on its edges from the origin to the optimum; on the Klee-Minty cube the rule of Dantzig visits all 8 vertices, while steepest edge goes up in one pivot.</span><span data-l="it" lang="it">La regione ammissibile di un programma lineare in tre variabili come solido, con il cammino del simplesso in rilievo sui suoi spigoli dall'origine all'ottimo; sul cubo di Klee-Minty la regola di Dantzig visita tutti gli 8 vertici, mentre steepest edge sale in un solo pivot.</span></p>
+            <ul class="tags"><li><span data-l="en">Simplex</span><span data-l="it" lang="it">Simplesso</span></li><li>Klee-Minty</li><li><span data-l="en">Pivot Rules</span><span data-l="it" lang="it">Regole di pivot</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/simplex-path.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/packing-mip.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/packing-mip.webp" width="640" height="442" alt="A Packing Puzzle by MIP" loading="lazy"><img class="th-dark" src="/assets/play/packing-mip-dark.webp" width="640" height="442" alt="A Packing Puzzle by MIP" loading="lazy"></a>
           <div class="text">
-            <p class="num">05 / 05</p>
+            <p class="num">06 / 06</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/packing-mip.html"><span data-l="en">A Packing Puzzle by MIP</span><span data-l="it" lang="it">Un puzzle di impaccamento con la MIP</span></a></h3>
             <p class="desc"><span data-l="en">The pentominoes and the Soma cube are placed in their tray by an integer program that maximizes the covered area, and therefore the tray is full only at an optimal solution; since the bound of the linear relaxation is already equal to the area of the tray, branch and bound cannot improve it, and its work consists in finding integer placements.</span><span data-l="it" lang="it">I pentamini e il cubo Soma sono sistemati nel loro vassoio da un programma intero che massimizza l'area coperta, e quindi il vassoio è pieno solo in una soluzione ottima; poiché il bound del rilassamento lineare è già uguale all'area del vassoio, il branch and bound non può migliorarlo, e il suo lavoro consiste nel trovare piazzamenti interi.</span></p>
             <ul class="tags"><li><span data-l="en">Integer Programming</span><span data-l="it" lang="it">Programmazione intera</span></li><li><span data-l="en">Puzzles</span><span data-l="it" lang="it">Rompicapi</span></li></ul>
