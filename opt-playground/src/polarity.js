@@ -151,6 +151,8 @@ function pick() {
 }
 
 for (const [k, s] of Object.entries(shapes)) $('shape').append(new Option(s.label, k));
+// #shape=<id> opens that polytope (e.g. #shape=triprism, the prism of a logo)
+{ const k = new URLSearchParams(location.hash.slice(1)).get('shape'); if (k && shapes[k]) $('shape').value = k; }
 // the words that depend on the language: title and options
 function words() {
   document.title = t('Polarity playground', 'Laboratorio di polarità');

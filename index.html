@@ -1349,6 +1349,7 @@ footer {
       <div class="subnav" role="tablist">
         <button type="button" role="tab" data-sub="decomposition"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span> <span class="count">5</span></button>
         <button type="button" role="tab" data-sub="lp"><span data-l="en">Linear and Integer</span><span data-l="it" lang="it">Lineare e intera</span> <span class="count">6</span></button>
+        <button type="button" role="tab" data-sub="arena"><span data-l="en">Solver Arena</span><span data-l="it" lang="it">Arena dei solutori</span> <span class="count">1</span></button>
       </div>
       <div class="sub scenes" data-sub="decomposition" role="tabpanel">
         <article class="scene">
@@ -1462,6 +1463,19 @@ footer {
             <p class="desc"><span data-l="en">The pentominoes and the Soma cube are placed in their tray by an integer program that maximizes the covered area, and therefore the tray is full only at an optimal solution; since the bound of the linear relaxation is already equal to the area of the tray, branch and bound cannot improve it, and its work consists in finding integer placements.</span><span data-l="it" lang="it">I pentamini e il cubo Soma sono sistemati nel loro vassoio da un programma intero che massimizza l'area coperta, e quindi il vassoio è pieno solo in una soluzione ottima; poiché il bound del rilassamento lineare è già uguale all'area del vassoio, il branch and bound non può migliorarlo, e il suo lavoro consiste nel trovare piazzamenti interi.</span></p>
             <ul class="tags"><li><span data-l="en">Integer Programming</span><span data-l="it" lang="it">Programmazione intera</span></li><li><span data-l="en">Puzzles</span><span data-l="it" lang="it">Rompicapi</span></li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/packing-mip.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <button type="button" class="next" data-goto="arena"><span data-l="en">Next: Solver Arena</span><span data-l="it" lang="it">Avanti: Arena dei solutori</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
+      </div>
+      <div class="sub scenes" data-sub="arena" role="tabpanel">
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/arena.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/arena.webp" width="640" height="442" alt="Solver Arena" loading="lazy"><img class="th-dark" src="/assets/play/arena-dark.webp" width="640" height="442" alt="Solver Arena" loading="lazy"></a>
+          <div class="text">
+            <p class="num">01 / 01</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/arena.html"><span data-l="en">Solver Arena</span><span data-l="it" lang="it">Arena dei solutori</span></a></h3>
+            <p class="desc"><span data-l="en">Up to four solvers run side by side on the same game, each lane replaying event by event the trace of a real run, on one timeline: the regions of a map are coloured by the SAT, MIP and branch-and-bound solvers of SMS++ (CaDiCaL, MiniSat, HiGHS, SCIP and BranchAndXSolver, on the CNF that aima-python writes from the constraint satisfaction problem), and the 8- and 15-puzzle and grid pathfinding are solved by the A* family of PBeFS, sequential and parallel; the page solves nothing, so that what one sees is what the solvers did.</span><span data-l="it" lang="it">Fino a quattro solutori girano affiancati sullo stesso gioco, e ogni corsia ripete evento per evento la traccia di un'esecuzione reale, su una sola linea del tempo: le regioni di una mappa sono colorate dai solutori SAT, MIP e di branch and bound di SMS++ (CaDiCaL, MiniSat, HiGHS, SCIP e BranchAndXSolver, sulla CNF che aima-python scrive dal problema di soddisfacimento di vincoli), e il gioco del 8 e del 15 e i cammini su griglia sono risolti dalla famiglia A* di PBeFS, sequenziale e parallela; la pagina non risolve nulla, così che ciò che si vede è ciò che i solutori hanno fatto.</span></p>
+            <ul class="tags"><li>SAT</li><li>MIP</li><li>A*</li><li>SMS++</li><li>PBeFS</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/arena.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
         <a class="next" href="/ml" data-section="ml"><span data-l="en">Next: Machine Learning</span><span data-l="it" lang="it">Avanti: Machine learning</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>

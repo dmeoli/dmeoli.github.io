@@ -1,0 +1,311 @@
+{
+ "game": "puzzle",
+ "traces": [
+  {
+   "file": "15puzzle-korf79.1-idastar-555-1.jsonl",
+   "instance": "15puzzle-korf79",
+   "solver": {
+    "id": "idastar-555-1",
+    "name": "IDA* 555",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 1dd418e",
+    "config": {
+     "algorithm": "idastar",
+     "heuristic": "555",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "15puzzle-korf79.2-astar-h2-1.jsonl",
+   "instance": "15puzzle-korf79",
+   "solver": {
+    "id": "astar-h2-1",
+    "name": "A* h2",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 1dd418e",
+    "config": {
+     "algorithm": "astar",
+     "heuristic": "h2",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "15puzzle-korf79.3-idastar-h2-1.jsonl",
+   "instance": "15puzzle-korf79",
+   "solver": {
+    "id": "idastar-h2-1",
+    "name": "IDA* h2",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 1dd418e",
+    "config": {
+     "algorithm": "idastar",
+     "heuristic": "h2",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "8puzzle-easy.1-astar-h1-1.jsonl",
+   "instance": "8puzzle-easy",
+   "solver": {
+    "id": "astar-h1-1",
+    "name": "A* h1",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 1dd418e",
+    "config": {
+     "algorithm": "astar",
+     "heuristic": "h1",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "8puzzle-easy.2-astar-h2-1.jsonl",
+   "instance": "8puzzle-easy",
+   "solver": {
+    "id": "astar-h2-1",
+    "name": "A* h2",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 1dd418e",
+    "config": {
+     "algorithm": "astar",
+     "heuristic": "h2",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "8puzzle-easy.3-idastar-h2-1.jsonl",
+   "instance": "8puzzle-easy",
+   "solver": {
+    "id": "idastar-h2-1",
+    "name": "IDA* h2",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 1dd418e",
+    "config": {
+     "algorithm": "idastar",
+     "heuristic": "h2",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "8puzzle-easy.4-hda-h2-4.jsonl",
+   "instance": "8puzzle-easy",
+   "solver": {
+    "id": "hda-h2-4",
+    "name": "HDA* h2 4 threads",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 1dd418e",
+    "config": {
+     "algorithm": "hda",
+     "heuristic": "h2",
+     "threads": 4
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "8puzzle-easy.5-hda-h2-2.jsonl",
+   "instance": "8puzzle-easy",
+   "solver": {
+    "id": "hda-h2-2",
+    "name": "HDA* h2 2 threads",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 1dd418e",
+    "config": {
+     "algorithm": "hda",
+     "heuristic": "h2",
+     "threads": 2
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "8puzzle-hard.1-astar-h1-1.jsonl",
+   "instance": "8puzzle-hard",
+   "solver": {
+    "id": "astar-h1-1",
+    "name": "A* h1",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 1dd418e",
+    "config": {
+     "algorithm": "astar",
+     "heuristic": "h1",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "8puzzle-hard.2-astar-h2-1.jsonl",
+   "instance": "8puzzle-hard",
+   "solver": {
+    "id": "astar-h2-1",
+    "name": "A* h2",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 1dd418e",
+    "config": {
+     "algorithm": "astar",
+     "heuristic": "h2",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "8puzzle-hard.3-idastar-h2-1.jsonl",
+   "instance": "8puzzle-hard",
+   "solver": {
+    "id": "idastar-h2-1",
+    "name": "IDA* h2",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 1dd418e",
+    "config": {
+     "algorithm": "idastar",
+     "heuristic": "h2",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "8puzzle-hard.4-hda-h2-4.jsonl",
+   "instance": "8puzzle-hard",
+   "solver": {
+    "id": "hda-h2-4",
+    "name": "HDA* h2 4 threads",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 1dd418e",
+    "config": {
+     "algorithm": "hda",
+     "heuristic": "h2",
+     "threads": 4
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "8puzzle-hard.5-hda-h2-2.jsonl",
+   "instance": "8puzzle-hard",
+   "solver": {
+    "id": "hda-h2-2",
+    "name": "HDA* h2 2 threads",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 1dd418e",
+    "config": {
+     "algorithm": "hda",
+     "heuristic": "h2",
+     "threads": 2
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "8puzzle-medium.1-astar-h1-1.jsonl",
+   "instance": "8puzzle-medium",
+   "solver": {
+    "id": "astar-h1-1",
+    "name": "A* h1",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 1dd418e",
+    "config": {
+     "algorithm": "astar",
+     "heuristic": "h1",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "8puzzle-medium.2-astar-h2-1.jsonl",
+   "instance": "8puzzle-medium",
+   "solver": {
+    "id": "astar-h2-1",
+    "name": "A* h2",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 1dd418e",
+    "config": {
+     "algorithm": "astar",
+     "heuristic": "h2",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "8puzzle-medium.3-idastar-h2-1.jsonl",
+   "instance": "8puzzle-medium",
+   "solver": {
+    "id": "idastar-h2-1",
+    "name": "IDA* h2",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 1dd418e",
+    "config": {
+     "algorithm": "idastar",
+     "heuristic": "h2",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "8puzzle-medium.4-hda-h2-4.jsonl",
+   "instance": "8puzzle-medium",
+   "solver": {
+    "id": "hda-h2-4",
+    "name": "HDA* h2 4 threads",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 1dd418e",
+    "config": {
+     "algorithm": "hda",
+     "heuristic": "h2",
+     "threads": 4
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "8puzzle-medium.5-hda-h2-2.jsonl",
+   "instance": "8puzzle-medium",
+   "solver": {
+    "id": "hda-h2-2",
+    "name": "HDA* h2 2 threads",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 1dd418e",
+    "config": {
+     "algorithm": "hda",
+     "heuristic": "h2",
+     "threads": 2
+    }
+   },
+   "sample": false
+  }
+ ]
+}

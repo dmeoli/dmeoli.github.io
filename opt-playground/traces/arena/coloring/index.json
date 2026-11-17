@@ -1,0 +1,1624 @@
+{
+ "game": "coloring",
+ "traces": [
+  {
+   "file": "australia-bnx.jsonl",
+   "instance": "australia",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "australia-cadical.jsonl",
+   "instance": "australia",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "australia-highs.jsonl",
+   "instance": "australia",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "australia-minisat.jsonl",
+   "instance": "australia",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "australia-minsum-bnx.jsonl",
+   "instance": "australia",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "australia-minsum-cadical.jsonl",
+   "instance": "australia",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "australia-minsum-highs.jsonl",
+   "instance": "australia",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "australia-minsum-minisat.jsonl",
+   "instance": "australia",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "australia-minsum-scip.jsonl",
+   "instance": "australia",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "australia-scip.jsonl",
+   "instance": "australia",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "france-bnx.jsonl",
+   "instance": "france",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "france-cadical.jsonl",
+   "instance": "france",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "france-highs.jsonl",
+   "instance": "france",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "france-minisat.jsonl",
+   "instance": "france",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "france-minsum-bnx.jsonl",
+   "instance": "france",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "france-minsum-cadical.jsonl",
+   "instance": "france",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "france-minsum-highs.jsonl",
+   "instance": "france",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "france-minsum-minisat.jsonl",
+   "instance": "france",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "france-minsum-scip.jsonl",
+   "instance": "france",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "france-scip.jsonl",
+   "instance": "france",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-1-bnx.jsonl",
+   "instance": "planar-easy-1",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-1-cadical.jsonl",
+   "instance": "planar-easy-1",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-1-highs.jsonl",
+   "instance": "planar-easy-1",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-1-minisat.jsonl",
+   "instance": "planar-easy-1",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-1-minsum-bnx.jsonl",
+   "instance": "planar-easy-1",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-1-minsum-cadical.jsonl",
+   "instance": "planar-easy-1",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-1-minsum-highs.jsonl",
+   "instance": "planar-easy-1",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-1-minsum-minisat.jsonl",
+   "instance": "planar-easy-1",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-1-minsum-scip.jsonl",
+   "instance": "planar-easy-1",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-1-scip.jsonl",
+   "instance": "planar-easy-1",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-2-bnx.jsonl",
+   "instance": "planar-easy-2",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-2-cadical.jsonl",
+   "instance": "planar-easy-2",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-2-highs.jsonl",
+   "instance": "planar-easy-2",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-2-minisat.jsonl",
+   "instance": "planar-easy-2",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-2-minsum-bnx.jsonl",
+   "instance": "planar-easy-2",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-2-minsum-cadical.jsonl",
+   "instance": "planar-easy-2",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-2-minsum-highs.jsonl",
+   "instance": "planar-easy-2",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-2-minsum-minisat.jsonl",
+   "instance": "planar-easy-2",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-2-minsum-scip.jsonl",
+   "instance": "planar-easy-2",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-2-scip.jsonl",
+   "instance": "planar-easy-2",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-3-bnx.jsonl",
+   "instance": "planar-easy-3",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-3-cadical.jsonl",
+   "instance": "planar-easy-3",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-3-highs.jsonl",
+   "instance": "planar-easy-3",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-3-minisat.jsonl",
+   "instance": "planar-easy-3",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-3-minsum-bnx.jsonl",
+   "instance": "planar-easy-3",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-3-minsum-cadical.jsonl",
+   "instance": "planar-easy-3",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-3-minsum-highs.jsonl",
+   "instance": "planar-easy-3",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-3-minsum-minisat.jsonl",
+   "instance": "planar-easy-3",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-3-minsum-scip.jsonl",
+   "instance": "planar-easy-3",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-3-scip.jsonl",
+   "instance": "planar-easy-3",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-1-bnx.jsonl",
+   "instance": "planar-hard-1",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-1-cadical.jsonl",
+   "instance": "planar-hard-1",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-1-highs.jsonl",
+   "instance": "planar-hard-1",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-1-minisat.jsonl",
+   "instance": "planar-hard-1",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-1-minsum-bnx.jsonl",
+   "instance": "planar-hard-1",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-1-minsum-cadical.jsonl",
+   "instance": "planar-hard-1",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-1-minsum-highs.jsonl",
+   "instance": "planar-hard-1",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-1-minsum-minisat.jsonl",
+   "instance": "planar-hard-1",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-1-minsum-scip.jsonl",
+   "instance": "planar-hard-1",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-1-scip.jsonl",
+   "instance": "planar-hard-1",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-2-bnx.jsonl",
+   "instance": "planar-hard-2",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-2-cadical.jsonl",
+   "instance": "planar-hard-2",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-2-highs.jsonl",
+   "instance": "planar-hard-2",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-2-minisat.jsonl",
+   "instance": "planar-hard-2",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-2-minsum-bnx.jsonl",
+   "instance": "planar-hard-2",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-2-minsum-cadical.jsonl",
+   "instance": "planar-hard-2",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-2-minsum-highs.jsonl",
+   "instance": "planar-hard-2",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-2-minsum-minisat.jsonl",
+   "instance": "planar-hard-2",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-2-minsum-scip.jsonl",
+   "instance": "planar-hard-2",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-2-scip.jsonl",
+   "instance": "planar-hard-2",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-3-bnx.jsonl",
+   "instance": "planar-hard-3",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-3-cadical.jsonl",
+   "instance": "planar-hard-3",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-3-highs.jsonl",
+   "instance": "planar-hard-3",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-3-minisat.jsonl",
+   "instance": "planar-hard-3",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-3-minsum-bnx.jsonl",
+   "instance": "planar-hard-3",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-3-minsum-cadical.jsonl",
+   "instance": "planar-hard-3",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-3-minsum-highs.jsonl",
+   "instance": "planar-hard-3",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-3-minsum-minisat.jsonl",
+   "instance": "planar-hard-3",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-3-minsum-scip.jsonl",
+   "instance": "planar-hard-3",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-3-scip.jsonl",
+   "instance": "planar-hard-3",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-1-bnx.jsonl",
+   "instance": "planar-medium-1",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-1-cadical.jsonl",
+   "instance": "planar-medium-1",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-1-highs.jsonl",
+   "instance": "planar-medium-1",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-1-minisat.jsonl",
+   "instance": "planar-medium-1",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-1-minsum-bnx.jsonl",
+   "instance": "planar-medium-1",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-1-minsum-cadical.jsonl",
+   "instance": "planar-medium-1",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-1-minsum-highs.jsonl",
+   "instance": "planar-medium-1",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-1-minsum-minisat.jsonl",
+   "instance": "planar-medium-1",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-1-minsum-scip.jsonl",
+   "instance": "planar-medium-1",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-1-scip.jsonl",
+   "instance": "planar-medium-1",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-2-bnx.jsonl",
+   "instance": "planar-medium-2",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-2-cadical.jsonl",
+   "instance": "planar-medium-2",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-2-highs.jsonl",
+   "instance": "planar-medium-2",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-2-minisat.jsonl",
+   "instance": "planar-medium-2",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-2-minsum-bnx.jsonl",
+   "instance": "planar-medium-2",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-2-minsum-cadical.jsonl",
+   "instance": "planar-medium-2",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-2-minsum-highs.jsonl",
+   "instance": "planar-medium-2",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-2-minsum-minisat.jsonl",
+   "instance": "planar-medium-2",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-2-minsum-scip.jsonl",
+   "instance": "planar-medium-2",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-2-scip.jsonl",
+   "instance": "planar-medium-2",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-3-bnx.jsonl",
+   "instance": "planar-medium-3",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-3-cadical.jsonl",
+   "instance": "planar-medium-3",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-3-highs.jsonl",
+   "instance": "planar-medium-3",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-3-minisat.jsonl",
+   "instance": "planar-medium-3",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-3-minsum-bnx.jsonl",
+   "instance": "planar-medium-3",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-3-minsum-cadical.jsonl",
+   "instance": "planar-medium-3",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-3-minsum-highs.jsonl",
+   "instance": "planar-medium-3",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-3-minsum-minisat.jsonl",
+   "instance": "planar-medium-3",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-3-minsum-scip.jsonl",
+   "instance": "planar-medium-3",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-3-scip.jsonl",
+   "instance": "planar-medium-3",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "sample-australia.jsonl",
+   "instance": "australia",
+   "solver": {
+    "id": "sample",
+    "name": "Sample",
+    "block": "SATBlock",
+    "paradigm": "bb"
+   },
+   "sample": true
+  },
+  {
+   "file": "usa-bnx.jsonl",
+   "instance": "usa",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "usa-cadical.jsonl",
+   "instance": "usa",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "usa-highs.jsonl",
+   "instance": "usa",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "usa-minisat.jsonl",
+   "instance": "usa",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "usa-minsum-bnx.jsonl",
+   "instance": "usa",
+   "solver": {
+    "id": "bnx",
+    "name": "BranchAndXSolver",
+    "block": "SATBlock",
+    "paradigm": "bb",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#6"
+   },
+   "sample": false
+  },
+  {
+   "file": "usa-minsum-cadical.jsonl",
+   "instance": "usa",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "usa-minsum-highs.jsonl",
+   "instance": "usa",
+   "solver": {
+    "id": "highs",
+    "name": "HiGHSMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#4"
+   },
+   "sample": false
+  },
+  {
+   "file": "usa-minsum-minisat.jsonl",
+   "instance": "usa",
+   "solver": {
+    "id": "minisat",
+    "name": "MiniSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "minisat",
+    "config": "ColBSCfg.txt#3"
+   },
+   "sample": false
+  },
+  {
+   "file": "usa-minsum-scip.jsonl",
+   "instance": "usa",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  },
+  {
+   "file": "usa-scip.jsonl",
+   "instance": "usa",
+   "solver": {
+    "id": "scip",
+    "name": "SCIPMILPSolver",
+    "block": "SATBlock",
+    "paradigm": "milp",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "config": "ColBSCfg.txt#5"
+   },
+   "sample": false
+  }
+ ]
+}
