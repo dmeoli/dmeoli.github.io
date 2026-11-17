@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forms-group" content="fantasy">
+<title>Antigravity castle</title>
+<!-- scene-meta (tools/scene_meta.py) -->
+<meta name="description" content="A castle whose four wall walks seem to rise to the keep, seen from the point marked on its base, while in the solid they descend, so that a ball rolls uphill: after the antigravity slopes of Sugihara…">
+<link rel="canonical" href="https://dmeoli.github.io/opt-playground/antigravity-castle.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Antigravity castle">
+<meta property="og:description" content="A castle whose four wall walks seem to rise to the keep, seen from the point marked on its base, while in the solid they descend, so that a ball rolls uphill: after the antigravity slopes of Sugihara…">
+<meta property="og:url" content="https://dmeoli.github.io/opt-playground/antigravity-castle.html">
+<meta property="og:image" content="https://dmeoli.github.io/assets/forms/antigravity-castle.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<link rel="stylesheet" href="src/forms/fantasy/fantasy.css">
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="lagrangian-dual.html"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="simplex-path.html"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a> · <a href="packing-mip.html"><span data-l="en">Packing</span><span data-l="it" lang="it">Impaccamento</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attenzione</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Misture di esperti</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Hebbiano</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html">Talk</a><br><span class="group"><span data-l="en">Forms</span><span data-l="it" lang="it">Forme</span></span> <!--forms-nav--><a href="loss-landscape.html"><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a> · <a href="shells.html"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></a> · <a href="phyllotaxis.html"><span data-l="en">Phyllotaxis</span><span data-l="it" lang="it">Fillotassi</span></a> · <a href="radiolarian.html"><span data-l="en">Radiolarians</span><span data-l="it" lang="it">Radiolari</span></a> · <a href="coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a> · <a href="plants.html"><span data-l="en">Plants</span><span data-l="it" lang="it">Piante</span></a> · <a href="snowflakes.html"><span data-l="en">Snowflakes</span><span data-l="it" lang="it">Fiocchi di neve</span></a> · <a href="batman.html">Batman</a> · <a href="minimal-surfaces.html"><span data-l="en">Minimal surfaces</span><span data-l="it" lang="it">Superfici minime</span></a> · <a href="knots.html"><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></a> · <a href="attractors.html"><span data-l="en">Attractors</span><span data-l="it" lang="it">Attrattori</span></a> · <a href="polytopes.html"><span data-l="en">4D polytopes</span><span data-l="it" lang="it">Politopi 4D</span></a> · <a href="chladni.html">Chladni</a> · <a href="equations.html"><span data-l="en">Equations</span><span data-l="it" lang="it">Equazioni</span></a> · <a href="dice.html"><span data-l="en">Fair dice</span><span data-l="it" lang="it">Dadi equi</span></a> · <a href="hat.html"><span data-l="en">The hat</span><span data-l="it" lang="it">Il cappello</span></a> · <a href="fractals.html"><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></a> · <a href="lithophane.html"><span data-l="en">Lithophanes</span><span data-l="it" lang="it">Litofanie</span></a> · <a href="monsters.html"><span data-l="en">Monsters</span><span data-l="it" lang="it">Mostri</span></a> · <a href="monster-cards.html"><span data-l="en">Monster cards</span><span data-l="it" lang="it">Carte dei mostri</span></a> · <a href="dragon-curve.html"><span data-l="en">Dragon curve</span><span data-l="it" lang="it">Curva del drago</span></a> · <a href="robots.html"><span data-l="en">Robots</span><span data-l="it" lang="it">Robot</span></a> · <a href="magic-circles.html"><span data-l="en">Magic circles</span><span data-l="it" lang="it">Cerchi magici</span></a> · <a href="origami.html">Origami</a> · <a href="wagara.html"><span data-l="en">Japanese patterns</span><span data-l="it" lang="it">Motivi giapponesi</span></a> · <a href="twisty.html"><span data-l="en">Twisty puzzles</span><span data-l="it" lang="it">Rompicapi a rotazione</span></a> · <a href="wang-dungeon.html"><span data-l="en">Wang dungeon</span><span data-l="it" lang="it">Dungeon di Wang</span></a> · <a href="mana-crystals.html"><span data-l="en">Wulff crystals</span><span data-l="it" lang="it">Cristalli di Wulff</span></a> · <a href="dragon-eggs.html"><span data-l="en">Dragon eggs</span><span data-l="it" lang="it">Uova di drago</span></a> · <a href="galton-tower.html"><span data-l="en">Galton tower</span><span data-l="it" lang="it">Torre di Galton</span></a> · <a href="escher-monsters.html"><span data-l="en">Escher monsters</span><span data-l="it" lang="it">Mostri alla Escher</span></a> · <a href="minotaur-sphere.html"><span data-l="en">Sphere labyrinth</span><span data-l="it" lang="it">Labirinto sferico</span></a> · <a href="elven-knots.html"><span data-l="en">Elven amulets</span><span data-l="it" lang="it">Amuleti elfici</span></a> · <a href="slime-den.html"><span data-l="en">Slime den</span><span data-l="it" lang="it">Tana degli slime</span></a> · <a href="antigravity-castle.html" aria-current="page"><span data-l="en">Antigravity castle</span><span data-l="it" lang="it">Castello antigravità</span></a> · <a href="erosion-island.html"><span data-l="en">Eroded island</span><span data-l="it" lang="it">Isola erosa</span></a> · <a href="damascus-swords.html"><span data-l="en">Damascus swords</span><span data-l="it" lang="it">Spade di Damasco</span></a> · <a href="kraken-tree.html"><span data-l="en">Kraken and tree</span><span data-l="it" lang="it">Kraken e albero</span></a> · <a href="starships.html"><span data-l="en">Starships</span><span data-l="it" lang="it">Astronavi</span></a> · <a href="automaton.html"><span data-l="en">Automaton</span><span data-l="it" lang="it">Automa</span></a> · <a href="puzzle-chest.html"><span data-l="en">Puzzle chest</span><span data-l="it" lang="it">Baule a incastro</span></a> · <a href="biomorphs.html"><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></a><!--/forms-nav--></nav>
+<style>.seg button[aria-pressed="true"] { background: var(--accent); color: var(--ground); border-color: var(--accent); }</style>
+<header>
+  <h1><span data-l="en">Antigravity castle</span><span data-l="it" lang="it">Il castello antigravità</span></h1>
+  <p class="lede" data-l="en">Seen from one point, four wall walks rise from the corner towers to the keep, and a ball
+  set on any of them rolls up to the keep. The walks of the solid descend instead: the castle is built, as the
+  antigravity slopes of <a href="https://doi.org/10.1016/j.comgeo.2013.12.007">Sugihara (2014)</a>, by moving every
+  point of the castle one would expect along its own ray from the eye, which leaves the picture unchanged and lets
+  the heights be chosen almost freely. The eye sees the same castle; the ball feels the other one.</p>
+  <p class="lede" data-l="it" lang="it">Visto da un punto, quattro camminamenti salgono dalle torri d'angolo al mastio,
+  e una pallina posata su uno qualunque di essi rotola su fino al mastio. I camminamenti del solido invece scendono:
+  il castello è costruito, come le rampe antigravità di
+  <a href="https://doi.org/10.1016/j.comgeo.2013.12.007">Sugihara (2014)</a>, spostando ogni punto del castello che ci
+  si aspetta lungo il suo raggio dall'occhio, il che lascia invariata l'immagine e permette di scegliere le altezze
+  quasi liberamente. L'occhio vede lo stesso castello; la pallina sente l'altro.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span data-l="en">azimuth of the eye</span><span data-l="it" lang="it">azimut dell'occhio</span><input id="az" type="range" min="-180" max="180" step="5" value="-60"><output id="azout">-60</output></label>
+    <label><span data-l="en">elevation, °</span><span data-l="it" lang="it">elevazione, °</span><input id="el" type="range" min="35" max="65" step="1" value="45"><output id="elout">45</output></label>
+    <label><span data-l="en">distance, % of the base</span><span data-l="it" lang="it">distanza, % della base</span><input id="dist" type="range" min="250" max="600" step="10" value="300"><output id="distout">300</output></label>
+    <label><span data-l="en">apparent rise</span><span data-l="it" lang="it">salita apparente</span><input id="rise" type="range" min="6" max="16" step="0.5" value="12"><output id="riseout">12</output></label>
+    <label><span data-l="en">real descent, °</span><span data-l="it" lang="it">discesa reale, °</span><input id="slope" type="range" min="2" max="8" step="0.5" value="4"><output id="slopeout">4</output></label>
+    <span class="seg inline"><button id="meye" type="button"><span data-l="en">From the eye</span><span data-l="it" lang="it">Dall'occhio</span></button><button id="morbit" type="button"><span data-l="en">Turn around</span><span data-l="it" lang="it">Gira intorno</span></button></span>
+    <label class="check"><span data-l="en">spin</span><span data-l="it" lang="it">rotazione</span><input id="spin" type="checkbox"></label>
+  </div>
+</section>
+<main class="form">
+  <figure>
+    <figcaption><span data-l="en">From the eye, the camera stands where the eye must be and the balls climb; turned
+    around, the same solid shows the leaning towers and the walks running down to the keep (the dashed line points
+    to the eye).</span><span data-l="it" lang="it">Dall'occhio, la camera sta dove deve stare l'occhio e le palline
+    salgono; girando intorno, lo stesso solido mostra le torri inclinate e i camminamenti che scendono verso il
+    mastio (la linea tratteggiata punta all'occhio).</span></figcaption>
+    <div id="stage" class="stage"></div>
+  </figure>
+  <div class="about">
+    <h2><span data-l="en">One picture, many solids</span><span data-l="it" lang="it">Un'immagine, molti solidi</span></h2>
+    <svg id="side" class="plane" viewBox="0 0 330 220" role="img" aria-label="side view of a walk"></svg>
+    <div class="stats" id="stats"></div>
+    <p data-l="en">A point x and every point x + δ u, with u the unit vector of the ray from the eye E through x and
+    δ &gt; −|x − E|, fall on the same point of the picture. The castle that one expects, with vertical towers on
+    flat ground, is mapped by Ψ(x) = x + δ(x) u(x), with δ(x) = β s(z) (ρ<sub>c</sub> − ρ)/(R<sub>1</sub> −
+    R<sub>0</sub>), where ρ is the distance from the axis of the keep (held between the ends R<sub>0</sub> and
+    R<sub>1</sub> of the walks), and s(z) grows from 0 on the ground to 1 at the height of the towers: the ground stays
+    where it is, the keep (δ &gt; 0) moves away from the eye and therefore down, the towers (δ &lt; 0) come towards it
+    and up, and in the side view above the walk turns around its middle along the rays. The scene finds β (in
+    hundredths of the base) by bisection, as the smallest value for which all four walks of the solid descend towards
+    the keep by the slope asked for, and checks that the Jacobian determinant of Ψ stays positive on the castle (along
+    a ray it is 1 + ∂δ/∂s, so it would fail where δ drops faster than one moves along the ray), so that the mesh mapped
+    vertex by vertex is still closed and does not fold.</p>
+    <p data-l="it" lang="it">Un punto x e ogni punto x + δ u, con u il versore del raggio dall'occhio E per x e
+    δ &gt; −|x − E|, cadono sullo stesso punto dell'immagine. Il castello che ci si aspetta, con torri verticali su un
+    terreno piano, è trasformato da Ψ(x) = x + δ(x) u(x), con δ(x) = β s(z) (ρ<sub>c</sub> − ρ)/(R<sub>1</sub> −
+    R<sub>0</sub>), dove ρ è la distanza dall'asse del mastio (tenuta fra gli estremi R<sub>0</sub> e R<sub>1</sub>
+    dei camminamenti), e s(z) cresce da 0 sul terreno a 1 all'altezza delle torri: il terreno resta dov'è, il mastio
+    (δ &gt; 0) si allontana dall'occhio e quindi scende, le torri (δ &lt; 0) gli vengono incontro e salgono, e nella
+    vista di fianco qui sopra il camminamento ruota attorno al suo centro lungo i raggi. La scena trova β (in
+    centesimi della base) per bisezione, come il più piccolo valore per cui tutti e quattro i camminamenti del solido
+    scendono verso il mastio della pendenza richiesta, e controlla che il determinante jacobiano di Ψ resti positivo
+    sul castello (lungo un raggio vale 1 + ∂δ/∂s, quindi verrebbe meno dove δ cala più in fretta di quanto si avanza
+    sul raggio), così che la mesh trasformata vertice per vertice resti chiusa e non si ripieghi.</p>
+    <p data-l="en">Sugihara describes the solids that a line drawing can represent by a system of linear equations
+    and inequalities in the depths of the vertices, and picks among them one in which the slopes run against the
+    direction suggested by the picture; the brain, which prefers right angles and vertical columns, keeps reading the
+    expected solid (see also his <a href="https://archive.bridgesmathart.org/2020/bridges2020-329.html">family tree of
+    impossible objects</a>, Bridges 2020, and <a href="https://gershon.cs.technion.ac.il/papers/ModelImpossibleObjs.pdf">Elber
+    (2011)</a> on the seemingly impossible models that can be realized in 3D). Here the depths come from one smooth
+    field instead of one unknown per vertex, which is cruder but keeps the arches, merlons and cone of the castle in
+    one piece. The illusion holds for one eye only (with two, the depth gives it away) and is strongest in a photograph
+    taken from the point marked by the arrow.</p>
+    <p data-l="it" lang="it">Sugihara descrive i solidi che un disegno a linee può rappresentare con un sistema di
+    equazioni e disequazioni lineari nelle profondità dei vertici, e sceglie fra questi uno in cui le rampe vanno
+    contro la direzione suggerita dall'immagine; il cervello, che preferisce gli angoli retti e le colonne verticali,
+    continua a leggere il solido atteso (si veda anche il suo
+    <a href="https://archive.bridgesmathart.org/2020/bridges2020-329.html">albero genealogico degli oggetti
+    impossibili</a>, Bridges 2020, ed <a href="https://gershon.cs.technion.ac.il/papers/ModelImpossibleObjs.pdf">Elber
+    (2011)</a> sui modelli apparentemente impossibili che si possono realizzare in 3D). Qui le profondità vengono da un
+    solo campo regolare invece che da un'incognita per vertice, il che è più grossolano ma tiene in un solo pezzo
+    archi, merli e cono del castello. L'illusione regge per un occhio solo (con due, la profondità la tradisce) ed è
+    più forte in una foto scattata dal punto segnato dalla freccia.</p>
+  </div>
+</main>
+<section id="print">
+  <h2 class="owner-only"><span data-l="en">Download for 3D printing</span><span data-l="it" lang="it">Scarica per la stampa 3D</span></h2>
+  <h2 class="public-only"><span data-l="en">A 3D print of this castle</span><span data-l="it" lang="it">Una stampa 3D di questo castello</span></h2>
+  <p class="lede public-only" data-l="en">The castle can be ordered as a 3D print, for the eye point chosen above. The
+  request sends the link to the castle as it is on the screen.</p>
+  <p class="lede public-only" data-l="it" lang="it">Puoi ordinare il castello come stampa 3D, per il punto di vista
+  scelto sopra. La richiesta manda il link al castello così com'è sullo schermo.</p>
+  <p class="lede owner-only" data-l="en">One closed body on a base 5% of the size thick, with an arrow and a ring cut
+  into the base: the arrow points to the eye, which stands at the distance and elevation chosen above, measured
+  from the axis of the keep at 17% of the size above the base. The walks take a ball of 6% of the size (a 6 mm
+  airsoft pellet or steel ball at 100 mm). The towers lean by less than 45 degrees for the default eye, and the line
+  "surface over 45°" gives the share that would need supports, mostly the tops of the arches and the lip under the
+  cone; a low eye or a large slope leans the towers more.</p>
+  <p class="lede owner-only" data-l="it" lang="it">Un solo corpo chiuso su una base spessa il 5% della dimensione,
+  con una freccia e un anello incisi nella base: la freccia punta all'occhio, che sta alla distanza e all'elevazione
+  scelte sopra, misurate dall'asse del mastio a un'altezza del 17% della dimensione sopra la base. I camminamenti
+  portano una pallina del 6% della dimensione (un pallino softair o una sfera d'acciaio da 6 mm a 100 mm). Con
+  l'occhio predefinito le torri si inclinano di meno di 45 gradi, e la riga "superficie oltre 45°" dà la parte che
+  richiederebbe supporti, soprattutto le chiavi degli archi e il bordo sotto il cono; un occhio basso o una pendenza
+  grande inclinano di più le torri.</p>
+</section>
+<footer><span data-l="en">The castle, the field δ and its bisection are mine; the principle is Sugihara's.</span><span data-l="it" lang="it">Il
+castello, il campo δ e la sua bisezione sono miei; il principio è di Sugihara.</span></footer>
+<script type="module" src="src/forms/antigravity-castle/antigravity-castle.js"></script>
+</body>
+</html>

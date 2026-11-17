@@ -188,7 +188,7 @@ export function drawStrips(cv, rows, lit, pal) {
   ctx.font = FONT; ctx.textBaseline = 'middle';
   if (!rows.length) {
     ctx.fillStyle = pal['ink-soft']; ctx.textAlign = 'center';
-    ctx.fillText(t('hover a node of the graph (or tap it)', 'passare su un nodo del grafo (o toccarlo)'), W / 2, cv.height / 2);
+    ctx.fillText(t('hover a node of the graph (or tap it)', 'passa su un nodo del grafo (o toccalo)'), W / 2, cv.height / 2);
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; return;
   }
   rows.forEach((rw, i) => {

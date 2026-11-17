@@ -26,6 +26,7 @@ const shapes = {
   tetrahedron: { label: 'Tetrahedron (self-polar)', it: 'Tetraedro (autopolare)', v: [[1, 1, 1], [1, -1, -1], [-1, 1, -1], [-1, -1, 1]] },
   dodecahedron: { label: 'Dodecahedron (polar: icosahedron)', it: 'Dodecaedro (polare: icosaedro)', v: [...signs([1, 1, 1]), ...perms(0, 1 / phi, phi).flatMap(signs)] },
   icosahedron: { label: 'Icosahedron (polar: dodecahedron)', it: 'Icosaedro (polare: dodecaedro)', v: perms(0, 1, phi).flatMap(signs).map(p => p.map(x => x * 0.85)) },
+  triprism: { label: 'Triangular prism (polar: triangular bipyramid)', it: 'Prisma triangolare (polare: bipiramide triangolare)', v: [0, 1, 2].flatMap(i => [[Math.cos(i * 2 * Math.PI / 3 + Math.PI / 2) * 1.3, Math.sin(i * 2 * Math.PI / 3 + Math.PI / 2) * 1.3, 0.9], [Math.cos(i * 2 * Math.PI / 3 + Math.PI / 2) * 1.3, Math.sin(i * 2 * Math.PI / 3 + Math.PI / 2) * 1.3, -0.9]]) },
   prism: { label: 'Hexagonal prism (polar: bipyramid)', it: 'Prisma esagonale (polare: bipiramide)', v: [0, 1, 2, 3, 4, 5].flatMap(i => [[Math.cos(i * Math.PI / 3) * 1.2, Math.sin(i * Math.PI / 3) * 1.2, 0.9], [Math.cos(i * Math.PI / 3) * 1.2, Math.sin(i * Math.PI / 3) * 1.2, -0.9]]) },
   random: { label: 'Random polytope', it: 'Politopo casuale', v: null },
 };

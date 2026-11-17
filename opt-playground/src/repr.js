@@ -365,7 +365,7 @@ function drawPad() {
   ctx.strokeStyle = P.rule; ctx.lineWidth = 1; ctx.globalAlpha = 0.5;
   for (let k = 1; k < N; k++) { ctx.beginPath(); ctx.moveTo(k * c, 0); ctx.lineTo(k * c, cv.height); ctx.moveTo(0, k * c); ctx.lineTo(cv.width, k * c); ctx.stroke(); }
   ctx.globalAlpha = 1;
-  if (!snapNet || !inked) { $('padnote').textContent = inked ? '' : t('Draw a digit with the mouse or a finger.', 'Disegnare una cifra con il mouse o con un dito.'); return; }
+  if (!snapNet || !inked) { $('padnote').textContent = inked ? '' : t('Draw a digit with the mouse or a finger.', 'Disegna una cifra con il mouse o con un dito.'); return; }
   const f = forward(snapNet, x);
   const top = [...f.prob.keys()].sort((a, b) => f.prob[b] - f.prob[a]).slice(0, 3);
   $('padnote').textContent = (truth === null ? '' : t(`A held-out ${truth}. `, `Un ${truth} tenuto da parte. `)) +

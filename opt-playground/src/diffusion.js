@@ -191,7 +191,7 @@ function drawReverse() {
   dots(F, data, NDATA, P['ink-soft'], 1.3, 0.35);
   if (!smp) {
     ctx.fillStyle = P['ink-soft']; ctx.font = 'italic 15px Spectral, Georgia, serif'; ctx.textAlign = 'center';
-    ctx.fillText(tt('Press Sample, or pause the training', 'Premere Campiona, o mettere in pausa l\'addestramento'), cv.width / 2, cv.height / 2); ctx.textAlign = 'start';
+    ctx.fillText(tt('Press Sample, or pause the training', 'Premi Campiona, o metti in pausa l\'addestramento'), cv.width / 2, cv.height / 2); ctx.textAlign = 'start';
     $('revNote').textContent = '';
     return;
   }
@@ -245,7 +245,7 @@ function draw() {
     \\(\\sqrt{\\bar\\alpha_t} = ${Math.sqrt(a).toFixed(3)}\\) of its position and gets noise of standard deviation
     \\(\\sqrt{1-\\bar\\alpha_t} = ${Math.sqrt(1 - a).toFixed(3)}\\).`, `A \\(t = ${S.t}\\) su \\(T = ${sc.T}\\): \\(\\bar\\alpha_t = ${a.toFixed(4)}\\), quindi un punto conserva
     \\(\\sqrt{\\bar\\alpha_t} = ${Math.sqrt(a).toFixed(3)}\\) della sua posizione e riceve rumore di deviazione standard
-    \\(\\sqrt{1-\\bar\\alpha_t} = ${Math.sqrt(1 - a).toFixed(3)}\\).`) + (steps ? '' : tt(' The network is not trained yet: press Play.', ' La rete non è ancora addestrata: premere Avvia.')));
+    \\(\\sqrt{1-\\bar\\alpha_t} = ${Math.sqrt(1 - a).toFixed(3)}\\).`) + (steps ? '' : tt(' The network is not trained yet: press Play.', ' La rete non è ancora addestrata: premi Avvia.')));
   $('eqDDPM').hidden = S.sampler !== 'ddpm'; $('eqDDIM').hidden = S.sampler === 'ddpm';
   drawForward(); drawCoef(); drawField(); drawReverse(); drawLoss();
   const last = ema.length ? ema.at(-1) : null;

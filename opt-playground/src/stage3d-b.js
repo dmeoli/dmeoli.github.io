@@ -54,7 +54,7 @@ export function stage3d(box, { position = [2.2, -2.6, 1.8], target = [0, 0, 0], 
   });
   const words = () => {
     spin.textContent = t('rotate', 'ruota'); spin.title = t('turn the figure by itself', 'fa girare la figura da sola');
-    back.textContent = t('reset', 'reset'); back.title = t('back to the first view', 'torna alla prima vista');
+    back.textContent = t('reset', 'ripristina'); back.title = t('back to the first view', 'torna alla prima vista');
     const L = figName(label);
     full.textContent = document.fullscreenElement === box ? t('exit', 'esci') : t('full screen', 'schermo intero');
     full.title = t(`the ${L} on the whole screen, to project it`, `${L[0].toUpperCase() + L.slice(1)} a schermo intero, da proiettare`);

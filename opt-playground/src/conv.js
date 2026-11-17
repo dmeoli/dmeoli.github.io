@@ -441,7 +441,7 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { pa
 // class and of the target
 function words() {
   document.title = t('Convolution playground', 'Laboratorio della convoluzione');
-  $('reset').textContent = t('Reset', 'Reset'); $('step').textContent = t('Step', 'Passo');
+  $('reset').textContent = t('Reset', 'Ricomincia'); $('step').textContent = t('Step', 'Passo');
   $('train').textContent = running ? t('Pause', 'Pausa') : t('Play', 'Avvia');
   $('clear').textContent = t('Clear', 'Cancella'); $('sample').textContent = t('Held-out digit', 'Cifra di test');
   $('next').textContent = t('Next position', 'Posizione successiva');

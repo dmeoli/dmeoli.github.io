@@ -1,0 +1,19 @@
+/* the page of the puzzle chest: the pieces in 3D beside their sequence */
+main.form { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: start; }
+@media (max-width: 860px) { main.form { grid-template-columns: minmax(0, 1fr); } }
+main.form figcaption { min-height: 0; }
+#stage canvas { border-radius: 6px; touch-action: none; display: block; }
+.about h2 { font-weight: 600; font-size: 18px; margin: 0 0 8px; color: var(--accent); }
+.about p { color: var(--ink-soft); margin: 0 0 12px; font-size: 15px; }
+.plane { width: 100%; height: auto; display: block; background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; }
+.stats { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 10px 0; font: 13px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.stats b { font-weight: 500; color: var(--accent); }
+#print { margin-top: 28px; }
+#print h2 { font-weight: 600; font-size: 22px; margin: 0 0 6px; color: var(--accent); }
+#print .lede { max-width: 80ch; font-size: 15px; }
+footer a { color: inherit; }
+#seq { margin: 6px 0 12px; padding-left: 1.4em; font: 13px/1.7 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+#seq i { font-style: normal; color: var(--accent); }
+#seq .sw { display: inline-block; width: 11px; height: 11px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.explode { margin-top: 8px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.explode input { flex: 1 1 160px; }

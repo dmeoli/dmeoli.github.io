@@ -61,7 +61,7 @@ export function stage3d(box, opts = {}) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
   const bar = document.createElement('div');
-  bar.className = 'view3d';
+  bar.className = 'bar3d';
   bar.innerHTML = '<label><input type="checkbox"> <span></span></label><button type="button"></button><button type="button"></button>';
   box.replaceChildren(renderer.domElement, bar);
   const [spin, resetB, fullB] = [bar.querySelector('input'), ...bar.querySelectorAll('button')];

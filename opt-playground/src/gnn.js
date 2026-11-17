@@ -172,7 +172,7 @@ function texts(R, up) {
     ? `\\(\\hat y = \\operatorname{softmax}\\big(W_{\\text{out}}\\,\\tfrac{1}{|V|}\\textstyle\\sum_{v} h_v^{(${S.K})} + b_{\\text{out}}\\big)\\)`
     : `\\(\\hat y_v = \\operatorname{softmax}\\big(W_{\\text{out}}\\, h_v^{(${S.K})} + b_{\\text{out}}\\big)\\), \\(h_v^{(0)} = W_{\\text{in}} x_v + b_{\\text{in}}\\)`);
   // the hovered node
-  if (hover < 0) $('readout').innerHTML = t('hover a node: its messages light the edges and its update is drawn on the right', 'passare su un nodo: i suoi messaggi illuminano gli archi e il suo aggiornamento è disegnato a destra');
+  if (hover < 0) $('readout').innerHTML = t('hover a node: its messages light the edges and its update is drawn on the right', 'passa su un nodo: i suoi messaggi illuminano gli archi e il suo aggiornamento è disegnato a destra');
   else {
     const n = g.nodes[hover], C = D.C, deg = incoming(g, S.agg)[hover].length - 1;
     let pred = '';

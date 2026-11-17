@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forms-group" content="fantasy">
+<title>Starships</title>
+<!-- scene-meta (tools/scene_meta.py) -->
+<meta name="description" content="A shape grammar of superquadrics builds a ship from a genome of 40 numbers, and a genetic algorithm breeds the fleet towards a target outline, bulk and symmetry; every ship has a flat back and prints…">
+<link rel="canonical" href="https://dmeoli.github.io/opt-playground/starships.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Starships">
+<meta property="og:description" content="A shape grammar of superquadrics builds a ship from a genome of 40 numbers, and a genetic algorithm breeds the fleet towards a target outline, bulk and symmetry; every ship has a flat back and prints…">
+<meta property="og:url" content="https://dmeoli.github.io/opt-playground/starships.html">
+<meta property="og:image" content="https://dmeoli.github.io/assets/forms/starships.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<link rel="stylesheet" href="src/forms/starships/starships.css">
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="lagrangian-dual.html"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="simplex-path.html"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a> · <a href="packing-mip.html"><span data-l="en">Packing</span><span data-l="it" lang="it">Impaccamento</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attenzione</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Misture di esperti</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Hebbiano</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html">Talk</a><br><span class="group"><span data-l="en">Forms</span><span data-l="it" lang="it">Forme</span></span> <!--forms-nav--><a href="loss-landscape.html"><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a> · <a href="shells.html"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></a> · <a href="phyllotaxis.html"><span data-l="en">Phyllotaxis</span><span data-l="it" lang="it">Fillotassi</span></a> · <a href="radiolarian.html"><span data-l="en">Radiolarians</span><span data-l="it" lang="it">Radiolari</span></a> · <a href="coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a> · <a href="plants.html"><span data-l="en">Plants</span><span data-l="it" lang="it">Piante</span></a> · <a href="snowflakes.html"><span data-l="en">Snowflakes</span><span data-l="it" lang="it">Fiocchi di neve</span></a> · <a href="batman.html">Batman</a> · <a href="minimal-surfaces.html"><span data-l="en">Minimal surfaces</span><span data-l="it" lang="it">Superfici minime</span></a> · <a href="knots.html"><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></a> · <a href="attractors.html"><span data-l="en">Attractors</span><span data-l="it" lang="it">Attrattori</span></a> · <a href="polytopes.html"><span data-l="en">4D polytopes</span><span data-l="it" lang="it">Politopi 4D</span></a> · <a href="chladni.html">Chladni</a> · <a href="equations.html"><span data-l="en">Equations</span><span data-l="it" lang="it">Equazioni</span></a> · <a href="dice.html"><span data-l="en">Fair dice</span><span data-l="it" lang="it">Dadi equi</span></a> · <a href="hat.html"><span data-l="en">The hat</span><span data-l="it" lang="it">Il cappello</span></a> · <a href="fractals.html"><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></a> · <a href="lithophane.html"><span data-l="en">Lithophanes</span><span data-l="it" lang="it">Litofanie</span></a> · <a href="monsters.html"><span data-l="en">Monsters</span><span data-l="it" lang="it">Mostri</span></a> · <a href="monster-cards.html"><span data-l="en">Monster cards</span><span data-l="it" lang="it">Carte dei mostri</span></a> · <a href="dragon-curve.html"><span data-l="en">Dragon curve</span><span data-l="it" lang="it">Curva del drago</span></a> · <a href="robots.html"><span data-l="en">Robots</span><span data-l="it" lang="it">Robot</span></a> · <a href="magic-circles.html"><span data-l="en">Magic circles</span><span data-l="it" lang="it">Cerchi magici</span></a> · <a href="origami.html">Origami</a> · <a href="wagara.html"><span data-l="en">Japanese patterns</span><span data-l="it" lang="it">Motivi giapponesi</span></a> · <a href="twisty.html"><span data-l="en">Twisty puzzles</span><span data-l="it" lang="it">Rompicapi a rotazione</span></a> · <a href="wang-dungeon.html"><span data-l="en">Wang dungeon</span><span data-l="it" lang="it">Dungeon di Wang</span></a> · <a href="mana-crystals.html"><span data-l="en">Wulff crystals</span><span data-l="it" lang="it">Cristalli di Wulff</span></a> · <a href="dragon-eggs.html"><span data-l="en">Dragon eggs</span><span data-l="it" lang="it">Uova di drago</span></a> · <a href="galton-tower.html"><span data-l="en">Galton tower</span><span data-l="it" lang="it">Torre di Galton</span></a> · <a href="escher-monsters.html"><span data-l="en">Escher monsters</span><span data-l="it" lang="it">Mostri alla Escher</span></a> · <a href="minotaur-sphere.html"><span data-l="en">Sphere labyrinth</span><span data-l="it" lang="it">Labirinto sferico</span></a> · <a href="elven-knots.html"><span data-l="en">Elven amulets</span><span data-l="it" lang="it">Amuleti elfici</span></a> · <a href="slime-den.html"><span data-l="en">Slime den</span><span data-l="it" lang="it">Tana degli slime</span></a> · <a href="antigravity-castle.html"><span data-l="en">Antigravity castle</span><span data-l="it" lang="it">Castello antigravità</span></a> · <a href="erosion-island.html"><span data-l="en">Eroded island</span><span data-l="it" lang="it">Isola erosa</span></a> · <a href="damascus-swords.html"><span data-l="en">Damascus swords</span><span data-l="it" lang="it">Spade di Damasco</span></a> · <a href="kraken-tree.html"><span data-l="en">Kraken and tree</span><span data-l="it" lang="it">Kraken e albero</span></a> · <a href="starships.html" aria-current="page"><span data-l="en">Starships</span><span data-l="it" lang="it">Astronavi</span></a> · <a href="automaton.html"><span data-l="en">Automaton</span><span data-l="it" lang="it">Automa</span></a> · <a href="puzzle-chest.html"><span data-l="en">Puzzle chest</span><span data-l="it" lang="it">Baule a incastro</span></a> · <a href="biomorphs.html"><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></a><!--/forms-nav--></nav>
+<header>
+  <h1><span data-l="en">A fleet of starships bred by a genetic algorithm</span><span data-l="it" lang="it">Una flotta di astronavi allevata da un algoritmo genetico</span></h1>
+  <p class="lede" data-l="en">Each ship is the derivation of a small shape grammar, in which every rule (the nose, the
+  wings, the engines, the cockpit, the fins and the details on the flanks) chooses among its alternatives and every
+  part takes its lengths and angles from a list of 40 numbers, its genome; a genetic algorithm then breeds the
+  genomes towards the targets chosen below, as in <a href="https://doi.org/10.1111/cgf.13120">ShapeGenetics</a> of
+  Haubenwallner, Seidel and Steinberger (2017), which grew out of
+  <a href="https://www.old.cescg.org/CESCG-2016/papers/Haubenwallner-Procedural_Generation_using_Grammar_based_Modelling_and_Genetic_Algorithms.pdf">Haubenwallner's
+  work of 2016</a>. The whole population is shown as a fleet, and any of its ships can be printed lying on its flat
+  back.</p>
+  <p class="lede" data-l="it" lang="it">Ogni nave è la derivazione di una piccola grammatica di forme, in cui ogni regola
+  (la prua, le ali, i motori, la cabina, le pinne e i dettagli sui fianchi) sceglie fra le sue alternative e ogni parte
+  prende le sue lunghezze e i suoi angoli da una lista di 40 numeri, il suo genoma; un algoritmo genetico alleva poi i
+  genomi verso gli obiettivi che scegli qui sotto, come in <a href="https://doi.org/10.1111/cgf.13120">ShapeGenetics</a>
+  di Haubenwallner, Seidel e Steinberger (2017), nato dal
+  <a href="https://www.old.cescg.org/CESCG-2016/papers/Haubenwallner-Procedural_Generation_using_Grammar_based_Modelling_and_Genetic_Algorithms.pdf">lavoro
+  di Haubenwallner del 2016</a>. L'intera popolazione si vede come una flotta, e ognuna delle sue navi si può stampare
+  sdraiata sul dorso piatto.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span data-l="en">target outline</span><span data-l="it" lang="it">sagoma obiettivo</span><select id="target">
+      <option value="dart">dart · dardo</option><option value="arrow">arrow · freccia</option><option value="cross">cross · croce</option>
+      <option value="hammer">hammer · martello</option><option value="saucer">saucer · disco</option></select></label>
+    <label><span data-l="en">target bulk</span><span data-l="it" lang="it">massa obiettivo</span><input id="bulk" type="range" min="0.1" max="0.6" step="0.01" value="0.3"><output id="bulkout">0.3</output></label>
+    <label><span data-l="en">target fore-aft symmetry</span><span data-l="it" lang="it">simmetria prua-poppa obiettivo</span><input id="sym" type="range" min="0" max="1" step="0.05" value="0.4"><output id="symout">0.4</output></label>
+    <label><span data-l="en">population</span><span data-l="it" lang="it">popolazione</span><input id="pop" type="range" min="8" max="24" step="4" value="12"><output id="popout">12</output></label>
+    <label><span data-l="en">mutation rate</span><span data-l="it" lang="it">tasso di mutazione</span><input id="mut" type="range" min="0.01" max="0.3" step="0.01" value="0.08"><output id="mutout">0.08</output></label>
+    <label><span data-l="en">seed</span><span data-l="it" lang="it">seme</span>
+      <span class="inline"><input id="seed" type="number" min="1" max="99999" step="1" value="1"><button id="random" type="button"><span data-l="en">Random</span><span data-l="it" lang="it">A caso</span></button></span></label>
+    <label class="check"><span data-l="en">spin</span><span data-l="it" lang="it">rotazione</span><input id="spin" type="checkbox"></label>
+  </div>
+  <div class="transport">
+    <span class="iter"><span data-l="en">gen.</span><span data-l="it" lang="it">gen.</span> <output id="gensout">0</output></span>
+    <button id="reset" type="button">Reset</button>
+    <button id="step" type="button"><span data-l="en">Step</span><span data-l="it" lang="it">Passo</span></button>
+    <button id="play" type="button"><span data-l="en">Evolve</span><span data-l="it" lang="it">Evolvi</span></button>
+  </div>
+</section>
+<main class="form">
+  <figure>
+    <figcaption><span data-l="en">The fleet of the current population, best first, the chosen ship in gold; drag to turn, use the wheel or pinch to zoom.</span><span data-l="it" lang="it">La
+    flotta della popolazione attuale, dalla migliore, con la nave scelta in oro; trascina per ruotare, usa la rotella o il pizzico per lo zoom.</span></figcaption>
+    <div id="stage" class="stage"></div>
+    <button id="view" type="button"><span data-l="en">Reset view</span><span data-l="it" lang="it">Vista iniziale</span></button>
+  </figure>
+  <div class="about">
+    <h2><span data-l="en">Top views against the target</span><span data-l="it" lang="it">Viste dall'alto e obiettivo</span></h2>
+    <canvas id="tops" aria-label="top views of the fleet"></canvas>
+    <div class="stats" id="stats"></div>
+    <div class="stats" id="derivation"></div>
+    <svg id="curve" class="plane" viewBox="0 0 330 120" role="img" aria-label="fitness by generation"></svg>
+    <p data-l="en">The grey cells are the target outline, the violet ones the top view of each ship (darker where it is
+    taller), with its fitness in the corner; a click chooses the ship to print. The fitness weighs three measures taken
+    on a grid of 48 by 48 cells: 0.6 times the intersection over union of the top view with the target, 0.2 times the
+    closeness of the bulk (the mean height over the top view) to its target, and 0.2 times the closeness of the fore-aft
+    symmetry (the intersection over union of the top view with its mirror image across the beam) to its target. The
+    symmetry from left to right needs no measure, since the grammar mirrors every part off the axis.</p>
+    <p data-l="it" lang="it">Le celle grigie sono la sagoma obiettivo, quelle viola la vista dall'alto di ogni nave (più
+    scure dove è più alta), con la sua fitness nell'angolo; un clic sceglie la nave da stampare. La fitness pesa tre misure
+    prese su una griglia di 48 per 48 celle: 0.6 volte l'intersezione sull'unione della vista dall'alto con l'obiettivo,
+    0.2 volte la vicinanza della massa (l'altezza media sulla vista dall'alto) al suo obiettivo, e 0.2 volte la vicinanza
+    della simmetria prua-poppa (l'intersezione sull'unione della vista dall'alto con la sua immagine riflessa sul
+    traverso) al suo obiettivo. La simmetria da sinistra a destra non ha bisogno di una misura, perché la grammatica
+    rispecchia ogni parte fuori dall'asse.</p>
+    <p data-l="en">Every part is a superquadric of <a href="https://doi.org/10.1109/MCG.1981.1673799">Barr (1981)</a>,
+    the solid between a box, a cylinder and an ellipsoid set by two exponents, evaluated by the same code as the
+    <a href="robots.html">giant robots</a>; here it is only turned about the vertical axis and centred on the plane of
+    the back, so that each part rises from that plane as a dome of height
+    c (1 − G<sup>e₂/e₁</sup>)<sup>e₁/2</sup> over the region where G = |u/a|<sup>2/e₂</sup> + |v/b|<sup>2/e₂</sup> &lt; 1.
+    The ship, as the union of the parts, is then a height field over its top view: it has a flat back and no overhang,
+    and it prints lying on the back without supports. The genome is read as in grammatical evolution
+    (<a href="https://doi.org/10.1109/4235.942529">O'Neill and Ryan, 2001</a>): each choice and each length takes the
+    next number of the list, so that a mutation of one number may change one length or switch a whole rule to another
+    alternative, and every list of numbers gives a valid ship.</p>
+    <p data-l="it" lang="it">Ogni parte è una superquadrica di <a href="https://doi.org/10.1109/MCG.1981.1673799">Barr
+    (1981)</a>, il solido fra una scatola, un cilindro e un ellissoide regolato da due esponenti, calcolato dallo stesso
+    codice dei <a href="robots.html">robot giganti</a>; qui è solo ruotata attorno all'asse verticale e centrata sul piano
+    del dorso, così che ogni parte sale da quel piano come una cupola di altezza
+    c (1 − G<sup>e₂/e₁</sup>)<sup>e₁/2</sup> sulla regione in cui G = |u/a|<sup>2/e₂</sup> + |v/b|<sup>2/e₂</sup> &lt; 1.
+    La nave, come unione delle parti, è allora un campo di altezze sulla sua vista dall'alto: ha il dorso piatto e
+    nessuno sbalzo, e si stampa sdraiata sul dorso senza supporti. Il genoma si legge come nell'evoluzione grammaticale
+    (<a href="https://doi.org/10.1109/4235.942529">O'Neill e Ryan, 2001</a>): ogni scelta e ogni lunghezza prende il
+    numero successivo della lista, così che la mutazione di un numero può cambiare una lunghezza o far passare un'intera
+    regola a un'altra alternativa, e ogni lista di numeri dà una nave valida.</p>
+    <p data-l="en">One generation keeps the two best ships and fills the rest of the population with children, each
+    child taking every number from one of two parents chosen by tournaments of three (uniform crossover), and then
+    moving each number, with the probability of the mutation rate, by a Gaussian step of deviation 0.15. The algorithm is
+    deterministic given the seed, so that the link of a fleet rebuilds it; changing a target starts it again from
+    generation 0. ShapeGenetics evolves the derivation trees themselves, with operators that exchange whole subtrees,
+    and it reaches far larger grammars; the fixed list of numbers used here is the simplest encoding of the same
+    idea.</p>
+    <p data-l="it" lang="it">Una generazione tiene le due navi migliori e riempie il resto della popolazione di figli,
+    ognuno dei quali prende ogni numero da uno di due genitori scelti con tornei a tre (incrocio uniforme), e sposta poi
+    ogni numero, con la probabilità del tasso di mutazione, di un passo gaussiano di deviazione 0.15. L'algoritmo è
+    deterministico dato il seme, così che il link di una flotta la ricostruisce; cambiare un obiettivo lo fa ripartire
+    dalla generazione 0. ShapeGenetics fa evolvere gli alberi di derivazione stessi, con operatori che scambiano interi
+    sottoalberi, e arriva a grammatiche molto più grandi; la lista fissa di numeri usata qui è la codifica più semplice
+    della stessa idea.</p>
+  </div>
+</main>
+<section id="print">
+  <h2 class="owner-only"><span data-l="en">Download for 3D printing</span><span data-l="it" lang="it">Scarica per la stampa 3D</span></h2>
+  <h2 class="public-only"><span data-l="en">A 3D print of this ship</span><span data-l="it" lang="it">Una stampa 3D di questa nave</span></h2>
+  <p class="lede public-only" data-l="en">The chosen ship, or the four best of the fleet, can be ordered as a 3D print,
+  lying on the flat back. The request sends the link to the fleet as it is on the screen, generation included.</p>
+  <p class="lede public-only" data-l="it" lang="it">La nave scelta, o le quattro migliori della flotta, si possono
+  ordinare come stampa 3D, sdraiate sul dorso piatto. La richiesta manda il link alla flotta così com'è sullo schermo,
+  generazione compresa.</p>
+  <p class="lede owner-only" data-l="en">One closed solid per ship, as long as the size, its back on the bed; since the
+  solid is a height field over the back it needs no supports. The thinnest parts (the tail fin and the needle nose)
+  are about 3% of the length across, i.e., about 2.4 mm on a ship of 80 mm.</p>
+  <p class="lede owner-only" data-l="it" lang="it">Un solido chiuso per nave, lungo quanto la dimensione, con il dorso
+  sul piatto; poiché il solido è un campo di altezze sul dorso non servono supporti. Le parti più sottili (la pinna di
+  coda e la prua ad ago) sono larghe circa il 3% della lunghezza, cioè circa 2.4 mm su una nave di 80 mm.</p>
+</section>
+<footer><span data-l="en">The grammar, the encoding and the measures of the fitness are mine; the method follows ShapeGenetics in its simplest form.</span><span data-l="it" lang="it">La
+grammatica, la codifica e le misure della fitness sono mie; il metodo segue ShapeGenetics nella sua forma più semplice.</span></footer>
+<script type="module" src="src/forms/starships/starships.js"></script>
+</body>
+</html>

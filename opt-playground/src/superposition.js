@@ -192,7 +192,7 @@ function words() {
   const o = { relu: ['ReLU', 'ReLU'], linear: ['linear', 'lineare'] };
   for (const op of $('out').options) op.textContent = t(...o[op.value]);
   $('seed').textContent = t('New weights', 'Nuovi pesi');
-  $('reset').textContent = t('Reset', 'Reset');
+  $('reset').textContent = t('Reset', 'Ricomincia');
   $('step').textContent = t('Step', 'Passo'); $('step').title = t('20 steps of Adam', '20 passi di Adam');
   $('play').textContent = timer ? t('Pause', 'Pausa') : t('Play', 'Avvia');
 }

@@ -1,0 +1,27 @@
+/* the page of the automaton: the linkage in SVG beside the text */
+main.form { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: start; }
+@media (max-width: 860px) { main.form { grid-template-columns: minmax(0, 1fr); } }
+main.form figcaption { min-height: 0; }
+#stage canvas { border-radius: 6px; touch-action: none; display: block; }
+.about h2 { font-weight: 600; font-size: 18px; margin: 0 0 8px; color: var(--accent); }
+.about p { color: var(--ink-soft); margin: 0 0 12px; font-size: 15px; }
+.plane { width: 100%; height: auto; display: block; background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; }
+.stats { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 10px 0; font: 13px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.stats b { font-weight: 500; color: var(--accent); }
+#print { margin-top: 28px; }
+#print h2 { font-weight: 600; font-size: 22px; margin: 0 0 6px; color: var(--accent); }
+#print .lede { max-width: 80ch; font-size: 15px; }
+footer a { color: inherit; }
+#mech { touch-action: none; aspect-ratio: 1.25; }
+#mech .target { fill: none; stroke: var(--gold); stroke-width: 1.6; stroke-dasharray: 5 4; vector-effect: non-scaling-stroke; }
+#mech .trace { fill: none; stroke: var(--accent); stroke-width: 2; vector-effect: non-scaling-stroke; }
+#mech .ground { stroke: var(--lilac); stroke-width: 22; stroke-linecap: round; }
+#mech .boss { fill: var(--lilac); }
+#mech .link { stroke: var(--gold); stroke-width: 8; stroke-linecap: round; opacity: .9; }
+#mech .crank { stroke: var(--accent); }
+#mech .coupler { fill: var(--gold); opacity: .18; }
+#mech .foot { fill: var(--accent-2); }
+#mech .pin { fill: var(--ink); stroke: var(--panel); stroke-width: 1; vector-effect: non-scaling-stroke; }
+#mech .ghost { opacity: .3; }
+#progress { min-height: 1.4em; font: 13px 'IBM Plex Mono', monospace; color: var(--ink-soft); margin: 4px 0 0; }
+#stage { margin-top: 12px; }

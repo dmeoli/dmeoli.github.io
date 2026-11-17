@@ -232,7 +232,7 @@ function words() {
   document.title = t('Manifolds playground', 'Laboratorio delle varietà');
   for (const [id, o] of Object.entries(OPTS)) for (const op of $(id).options) op.textContent = t(...o[op.value]);
   $('seed').textContent = t('New weights', 'Nuovi pesi');
-  $('reset').textContent = t('Reset', 'Reset'); $('step').textContent = t('Step', 'Passo');
+  $('reset').textContent = t('Reset', 'Ricomincia'); $('step').textContent = t('Step', 'Passo');
   $('play').textContent = timer ? t('Pause', 'Pausa') : t('Play', 'Avvia');
   $('morph').textContent = morph ? t('Pause', 'Pausa') : t('Animate', 'Anima');
 }

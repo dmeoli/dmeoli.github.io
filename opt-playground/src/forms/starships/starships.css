@@ -1,0 +1,20 @@
+/* the page of the starships: the fleet in 3D beside its top views */
+main.form { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: start; }
+@media (max-width: 860px) { main.form { grid-template-columns: minmax(0, 1fr); } }
+main.form figcaption { min-height: 0; }
+#stage canvas { border-radius: 6px; touch-action: none; display: block; }
+.about h2 { font-weight: 600; font-size: 18px; margin: 0 0 8px; color: var(--accent); }
+.about p { color: var(--ink-soft); margin: 0 0 12px; font-size: 15px; }
+.plane { width: 100%; height: auto; display: block; background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; }
+.stats { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 10px 0; font: 13px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.stats b { font-weight: 500; color: var(--accent); }
+#print { margin-top: 28px; }
+#print h2 { font-weight: 600; font-size: 22px; margin: 0 0 6px; color: var(--accent); }
+#print .lede { max-width: 80ch; font-size: 15px; }
+footer a { color: inherit; }
+#tops { width: 100%; height: auto; display: block; cursor: pointer; margin-bottom: 8px; }
+#curve .axis { stroke: var(--rule); }
+#curve .best { fill: none; stroke: var(--accent); stroke-width: 2; }
+#curve .mean { fill: none; stroke: var(--gold); stroke-width: 1.5; stroke-dasharray: 4 3; }
+#curve .lab { font: 11px 'IBM Plex Mono', monospace; fill: var(--ink-soft); }
+#curve .mean-lab { fill: var(--gold); }

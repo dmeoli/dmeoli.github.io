@@ -141,7 +141,7 @@ function hover(id, pin) {
   }
   if (!show) {
     tip.classList.remove('show'); tip.style.removeProperty('--tipc');
-    tip.textContent = t('Point at a curve, or touch it, for its formula.', 'Puntare una curva, o toccarla, per la sua formula.');
+    tip.textContent = t('Point at a curve, or touch it, for its formula.', 'Punta una curva, o toccala, per la sua formula.');
     return;
   }
   const P = PS.find(p => p.id === show);

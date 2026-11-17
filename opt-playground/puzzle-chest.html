@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forms-group" content="fantasy">
+<title>Puzzle chest</title>
+<!-- scene-meta (tools/scene_meta.py) -->
+<meta name="description" content="A chest of voxels split into pieces of which, at every stage, only one can move, so that it comes apart in a single order; the split is searched in the browser and checked on the blocking graphs, and…">
+<link rel="canonical" href="https://dmeoli.github.io/opt-playground/puzzle-chest.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Puzzle chest">
+<meta property="og:description" content="A chest of voxels split into pieces of which, at every stage, only one can move, so that it comes apart in a single order; the split is searched in the browser and checked on the blocking graphs, and…">
+<meta property="og:url" content="https://dmeoli.github.io/opt-playground/puzzle-chest.html">
+<meta property="og:image" content="https://dmeoli.github.io/assets/forms/puzzle-chest.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<link rel="stylesheet" href="src/forms/puzzle-chest/puzzle-chest.css">
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="lagrangian-dual.html"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="simplex-path.html"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a> · <a href="packing-mip.html"><span data-l="en">Packing</span><span data-l="it" lang="it">Impaccamento</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attenzione</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Misture di esperti</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Hebbiano</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html">Talk</a><br><span class="group"><span data-l="en">Forms</span><span data-l="it" lang="it">Forme</span></span> <!--forms-nav--><a href="loss-landscape.html"><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a> · <a href="shells.html"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></a> · <a href="phyllotaxis.html"><span data-l="en">Phyllotaxis</span><span data-l="it" lang="it">Fillotassi</span></a> · <a href="radiolarian.html"><span data-l="en">Radiolarians</span><span data-l="it" lang="it">Radiolari</span></a> · <a href="coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a> · <a href="plants.html"><span data-l="en">Plants</span><span data-l="it" lang="it">Piante</span></a> · <a href="snowflakes.html"><span data-l="en">Snowflakes</span><span data-l="it" lang="it">Fiocchi di neve</span></a> · <a href="batman.html">Batman</a> · <a href="minimal-surfaces.html"><span data-l="en">Minimal surfaces</span><span data-l="it" lang="it">Superfici minime</span></a> · <a href="knots.html"><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></a> · <a href="attractors.html"><span data-l="en">Attractors</span><span data-l="it" lang="it">Attrattori</span></a> · <a href="polytopes.html"><span data-l="en">4D polytopes</span><span data-l="it" lang="it">Politopi 4D</span></a> · <a href="chladni.html">Chladni</a> · <a href="equations.html"><span data-l="en">Equations</span><span data-l="it" lang="it">Equazioni</span></a> · <a href="dice.html"><span data-l="en">Fair dice</span><span data-l="it" lang="it">Dadi equi</span></a> · <a href="hat.html"><span data-l="en">The hat</span><span data-l="it" lang="it">Il cappello</span></a> · <a href="fractals.html"><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></a> · <a href="lithophane.html"><span data-l="en">Lithophanes</span><span data-l="it" lang="it">Litofanie</span></a> · <a href="monsters.html"><span data-l="en">Monsters</span><span data-l="it" lang="it">Mostri</span></a> · <a href="monster-cards.html"><span data-l="en">Monster cards</span><span data-l="it" lang="it">Carte dei mostri</span></a> · <a href="dragon-curve.html"><span data-l="en">Dragon curve</span><span data-l="it" lang="it">Curva del drago</span></a> · <a href="robots.html"><span data-l="en">Robots</span><span data-l="it" lang="it">Robot</span></a> · <a href="magic-circles.html"><span data-l="en">Magic circles</span><span data-l="it" lang="it">Cerchi magici</span></a> · <a href="origami.html">Origami</a> · <a href="wagara.html"><span data-l="en">Japanese patterns</span><span data-l="it" lang="it">Motivi giapponesi</span></a> · <a href="twisty.html"><span data-l="en">Twisty puzzles</span><span data-l="it" lang="it">Rompicapi a rotazione</span></a> · <a href="wang-dungeon.html"><span data-l="en">Wang dungeon</span><span data-l="it" lang="it">Dungeon di Wang</span></a> · <a href="mana-crystals.html"><span data-l="en">Wulff crystals</span><span data-l="it" lang="it">Cristalli di Wulff</span></a> · <a href="dragon-eggs.html"><span data-l="en">Dragon eggs</span><span data-l="it" lang="it">Uova di drago</span></a> · <a href="galton-tower.html"><span data-l="en">Galton tower</span><span data-l="it" lang="it">Torre di Galton</span></a> · <a href="escher-monsters.html"><span data-l="en">Escher monsters</span><span data-l="it" lang="it">Mostri alla Escher</span></a> · <a href="minotaur-sphere.html"><span data-l="en">Sphere labyrinth</span><span data-l="it" lang="it">Labirinto sferico</span></a> · <a href="elven-knots.html"><span data-l="en">Elven amulets</span><span data-l="it" lang="it">Amuleti elfici</span></a> · <a href="slime-den.html"><span data-l="en">Slime den</span><span data-l="it" lang="it">Tana degli slime</span></a> · <a href="antigravity-castle.html"><span data-l="en">Antigravity castle</span><span data-l="it" lang="it">Castello antigravità</span></a> · <a href="erosion-island.html"><span data-l="en">Eroded island</span><span data-l="it" lang="it">Isola erosa</span></a> · <a href="damascus-swords.html"><span data-l="en">Damascus swords</span><span data-l="it" lang="it">Spade di Damasco</span></a> · <a href="kraken-tree.html"><span data-l="en">Kraken and tree</span><span data-l="it" lang="it">Kraken e albero</span></a> · <a href="starships.html"><span data-l="en">Starships</span><span data-l="it" lang="it">Astronavi</span></a> · <a href="automaton.html"><span data-l="en">Automaton</span><span data-l="it" lang="it">Automa</span></a> · <a href="puzzle-chest.html" aria-current="page"><span data-l="en">Puzzle chest</span><span data-l="it" lang="it">Baule a incastro</span></a> · <a href="biomorphs.html"><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></a><!--/forms-nav--></nav>
+<header>
+  <h1><span data-l="en">A treasure chest as an interlocking puzzle</span><span data-l="it" lang="it">Un baule del tesoro come rompicapo a incastro</span></h1>
+  <p class="lede" data-l="en">A chest made of cubes is split into pieces so that, as long as the chest is whole, only
+  one piece can move, the key, which slides out along one direction; once it is out, another single piece becomes the
+  key of what is left, and so on until two pieces remain. The chest then comes apart in one order only, and every
+  intermediate assembly is itself a puzzle that holds together: these are the recursive interlocking puzzles of
+  <a href="https://doi.org/10.1145/2366145.2366147">Song, Fu and Cohen-Or (2012)</a>, here on a grid of 5 or 6 cubes
+  across, searched in the browser and checked exactly at every stage.</p>
+  <p class="lede" data-l="it" lang="it">Un baule fatto di cubi è diviso in pezzi in modo che, finché il baule è intero,
+  uno solo possa muoversi, la chiave, che esce scorrendo lungo una direzione; quando è fuori, un altro solo pezzo diventa
+  la chiave di ciò che resta, e così via finché restano due pezzi. Il baule allora si smonta in un solo ordine, e ogni
+  insieme intermedio è a sua volta un rompicapo che sta insieme: sono i rompicapi a incastro ricorsivi di
+  <a href="https://doi.org/10.1145/2366145.2366147">Song, Fu e Cohen-Or (2012)</a>, qui su una griglia di 5 o 6 cubi
+  di larghezza, cercati nel browser e verificati in modo esatto a ogni passo.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span data-l="en">chest</span><span data-l="it" lang="it">baule</span><select id="shape">
+      <option value="small">5 × 4 × 4</option><option value="large">6 × 4 × 4</option></select></label>
+    <label><span data-l="en">pieces</span><span data-l="it" lang="it">pezzi</span><input id="n" type="range" min="3" max="7" step="1" value="5"><output id="nout">5</output></label>
+    <label><span data-l="en">seed</span><span data-l="it" lang="it">seme</span>
+      <span class="inline"><input id="seed" type="number" min="1" max="99999" step="1" value="1"><button id="random" type="button"><span data-l="en">Random</span><span data-l="it" lang="it">A caso</span></button></span></label>
+    <label class="check"><span data-l="en">spin</span><span data-l="it" lang="it">rotazione</span><input id="spin" type="checkbox"></label>
+  </div>
+  <div class="transport">
+    <button id="play" type="button"><span data-l="en">Take apart</span><span data-l="it" lang="it">Smonta</span></button>
+  </div>
+</section>
+<main class="form">
+  <figure>
+    <figcaption><span data-l="en">The pieces in their colours, each sliding out after the one before; drag to turn, use the wheel or pinch to zoom.</span><span data-l="it" lang="it">I
+    pezzi nei loro colori, ognuno esce dopo il precedente; trascina per ruotare, usa la rotella o il pizzico per lo zoom.</span></figcaption>
+    <div id="stage" class="stage"></div>
+    <div class="explode"><button id="view" type="button"><span data-l="en">Reset view</span><span data-l="it" lang="it">Vista iniziale</span></button>
+      <input id="explode" type="range" min="0" max="4" step="0.01" value="0" aria-label="disassembly"></div>
+  </figure>
+  <div class="about">
+    <h2><span data-l="en">The order of disassembly</span><span data-l="it" lang="it">L'ordine di smontaggio</span></h2>
+    <div class="stats" id="stats"></div>
+    <ol id="seq"></ol>
+    <p data-l="en">For a direction e among the six of the grid, the blocking graph has an arc from piece a to piece b
+    when a, moved by one cube along e, would enter b. A set of pieces can move along e without the others exactly when
+    no arc leaves it, so that the smallest set that must move with a piece p is the set of the pieces reachable from p
+    (its closure). A stage with key K is interlocked when, for each of the six directions and each piece p other than
+    K, the closure of p holds every piece but K: then the only sets that can move are K alone and the rest, which is K
+    moving the other way. To this test the scene adds that K can slide along its direction to infinity, cube after
+    cube, without meeting another piece. It is a test of translations by whole cubes along the axes, the moves that
+    voxel pieces allow; the same graphs underlie the later analysis of
+    <a href="https://doi.org/10.1145/3272127.3275034">Wang, Song and Pauly (2018)</a>.</p>
+    <p data-l="it" lang="it">Per una direzione e fra le sei della griglia, il grafo di blocco ha un arco dal pezzo a al
+    pezzo b quando a, spostato di un cubo lungo e, entrerebbe in b. Un insieme di pezzi può muoversi lungo e senza gli
+    altri esattamente quando nessun arco ne esce, così che il più piccolo insieme che deve muoversi con un pezzo p è
+    l'insieme dei pezzi raggiungibili da p (la sua chiusura). Un passo con chiave K è a incastro quando, per ognuna delle
+    sei direzioni e ogni pezzo p diverso da K, la chiusura di p contiene tutti i pezzi tranne K: allora i soli insiemi
+    che possono muoversi sono K da solo e il resto, cioè K che si muove nel verso opposto. A questo test la scena aggiunge
+    che K possa scorrere lungo la sua direzione fino all'infinito, cubo dopo cubo, senza incontrare un altro pezzo. È un
+    test di traslazioni di cubi interi lungo gli assi, le mosse che i pezzi di voxel permettono; gli stessi grafi sono
+    alla base dell'analisi successiva di <a href="https://doi.org/10.1145/3272127.3275034">Wang, Song e Pauly (2018)</a>.</p>
+    <p data-l="en">Song et al. build the pieces one at a time, from the key inwards, with rules that make each new piece
+    removable along one direction and blocked in the others by the pieces already made, so that the property holds
+    by construction on grids of hundreds of cubes. The scene uses a simpler search that suits grids of 70 or 84
+    cubes: the pieces are first grown at random from the seed, each made of columns of cubes that run out of the
+    remaining chest along its direction; then simulated annealing moves one cube at a time to a neighbouring piece,
+    keeping every piece connected and of 3 cubes at least, and lowers a score that counts, at every stage of the best
+    order found, the pieces left out of a closure and a key that cannot slide out. A split is shown as interlocked only
+    when the score is 0, i.e., when the test above passes at every stage. The search is deterministic given the seed;
+    for 3 to 7 pieces it has always ended at 0 in the cases I tried (a few seconds at most), but it is not a proof that
+    it always will, and the page says so when it stops short after 20000 moves.</p>
+    <p data-l="it" lang="it">Song e gli altri costruiscono i pezzi uno alla volta, dalla chiave verso l'interno, con
+    regole che rendono ogni nuovo pezzo estraibile lungo una direzione e bloccato nelle altre dai pezzi già fatti, così
+    che la proprietà vale per costruzione su griglie di centinaia di cubi. La scena usa una ricerca più semplice, adatta
+    a griglie di 70 o 84 cubi: i pezzi sono prima fatti crescere a caso dal seme, ognuno fatto di colonne di cubi che
+    escono dal resto del baule lungo la sua direzione; poi un algoritmo di ricottura simulata sposta un cubo alla volta a
+    un pezzo vicino, tenendo ogni pezzo connesso e di almeno 3 cubi, e abbassa un punteggio che conta, a ogni passo del
+    miglior ordine trovato, i pezzi lasciati fuori da una chiusura e una chiave che non può uscire. Una divisione è
+    mostrata come a incastro solo quando il punteggio è 0, cioè quando il test qui sopra passa a ogni passo. La ricerca è
+    deterministica dato il seme; da 3 a 7 pezzi è sempre arrivata a 0 nei casi che ho provato (al più qualche secondo),
+    ma questo non prova che ci arrivi sempre, e la pagina lo dice quando si ferma prima, dopo 20000 mosse.</p>
+  </div>
+</main>
+<section id="print">
+  <h2 class="owner-only"><span data-l="en">Download for 3D printing</span><span data-l="it" lang="it">Scarica per la stampa 3D</span></h2>
+  <h2 class="public-only"><span data-l="en">A 3D print of this chest</span><span data-l="it" lang="it">Una stampa 3D di questo baule</span></h2>
+  <p class="lede public-only" data-l="en">The chest can be ordered as a 3D print, as separate pieces to put together.
+  The request sends the link to the chest as it is on the screen, with its split.</p>
+  <p class="lede public-only" data-l="it" lang="it">Puoi ordinare il baule come stampa 3D, in pezzi separati da
+  montare. La richiesta manda il link al baule così com'è sullo schermo, con la sua divisione.</p>
+  <p class="lede owner-only" data-l="en">One closed solid per piece, side by side on the bed, each turned onto the face
+  that leaves the fewest cubes with nothing of the piece below them; the status line gives how many such cubes
+  remain, which need supports. Every piece is shrunk by half the clearance on each face, so that two pieces that touch
+  in the chest are the clearance apart (0.2 mm by default). Two iron bands and a keyhole are cut 0.6 mm deep into the
+  outer faces only, so that they never add material where two pieces slide.</p>
+  <p class="lede owner-only" data-l="it" lang="it">Un solido chiuso per pezzo, affiancati sul piatto, ognuno girato
+  sulla faccia che lascia meno cubi senza niente del pezzo sotto di loro; la riga di stato dice quanti di questi cubi
+  restano, che richiedono supporti. Ogni pezzo è ridotto di metà del gioco su ogni faccia, così che due pezzi che si
+  toccano nel baule distano quanto il gioco (0.2 mm come default). Due bande di ferro e un buco della serratura sono
+  incisi per 0.6 mm solo sulle facce esterne, così da non aggiungere mai materiale dove due pezzi scorrono.</p>
+</section>
+<footer><span data-l="en">The interlocking test is exact for translations along the axes; the search that finds the pieces is a simplified one, not the construction of Song, Fu and Cohen-Or.</span><span data-l="it" lang="it">Il
+test di incastro è esatto per le traslazioni lungo gli assi; la ricerca che trova i pezzi è semplificata, non la costruzione di Song, Fu e Cohen-Or.</span></footer>
+<script type="module" src="src/forms/puzzle-chest/puzzle-chest.js"></script>
+</body>
+</html>

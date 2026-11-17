@@ -96,58 +96,6 @@ export function printPanel(host, cfg) {
   wrap.append(set, tr, st);
   host.appendChild(wrap);
   if (!OWNER) return requestPanel(cfg, fields, inputs, tr, st, id);
-  const both = mk('button', { type: 'button', class: 'main', id: id('both') }, bi('Download STL + 3MF', 'Scarica STL + 3MF'));
-  const bstl = mk('button', { type: 'button', id: id('stl') }, 'STL'), b3mf = mk('button', { type: 'button', id: id('3mf') }, '3MF');
-  tr.append(both, bstl, b3mf);
-
-  const read = () => readFields(inputs);
-  const buttons = [both, bstl, b3mf];
-  const busy = on => buttons.forEach(b => { b.disabled = on; });
-  const report = (file, bytes, tris, d, info, o) => {
-    const k = bytes.length < 2 ** 20 ? `${(bytes.length / 1024).toFixed(0)} kB` : `${(bytes.length / 2 ** 20).toFixed(1)} MB`;
-    const n = tris < 10000 ? `${tris}` : `${(tris / 1000).toFixed(0)} k`;
-    st.textContent = `${file}: ${n} ${t('triangles', 'triangoli')}, ${d.map(x => x.toFixed(1)).join(' × ')} mm, ${k}` + (cfg.note ? cfg.note(info, o) : '');
-  };
-  const opts = o => ({
-    name: cfg.name ? cfg.name(o) : 'solid',
-    head: typeof cfg.head === 'function' ? cfg.head(o) : cfg.head,
-    object: cfg.object || 'solid',
-  });
-  let worker = null;
-  async function download(what) {
-    const o = read();
-    if (cfg.worker) {
-      if (worker) worker.terminate();
-      worker = new Worker(new URL('./worker.js', import.meta.url), { type: 'module' });
-      busy(true);
-      st.replaceChildren(t('building the solid', 'costruzione del solido'));
-      const bar = mk('progress', { max: 1, value: 0 }); st.appendChild(bar);
-      const end = () => { busy(false); worker.terminate(); worker = null; };
-      worker.onmessage = ({ data }) => {
-        if (data.progress !== undefined) { bar.value = data.progress; return; }
-        if (data.error) { st.textContent = t('failed: ', 'non riuscito: ') + data.error; return end(); }
-        save(data.bytes, data.file);
-        report(data.file, data.bytes, data.tris, data.info.dims, data.info, o);
-        end();
-      };
-      worker.onerror = e => { st.textContent = t('failed: ', 'non riuscito: ') + (e.message || 'worker'); end(); };
-      worker.postMessage({ module: cfg.worker.module, fn: cfg.worker.fn, args: cfg.worker.args(o), what, ...opts(o) });
-      return;
-    }
-    try {
-      busy(true);
-      const { printFiles } = await import('./files.js');
-      const m = await cfg.build(o), { file, bytes } = await printFiles(m, what, opts(o));
-      save(bytes, file);
-      report(file, bytes, m.idx.length / 3, m.dims || dims(m), m, o);
-    } catch (e) {
-      st.textContent = t('failed: ', 'non riuscito: ') + (e && e.message || e);
-    } finally { busy(false); }
-  }
-  both.addEventListener('click', () => download('zip'));
-  bstl.addEventListener('click', () => download('stl'));
-  b3mf.addEventListener('click', () => download('3mf'));
-  return { el: wrap, read, download };
 }
 
 function readFields(inputs) {

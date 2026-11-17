@@ -13,9 +13,18 @@
     if (t === 'light' || t === 'dark') root.setAttribute('data-theme', t); else root.removeAttribute('data-theme');
     window.dispatchEvent(new Event('themechange'));
   }
+  // the title of the tab follows the language: the English one is the
+  // <title> of the page, the Italian one the Italian heading of the scene
+  var titleEn = document.title || null;
+  function retitle() {
+    var l = root.getAttribute('data-lang'), h = document.querySelector('h1 [data-l="it"]');
+    if (titleEn === null) titleEn = document.title;
+    if (h) document.title = l === 'it' ? h.textContent.trim() : titleEn;
+  }
   function applyLang(l) {
     if (l !== 'it' && l !== 'en') l = (navigator.language || '').slice(0, 2).toLowerCase() === 'it' ? 'it' : 'en';
     root.setAttribute('data-lang', l); root.lang = l;
+    if (document.readyState !== 'loading') retitle();
     window.dispatchEvent(new Event('langchange'));
   }
   applyTheme(read('theme')); applyLang(read('lang'));
@@ -23,6 +32,7 @@
     if (e.key === 'theme' || e.key === null) applyTheme(read('theme'));
     if (e.key === 'lang' || e.key === null) applyLang(read('lang'));
   });
+  document.addEventListener('DOMContentLoaded', retitle);
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () { window.dispatchEvent(new Event('themechange')); });
 
   // the bar, only when the scene is not shown inside the site
@@ -47,10 +57,12 @@
     bar.innerHTML = back +
       '<button type="button" data-set="en">EN</button><span aria-hidden="true">&middot;</span>' +
       '<button type="button" data-set="it">IT</button>' +
-      '<button type="button" class="theme" aria-label="Light or dark theme" title="Light or dark theme">&#9680;</button>';
+      '<button type="button" class="theme">&#9680;</button>';
     document.body.prepend(bar);
     function mark() {
-      var l = root.getAttribute('data-lang');
+      var l = root.getAttribute('data-lang'), th = bar.querySelector('.theme'),
+          say = l === 'it' ? 'Tema chiaro o scuro' : 'Light or dark theme';
+      th.setAttribute('aria-label', say); th.title = say;
       bar.querySelectorAll('[data-set]').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-set') === l); });
     }
     bar.querySelectorAll('[data-set]').forEach(function (b) {

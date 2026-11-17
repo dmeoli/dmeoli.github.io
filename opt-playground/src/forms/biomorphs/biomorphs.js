@@ -41,7 +41,7 @@ function setup() {
   renderer.setPixelRatio(Math.min(2, devicePixelRatio));
   stage.appendChild(renderer.domElement);
   const hint = document.createElement('div'); hint.className = 'hint'; stage.appendChild(hint);
-  const sayHint = () => { hint.textContent = t('drag to turn, wheel or pinch to zoom', 'trascinare per ruotare, rotella o pizzico per lo zoom'); };
+  const sayHint = () => { hint.textContent = t('drag to turn, wheel or pinch to zoom', 'trascina per ruotare, rotella o pizzico per lo zoom'); };
   sayHint(); onLang(sayHint);
   scene = new THREE.Scene(); lights(scene);
   camera = new THREE.PerspectiveCamera(30, 1, 1, 2000);

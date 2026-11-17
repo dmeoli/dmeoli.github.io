@@ -35,7 +35,7 @@ const scenes = {
     },
     get caption3d() {
       return t('Dual in 3D (drag to turn, wheel to zoom): the Lagrangian function is a concave roof of flat faces, one per column (the faint wire); the model is the roof of the cuts found so far, colored per column, which comes down onto the true one as cuts are added. The iterates sit on the true roof, with a line down to the plane of the multipliers; the gold octahedron is the maximum, the ring the stability centre.',
-        "Duale in 3D (trascinare per ruotare, rotella per lo zoom): la funzione lagrangiana è un tetto concavo di facce piane, una per colonna (il reticolo tenue); il modello è il tetto dei tagli trovati finora, colorato per colonna, che scende sul tetto vero man mano che si aggiungono tagli. Gli iterati stanno sul tetto vero, con una linea che scende al piano dei moltiplicatori; l'ottaedro dorato è il massimo, l'anello il centro di stabilità.");
+        "Duale in 3D (trascina per ruotare, rotella per lo zoom): la funzione lagrangiana è un tetto concavo di facce piane, una per colonna (il reticolo tenue); il modello è il tetto dei tagli trovati finora, colorato per colonna, che scende sul tetto vero man mano che si aggiungono tagli. Gli iterati stanno sul tetto vero, con una linea che scende al piano dei moltiplicatori; l'ottaedro dorato è il massimo, l'anello il centro di stabilità.");
     },
     drawOne(run, k, ctx) {
       primal2($('primal' + k), ctx.problem, run.state, ctx.hover);
