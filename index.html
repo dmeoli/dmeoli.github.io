@@ -609,11 +609,10 @@ footer {
 }
 /* the second row of the menu: the scenes of optimization and of machine
    learning, translate and art, apart from the academic sections, smaller and
-   in the lilac of the accent, spread evenly under the first row, which sets
-   the width of the box */
-.sections .menu { display: inline-flex; flex-direction: column; gap: var(--f5); max-width: 100%; }
-.sections .row1 { display: flex; flex-wrap: wrap; gap: var(--f5) var(--f21); }
-.sections .row2 { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--f5) var(--f21); padding: 0 var(--f13); }
+   in the lilac of the accent; the two rows are centred on each other */
+.sections .menu { display: inline-flex; flex-direction: column; align-items: center; gap: var(--f5); max-width: 100%; }
+.sections .row1 { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--f5) var(--f21); }
+.sections .row2 { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--f5) var(--f21); }
 @media (max-width: 760px) {
   .sections .menu { display: flex; }
   .sections .row1, .sections .row2 { justify-content: center; padding: 0; }
