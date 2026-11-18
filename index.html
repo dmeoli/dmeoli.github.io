@@ -677,6 +677,10 @@ footer {
 }
 .sections a.side { font-size: var(--s-075); color: var(--heading); letter-spacing: .146em; }
 .sections a.side:hover, .sections a.side:focus-visible, .sections a.side[aria-current="true"] { color: var(--accent); }
+@media (max-width: 30rem) {
+  .sections .row2, .sections .row3 { flex-wrap: nowrap; column-gap: 1rem; }
+  .sections a.side { font-size: min(var(--s-075), 2.6vw); letter-spacing: .03em; white-space: nowrap; }
+}
 /* a scene of play opened over the page, as wide as the screen, with the
    controls of the site above it; one scene at a time, unloaded when closed */
 #sceneview { width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: var(--ground); color: var(--ink); }
