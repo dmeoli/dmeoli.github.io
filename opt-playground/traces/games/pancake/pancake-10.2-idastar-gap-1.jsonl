@@ -1,0 +1,26 @@
+{"kind":"arena","v":1,"game":"pancake","sample":false,"instance":{"id":"pancake-10","kind":"pancake","start":[1,7,3,9,4,0,5,2,6,8],"pancakes":10},"solver":{"id":"idastar-gap-1","name":"IDA*","block":"PBeFS","paradigm":"heuristic search","code":"PBeFS e328929","config":{"algorithm":"idastar","heuristic":"gap","threads":1}},"counters":["expanded","generated","duplicates","open","sent"],"workers":1,"lane":"recorded run of PBeFS IDA*, 2026-11-18","sampling":{"every":1,"expansions_kept":11}}
+{"step":0,"type":"threshold","n":{"expanded":0,"generated":0,"duplicates":0,"open":0,"sent":0},"w":0,"g":10}
+{"step":1,"type":"expand","n":{"expanded":1,"generated":0,"duplicates":0,"open":0,"sent":0},"w":0,"g":0,"h":10,"f":10}
+{"step":2,"type":"expand","n":{"expanded":2,"generated":4,"duplicates":0,"open":0,"sent":0},"w":0,"g":1,"h":9,"f":10}
+{"step":3,"type":"expand","n":{"expanded":3,"generated":7,"duplicates":0,"open":0,"sent":0},"w":0,"g":2,"h":8,"f":10}
+{"step":4,"type":"expand","n":{"expanded":4,"generated":14,"duplicates":0,"open":0,"sent":0},"w":0,"g":3,"h":7,"f":10}
+{"step":5,"type":"expand","n":{"expanded":5,"generated":16,"duplicates":0,"open":0,"sent":0},"w":0,"g":4,"h":6,"f":10}
+{"step":6,"type":"expand","n":{"expanded":6,"generated":18,"duplicates":0,"open":0,"sent":0},"w":0,"g":5,"h":5,"f":10}
+{"step":7,"type":"expand","n":{"expanded":7,"generated":23,"duplicates":0,"open":0,"sent":0},"w":0,"g":6,"h":4,"f":10}
+{"step":8,"type":"expand","n":{"expanded":8,"generated":28,"duplicates":0,"open":0,"sent":0},"w":0,"g":7,"h":3,"f":10}
+{"step":9,"type":"expand","n":{"expanded":9,"generated":39,"duplicates":0,"open":0,"sent":0},"w":0,"g":7,"h":3,"f":10}
+{"step":10,"type":"expand","n":{"expanded":10,"generated":40,"duplicates":0,"open":0,"sent":0},"w":0,"g":8,"h":2,"f":10}
+{"step":11,"type":"expand","n":{"expanded":11,"generated":41,"duplicates":0,"open":0,"sent":0},"w":0,"g":9,"h":1,"f":10}
+{"step":12,"type":"solution","n":{"expanded":11,"generated":46,"duplicates":0,"open":0,"sent":0},"w":0,"cost":10}
+{"step":13,"type":"path","n":{"expanded":11,"generated":46,"duplicates":0,"open":0,"sent":0},"i":0,"x":[1,7,3,9,4,0,5,2,6,8]}
+{"step":14,"type":"path","n":{"expanded":11,"generated":46,"duplicates":0,"open":0,"sent":0},"i":1,"x":[5,0,4,9,3,7,1,2,6,8]}
+{"step":15,"type":"path","n":{"expanded":11,"generated":46,"duplicates":0,"open":0,"sent":0},"i":2,"x":[2,1,7,3,9,4,0,5,6,8]}
+{"step":16,"type":"path","n":{"expanded":11,"generated":46,"duplicates":0,"open":0,"sent":0},"i":3,"x":[7,1,2,3,9,4,0,5,6,8]}
+{"step":17,"type":"path","n":{"expanded":11,"generated":46,"duplicates":0,"open":0,"sent":0},"i":4,"x":[6,5,0,4,9,3,2,1,7,8]}
+{"step":18,"type":"path","n":{"expanded":11,"generated":46,"duplicates":0,"open":0,"sent":0},"i":5,"x":[1,2,3,9,4,0,5,6,7,8]}
+{"step":19,"type":"path","n":{"expanded":11,"generated":46,"duplicates":0,"open":0,"sent":0},"i":6,"x":[4,9,3,2,1,0,5,6,7,8]}
+{"step":20,"type":"path","n":{"expanded":11,"generated":46,"duplicates":0,"open":0,"sent":0},"i":7,"x":[9,4,3,2,1,0,5,6,7,8]}
+{"step":21,"type":"path","n":{"expanded":11,"generated":46,"duplicates":0,"open":0,"sent":0},"i":8,"x":[8,7,6,5,0,1,2,3,4,9]}
+{"step":22,"type":"path","n":{"expanded":11,"generated":46,"duplicates":0,"open":0,"sent":0},"i":9,"x":[4,3,2,1,0,5,6,7,8,9]}
+{"step":23,"type":"path","n":{"expanded":11,"generated":46,"duplicates":0,"open":0,"sent":0},"i":10,"x":[0,1,2,3,4,5,6,7,8,9]}
+{"type":"result","status":"optimal","cost":10,"path":[[1,7,3,9,4,0,5,2,6,8],[5,0,4,9,3,7,1,2,6,8],[2,1,7,3,9,4,0,5,6,8],[7,1,2,3,9,4,0,5,6,8],[6,5,0,4,9,3,2,1,7,8],[1,2,3,9,4,0,5,6,7,8],[4,9,3,2,1,0,5,6,7,8],[9,4,3,2,1,0,5,6,7,8],[8,7,6,5,0,1,2,3,4,9],[4,3,2,1,0,5,6,7,8,9],[0,1,2,3,4,5,6,7,8,9]],"seconds":5.6e-05,"stats":{"expanded":11,"reexpanded":0,"generated":46,"duplicates":0,"stored":11,"messages":0,"sent":0,"iterations":0,"expanded_by":[11]},"events":24,"capped":false}

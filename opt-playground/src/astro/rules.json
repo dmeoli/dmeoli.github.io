@@ -1,0 +1,164 @@
+{
+  "about": "The rules of the booklet (astro-booklet.html): which factors of a chart can be told (families), how much each weighs (weights), which chapter tells which factors and how many (chapters), and how two factors that pull in opposite directions are reconciled (conflicts). Data only: src/astro/factors.js computes the factors and src/astro/portrait.js applies these rules. Every key that a family can produce must have a fragment in src/astro/texts/it.json and en.json (checked by tools/astro_coverage.py). The weights are choices of mine, not measured quantities.",
+  "version": 1,
+
+  "families": [
+    { "id": "sign", "key": "sign.{p}.{s}", "vars": { "p": ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Asc", "MC"], "s": "$signs" },
+      "note": "Uranus, Neptune and Pluto stay in a sign for 7 to 20 years or more, so their sign is shared by a generation and is not told." },
+    { "id": "house", "key": "house.{p}.{h}", "vars": { "p": "$bodies", "h": "$houses" } },
+    { "id": "aspect", "key": "aspect.{a}.{b}.{f}", "pairs": [
+      ["Sun", "Moon", ["conj", "flow", "tension"]], ["Sun", "Mercury", ["conj"]], ["Sun", "Venus", ["conj"]],
+      ["Sun", "Mars", ["conj", "flow", "tension"]], ["Moon", "Mercury", ["conj", "flow", "tension"]],
+      ["Moon", "Venus", ["conj", "flow", "tension"]], ["Moon", "Mars", ["conj", "flow", "tension"]],
+      ["Mercury", "Venus", ["conj", "flow"]], ["Mercury", "Mars", ["conj", "flow", "tension"]],
+      ["Venus", "Mars", ["conj", "flow", "tension"]],
+      ["Sun", "Jupiter", ["conj", "flow", "tension"]], ["Sun", "Saturn", ["conj", "flow", "tension"]],
+      ["Sun", "Uranus", ["conj", "flow", "tension"]], ["Sun", "Neptune", ["conj", "flow", "tension"]],
+      ["Sun", "Pluto", ["conj", "flow", "tension"]],
+      ["Moon", "Jupiter", ["conj", "flow", "tension"]], ["Moon", "Saturn", ["conj", "flow", "tension"]],
+      ["Moon", "Uranus", ["conj", "flow", "tension"]], ["Moon", "Neptune", ["conj", "flow", "tension"]],
+      ["Moon", "Pluto", ["conj", "flow", "tension"]],
+      ["Mercury", "Jupiter", ["conj", "flow", "tension"]], ["Mercury", "Saturn", ["conj", "flow", "tension"]],
+      ["Mercury", "Uranus", ["conj", "flow", "tension"]], ["Mercury", "Neptune", ["conj", "flow", "tension"]],
+      ["Mercury", "Pluto", ["conj", "flow", "tension"]],
+      ["Venus", "Jupiter", ["conj", "flow", "tension"]], ["Venus", "Saturn", ["conj", "flow", "tension"]],
+      ["Venus", "Uranus", ["conj", "flow", "tension"]], ["Venus", "Neptune", ["conj", "flow", "tension"]],
+      ["Venus", "Pluto", ["conj", "flow", "tension"]],
+      ["Mars", "Jupiter", ["conj", "flow", "tension"]], ["Mars", "Saturn", ["conj", "flow", "tension"]],
+      ["Mars", "Uranus", ["conj", "flow", "tension"]], ["Mars", "Neptune", ["conj", "flow", "tension"]],
+      ["Mars", "Pluto", ["conj", "flow", "tension"]]
+    ], "note": "Between the personal planets (Sun to Mars) and from them to the slower ones; Mercury is never more than 28 degrees from the Sun and Venus 48, so only the possible families are listed. The aspects between two slow planets are shared by a generation and are not told." },
+    { "id": "angular", "key": "angular.{p}.{x}", "vars": { "p": "$bodies", "x": ["Asc", "Dsc", "MC", "IC"] },
+      "note": "A body within the angular orb of one of the four angles; a body opposite the Ascendant is on the Descendant, and is told as such, not as an opposition." },
+    { "id": "angle_aspect", "key": "aspect.{p}.{x}.{f}", "vars": { "p": "$bodies", "x": ["Asc", "MC"], "f": ["flow", "tension"] },
+      "note": "Trine and sextile (flow) or square (tension) to the Ascendant or the Midheaven." },
+    { "id": "element", "key": "element.{e}.{k}", "vars": { "e": ["fire", "earth", "air", "water"], "k": ["strong", "weak"] } },
+    { "id": "modality", "key": "modality.{m}.{k}", "vars": { "m": ["cardinal", "fixed", "mutable"], "k": ["strong", "weak"] } },
+    { "id": "hemisphere", "key": "hemisphere.{x}", "vars": { "x": ["east", "west", "north", "south"] } },
+    { "id": "pattern", "key": "pattern.{x}", "vars": { "x": ["tsquare", "grandtrine", "grandcross", "yod", "stellium"] } },
+    { "id": "ruler", "key": "ruler.{p}", "vars": { "p": "$bodies" } },
+    { "id": "dominant", "key": "dominant.{p}", "vars": { "p": "$bodies" } },
+    { "id": "retro", "key": "retro.{p}", "vars": { "p": ["Mercury", "Venus", "Mars", "Jupiter", "Saturn"] },
+      "note": "Uranus, Neptune and Pluto are retrograde about 40 percent of the time, and are not told." },
+    { "id": "emph_sign", "key": "emphasis.sign.{s}", "vars": { "s": "$signs" } },
+    { "id": "emph_house", "key": "emphasis.house.{h}", "vars": { "h": "$houses" } },
+    { "id": "transit", "key": "transit.{t}.{f}", "vars": { "t": ["Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"], "f": ["conj", "flow", "tension"] } },
+    { "id": "touch", "key": "touch.{n}", "vars": { "n": ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Asc", "MC"] } }
+  ],
+  "sets": {
+    "$signs": ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"],
+    "$bodies": ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"],
+    "$houses": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+  },
+  "sentences": ["tension.venturing-cautious", "tension.detached-feeling", "tension.changeable-constant", "transit.again"],
+
+  "zodiac": {
+    "element": ["fire", "earth", "air", "water"],
+    "modality": ["cardinal", "fixed", "mutable"],
+    "rulers": { "Aries": "Mars", "Taurus": "Venus", "Gemini": "Mercury", "Cancer": "Moon", "Leo": "Sun", "Virgo": "Mercury",
+      "Libra": "Venus", "Scorpio": "Pluto", "Sagittarius": "Jupiter", "Capricorn": "Saturn", "Aquarius": "Uranus", "Pisces": "Neptune" },
+    "rulers_note": "Modern rulers (Pluto for Scorpio, Uranus for Aquarius, Neptune for Pisces); the traditional ones of Ptolemy would be Mars, Saturn and Jupiter.",
+    "domicile": { "Sun": ["Leo"], "Moon": ["Cancer"], "Mercury": ["Gemini", "Virgo"], "Venus": ["Taurus", "Libra"], "Mars": ["Aries", "Scorpio"],
+      "Jupiter": ["Sagittarius", "Pisces"], "Saturn": ["Capricorn", "Aquarius"], "Uranus": ["Aquarius"], "Neptune": ["Pisces"], "Pluto": ["Scorpio"] },
+    "exaltation": { "Sun": "Aries", "Moon": "Taurus", "Mercury": "Virgo", "Venus": "Pisces", "Mars": "Capricorn", "Jupiter": "Cancer", "Saturn": "Libra" }
+  },
+
+  "weights": {
+    "body": { "Sun": 10, "Moon": 10, "Mercury": 6, "Venus": 6, "Mars": 6, "Jupiter": 4, "Saturn": 5, "Uranus": 3, "Neptune": 3, "Pluto": 3, "Asc": 10, "MC": 7 },
+    "balance": { "Sun": 3, "Moon": 3, "Asc": 3, "MC": 2, "Mercury": 2, "Venus": 2, "Mars": 2, "Jupiter": 1, "Saturn": 1, "Uranus": 0.5, "Neptune": 0.5, "Pluto": 0.5 },
+    "balance_note": "The points that each body and angle gives to the element and the modality of its sign: the luminaries and the Ascendant count most, the slow planets least.",
+    "aspect_type": { "conj": 1.0, "oppo": 0.9, "squa": 0.9, "trin": 0.7, "sext": 0.5 },
+    "family": { "conj": "conj", "sext": "flow", "trin": "flow", "squa": "tension", "oppo": "tension" },
+    "orb_floor": 0.35,
+    "orb_note": "An aspect weighs (wA + wB) / 2 times its type times a tightness that falls linearly from 1 at the exact angle to orb_floor at the limit of the orb.",
+    "house_kind": { "1": 1.2, "4": 1.2, "7": 1.2, "10": 1.2, "2": 1.0, "5": 1.0, "8": 1.0, "11": 1.0, "3": 0.85, "6": 0.85, "9": 0.85, "12": 0.85 },
+    "sign_dignity": { "domicile": 1.2, "exaltation": 1.1 },
+    "angular_orb": 8,
+    "angular_mult": 1.4,
+    "ruler": 8,
+    "ruler_bonus": 3,
+    "ruler_note": "The ruler of the Ascendant's sign weighs ruler in its own paragraph, and its sign and house paragraphs gain ruler_bonus.",
+    "element": { "strong_share": 0.36, "weak_share": 0.08, "strong": 9, "weak": 7 },
+    "modality": { "strong_share": 0.48, "weak_share": 0.12, "strong": 7, "weak": 5 },
+    "hemisphere": { "min_bodies": 7, "weight": 5, "note": "Seven of the ten bodies or more in one half of the wheel: east (houses 10 to 3, around the Ascendant), west (4 to 9), south (7 to 12, above the horizon), north (1 to 6)." },
+    "stellium": { "min_bodies": 3, "weight": 9 },
+    "emphasis": { "sign_min_points": 6, "house_min_bodies": 3, "base": 4, "per_body": 1 },
+    "pattern": { "grandcross": 12, "tsquare": 10, "grandtrine": 8, "yod": 8 },
+    "retro": 0.6,
+    "retro_note": "A retrograde planet weighs retro times its body weight.",
+    "dominant": {
+      "angular": 3, "angular_house": 1.5, "rules_asc": 4, "rules_sun": 2, "rules_moon": 2, "domicile": 2, "exaltation": 1,
+      "aspect": 1, "luminary_conj": 2, "count": 2, "first": 9, "second": 6, "min_score": 6,
+      "note": "The score of a planet: angular (within angular_orb of an angle), angular_house (in house 1, 4, 7 or 10 otherwise), the rulership of the signs of the Ascendant, the Sun and the Moon, dignity by sign, aspect times the tightness of each major aspect it makes to the bodies and angles, luminary_conj for a conjunction with the Sun or the Moon. The count best planets with a score of at least min_score are dominant; the first weighs first, the second second."
+    }
+  },
+
+  "transits": {
+    "planets": ["Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"],
+    "targets": ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Asc", "MC"],
+    "aspects": ["conj", "sext", "squa", "trin", "oppo"],
+    "orb": 1.0,
+    "months": 12,
+    "step_days": 2,
+    "transiting": { "Jupiter": 2, "Saturn": 4, "Uranus": 4, "Neptune": 4, "Pluto": 5 },
+    "target": { "Sun": 5, "Moon": 5, "Asc": 5, "MC": 4, "Mercury": 3, "Venus": 3, "Mars": 3, "Jupiter": 2, "Saturn": 2, "Uranus": 1, "Neptune": 1, "Pluto": 1 },
+    "note": "A transit (a slow planet in aspect to a natal body or angle) counts when it comes within orb inside the window; it weighs transiting times target times aspect_type times (0.5 + 0.5 x the fraction of the window spent within orb), with the exact dates found by bisection on the ephemeris. The longitudes are sampled every step_days, which is safe because these planets move at most a quarter of a degree a day, so that an aspect stays within the orb for days."
+  },
+
+  "min_score": 3,
+  "min_score_note": "A factor whose weight times the boost of the chapter is below min_score is not told in that chapter, so that a short chapter stays short instead of being filled with faint factors.",
+  "chapters": [
+    { "id": "overview", "max": 6, "lead": "sign.Sun.*",
+      "take": [
+        { "match": "sign.Sun.*", "boost": 1.5 }, { "match": "sign.Asc.*", "boost": 1.2 },
+        { "match": "element.*", "boost": 1.2 }, { "match": "modality.*" },
+        { "match": "dominant.*" }, { "match": "ruler.*" }, { "match": "pattern.stellium" },
+        { "match": "emphasis.sign.*" }, { "match": "hemisphere.*" },
+        { "match": "aspect.Sun.Moon.*", "boost": 1.1 }, { "match": "angular.Sun.*" }, { "match": "house.Sun.*", "boost": 0.8 }
+      ] },
+    { "id": "emotions", "max": 5, "lead": "sign.Moon.*",
+      "take": [
+        { "match": "sign.Moon.*", "boost": 1.5 }, { "match": "house.Moon.*", "boost": 1.1 }, { "match": "angular.Moon.*", "boost": 1.1 },
+        { "match": "aspect.Moon.*.*" }, { "match": "aspect.Sun.Moon.*" }, { "match": "angular.*.IC" },
+        { "match": "house.*.4", "boost": 0.8 }, { "match": "emphasis.house.4" }, { "match": "emphasis.house.12" }, { "match": "house.Neptune.*", "boost": 0.7 }
+      ] },
+    { "id": "mind", "max": 4, "lead": "sign.Mercury.*",
+      "take": [
+        { "match": "sign.Mercury.*", "boost": 1.5 }, { "match": "house.Mercury.*", "boost": 1.1 }, { "match": "aspect.Mercury.*.*" },
+        { "match": "aspect.*.Mercury.*" }, { "match": "retro.Mercury" }, { "match": "angular.Mercury.*" },
+        { "match": "house.*.3", "boost": 0.8 }, { "match": "house.*.9", "boost": 0.8 }, { "match": "emphasis.house.3" }, { "match": "emphasis.house.9" }
+      ] },
+    { "id": "relationships", "max": 5, "lead": "sign.Venus.*",
+      "take": [
+        { "match": "sign.Venus.*", "boost": 1.5 }, { "match": "house.Venus.*", "boost": 1.1 }, { "match": "aspect.Venus.*.*" },
+        { "match": "aspect.*.Venus.*" }, { "match": "angular.*.Dsc", "boost": 1.2 }, { "match": "house.*.7", "boost": 1.1 },
+        { "match": "emphasis.house.7" }, { "match": "retro.Venus" }, { "match": "house.*.5", "boost": 0.7 }, { "match": "house.*.8", "boost": 0.7 }
+      ] },
+    { "id": "work", "max": 5, "lead": "sign.MC.*",
+      "take": [
+        { "match": "sign.MC.*", "boost": 1.5 }, { "match": "angular.*.MC", "boost": 1.2 }, { "match": "aspect.*.MC.*" },
+        { "match": "house.*.10", "boost": 1.1 }, { "match": "emphasis.house.10" }, { "match": "sign.Saturn.*" }, { "match": "sign.Jupiter.*" },
+        { "match": "sign.Mars.*" }, { "match": "house.Saturn.*" }, { "match": "house.Jupiter.*" }, { "match": "house.Mars.*" },
+        { "match": "house.*.6", "boost": 0.8 }, { "match": "house.*.2", "boost": 0.7 }, { "match": "emphasis.house.6" }, { "match": "emphasis.house.2" }
+      ] },
+    { "id": "challenges", "max": 6, "lead": null,
+      "take": [
+        { "match": "pattern.grandcross", "boost": 1.2 }, { "match": "pattern.tsquare", "boost": 1.2 }, { "match": "pattern.yod", "boost": 1.1 },
+        { "match": "pattern.grandtrine" }, { "match": "aspect.*.*.tension", "boost": 1.1 }, { "match": "aspect.*.Saturn.conj" },
+        { "match": "aspect.*.Pluto.conj" }, { "match": "retro.*" }, { "match": "house.Saturn.*" }, { "match": "house.Pluto.*" },
+        { "match": "house.Uranus.*" }, { "match": "house.Neptune.*" }, { "match": "angular.*.*" }, { "match": "element.*.weak" },
+        { "match": "modality.*.weak" }, { "match": "emphasis.house.8" }, { "match": "emphasis.house.12" }, { "match": "house.*.12", "boost": 0.7 }
+      ] },
+    { "id": "year", "max": 5, "source": "transits" }
+  ],
+
+  "conflicts": {
+    "tags": {
+      "element": { "fire": ["venturing"], "earth": ["cautious"], "air": ["detached"], "water": ["feeling"] },
+      "modality": { "fixed": ["constant"], "mutable": ["changeable"] },
+      "planet": { "Saturn": ["cautious", "constant"], "Uranus": ["changeable", "detached"], "Jupiter": ["venturing"], "Neptune": ["feeling"] }
+    },
+    "polarities": [["venturing", "cautious"], ["detached", "feeling"], ["changeable", "constant"]],
+    "note": "A sign paragraph carries the tags of the element and the modality of its sign, a strong element or modality its own tags, a conjunction or a tension aspect and an angular planet the tags of the slow planet involved. Inside a chapter the paragraphs are taken by weight; one whose tags oppose a tag of a paragraph already taken is left out (the lead is never left out), and the tension sentence of that polarity is added once after the paragraph that was kept, naming both factors."
+  }
+}

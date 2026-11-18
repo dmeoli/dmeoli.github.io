@@ -1,0 +1,145 @@
+/* the scenes of the sky (sky-*.html): the colours of the bodies, the fields
+   of the control bar, the views on one row as equal boxes (each figure a
+   subgrid of caption, picture and what stands under it, so that their parts
+   start on the same lines), the tables under them */
+:root {
+  --earth: #2d63b0; --planet: #b2324b; --sun: #a77d12; --model: #1f7f72;
+  --glyph: 'DejaVu Sans', 'Segoe UI Symbol', 'Apple Symbols', 'Noto Sans Symbols', 'Noto Sans Symbols 2', sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --earth: #7fb0f0; --planet: #ef7f95; --sun: #d8b85a; --model: #5cc7b5; }
+}
+:root[data-theme="dark"] { --earth: #7fb0f0; --planet: #ef7f95; --sun: #d8b85a; --model: #5cc7b5; }
+
+.controls input[type=date], .controls input[type=number] {
+  font: inherit; color: var(--ink); background: var(--ground); border: 1px solid var(--rule);
+  border-radius: 6px; padding: 4px 7px; min-width: 0; max-width: 100%; color-scheme: light;
+}
+:root[data-theme="dark"] .controls input { color-scheme: dark; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .controls input { color-scheme: dark; } }
+.controls input:focus-visible, .controls select:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 1px; }
+.controls .stats { flex-wrap: wrap; gap: 6px 22px; margin: 0; padding-top: 10px; border-top: 1px solid var(--rule); }
+.controls .stats dd { font-variant-numeric: tabular-nums; }
+.controls output { font-variant-numeric: tabular-nums; }
+.transport button { white-space: nowrap; }
+@media (max-width: 640px) {
+  .settings { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px 14px; }
+  .settings > .wide { grid-column: 1 / -1; }
+  .settings select, .settings input:not([type=range]) { width: 100%; }
+  .settings input[type=range] { width: 100%; }
+  .transport { margin-left: 0; }
+}
+
+/* the views: n equal columns, each figure three rows of a shared grid */
+main.sky { grid-template-rows: auto auto auto; row-gap: 0; }
+main.sky.c3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+main.sky > figure { display: grid; grid-row: span 3; grid-template-rows: subgrid; align-content: start; }
+main.sky figcaption { min-height: 0; margin-bottom: 10px; }
+.view { width: 100%; aspect-ratio: 1; display: block; border-radius: 6px; background: var(--panel); border: 1px solid var(--rule); }
+.view.stage { position: relative; overflow: hidden; }
+.view.stage canvas { touch-action: none; }
+.under { margin-top: 10px; font: 12px/1.4 'IBM Plex Mono', monospace; color: var(--ink-soft); align-self: start; }
+@media (max-width: 860px) {
+  main.sky, main.sky.c3 { grid-template-columns: 1fr; grid-template-rows: none; row-gap: 24px; }
+  main.sky > figure { grid-row: auto; grid-template-rows: none; }
+}
+/* a full-width strip under the views */
+.strip { margin-top: 24px; }
+.strip figcaption { min-height: 0; margin-bottom: 10px; }
+.strip svg { border-radius: 6px; background: var(--panel); border: 1px solid var(--rule); }
+
+/* keys under the views */
+.key { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 16px; }
+.key li { display: flex; align-items: center; gap: 6px; }
+.key i { display: inline-block; width: 18px; height: 0; border-top: 2px solid; }
+.key i.dash { border-top-style: dashed; }
+.key i.dot { width: 8px; height: 8px; border: 0; border-radius: 50%; }
+
+/* drawing */
+.s-ring { fill: none; stroke: var(--rule); stroke-width: 1; }
+.s-orbit { fill: none; stroke: var(--ink-soft); stroke-width: 1; opacity: .55; }
+.s-grid { stroke: var(--rule); stroke-width: 1; }
+.s-axis { stroke: var(--ink-soft); stroke-width: 1; }
+.s-lab { font: 11px 'IBM Plex Mono', monospace; fill: var(--ink-soft); }
+.s-lab.mid { text-anchor: middle; }
+.s-lab.end { text-anchor: end; }
+.s-lab.strong { fill: var(--ink); font-weight: 500; }
+.s-glyph { font: 15px var(--glyph); fill: var(--accent); text-anchor: middle; dominant-baseline: central; }
+.s-sun { fill: var(--sun); }
+.s-earth { fill: var(--earth); }
+.s-planet { fill: var(--planet); }
+.s-earth-l { stroke: var(--earth); fill: none; stroke-width: 1.5; }
+.s-planet-l { stroke: var(--planet); fill: none; stroke-width: 2; }
+.s-model-l { stroke: var(--model); fill: none; stroke-width: 2; }
+.s-model { fill: var(--model); }
+.s-true-d { stroke: var(--planet); fill: none; stroke-width: 1.2; stroke-dasharray: 4 3; opacity: .8; }
+.s-sight { stroke: var(--ink-soft); stroke-width: .8; opacity: .45; }
+.s-sight.now { stroke: var(--ink); stroke-width: 1.4; opacity: .9; }
+.s-tick { stroke: var(--ink-soft); stroke-width: 1; }
+.s-retro { fill: var(--planet); opacity: .08; }
+.s-accent-l { stroke: var(--accent); fill: none; stroke-width: 2; }
+.s-gold-l { stroke: var(--gold); fill: none; stroke-width: 1.6; }
+.s-halo { paint-order: stroke; stroke: var(--panel); stroke-width: 3px; stroke-linejoin: round; }
+
+/* the tables: figures on one row, captions and tables aligned */
+.tables { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 24px; margin-top: 28px; }
+.tables > figure { display: grid; grid-row: span 2; grid-template-rows: subgrid; min-width: 0; }
+.tables figcaption { min-height: 0; margin-bottom: 8px; }
+@media (max-width: 860px) {
+  .tables { grid-auto-flow: row; grid-template-columns: 1fr; grid-template-rows: none; row-gap: 24px; }
+  .tables > figure { grid-row: auto; grid-template-rows: none; }
+}
+.tables .scroll { overflow-x: auto; align-self: start; }
+.tables table { border-collapse: collapse; width: 100%; font: 13px/1.35 'IBM Plex Mono', monospace; font-variant-numeric: tabular-nums; align-self: start; }
+.tables th { text-align: left; font-weight: 500; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); border-bottom: 1px solid var(--rule); padding: 4px 6px; }
+.tables td { padding: 3px 6px; border-bottom: 1px solid color-mix(in srgb, var(--rule) 55%, transparent); white-space: nowrap; }
+.tables .num { text-align: right; }
+.tables tr.on td { background: var(--panel); }
+@media (max-width: 640px) { .tables td, .tables th { white-space: normal; font-size: 12px; padding: 3px 4px; } }
+.tables td.r { color: var(--planet); font-weight: 500; }
+
+.note { margin-top: 28px; max-width: 80ch; }
+.note h2 { font-weight: 600; font-size: 22px; margin: 0 0 6px; color: var(--accent); }
+.note p { color: var(--ink-soft); font-size: 15px; margin: 0 0 10px; }
+
+/* labels over the three.js stages */
+.lab3 { font: 500 11px 'IBM Plex Mono', monospace; color: var(--ink-soft); text-shadow: 0 0 3px var(--panel), 0 0 3px var(--panel); pointer-events: none; white-space: nowrap; }
+.lab3.sign { font: 14px var(--glyph); color: var(--accent); }
+.lab3.star { color: var(--gold); }
+.lab3.pole, .lab3.gamma { color: var(--planet); font-size: 13px; }
+
+/* the dial and the strip of the ages */
+.d-con { fill: var(--ground); stroke: var(--rule); stroke-width: 1; }
+.d-con.alt { fill: var(--panel); }
+.d-con.on { fill: var(--lilac); }
+.d-sign { fill: color-mix(in srgb, var(--accent-2) 10%, var(--panel)); stroke: var(--rule); stroke-width: 1; }
+.d-sign.alt { fill: color-mix(in srgb, var(--accent-2) 22%, var(--panel)); }
+.d-clab { font: 11px 'IBM Plex Mono', monospace; fill: var(--ink-soft); text-anchor: middle; dominant-baseline: central; }
+.d-clab.on { fill: var(--ink); font-weight: 500; }
+.d-gamma { stroke: var(--planet); stroke-width: 2; }
+.d-glab { font: 500 16px Spectral, Georgia, serif; fill: var(--planet); text-anchor: middle; dominant-baseline: central; }
+.d-now { stroke: var(--planet); stroke-width: 2; }
+.scroller { overflow-x: auto; }
+.scroller > svg { min-width: 760px; }
+
+/* the house systems */
+.h-cusp { stroke-linecap: round; }
+.h-num { font: 9px 'IBM Plex Mono', monospace; fill: var(--ink-soft); text-anchor: middle; dominant-baseline: central; }
+.h-sys { font: 500 10px 'IBM Plex Mono', monospace; text-anchor: middle; dominant-baseline: central; paint-order: stroke; stroke: var(--panel); stroke-width: 3px; }
+.h-bar { opacity: .55; stroke: var(--panel); stroke-width: 1; }
+.h-bar.alt { opacity: .3; }
+.h-barlab { font: 10px 'IBM Plex Mono', monospace; fill: var(--ink); text-anchor: middle; }
+.h-curve { fill: none; stroke-width: 2; }
+#year, #lat, #lst { width: min(360px, 60vw); }
+
+/* the synodic roses */
+.r-ev { fill: var(--accent); stroke: var(--panel); stroke-width: 1.5; }
+.r-line { stroke: var(--accent-2); stroke-width: .6; fill: none; }
+
+/* the map of the Saros scene */
+.m-sea { fill: var(--panel); }
+.m-land { fill: color-mix(in srgb, var(--ink-soft) 18%, var(--panel)); stroke: color-mix(in srgb, var(--ink-soft) 45%, var(--panel)); stroke-width: .5; }
+.m-grid { stroke: var(--rule); stroke-width: .6; }
+.m-grid.eq { stroke: var(--ink-soft); }
+.m-pt { stroke: var(--panel); stroke-width: 1; }
+.a-dot { fill: var(--sun); opacity: .7; }

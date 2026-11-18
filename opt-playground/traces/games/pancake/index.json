@@ -1,0 +1,107 @@
+{
+ "game": "pancake",
+ "traces": [
+  {
+   "file": "pancake-10.1-astar-gap-1.jsonl",
+   "instance": "pancake-10",
+   "solver": {
+    "id": "astar-gap-1",
+    "name": "A*",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS e328929",
+    "config": {
+     "algorithm": "astar",
+     "heuristic": "gap",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "pancake-10.2-idastar-gap-1.jsonl",
+   "instance": "pancake-10",
+   "solver": {
+    "id": "idastar-gap-1",
+    "name": "IDA*",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS e328929",
+    "config": {
+     "algorithm": "idastar",
+     "heuristic": "gap",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "pancake-10.3-hda-gap-4.jsonl",
+   "instance": "pancake-10",
+   "solver": {
+    "id": "hda-gap-4",
+    "name": "HDA* 4 threads",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS e328929",
+    "config": {
+     "algorithm": "hda",
+     "heuristic": "gap",
+     "threads": 4
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "pancake-14.1-astar-gap-1.jsonl",
+   "instance": "pancake-14",
+   "solver": {
+    "id": "astar-gap-1",
+    "name": "A*",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS e328929",
+    "config": {
+     "algorithm": "astar",
+     "heuristic": "gap",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "pancake-14.2-idastar-gap-1.jsonl",
+   "instance": "pancake-14",
+   "solver": {
+    "id": "idastar-gap-1",
+    "name": "IDA*",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS e328929",
+    "config": {
+     "algorithm": "idastar",
+     "heuristic": "gap",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "pancake-14.3-hda-gap-4.jsonl",
+   "instance": "pancake-14",
+   "solver": {
+    "id": "hda-gap-4",
+    "name": "HDA* 4 threads",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS e328929",
+    "config": {
+     "algorithm": "hda",
+     "heuristic": "gap",
+     "threads": 4
+    }
+   },
+   "sample": false
+  }
+ ]
+}

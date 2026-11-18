@@ -19,6 +19,9 @@ import { QueensView, SudokuView } from './cells.js';
 import { HanoiView } from './hanoi.js';
 import { GraphView } from './graph.js';
 import { PlanView } from './plan.js';
+import { CellGridView, ZebraView } from './puzzles.js';
+import { KnapsackView } from './knapsack.js';
+import { PancakeView, TopSpinView } from './stacks.js';
 
 const $ = id => document.getElementById(id);
 const GAME = document.body.dataset.game;
@@ -27,8 +30,9 @@ const STATE = { inst: '', lanes: [], align: 'event', speed: 1, pos: 0, playing: 
 const BASE = `traces/games/${GAME}/`;
 // the games whose traces come from SMS++ on a CNF, whose model the page
 // computes by aima-python; the others are searches of PBeFS
-const SAT = ['coloring', 'queens', 'sudoku'].includes(GAME);
-const SEARCH = !SAT;
+const SAT = ['coloring', 'queens', 'sudoku', 'zebra', 'kakuro', 'crypto', 'crossword'].includes(GAME);
+// the CSPs with constraints on more than two variables, drawn on the cells of their grid
+const NARY = ['kakuro', 'crypto', 'crossword'].includes(GAME);
 // the instances offered are those of the traces, but for map colouring
 const LISTED = GAME !== 'coloring';
 // the games whose board is a set of places (cells, cities) marked by the trace
@@ -36,7 +40,7 @@ const SETBOARD = new Set(['grid', 'romania']);
 // the games with no strip of the frontier under the board
 const NOSTRIP = new Set(['grid', 'romania', 'planning']);
 // the lanes in this order, the first four shown by default
-const SOLVERS = ['cadical', 'aima-cdcl', 'aima-bt-mac', 'aima-minconf', 'aima-bt-fc', 'aima-ac3', 'aima-dpll', 'aima-walksat', 'highs'];
+const SOLVERS = ['cadical', 'aima-gac', 'aima-cdcl', 'aima-bt-mac', 'aima-minconf', 'aima-bt-fc', 'aima-ac3', 'aima-dpll', 'aima-walksat', 'highs'];
 // a trace of the minimum sum colouring of an instance, and the name of a lane
 const MINSUM = file => /-minsum-/.test(file);
 const laneName = (file, name) => name + (MINSUM(file) ? t(', minimum sum', ', somma minima') : '');
@@ -58,7 +62,19 @@ const INSTNAMES = {
   'spare-tire': ['the spare tire', 'la ruota di scorta'], 'have-cake': ['have the cake and eat it too', 'avere la torta e mangiarla'],
   'air-cargo': ['air cargo', 'trasporto aereo di merci'],
   'queens-8': ['8 queens', '8 regine'], 'queens-12': ['12 queens', '12 regine'], 'queens-20': ['20 queens', '20 regine'],
-  'sudoku-easy1': ['easy1 of aima-python', 'easy1 di aima-python'], 'sudoku-harder1': ['harder1 of aima-python', 'harder1 di aima-python'] };
+  'sudoku-easy1': ['easy1 of aima-python', 'easy1 di aima-python'], 'sudoku-harder1': ['harder1 of aima-python', 'harder1 di aima-python'],
+  zebra: ['the zebra puzzle of aima-python', 'il problema della zebra di aima-python'],
+  'kakuro-2': ['kakuro2 of aima-python (3 x 3)', 'kakuro2 di aima-python (3 x 3)'],
+  'kakuro-3': ['kakuro3 of aima-python (7 x 5)', 'kakuro3 di aima-python (7 x 5)'],
+  'kakuro-4': ['kakuro4 of aima-python (14 x 14)', 'kakuro4 di aima-python (14 x 14)'],
+  'crypto-send': ['SEND + MORE = MONEY', 'SEND + MORE = MONEY'], 'crypto-two': ['TWO + TWO = FOUR', 'TWO + TWO = FOUR'],
+  'crossword-1': ['crossword1 of aima-python, with words1', 'crossword1 di aima-python, con words1'],
+  'knapsack-20': ['20 items, weakly correlated, seed 1', '20 oggetti, debolmente correlati, seme 1'],
+  'knapsack-30': ['30 items, weakly correlated, seed 1', '30 oggetti, debolmente correlati, seme 1'],
+  'pancake-10': ['10 pancakes, a random stack (seed 1)', '10 frittelle, una pila casuale (seme 1)'],
+  'pancake-14': ['14 pancakes, a random stack (seed 1)', '14 frittelle, una pila casuale (seme 1)'],
+  'topspin-walk20': ['12 tokens, 20 random moves from the goal (seed 1)', '12 gettoni, 20 mosse casuali dall\'obiettivo (seme 1)'],
+  'topspin-random': ['12 tokens, a random ring (seed 1)', '12 gettoni, un anello casuale (seme 1)'] };
 const info = window.__arena = { errors: [], pyodide: null, modelSeconds: null, game: GAME, lanes: () => lanes };
 window.addEventListener('error', e => { if (!/ResizeObserver loop/.test(e.message)) info.errors.push(String(e.message)); });
 window.addEventListener('unhandledrejection', e => info.errors.push(String(e.reason && e.reason.message || e.reason)));
@@ -137,11 +153,16 @@ function renderModel(m) {
   const kinds = { alo: csp ? t('at least one value per variable', 'almeno un valore per variabile') : t('at least one colour per vertex', 'almeno un colore per vertice'),
     amo: csp ? t('at most one value per variable', 'al più un valore per variabile') : t('at most one colour per vertex', 'al più un colore per vertice'),
     edge: csp ? t('two values that the constraint of two neighbours rejects', 'due valori che il vincolo di due vicini respinge') : t('the two ends of an edge differ', 'i due estremi di un lato differiscono'),
+    nary: t('a prefix of the tuples that a constraint on more than two variables rejects', 'un prefisso delle tuple che un vincolo su più di due variabili respinge'),
     given: t('a value outside the domain (the givens)', 'un valore fuori dal dominio (i dati del problema)') };
   for (const g of Object.keys(kinds)) if (!m.sample[g] || !m.sample[g].length) delete kinds[g];
   const what = { coloring: [t('One variable per vertex, its colour; one constraint "different" per edge.', 'Una variabile per vertice, il suo colore; un vincolo "diverso" per lato.'), 'MapColoringSAT'],
     queens: [t('NQueensCSP of aima-python: one variable per column, the row of its queen; one constraint per pair of columns, no shared row or diagonal.', 'NQueensCSP di aima-python: una variabile per colonna, la riga della sua regina; un vincolo per coppia di colonne, nessuna riga o diagonale in comune.'), 'translate_csp'],
-    sudoku: [t('Sudoku of aima-python: one variable per cell, its digit (a given has a domain of one digit); one constraint "different" per pair of cells in a row, column or box.', 'Sudoku di aima-python: una variabile per cella, la sua cifra (un dato ha un dominio di una cifra); un vincolo "diverso" per coppia di celle in una riga, colonna o riquadro.'), 'translate_csp'] }[GAME];
+    sudoku: [t('Sudoku of aima-python: one variable per cell, its digit (a given has a domain of one digit); one constraint "different" per pair of cells in a row, column or box.', 'Sudoku di aima-python: una variabile per cella, la sua cifra (un dato ha un dominio di una cifra); un vincolo "diverso" per coppia di celle in una riga, colonna o riquadro.'), 'translate_csp'],
+    zebra: [t('Zebra of aima-python: one variable per attribute (a colour, a pet, a drink, a nationality, a smoke), its house from 1 to 5; one constraint per pair of attributes of a group (different houses) and per clue.', 'Zebra di aima-python: una variabile per attributo (un colore, un animale, una bevanda, una nazionalità, un tipo di sigaretta), la sua casa da 1 a 5; un vincolo per coppia di attributi di un gruppo (case diverse) e per indizio.'), 'translate_csp'],
+    kakuro: [t('Kakuro of aima-python, a NaryCSP: one variable per white cell, its digit; for each run of cells a constraint of sum and one of all different, on the whole run.', 'Kakuro di aima-python, un NaryCSP: una variabile per cella bianca, la sua cifra; per ogni sequenza di celle un vincolo di somma e uno di tutte diverse, sull\'intera sequenza.'), 'translate_csp'],
+    crypto: [t('A NaryCSP of aima-python: one variable per letter, its digit, and one per carry; all the letters different, and one constraint per column of the sum on its letters and carries.', 'Un NaryCSP di aima-python: una variabile per lettera, la sua cifra, e una per riporto; tutte le lettere diverse, e un vincolo per colonna della somma sulle sue lettere e sui riporti.'), 'translate_csp'],
+    crossword: [t('Crossword of aima-python, a NaryCSP: one variable per white cell, its letter; one constraint per run of cells, which must spell a word of the list.', 'Crossword di aima-python, un NaryCSP: una variabile per cella bianca, la sua lettera; un vincolo per sequenza di celle, che deve formare una parola dell\'elenco.'), 'translate_csp'] }[GAME];
   const list = (g, f) => m.sample[g].map(s => `<li><code>${esc(f(s))}</code></li>`).join('');
   $('mcsp').innerHTML = `<dl class="stats"><div><dt>${t('variables', 'variabili')}</dt><dd>${m.csp.variables}</dd></div>
     <div><dt>${t('domain', 'dominio')}</dt><dd>${m.instance.colours.length > 9 ? m.instance.colours.length + ' ' + t('values', 'valori') : m.instance.colours.join(' ')}</dd></div>
@@ -149,7 +170,9 @@ function renderModel(m) {
     <p class="note">${what[0]}</p>`;
   $('mcnf').innerHTML = `<dl class="stats"><div><dt>${t('variables', 'variabili')}</dt><dd>${c.variables}</dd></div>
     <div><dt>${t('clauses', 'clausole')}</dt><dd>${c.clauses}</dd></div><div><dt>${t('distinct', 'distinte')}</dt><dd>${c.distinct}</dd></div></dl>
-    <p class="note">${csp ? t(`A Boolean variable <code>v_c</code> for each variable v and value c, the direct encoding of the CSP: the pairs of values that a constraint rejects are asked of the constraint of aima-python.`,
+    <p class="note">${NARY ? t(`A Boolean variable <code>v_c</code> for each variable v and value c, the direct encoding of the CSP. A constraint "all different" becomes the pairs of values it rejects; any other constraint becomes, for each prefix of a tuple it accepts and each value of the next variable that no accepted tuple has after it, the clause that forbids both; the tuples are asked of the constraint of aima-python.`,
+      `Una variabile booleana <code>v_c</code> per variabile v e valore c, la codifica diretta del CSP. Un vincolo "tutte diverse" diventa le coppie di valori che respinge; ogni altro vincolo diventa, per ogni prefisso di una tupla che accetta e ogni valore della variabile successiva che nessuna tupla accettata ha dopo di esso, la clausola che li vieta insieme; le tuple sono chieste al vincolo di aima-python.`)
+      : csp ? t(`A Boolean variable <code>v_c</code> for each variable v and value c, the direct encoding of the CSP: the pairs of values that a constraint rejects are asked of the constraint of aima-python.`,
       `Una variabile booleana <code>v_c</code> per variabile v e valore c, la codifica diretta del CSP: le coppie di valori che un vincolo respinge sono chieste al vincolo di aima-python.`)
       : t(`A Boolean variable <code>v_c</code> for each vertex v and colour c. The edge clauses are written once from each end, so the ${c.by_kind.edge} of them are ${c.by_kind.edge / 2} distinct ones twice.`,
       `Una variabile booleana <code>v_c</code> per vertice v e colore c. Le clausole dei lati sono scritte una volta da ciascun estremo, quindi le ${c.by_kind.edge} sono ${c.by_kind.edge / 2} distinte, ognuna due volte.`)}</p>
@@ -199,6 +222,7 @@ function describe(rep, e) {
       if (e.reason === 'pure') return t(`Pure symbol at depth ${e.level}: ${L(e.lits || [])}.`, `Simbolo puro alla profondità ${e.level}: ${L(e.lits || [])}.`);
       if (e.reason === 'unit') return t(`Unit clause at depth ${e.level}: ${L(e.lits || [])}.`, `Clausola unitaria alla profondità ${e.level}: ${L(e.lits || [])}.`);
       return t(`Propagation at level ${e.level}: ${L(e.lits || [])}.`, `Propagazione al livello ${e.level}: ${L(e.lits || [])}.`);
+    case 'split': return t(`Split at depth ${e.level}: ${L((e.lits || []).filter(l => l < 0))}.`, `Divisione alla profondità ${e.level}: ${L((e.lits || []).filter(l => l < 0))}.`);
     case 'flip': return t(`Flip: ${L(e.lits || [])}.`, `Inversione: ${L(e.lits || [])}.`);
     case 'assign': return t(`${e.var} = ${e.value}; ${e.conflicted < 0 ? 'the first assignment is not complete yet' : e.conflicted + ' variables in conflict'}.`,
       `${e.var} = ${e.value}; ${e.conflicted < 0 ? 'il primo assegnamento non è ancora completo' : e.conflicted + ' variabili in conflitto'}.`);
@@ -247,7 +271,8 @@ function buildSearchLane(file, tr) {
   const box = art.querySelector('.board');
   const view = h.game === 'grid' ? new GridView(box, h.instance) : h.game === 'romania' ? new GraphView(box, h.instance)
     : h.game === 'cube' ? new CubeView(box, h.instance) : h.game === 'planning' ? new PlanView(box, h.instance)
-    : h.game === 'hanoi' ? new HanoiView(box, h.instance) : new PuzzleView(box, h.instance);
+    : h.game === 'hanoi' ? new HanoiView(box, h.instance) : h.game === 'pancake' ? new PancakeView(box, h.instance)
+    : h.game === 'topspin' ? new TopSpinView(box, h.instance) : new PuzzleView(box, h.instance);
   art.querySelector('.stripbox').hidden = NOSTRIP.has(h.game);
   return { file, tr, rep: new SearchReplay(tr), view, art, search: true, k: -1 };
 }
@@ -279,12 +304,14 @@ function buildLane(file, tr) {
     h.sample ? `<span class="badge">${bi('sample, not a run', 'esempio, non un\'esecuzione')}</span>` : '');
   if (h.sample) art.classList.add('sample');
   const hasTree = tr.events.some(e => e.type === 'node');
+  const tcap = GAME === 'knapsack' ? bi('Branch-and-bound tree: a node by worker colour, grey when pruned', 'Albero del branch-and-bound: un nodo nel colore del worker, grigio se potato') : bi('Branch-and-bound tree', 'Albero del branch-and-bound');
   art.querySelector('.panel').innerHTML = hasTree
-    ? `<figure class="treebox"><figcaption>${bi('Branch-and-bound tree', 'Albero del branch-and-bound')}</figcaption><svg class="tree"></svg><p class="bounds"></p></figure>`
+    ? `<figure class="treebox"><figcaption>${tcap}</figcaption><svg class="tree"></svg><p class="bounds"></p></figure>`
     : `<p class="bounds"></p>`;
   const box = art.querySelector('.board');
   const view = GAME === 'queens' ? new QueensView(box, h.instance) : GAME === 'sudoku' ? new SudokuView(box, h.instance)
-    : new BoardView(box, h.instance, MAPS[h.instance.id] || null);
+    : NARY ? new CellGridView(box, h.instance) : GAME === 'zebra' ? new ZebraView(box, h.instance)
+    : GAME === 'knapsack' ? new KnapsackView(box, h.instance) : new BoardView(box, h.instance, MAPS[h.instance.id] || null);
   return { file, tr, rep: new Replay(tr), view, art, hasTree, k: -1 };
 }
 function updateLane(L, k) {
@@ -304,6 +331,7 @@ function updateLane(L, k) {
   const pd = h.solver.paradigm;
   L.art.querySelector('.bounds').textContent = L.hasTree || L.rep.lb !== null || L.rep.ub !== null
     ? t(`bound ${fmt(L.rep.lb)} · incumbent ${fmt(L.rep.ub)}`, `bound ${fmt(L.rep.lb)} · incumbente ${fmt(L.rep.ub)}`)
+    : GAME === 'zebra' ? t('the pegs in a cell are the attributes of its group that may still stand in that house', 'i pioli in una cella sono gli attributi del suo gruppo che possono ancora stare in quella casa')
     : pd === 'csp' && GAME !== 'queens' ? t('the pegs are the values left in each domain', 'i pioli sono i valori rimasti in ogni dominio')
     : pd === 'local search' ? t('a complete assignment, repaired step by step', 'un assegnamento completo, riparato passo per passo')
     : GAME === 'queens' ? t('a dark cell is a row ruled out for its column', 'una cella scura è una riga esclusa per la sua colonna')
@@ -339,9 +367,10 @@ async function loadLanes() {
   files.forEach((f, i) => { if (trs[i]) lanes.push(buildLane(f, trs[i])); });
   $('lanes').dataset.n = lanes.length;
   if (!lanes.length && GAME === 'coloring' && lastModel && lastModel.instance.id === STATE.inst) emptyBoard(lastModel.instance);
-  const canTime = lanes.length > 0 && lanes.every(L => timed(L.tr));
+  // the seconds of runs on shared machines are not compared: no alignment by time
+  const canTime = false;
   const canWork = lanes.length > 0 && lanes.every(L => L.search) && GAME !== 'planning';
-  $('align').querySelector('[value=time]').disabled = !canTime;
+  if ($('align').querySelector('[value=time]')) $('align').querySelector('[value=time]').disabled = !canTime;
   $('align').querySelector('[value=work]').disabled = !canWork;
   if (!canTime && STATE.align === 'time') STATE.align = 'event';
   if (!canWork && STATE.align === 'work') STATE.align = 'event';
@@ -420,9 +449,9 @@ function scoreboard() {
   const keys = [...new Set(real.flatMap(L => Object.keys(L.tr.result.stats || {})))];
   const cell = v => (Array.isArray(v) ? v.join(' / ') : v ?? '–');
   const hasCost = real.some(L => L.tr.result.cost !== undefined);
-  box.querySelector('table').innerHTML = `<tr><th>${t('solver', 'solutore')}</th><th>${t('status', 'esito')}</th>${hasCost ? `<th>${t('cost', 'costo')}</th>` : ''}<th>${t('seconds', 'secondi')}</th><th>${t('events', 'eventi')}</th>${keys.map(k => `<th>${esc(k)}</th>`).join('')}<th>${t('machine', 'macchina')}</th></tr>` +
-    real.map(L => { const r = L.tr.result, m = L.tr.header.machine || {};
-      return `<tr><td>${esc(laneName(L.file, L.tr.header.solver.name))}</td><td>${esc(r.status)}</td>${hasCost ? `<td>${fmt(r.cost)}</td>` : ''}<td>${r.seconds ?? '–'}</td><td>${r.events ?? L.tr.events.length}${r.capped ? t(' (capped)', ' (troncati)') : ''}</td>${keys.map(k => `<td>${cell(r.stats[k])}</td>`).join('')}<td>${esc([m.name, m.load !== undefined ? t('load ', 'carico ') + m.load : ''].filter(Boolean).join(', '))}</td></tr>`; }).join('');
+  box.querySelector('table').innerHTML = `<tr><th>${t('solver', 'solutore')}</th><th>${t('status', 'esito')}</th>${hasCost ? `<th>${t('cost', 'costo')}</th>` : ''}<th>${t('events', 'eventi')}</th>${keys.map(k => `<th>${esc(k)}</th>`).join('')}</tr>` +
+    real.map(L => { const r = L.tr.result;
+      return `<tr><td>${esc(laneName(L.file, L.tr.header.solver.name))}</td><td>${esc(r.status)}</td>${hasCost ? `<td>${fmt(r.cost)}</td>` : ''}<td>${r.events ?? L.tr.events.length}${r.capped ? t(' (capped)', ' (troncati)') : ''}</td>${keys.map(k => `<td>${cell(r.stats[k])}</td>`).join('')}</tr>`; }).join('');
 }
 
 // ---------------------------------------------------------------- wiring

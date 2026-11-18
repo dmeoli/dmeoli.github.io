@@ -40,11 +40,16 @@
 .controls .stats dd { font-variant-numeric: tabular-nums; }
 .warn { margin: 0; font: italic 14px/1.4 Spectral, Georgia, serif; color: var(--a-squa); }
 .transport button { white-space: nowrap; }
+/* the link to the booklet looks like the buttons next to it */
+.transport a.button { font: inherit; color: var(--accent); background: var(--ground); border: 1px solid var(--accent-2);
+  border-radius: 6px; padding: 5px 9px; text-decoration: none; white-space: nowrap; }
+.transport a.button:hover { border-color: var(--accent); }
+.transport a.button span { text-transform: none; letter-spacing: normal; font-size: inherit; color: inherit; }
 @media (max-width: 640px) {
   .settings { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px 14px; }
   .settings > .field.place { grid-column: 1 / -1; }
   .settings input, .settings select, #lat, #lon, #zone, .place input { width: 100%; }
-  .transport { margin-left: 0; }
+  .transport { margin-left: 0; flex-wrap: wrap; }
   .tables .sn { display: none; }
 }
 

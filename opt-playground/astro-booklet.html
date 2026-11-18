@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The booklet of a natal chart</title>
+<!-- scene-meta (tools/scene_meta.py) -->
+<meta name="description" content="A text assembled by explicit rules from fragments written for this site, for the chart drawn below.">
+<link rel="canonical" href="https://dmeoli.github.io/opt-playground/astro-booklet.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="The booklet of a natal chart">
+<meta property="og:description" content="A text assembled by explicit rules from fragments written for this site, for the chart drawn below.">
+<meta property="og:url" content="https://dmeoli.github.io/opt-playground/astro-booklet.html">
+<meta property="og:image" content="https://dmeoli.github.io/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="src/astro/astro.css">
+<link rel="stylesheet" href="src/astro/booklet.css">
+<script src="src/astro/vendor/astronomy.browser.min.js"></script>
+</head>
+<body class="booklet">
+<section class="controls tools" aria-label="Booklet">
+  <div class="settings">
+    <a class="back" id="back" href="astro-chart.html"><span data-l="en">&larr; The chart</span><span data-l="it" lang="it">&larr; La carta</span></a>
+    <label><span data-l="en">year ahead from</span><span data-l="it" lang="it">anno a partire dal</span><input id="year" type="date" min="1000-01-01" max="2999-12-31" required></label>
+  </div>
+  <div class="transport">
+    <button type="button" id="print"><span data-l="en">Print or save as PDF</span><span data-l="it" lang="it">Stampa o salva in PDF</span></button>
+  </div>
+  <p class="row hint"><span data-l="en">The booklet is computed in this tab from the chart in its address; nothing is sent anywhere.
+  To keep it, print it or save it as PDF from the browser (A4, the page numbers are set by the page).</span><span data-l="it" lang="it">Il fascicolo
+  è calcolato in questa scheda dalla carta nel suo indirizzo; nulla viene inviato. Per conservarlo, stampalo o salvalo in PDF dal browser
+  (A4, i numeri di pagina li mette la pagina).</span></p>
+</section>
+
+<article id="book">
+  <section class="sheet cover">
+    <p class="kicker"><span data-l="en">Booklet</span><span data-l="it" lang="it">Fascicolo</span></p>
+    <h1><span data-l="en">A portrait from a natal chart</span><span data-l="it" lang="it">Un ritratto da una carta natale</span></h1>
+    <p class="lede" data-l="en">A text assembled by explicit rules from fragments written for this site, for the chart drawn below.</p>
+    <p class="lede" data-l="it" lang="it">Un testo composto da regole esplicite con frammenti scritti per questo sito, per la carta disegnata qui sotto.</p>
+    <svg id="wheel" class="cover-wheel" viewBox="-40 -40 680 680" role="img" aria-label="Natal chart wheel"></svg>
+    <dl class="data" id="data"></dl>
+  </section>
+
+  <section class="sheet preface">
+    <h2><span data-l="en">Before reading</span><span data-l="it" lang="it">Prima di leggere</span></h2>
+    <p data-l="en">Astrology has no demonstrated predictive validity. In the double-blind test of Carlson
+    (<i>Nature</i>, 1985), astrologers who had accepted the protocol in advance did not match natal charts
+    to the personality profiles of their owners better than chance. A description like the ones in these
+    pages also tends to feel accurate to almost anyone who reads it, which is the Barnum (or Forer)
+    effect: in the experiment of Forer (1949), 39 students rated a "personal" profile, identical for all of
+    them, 4.3 out of 5 for accuracy. These pages are therefore a cultural object and the output of rules,
+    not knowledge about a person, and they say nothing about events, health or money.</p>
+    <p data-l="it" lang="it">L'astrologia non ha validità predittiva dimostrata. Nel test in doppio cieco di
+    Carlson (<i>Nature</i>, 1985), astrologi che avevano accettato il protocollo in anticipo non hanno associato
+    le carte natali ai profili di personalità dei loro titolari meglio del caso. Una descrizione come quelle di
+    queste pagine, inoltre, sembra esatta a quasi chiunque la legga, ed è l'effetto Barnum (o Forer):
+    nell'esperimento di Forer (1949) 39 studenti valutarono in media 4.3 su 5 l'aderenza di un profilo
+    "personale" che era lo stesso per tutti. Queste pagine sono quindi un oggetto culturale e il prodotto di
+    regole, non una conoscenza su una persona, e non dicono nulla di eventi, salute o denaro.</p>
+    <p data-l="en">The program computes the factors of the chart (signs, houses, aspects, the balance of
+    elements and modalities, the patterns, the transits of the slow planets), gives each a weight by rules
+    kept in a file, and in each chapter tells the heaviest ones, from four to six; each factor prints a
+    fragment written for this site, and the small line above each paragraph names the factor and its
+    weight. When two factors pull in opposite directions the heavier is told and one sentence names the
+    tension. The same chart gives the same text, and the last pages list every factor with its weight.</p>
+    <p data-l="it" lang="it">Il programma calcola i fattori della carta (segni, case, aspetti, l'equilibrio di
+    elementi e modalità, le configurazioni, i transiti dei pianeti lenti), dà a ciascuno un peso secondo regole
+    scritte in un file, e in ogni capitolo racconta i più pesanti, da quattro a sei; ogni fattore stampa un
+    frammento scritto per questo sito, e la piccola riga sopra ogni paragrafo dice il fattore e il suo peso.
+    Quando due fattori tirano in direzioni opposte si racconta il più pesante, e una frase nomina la tensione.
+    La stessa carta dà lo stesso testo, e le ultime pagine elencano tutti i fattori con il loro peso.</p>
+    <p class="drafts" id="drafts"></p>
+    <ol class="toc" id="toc"></ol>
+  </section>
+
+  <div id="chapters"></div>
+
+  <section class="sheet data-sheet">
+    <h2><span data-l="en">The chart in numbers</span><span data-l="it" lang="it">La carta in numeri</span></h2>
+    <div class="tables">
+      <figure><figcaption><span data-l="en">Positions on the true ecliptic of date (tropical zodiac); R marks a retrograde body.</span><span data-l="it" lang="it">Posizioni sull'eclittica vera della data (zodiaco tropicale); R indica un corpo retrogrado.</span></figcaption><table id="positions"></table></figure>
+      <figure><figcaption><span data-l="en">Cusps of the houses.</span><span data-l="it" lang="it">Cuspidi delle case.</span></figcaption><table id="cusps"></table></figure>
+      <figure class="wide"><figcaption><span data-l="en">Aspects within their orbs, the closest first; a applying, s separating.</span><span data-l="it" lang="it">Aspetti entro le loro orbite, dal più stretto; a applicativo, s separativo.</span></figcaption><table id="aspects"></table></figure>
+    </div>
+  </section>
+
+  <section class="sheet factors-sheet">
+    <h2><span data-l="en">Every factor and its weight</span><span data-l="it" lang="it">Tutti i fattori e il loro peso</span></h2>
+    <p class="note-s"><span data-l="en">The factors that the rules found in this chart, from the heaviest; the last column says the chapter
+    that tells each one (a factor is told once). The weights follow src/astro/rules.json.</span><span data-l="it" lang="it">I fattori
+    che le regole trovano in questa carta, dal più pesante; l'ultima colonna dice il capitolo che racconta ciascuno (un fattore si racconta
+    una volta sola). I pesi seguono src/astro/rules.json.</span></p>
+    <table class="factors" id="factors"></table>
+  </section>
+</article>
+<footer class="book-foot"><span data-l="en">Positions from Astronomy Engine 2.1.19 (MIT). Texts and rules written for this site, with
+ideas only from public-domain sources (Ptolemy's Tetrabiblos in the translation of Ashmand, 1822; Alan Leo); the fragments marked as
+drafts are still to be reviewed.</span><span data-l="it" lang="it">Posizioni da Astronomy Engine 2.1.19 (MIT). Testi e regole scritti
+per questo sito, con idee prese solo da fonti di pubblico dominio (il Tetrabiblos di Tolomeo nella traduzione di Ashmand, 1822; Alan
+Leo); i frammenti segnati come bozze sono ancora da rivedere.</span></footer>
+<script type="module" src="src/astro/booklet.js"></script>
+</body>
+</html>

@@ -104,17 +104,98 @@ SUDOKUS = {'easy1': 'easy1', 'harder1': 'harder1'}
 
 
 def csp_of(inst):
-    """The CSP of aima.csp behind an instance of the queens or of Sudoku, and
-    its variables in the order of the instance."""
-    if inst['kind'] == 'queens':
+    """The CSP of aima.csp behind an instance of the queens, Sudoku, the zebra
+    puzzle, Kakuro, cryptarithmetic or the crossword, and its variables in the
+    order of the instance."""
+    k = inst['kind']
+    if k == 'queens':
         return C.NQueensCSP(inst['n']), list(range(inst['n']))
-    p = C.Sudoku(getattr(C, inst['grid']))
-    return p, [cell for row in C.Sudoku.rows for cell in row]
+    if k == 'sudoku':
+        p = C.Sudoku(getattr(C, inst['grid']))
+        return p, [cell for row in C.Sudoku.rows for cell in row]
+    if k == 'zebra':
+        return C.Zebra(), list(inst['vertices'])
+    return NARY[k](inst), list(inst['vertices'])
+
+
+# the n-ary CSPs of aima.csp (NaryCSP): the puzzles of Kakuro, the
+# cryptarithmetic problems and the crossword, by name
+KAKURO = {'2': 'kakuro2', '3': 'kakuro3', '4': 'kakuro4'}
+CRYPTO = {'send': ('send_more_money', ['SEND', 'MORE', 'MONEY']), 'two': ('two_two_four', ['TWO', 'TWO', 'FOUR'])}
+NARY = {'kakuro': lambda inst: C.Kakuro(getattr(C, KAKURO[inst['id'].split('-')[1]])),
+        'crypto': lambda inst: getattr(C, CRYPTO[inst['id'].split('-')[1]][0]),
+        'crossword': lambda inst: C.Crossword(C.crossword1, C.words1)}
+# the value j of the list of an instance as the value of its CSP
+VALUE = {'queens': lambda inst, j: j, 'kakuro': lambda inst, j: j + 1, 'crypto': lambda inst, j: j,
+         'zebra': lambda inst, j: j + 1}
+
+
+def value_of(inst, j):
+    f = VALUE.get(inst['kind'])
+    return f(inst, j) if f else inst['colours'][j]
+
+
+def nary_instance(name):
+    """The instances kakuro-<2|3|4>, crypto-<send|two>, crossword-1 and zebra:
+    the variables and values, and the layout of the board, a list of cells
+    [row, column, what] where what is the index of a variable, or a clue
+    [down, right] of Kakuro, or a text (a sign of the sum)."""
+    kind, rest = name.split('-', 1) if '-' in name else (name, '')
+    if kind == 'zebra':
+        z = C.Zebra()
+        groups = [z.variables[i:i + 5] for i in range(0, 25, 5)]
+        return {'id': name, 'kind': 'zebra', 'vertices': list(z.variables), 'colours': list('12345'),
+                'groups': groups}
+    if kind == 'kakuro':
+        grid = getattr(C, KAKURO[rest])
+        vs, cells = [], []
+        for i, line in enumerate(grid):
+            for j, e in enumerate(line):
+                if e == '_':
+                    cells.append([i, j, len(vs)])
+                    vs.append('X%02d%02d' % (i, j))
+                elif e != '*':
+                    cells.append([i, j, [e[0] if e[0] != '' else None, e[1] if e[1] != '' else None]])
+        return {'id': name, 'kind': 'kakuro', 'vertices': vs, 'colours': list('123456789'),
+                'rows': len(grid), 'cols': len(grid[0]), 'cells': cells}
+    if kind == 'crypto':
+        csp_name, words = CRYPTO[rest]
+        csp = getattr(C, csp_name)
+        letters = []
+        for w in words:
+            for ch in w:
+                if ch not in letters:
+                    letters.append(ch)
+        carries = sorted((v for v in csp.variables if v.startswith('C')), key=lambda v: int(v[1:]))
+        vs = letters + carries
+        width = max(len(w) for w in words)
+        cells = []
+        # the carries above the columns they go into, the addends, the rule
+        # and the sum, aligned on the right
+        for c in carries:
+            cells.append([0, width - 1 - int(c[1:]), vs.index(c)])
+        for r, w in enumerate(words):
+            row = r + 1 if r < len(words) - 1 else r + 2
+            cells += [[row, width - len(w) + i, vs.index(ch)] for i, ch in enumerate(w)]
+        cells.append([len(words) - 1, -1, '+'])
+        cells.append([len(words), -1, '='])
+        return {'id': name, 'kind': 'crypto', 'vertices': vs, 'colours': list('0123456789'),
+                'rows': len(words) + 2, 'cols': width, 'cells': cells, 'words': words}
+    puzzle = C.crossword1
+    vs, cells = [], []
+    for i, line in enumerate(puzzle):
+        for j, e in enumerate(line):
+            if e == '_':
+                cells.append([i, j, len(vs)])
+                vs.append(C.Crossword.cell(i, j))
+    return {'id': name, 'kind': 'crossword', 'vertices': vs, 'colours': list('abcdefghijklmnopqrstuvwxyz'),
+            'rows': len(puzzle), 'cols': len(puzzle[0]), 'cells': cells}
 
 
 def instance(name):
     """The instance named australia, usa, france, planar-<level>-<seed>,
-    queens-<n> or sudoku-<easy1|harder1>."""
+    queens-<n>, sudoku-<easy1|harder1>, zebra, kakuro-<2|3|4>, crypto-<send|two>
+    or crossword-1."""
     if name.startswith('queens-'):
         n = int(name.split('-')[1])
         return {'id': name, 'kind': 'queens', 'n': n, 'vertices': ['c%d' % (i + 1) for i in range(n)],
@@ -125,6 +206,8 @@ def instance(name):
         return {'id': name, 'kind': 'sudoku', 'grid': g, 'givens': grid,
                 'vertices': ['r%dc%d' % (r + 1, c + 1) for r in range(9) for c in range(9)],
                 'colours': list('123456789')}
+    if name.split('-')[0] in ('kakuro', 'crypto', 'crossword', 'zebra'):
+        return nary_instance(name)
     if name in MAPS:
         csp, colours = MAPS[name]
         vs = list(csp.variables)
@@ -136,15 +219,16 @@ def instance(name):
 
 
 def translate_csp(inst):
-    """The direct encoding of a CSP of aima.csp with binary constraints: a
-    Boolean v_c for each variable v and value c, at least one and at most one
-    value per variable, a unit clause for each value outside the domain of a
-    variable, and for each pair of neighbours and each pair of values that
-    the constraint of the CSP rejects the clause that forbids both; the
-    constraint is asked of aima, never written here."""
+    """The direct encoding of a CSP of aima.csp: a Boolean v_c for each
+    variable v and value c, at least one and at most one value per variable,
+    a unit clause for each value outside the domain of a variable, and for
+    each pair of neighbours and each pair of values that the constraint of
+    the CSP rejects the clause that forbids both; the constraint is asked of
+    aima, never written here. The constraints of more than two variables of
+    a NaryCSP are written by translate_nary."""
     csp, order = csp_of(inst)
     names, vals, k = inst['vertices'], inst['colours'], len(inst['colours'])
-    value = (lambda j: j) if inst['kind'] == 'queens' else (lambda j: vals[j])
+    value = lambda j: value_of(inst, j)
     pos = {v: i for i, v in enumerate(order)}
     lit = lambda i, j: i * k + j + 1
     symbols = ['%s_%s' % (names[i], vals[j]) for i in range(len(order)) for j in range(k)]
@@ -154,20 +238,86 @@ def translate_csp(inst):
         clauses.append([lit(i, j) for j in range(k)])
         clauses += [[-lit(i, a), -lit(i, b)] for a in range(k) for b in range(a + 1, k)]
         clauses += [[-lit(i, j)] for j in range(k) if value(j) not in dom]
-    for v in order:
-        for w in csp.neighbors[v]:
-            i, h = pos[v], pos[w]
-            if i < h:
-                clauses += [[-lit(i, a), -lit(h, b)] for a in range(k) for b in range(k)
-                            if not csp.constraints(v, value(a), w, value(b))]
+    if isinstance(csp, C.NaryCSP):
+        clauses += translate_nary(csp, inst, pos, lit, value)
+    else:
+        for v in order:
+            for w in csp.neighbors[v]:
+                i, h = pos[v], pos[w]
+                if i < h:
+                    clauses += [[-lit(i, a), -lit(h, b)] for a in range(k) for b in range(k)
+                                if not csp.constraints(v, value(a), w, value(b))]
     clauses = [sorted(c, key=lambda x: (abs(x), x)) for c in clauses]
     return {'symbols': symbols, 'clauses': clauses, 'distinct': len({tuple(c) for c in clauses})}
+
+
+def translate_nary(csp, inst, pos, lit, value):
+    """The clauses of the constraints of a NaryCSP. An all_diff_constraint
+    becomes, for each pair of its scope, the clauses of the values that it
+    rejects for the pair (asked of the constraint on two values, which is
+    the same constraint); any other constraint is written by the prefixes of
+    its scope: for each prefix of a tuple that the constraint accepts and
+    each value of the next variable that no accepted tuple has after that
+    prefix, the clause that forbids the prefix with that value. A complete
+    assignment then breaks a clause exactly when the constraint rejects its
+    tuple. The values that an all_diff_constraint already rejects (two
+    variables of its scope equal) are not enumerated nor written again."""
+    k = len(inst['colours'])
+    dom = {v: [j for j in range(k) if value(j) in set(csp.domains[v])] for v in csp.variables}
+    diff = [set(c.scope) for c in csp.constraints if c.condition is C.all_diff_constraint]
+    out = []
+    for con in csp.constraints:
+        sc = list(con.scope)
+        if con.condition is C.all_diff_constraint:
+            for a in range(len(sc)):
+                for b in range(a + 1, len(sc)):
+                    u, v = sc[a], sc[b]
+                    out += [[-lit(pos[u], x), -lit(pos[v], y)] for x in dom[u] for y in dom[v]
+                            if not con.condition(value(x), value(y))]
+            continue
+        # the pairs of the scope that an all_diff_constraint keeps distinct
+        apart = {(a, b) for a in range(len(sc)) for b in range(a) if any(sc[a] in d and sc[b] in d for d in diff)}
+        clash = lambda t, j, a: any((a, b) in apart and t[b] == j for b in range(a))
+        # the tuples are enumerated over the product of the domains of the
+        # scope, unless the condition was built from a list of words
+        # (is_word_constraint of the crossword), whose tuples are its words
+        words = next((c.cell_contents for c in getattr(con.condition, '__closure__', None) or ()
+                      if isinstance(c.cell_contents, (set, list, tuple))), None)
+        accepted = set()
+        if words is None:
+            def walk(t):
+                a = len(t)
+                if a == len(sc):
+                    if con.condition(*(value(j) for j in t)):
+                        accepted.add(tuple(t))
+                    return
+                for j in dom[sc[a]]:
+                    if not clash(t, j, a):
+                        walk(t + [j])
+            walk([])
+        else:
+            index = {value(j): j for j in range(k)}
+            for w in words:
+                if len(w) == len(sc) and all(ch in index for ch in w):
+                    t = tuple(index[ch] for ch in w)
+                    if all(t[a] in dom[sc[a]] for a in range(len(sc))) and con.condition(*(value(j) for j in t)):
+                        accepted.add(t)
+        live = {t[:a] for t in accepted for a in range(len(sc) + 1)}
+        for p in sorted(x for x in live if len(x) < len(sc)):
+            a = len(p)
+            for j in dom[sc[a]]:
+                if p + (j,) not in live and not clash(list(p), j, a):
+                    out.append([-lit(pos[sc[b]], p[b]) for b in range(a)] + [-lit(pos[sc[a]], j)])
+    return out
+
+
+CSPKINDS = ('queens', 'sudoku', 'zebra', 'kakuro', 'crypto', 'crossword')
 
 
 def translate(inst):
     """The CNF of MapColoringSAT, or of translate_csp for the queens and
     Sudoku, and the rows SATBlock makes of it."""
-    if inst['kind'] in ('queens', 'sudoku'):
+    if inst['kind'] in CSPKINDS:
         return translate_csp(inst)
     colours, vs = inst['colours'], inst['vertices']
     nb = {v: [] for v in vs}
@@ -192,11 +342,14 @@ def translate(inst):
 
 def kind(c, k):
     """at least one colour, at most one colour, the two ends of an edge (or
-    two neighbours of a CSP), or a value outside a domain."""
+    two neighbours of a CSP), a value outside a domain, or a prefix of the
+    tuples that a constraint of more than two variables rejects."""
     if all(x > 0 for x in c):
         return 'alo'
     if len(c) == 1:
         return 'given'
+    if len(c) > 2:
+        return 'nary'
     a, b = (abs(x) - 1 for x in c)
     return 'amo' if a // k == b // k else 'edge'
 
@@ -220,7 +373,7 @@ def summary(name, sample=4):
     inst = instance(name)
     t = translate(inst)
     k, sy, cl = len(inst['colours']), t['symbols'], t['clauses']
-    groups = {'alo': [], 'amo': [], 'edge': [], 'given': []}
+    groups = {'alo': [], 'amo': [], 'edge': [], 'nary': [], 'given': []}
     for i, c in enumerate(cl):
         groups[kind(c, k)].append(i)
     show = {g: [{'i': i, 'lits': cl[i],
@@ -229,8 +382,7 @@ def summary(name, sample=4):
     return json.dumps({
         'instance': inst,
         'csp': {'variables': len(inst['vertices']), 'domain': k,
-                'constraints': len(inst['edges']) if 'edges' in inst else
-                (lambda c, o: sum(1 for v in o for w in c.neighbors[v] if w != v) // 2)(*csp_of(inst))},
+                'constraints': len(inst['edges']) if 'edges' in inst else n_constraints(inst)},
         'cnf': {'variables': len(sy), 'clauses': len(cl), 'distinct': t['distinct'],
                 'by_kind': {g: len(ix) for g, ix in groups.items()},
                 'literals': sum(len(c) for c in cl)},
@@ -241,12 +393,24 @@ def summary(name, sample=4):
         'sample': show, 'symbols': sy})
 
 
+def n_constraints(inst):
+    csp, order = csp_of(inst)
+    if isinstance(csp, C.NaryCSP):
+        return len(csp.constraints)
+    return sum(1 for v in order for w in csp.neighbors[v] if w != v) // 2
+
+
+# the class of aima.csp behind each kind of CSP, as the header names it
+SOURCE = {'queens': 'NQueensCSP', 'sudoku': 'Sudoku', 'zebra': 'Zebra', 'kakuro': 'Kakuro',
+          'crypto': 'NaryCSP', 'crossword': 'Crossword'}
+
+
 def header(name):
     inst = instance(name)
     t = translate(inst)
     return {'instance': inst,
             'encoding': {'form': 'cnf', 'translator': 'aima.logic.MapColoringSAT' if 'edges' in inst else
-                         'translate_csp on aima.csp.' + ('NQueensCSP' if inst['kind'] == 'queens' else 'Sudoku'),
+                         'translate_csp on aima.csp.' + SOURCE[inst['kind']],
                          'variables': len(t['symbols']), 'clauses': len(t['clauses']),
                          'symbols': t['symbols']}}
 

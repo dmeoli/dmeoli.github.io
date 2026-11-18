@@ -68,7 +68,7 @@ export function civilToUtc(y, mo, d, h, mi, s, zone) {
 
 /* ----------------------------------------------------------- bodies ---- */
 
-const eclOfDate = (body, time) => {
+export const eclOfDate = (body, time) => {
   const v = A().GeoVector(body, time, true), e = A().Ecliptic(v);
   return { lon: norm(e.elon), lat: e.elat, dist: v.Length() };
 };

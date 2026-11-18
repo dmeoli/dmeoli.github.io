@@ -1,0 +1,98 @@
+{
+ "game": "crypto",
+ "traces": [
+  {
+   "file": "crypto-send-aima-cdcl.jsonl",
+   "instance": "crypto-send",
+   "solver": {
+    "id": "aima-cdcl",
+    "name": "aima CDCL",
+    "block": "aima-python",
+    "paradigm": "sat",
+    "code": "aima-python 49ebbc3",
+    "config": "cdcl"
+   },
+   "sample": false
+  },
+  {
+   "file": "crypto-send-aima-gac.jsonl",
+   "instance": "crypto-send",
+   "solver": {
+    "id": "aima-gac",
+    "name": "aima GAC with domain splitting",
+    "block": "aima-python",
+    "paradigm": "csp",
+    "code": "aima-python 49ebbc3",
+    "config": "gac"
+   },
+   "sample": false
+  },
+  {
+   "file": "crypto-send-cadical.jsonl",
+   "instance": "crypto-send",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp tools 0.0.0",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "crypto-two-aima-cdcl.jsonl",
+   "instance": "crypto-two",
+   "solver": {
+    "id": "aima-cdcl",
+    "name": "aima CDCL",
+    "block": "aima-python",
+    "paradigm": "sat",
+    "code": "aima-python 49ebbc3",
+    "config": "cdcl"
+   },
+   "sample": false
+  },
+  {
+   "file": "crypto-two-aima-dpll.jsonl",
+   "instance": "crypto-two",
+   "solver": {
+    "id": "aima-dpll",
+    "name": "aima DPLL",
+    "block": "aima-python",
+    "paradigm": "sat",
+    "code": "aima-python 49ebbc3",
+    "config": "dpll"
+   },
+   "sample": false
+  },
+  {
+   "file": "crypto-two-aima-gac.jsonl",
+   "instance": "crypto-two",
+   "solver": {
+    "id": "aima-gac",
+    "name": "aima GAC with domain splitting",
+    "block": "aima-python",
+    "paradigm": "csp",
+    "code": "aima-python 49ebbc3",
+    "config": "gac"
+   },
+   "sample": false
+  },
+  {
+   "file": "crypto-two-cadical.jsonl",
+   "instance": "crypto-two",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp tools 0.0.0",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  }
+ ]
+}

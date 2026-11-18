@@ -1,0 +1,83 @@
+{
+ "game": "knapsack",
+ "traces": [
+  {
+   "file": "knapsack-20.1-bb-1.jsonl",
+   "instance": "knapsack-20",
+   "solver": {
+    "id": "bb-1",
+    "name": "B&B",
+    "block": "PBeFS",
+    "paradigm": "branch and bound",
+    "code": "PBeFS e328929",
+    "config": "bb, 1 thread"
+   },
+   "sample": false
+  },
+  {
+   "file": "knapsack-20.2-bb-shared-4.jsonl",
+   "instance": "knapsack-20",
+   "solver": {
+    "id": "bb-shared-4",
+    "name": "shared B&B 4 threads",
+    "block": "PBeFS",
+    "paradigm": "branch and bound",
+    "code": "PBeFS e328929",
+    "config": "bb-shared, 4 threads"
+   },
+   "sample": false
+  },
+  {
+   "file": "knapsack-20.3-bb-dist-4.jsonl",
+   "instance": "knapsack-20",
+   "solver": {
+    "id": "bb-dist-4",
+    "name": "distributed B&B 4 threads",
+    "block": "PBeFS",
+    "paradigm": "branch and bound",
+    "code": "PBeFS e328929",
+    "config": "bb-dist, 4 threads"
+   },
+   "sample": false
+  },
+  {
+   "file": "knapsack-30.1-bb-1.jsonl",
+   "instance": "knapsack-30",
+   "solver": {
+    "id": "bb-1",
+    "name": "B&B",
+    "block": "PBeFS",
+    "paradigm": "branch and bound",
+    "code": "PBeFS e328929",
+    "config": "bb, 1 thread"
+   },
+   "sample": false
+  },
+  {
+   "file": "knapsack-30.2-bb-shared-4.jsonl",
+   "instance": "knapsack-30",
+   "solver": {
+    "id": "bb-shared-4",
+    "name": "shared B&B 4 threads",
+    "block": "PBeFS",
+    "paradigm": "branch and bound",
+    "code": "PBeFS e328929",
+    "config": "bb-shared, 4 threads"
+   },
+   "sample": false
+  },
+  {
+   "file": "knapsack-30.3-bb-dist-4.jsonl",
+   "instance": "knapsack-30",
+   "solver": {
+    "id": "bb-dist-4",
+    "name": "distributed B&B 4 threads",
+    "block": "PBeFS",
+    "paradigm": "branch and bound",
+    "code": "PBeFS e328929",
+    "config": "bb-dist, 4 threads"
+   },
+   "sample": false
+  }
+ ]
+}

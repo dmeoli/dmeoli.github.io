@@ -1837,99 +1837,176 @@ Decomposition methods and solvers for large-scale
   <div class="grid">
     <h2><a href="/games" data-l="en" data-section="games">Games</a><a href="/giochi" data-l="it" lang="it" data-section="games">Giochi</a></h2>
     <div class="body">
-      <p data-l="en">These interactive pages put up to four solvers side by side on the same instance of a puzzle or of a combinatorial problem, and replay, event by event and on a board of the problem drawn in 3D, the trace that each of them wrote during an actual run: the solvers of SMS++, the searches of the A* family of PBeFS (also on several threads, with HDA*), and the CSP, SAT, search and planning algorithms of aima-python, so that one can follow how each of them moves in the space of the problem and builds its solution, while the page itself solves nothing.</p>
-      <p data-l="it" lang="it">Queste pagine interattive mettono fino a quattro solutori affiancati sulla stessa istanza di un rompicapo o di un problema combinatorio, e ripetono, evento per evento e su una tavola del problema disegnata in 3D, la traccia che ciascuno ha scritto durante un&rsquo;esecuzione reale: i solutori di SMS++, le ricerche della famiglia di A* di PBeFS (anche su pi&ugrave; thread, con HDA*) e gli algoritmi CSP, SAT, di ricerca e di pianificazione di aima-python, cos&igrave; che puoi seguire come ciascuno si muove nello spazio del problema e costruisce la sua soluzione, mentre la pagina non risolve nulla.</p>
-      <div class="scenes">
-          <article class="scene">
-            <a class="media" href="https://dmeoli.github.io/opt-playground/games-coloring.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-coloring.webp" width="640" height="442" alt="Map colouring" loading="lazy"><img class="th-dark" src="/assets/play/games-coloring-dark.webp" width="640" height="442" alt="Map colouring" loading="lazy"></a>
-            <div class="text">
-              <p class="num">01 / 09</p>
-              <h3><a href="https://dmeoli.github.io/opt-playground/games-coloring.html"><span data-l="en">Map colouring</span><span data-l="it" lang="it">Colorazione di mappe</span></a></h3>
-              <p class="desc"><span data-l="en">Map colouring of Australia, the USA, France and random planar graphs, CaDiCaL of SMS++ against the CSP and SAT solvers of aima-python.</span><span data-l="it" lang="it">Colorazione delle mappe di Australia, Stati Uniti, Francia e di grafi planari casuali, CaDiCaL di SMS++ contro i solutori CSP e SAT di aima-python.</span></p>
-              <ul class="tags"><li>CSP</li><li>SAT</li><li>SMS++</li><li>aima-python</li></ul>
-              <a class="go" href="https://dmeoli.github.io/opt-playground/games-coloring.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
-            </div>
-          </article>
-          <article class="scene">
-            <a class="media" href="https://dmeoli.github.io/opt-playground/games-queens.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-queens.webp" width="640" height="442" alt="Queens" loading="lazy"><img class="th-dark" src="/assets/play/games-queens-dark.webp" width="640" height="442" alt="Queens" loading="lazy"></a>
-            <div class="text">
-              <p class="num">02 / 09</p>
-              <h3><a href="https://dmeoli.github.io/opt-playground/games-queens.html"><span data-l="en">Queens</span><span data-l="it" lang="it">Regine</span></a></h3>
-              <p class="desc"><span data-l="en">Eight, twelve and twenty queens on a chessboard in 3D, CaDiCaL of SMS++ against backtracking, min-conflicts, DPLL, CDCL and WalkSAT of aima-python.</span><span data-l="it" lang="it">Otto, dodici e venti regine su una scacchiera in 3D, CaDiCaL di SMS++ contro backtracking, min-conflicts, DPLL, CDCL e WalkSAT di aima-python.</span></p>
-              <ul class="tags"><li>CSP</li><li>SAT</li><li><span data-l="en">Local Search</span><span data-l="it" lang="it">Ricerca locale</span></li><li>SMS++</li><li>aima-python</li></ul>
-              <a class="go" href="https://dmeoli.github.io/opt-playground/games-queens.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
-            </div>
-          </article>
-          <article class="scene">
-            <a class="media" href="https://dmeoli.github.io/opt-playground/games-sudoku.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-sudoku.webp" width="640" height="442" alt="Sudoku" loading="lazy"><img class="th-dark" src="/assets/play/games-sudoku-dark.webp" width="640" height="442" alt="Sudoku" loading="lazy"></a>
-            <div class="text">
-              <p class="num">03 / 09</p>
-              <h3><a href="https://dmeoli.github.io/opt-playground/games-sudoku.html">Sudoku</a></h3>
-              <p class="desc"><span data-l="en">Two Sudoku of aima-python, the candidates of each cell vanishing under CaDiCaL of SMS++, CDCL, backtracking and AC-3.</span><span data-l="it" lang="it">Due Sudoku di aima-python, i candidati di ogni cella che spariscono sotto CaDiCaL di SMS++, CDCL, backtracking e AC-3.</span></p>
-              <ul class="tags"><li>CSP</li><li>SAT</li><li><span data-l="en">Arc Consistency</span><span data-l="it" lang="it">Consistenza d'arco</span></li><li>SMS++</li><li>aima-python</li></ul>
-              <a class="go" href="https://dmeoli.github.io/opt-playground/games-sudoku.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
-            </div>
-          </article>
-          <article class="scene">
-            <a class="media" href="https://dmeoli.github.io/opt-playground/games-puzzle.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-puzzle.webp" width="640" height="442" alt="Sliding puzzle" loading="lazy"><img class="th-dark" src="/assets/play/games-puzzle-dark.webp" width="640" height="442" alt="Sliding puzzle" loading="lazy"></a>
-            <div class="text">
-              <p class="num">04 / 09</p>
-              <h3><a href="https://dmeoli.github.io/opt-playground/games-puzzle.html"><span data-l="en">Sliding puzzle</span><span data-l="it" lang="it">Gioco del 15</span></a></h3>
-              <p class="desc"><span data-l="en">The 8- and the 15-puzzle, A*, IDA* and HDA* of PBeFS against the searches of aima-python, the tiles sliding to each state expanded.</span><span data-l="it" lang="it">Il gioco dell'8 e del 15, A*, IDA* e HDA* di PBeFS contro le ricerche di aima-python, le tessere che scorrono fino a ogni stato espanso.</span></p>
-              <ul class="tags"><li><span data-l="en">Heuristic Search</span><span data-l="it" lang="it">Ricerca euristica</span></li><li>A*</li><li>PBeFS</li><li>aima-python</li></ul>
-              <a class="go" href="https://dmeoli.github.io/opt-playground/games-puzzle.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
-            </div>
-          </article>
-          <article class="scene">
-            <a class="media" href="https://dmeoli.github.io/opt-playground/games-grid.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-grid.webp" width="640" height="442" alt="Grid paths" loading="lazy"><img class="th-dark" src="/assets/play/games-grid-dark.webp" width="640" height="442" alt="Grid paths" loading="lazy"></a>
-            <div class="text">
-              <p class="num">05 / 09</p>
-              <h3><a href="https://dmeoli.github.io/opt-playground/games-grid.html"><span data-l="en">Grid paths</span><span data-l="it" lang="it">Cammini su griglia</span></a></h3>
-              <p class="desc"><span data-l="en">Paths on a grid of 64 by 64 cells, A* against HDA* of PBeFS, the cells rising in the colour of the worker that expands them.</span><span data-l="it" lang="it">Cammini su una griglia di 64 per 64 celle, A* contro HDA* di PBeFS, le celle che si alzano nel colore del worker che le espande.</span></p>
-              <ul class="tags"><li><span data-l="en">Heuristic Search</span><span data-l="it" lang="it">Ricerca euristica</span></li><li><span data-l="en">Parallel Search</span><span data-l="it" lang="it">Ricerca parallela</span></li><li>PBeFS</li></ul>
-              <a class="go" href="https://dmeoli.github.io/opt-playground/games-grid.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
-            </div>
-          </article>
-          <article class="scene">
-            <a class="media" href="https://dmeoli.github.io/opt-playground/games-romania.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-romania.webp" width="640" height="442" alt="Romania" loading="lazy"><img class="th-dark" src="/assets/play/games-romania-dark.webp" width="640" height="442" alt="Romania" loading="lazy"></a>
-            <div class="text">
-              <p class="num">06 / 09</p>
-              <h3><a href="https://dmeoli.github.io/opt-playground/games-romania.html">Romania</a></h3>
-              <p class="desc"><span data-l="en">From Arad to Bucharest on the map of the book, breadth-first, uniform cost, greedy and A* of aima-python, each city rising when it is expanded.</span><span data-l="it" lang="it">Da Arad a Bucarest sulla mappa del libro, ricerca in ampiezza, a costo uniforme, greedy e A* di aima-python, ogni città che si alza quando viene espansa.</span></p>
-              <ul class="tags"><li><span data-l="en">Search</span><span data-l="it" lang="it">Ricerca</span></li><li>A*</li><li>aima-python</li></ul>
-              <a class="go" href="https://dmeoli.github.io/opt-playground/games-romania.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
-            </div>
-          </article>
-          <article class="scene">
-            <a class="media" href="https://dmeoli.github.io/opt-playground/games-planning.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-planning.webp" width="640" height="442" alt="Planning" loading="lazy"><img class="th-dark" src="/assets/play/games-planning-dark.webp" width="640" height="442" alt="Planning" loading="lazy"></a>
-            <div class="text">
-              <p class="num">07 / 09</p>
-              <h3><a href="https://dmeoli.github.io/opt-playground/games-planning.html"><span data-l="en">Planning</span><span data-l="it" lang="it">Pianificazione</span></a></h3>
-              <p class="desc"><span data-l="en">Three classical planning problems of the book, GraphPlan with its growing planning graph against forward and backward search of aima-python.</span><span data-l="it" lang="it">Tre problemi di pianificazione classica del libro, GraphPlan con il suo grafo che cresce contro la ricerca in avanti e all'indietro di aima-python.</span></p>
-              <ul class="tags"><li><span data-l="en">Planning</span><span data-l="it" lang="it">Pianificazione</span></li><li>GraphPlan</li><li>aima-python</li></ul>
-              <a class="go" href="https://dmeoli.github.io/opt-playground/games-planning.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
-            </div>
-          </article>
-          <article class="scene">
-            <a class="media" href="https://dmeoli.github.io/opt-playground/games-hanoi.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-hanoi.webp" width="640" height="442" alt="Towers of Hanoi" loading="lazy"><img class="th-dark" src="/assets/play/games-hanoi-dark.webp" width="640" height="442" alt="Towers of Hanoi" loading="lazy"></a>
-            <div class="text">
-              <p class="num">08 / 09</p>
-              <h3><a href="https://dmeoli.github.io/opt-playground/games-hanoi.html"><span data-l="en">Towers of Hanoi</span><span data-l="it" lang="it">Torri di Hanoi</span></a></h3>
-              <p class="desc"><span data-l="en">The Towers of Hanoi with four pegs, 8 and 10 disks, A* against HDA* of PBeFS with additive pattern databases.</span><span data-l="it" lang="it">Le torri di Hanoi con quattro pioli, 8 e 10 dischi, A* contro HDA* di PBeFS con pattern database additivi.</span></p>
-              <ul class="tags"><li><span data-l="en">Heuristic Search</span><span data-l="it" lang="it">Ricerca euristica</span></li><li><span data-l="en">Pattern Databases</span><span data-l="it" lang="it">Pattern database</span></li><li>PBeFS</li></ul>
-              <a class="go" href="https://dmeoli.github.io/opt-playground/games-hanoi.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
-            </div>
-          </article>
-          <article class="scene">
-            <a class="media" href="https://dmeoli.github.io/opt-playground/games-cube.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-cube.webp" width="640" height="442" alt="The cube" loading="lazy"><img class="th-dark" src="/assets/play/games-cube-dark.webp" width="640" height="442" alt="The cube" loading="lazy"></a>
-            <div class="text">
-              <p class="num">09 / 09</p>
-              <h3><a href="https://dmeoli.github.io/opt-playground/games-cube.html"><span data-l="en">The cube</span><span data-l="it" lang="it">Il cubo</span></a></h3>
-              <p class="desc"><span data-l="en">A scrambled 3x3x3 cube, IDA*, A* and HDA* of PBeFS with the pattern databases of Korf, the cube turning along its solution path.</span><span data-l="it" lang="it">Un cubo 3x3x3 rimescolato, IDA*, A* e HDA* di PBeFS con i pattern database di Korf, il cubo che ruota lungo il suo cammino soluzione.</span></p>
-              <ul class="tags"><li><span data-l="en">Heuristic Search</span><span data-l="it" lang="it">Ricerca euristica</span></li><li><span data-l="en">Pattern Databases</span><span data-l="it" lang="it">Pattern database</span></li><li>PBeFS</li></ul>
-              <a class="go" href="https://dmeoli.github.io/opt-playground/games-cube.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
-            </div>
-          </article>
+      <p data-l="en">These interactive pages put up to four solvers side by side on the same instance of a puzzle or of a combinatorial problem, and replay, event by event and on a board of the problem drawn in 3D, the trace that each of them wrote during an actual run: the solvers of SMS++, the searches of PBeFS (the A* family, also on several threads with HDA*, and branch and bound), and the CSP, SAT, search and planning algorithms of aima-python, so that one can follow how each of them moves in the space of the problem and builds its solution, while the page itself solves nothing.</p>
+      <p data-l="it" lang="it">Queste pagine interattive mettono fino a quattro solutori affiancati sulla stessa istanza di un rompicapo o di un problema combinatorio, e ripetono, evento per evento e su una tavola del problema disegnata in 3D, la traccia che ciascuno ha scritto durante un&rsquo;esecuzione reale: i solutori di SMS++, le ricerche di PBeFS (la famiglia di A*, anche su pi&ugrave; thread con HDA*, e il branch and bound) e gli algoritmi CSP, SAT, di ricerca e di pianificazione di aima-python, cos&igrave; che puoi seguire come ciascuno si muove nello spazio del problema e costruisce la sua soluzione, mentre la pagina non risolve nulla.</p>
+      <div class="subnav" role="tablist">
+        <button type="button" role="tab" data-sub="csp"><span data-l="en">Constraints and SAT</span><span data-l="it" lang="it">Vincoli e SAT</span> <span class="count">7</span></button>
+        <button type="button" role="tab" data-sub="search"><span data-l="en">Search and Planning</span><span data-l="it" lang="it">Ricerca e pianificazione</span> <span class="count">9</span></button>
+      </div>
+      <div class="sub scenes" data-sub="csp" role="tabpanel">
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/games-coloring.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-coloring.webp" width="640" height="442" alt="Map colouring" loading="lazy"><img class="th-dark" src="/assets/play/games-coloring-dark.webp" width="640" height="442" alt="Map colouring" loading="lazy"></a>
+          <div class="text">
+            <p class="num">01 / 07</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/games-coloring.html"><span data-l="en">Map colouring</span><span data-l="it" lang="it">Colorazione di mappe</span></a></h3>
+            <p class="desc"><span data-l="en">Map colouring of Australia, the USA, France and random planar graphs, CaDiCaL of SMS++ against the CSP and SAT solvers of aima-python.</span><span data-l="it" lang="it">Colorazione delle mappe di Australia, Stati Uniti, Francia e di grafi planari casuali, CaDiCaL di SMS++ contro i solutori CSP e SAT di aima-python.</span></p>
+            <ul class="tags"><li>CSP</li><li>SAT</li><li>SMS++</li><li>aima-python</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/games-coloring.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/games-queens.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-queens.webp" width="640" height="442" alt="Queens" loading="lazy"><img class="th-dark" src="/assets/play/games-queens-dark.webp" width="640" height="442" alt="Queens" loading="lazy"></a>
+          <div class="text">
+            <p class="num">02 / 07</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/games-queens.html"><span data-l="en">Queens</span><span data-l="it" lang="it">Regine</span></a></h3>
+            <p class="desc"><span data-l="en">Eight, twelve and twenty queens on a chessboard in 3D, CaDiCaL of SMS++ against backtracking, min-conflicts, DPLL, CDCL and WalkSAT of aima-python.</span><span data-l="it" lang="it">Otto, dodici e venti regine su una scacchiera in 3D, CaDiCaL di SMS++ contro backtracking, min-conflicts, DPLL, CDCL e WalkSAT di aima-python.</span></p>
+            <ul class="tags"><li>CSP</li><li>SAT</li><li><span data-l="en">Local Search</span><span data-l="it" lang="it">Ricerca locale</span></li><li>SMS++</li><li>aima-python</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/games-queens.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/games-sudoku.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-sudoku.webp" width="640" height="442" alt="Sudoku" loading="lazy"><img class="th-dark" src="/assets/play/games-sudoku-dark.webp" width="640" height="442" alt="Sudoku" loading="lazy"></a>
+          <div class="text">
+            <p class="num">03 / 07</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/games-sudoku.html">Sudoku</a></h3>
+            <p class="desc"><span data-l="en">Two Sudoku of aima-python, the candidates of each cell vanishing under CaDiCaL of SMS++, CDCL, backtracking and AC-3.</span><span data-l="it" lang="it">Due Sudoku di aima-python, i candidati di ogni cella che spariscono sotto CaDiCaL di SMS++, CDCL, backtracking e AC-3.</span></p>
+            <ul class="tags"><li>CSP</li><li>SAT</li><li><span data-l="en">Arc Consistency</span><span data-l="it" lang="it">Consistenza d'arco</span></li><li>SMS++</li><li>aima-python</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/games-sudoku.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/games-zebra.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-zebra.webp" width="640" height="442" alt="Zebra puzzle" loading="lazy"><img class="th-dark" src="/assets/play/games-zebra-dark.webp" width="640" height="442" alt="Zebra puzzle" loading="lazy"></a>
+          <div class="text">
+            <p class="num">04 / 07</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/games-zebra.html"><span data-l="en">Zebra puzzle</span><span data-l="it" lang="it">Problema della zebra</span></a></h3>
+            <p class="desc"><span data-l="en">The zebra puzzle of aima-python on the grid of attributes by houses, CaDiCaL of SMS++ against CDCL, backtracking and AC-3.</span><span data-l="it" lang="it">Il problema della zebra di aima-python sulla griglia di attributi per case, CaDiCaL di SMS++ contro CDCL, backtracking e AC-3.</span></p>
+            <ul class="tags"><li>CSP</li><li>SAT</li><li><span data-l="en">Arc Consistency</span><span data-l="it" lang="it">Consistenza d'arco</span></li><li>SMS++</li><li>aima-python</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/games-zebra.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/games-kakuro.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-kakuro.webp" width="640" height="442" alt="Kakuro" loading="lazy"><img class="th-dark" src="/assets/play/games-kakuro-dark.webp" width="640" height="442" alt="Kakuro" loading="lazy"></a>
+          <div class="text">
+            <p class="num">05 / 07</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/games-kakuro.html">Kakuro</a></h3>
+            <p class="desc"><span data-l="en">Kakuro of aima-python, its candidates vanishing under CaDiCaL of SMS++ and the solver of generalized arc consistency of aima-python.</span><span data-l="it" lang="it">Kakuro di aima-python, i candidati che spariscono sotto CaDiCaL di SMS++ e il solutore di consistenza d'arco generalizzata di aima-python.</span></p>
+            <ul class="tags"><li>CSP</li><li>SAT</li><li><span data-l="en">Arc Consistency</span><span data-l="it" lang="it">Consistenza d'arco</span></li><li>SMS++</li><li>aima-python</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/games-kakuro.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/games-crypto.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-crypto.webp" width="640" height="442" alt="Cryptarithmetic" loading="lazy"><img class="th-dark" src="/assets/play/games-crypto-dark.webp" width="640" height="442" alt="Cryptarithmetic" loading="lazy"></a>
+          <div class="text">
+            <p class="num">06 / 07</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/games-crypto.html"><span data-l="en">Cryptarithmetic</span><span data-l="it" lang="it">Criptoaritmetica</span></a></h3>
+            <p class="desc"><span data-l="en">SEND + MORE = MONEY and TWO + TWO = FOUR, CaDiCaL of SMS++ against generalized arc consistency, CDCL and DPLL of aima-python.</span><span data-l="it" lang="it">SEND + MORE = MONEY e TWO + TWO = FOUR, CaDiCaL di SMS++ contro la consistenza d'arco generalizzata, CDCL e DPLL di aima-python.</span></p>
+            <ul class="tags"><li>CSP</li><li>SAT</li><li><span data-l="en">Arc Consistency</span><span data-l="it" lang="it">Consistenza d'arco</span></li><li>SMS++</li><li>aima-python</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/games-crypto.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/games-crossword.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-crossword.webp" width="640" height="442" alt="Crossword" loading="lazy"><img class="th-dark" src="/assets/play/games-crossword-dark.webp" width="640" height="442" alt="Crossword" loading="lazy"></a>
+          <div class="text">
+            <p class="num">07 / 07</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/games-crossword.html"><span data-l="en">Crossword</span><span data-l="it" lang="it">Cruciverba</span></a></h3>
+            <p class="desc"><span data-l="en">The crossword of aima-python letter by letter, CaDiCaL of SMS++ against generalized arc consistency and CDCL of aima-python.</span><span data-l="it" lang="it">Il cruciverba di aima-python lettera per lettera, CaDiCaL di SMS++ contro la consistenza d'arco generalizzata e CDCL di aima-python.</span></p>
+            <ul class="tags"><li>CSP</li><li>SAT</li><li><span data-l="en">Arc Consistency</span><span data-l="it" lang="it">Consistenza d'arco</span></li><li>SMS++</li><li>aima-python</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/games-crossword.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <button type="button" class="next" data-goto="search"><span data-l="en">Next: Search and Planning</span><span data-l="it" lang="it">Avanti: Ricerca e pianificazione</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
+      </div>
+      <div class="sub scenes" data-sub="search" role="tabpanel">
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/games-puzzle.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-puzzle.webp" width="640" height="442" alt="Sliding puzzle" loading="lazy"><img class="th-dark" src="/assets/play/games-puzzle-dark.webp" width="640" height="442" alt="Sliding puzzle" loading="lazy"></a>
+          <div class="text">
+            <p class="num">01 / 09</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/games-puzzle.html"><span data-l="en">Sliding puzzle</span><span data-l="it" lang="it">Gioco del 15</span></a></h3>
+            <p class="desc"><span data-l="en">The 8- and the 15-puzzle, A*, IDA* and HDA* of PBeFS against the searches of aima-python, the tiles sliding to each state expanded.</span><span data-l="it" lang="it">Il gioco dell'8 e del 15, A*, IDA* e HDA* di PBeFS contro le ricerche di aima-python, le tessere che scorrono fino a ogni stato espanso.</span></p>
+            <ul class="tags"><li><span data-l="en">Heuristic Search</span><span data-l="it" lang="it">Ricerca euristica</span></li><li>A*</li><li>PBeFS</li><li>aima-python</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/games-puzzle.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/games-grid.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-grid.webp" width="640" height="442" alt="Grid paths" loading="lazy"><img class="th-dark" src="/assets/play/games-grid-dark.webp" width="640" height="442" alt="Grid paths" loading="lazy"></a>
+          <div class="text">
+            <p class="num">02 / 09</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/games-grid.html"><span data-l="en">Grid paths</span><span data-l="it" lang="it">Cammini su griglia</span></a></h3>
+            <p class="desc"><span data-l="en">Paths on a grid of 64 by 64 cells, A* against HDA* of PBeFS, the cells rising in the colour of the worker that expands them.</span><span data-l="it" lang="it">Cammini su una griglia di 64 per 64 celle, A* contro HDA* di PBeFS, le celle che si alzano nel colore del worker che le espande.</span></p>
+            <ul class="tags"><li><span data-l="en">Heuristic Search</span><span data-l="it" lang="it">Ricerca euristica</span></li><li><span data-l="en">Parallel Search</span><span data-l="it" lang="it">Ricerca parallela</span></li><li>PBeFS</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/games-grid.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/games-romania.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-romania.webp" width="640" height="442" alt="Romania" loading="lazy"><img class="th-dark" src="/assets/play/games-romania-dark.webp" width="640" height="442" alt="Romania" loading="lazy"></a>
+          <div class="text">
+            <p class="num">03 / 09</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/games-romania.html">Romania</a></h3>
+            <p class="desc"><span data-l="en">From Arad to Bucharest on the map of the book, breadth-first, uniform cost, greedy and A* of aima-python, each city rising when it is expanded.</span><span data-l="it" lang="it">Da Arad a Bucarest sulla mappa del libro, ricerca in ampiezza, a costo uniforme, greedy e A* di aima-python, ogni città che si alza quando viene espansa.</span></p>
+            <ul class="tags"><li><span data-l="en">Search</span><span data-l="it" lang="it">Ricerca</span></li><li>A*</li><li>aima-python</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/games-romania.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/games-planning.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-planning.webp" width="640" height="442" alt="Planning" loading="lazy"><img class="th-dark" src="/assets/play/games-planning-dark.webp" width="640" height="442" alt="Planning" loading="lazy"></a>
+          <div class="text">
+            <p class="num">04 / 09</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/games-planning.html"><span data-l="en">Planning</span><span data-l="it" lang="it">Pianificazione</span></a></h3>
+            <p class="desc"><span data-l="en">Three classical planning problems of the book, GraphPlan with its growing planning graph against forward and backward search of aima-python.</span><span data-l="it" lang="it">Tre problemi di pianificazione classica del libro, GraphPlan con il suo grafo che cresce contro la ricerca in avanti e all'indietro di aima-python.</span></p>
+            <ul class="tags"><li><span data-l="en">Planning</span><span data-l="it" lang="it">Pianificazione</span></li><li>GraphPlan</li><li>aima-python</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/games-planning.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/games-hanoi.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-hanoi.webp" width="640" height="442" alt="Towers of Hanoi" loading="lazy"><img class="th-dark" src="/assets/play/games-hanoi-dark.webp" width="640" height="442" alt="Towers of Hanoi" loading="lazy"></a>
+          <div class="text">
+            <p class="num">05 / 09</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/games-hanoi.html"><span data-l="en">Towers of Hanoi</span><span data-l="it" lang="it">Torri di Hanoi</span></a></h3>
+            <p class="desc"><span data-l="en">The Towers of Hanoi with four pegs, 8 and 10 disks, A* against HDA* of PBeFS with additive pattern databases.</span><span data-l="it" lang="it">Le torri di Hanoi con quattro pioli, 8 e 10 dischi, A* contro HDA* di PBeFS con pattern database additivi.</span></p>
+            <ul class="tags"><li><span data-l="en">Heuristic Search</span><span data-l="it" lang="it">Ricerca euristica</span></li><li><span data-l="en">Pattern Databases</span><span data-l="it" lang="it">Pattern database</span></li><li>PBeFS</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/games-hanoi.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/games-cube.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-cube.webp" width="640" height="442" alt="The cube" loading="lazy"><img class="th-dark" src="/assets/play/games-cube-dark.webp" width="640" height="442" alt="The cube" loading="lazy"></a>
+          <div class="text">
+            <p class="num">06 / 09</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/games-cube.html"><span data-l="en">The cube</span><span data-l="it" lang="it">Il cubo</span></a></h3>
+            <p class="desc"><span data-l="en">A scrambled 3x3x3 cube, IDA*, A* and HDA* of PBeFS with the pattern databases of Korf, the cube turning along its solution path.</span><span data-l="it" lang="it">Un cubo 3x3x3 rimescolato, IDA*, A* e HDA* di PBeFS con i pattern database di Korf, il cubo che ruota lungo il suo cammino soluzione.</span></p>
+            <ul class="tags"><li><span data-l="en">Heuristic Search</span><span data-l="it" lang="it">Ricerca euristica</span></li><li><span data-l="en">Pattern Databases</span><span data-l="it" lang="it">Pattern database</span></li><li>PBeFS</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/games-cube.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/games-pancake.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-pancake.webp" width="640" height="442" alt="Pancakes" loading="lazy"><img class="th-dark" src="/assets/play/games-pancake-dark.webp" width="640" height="442" alt="Pancakes" loading="lazy"></a>
+          <div class="text">
+            <p class="num">07 / 09</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/games-pancake.html"><span data-l="en">Pancakes</span><span data-l="it" lang="it">Frittelle</span></a></h3>
+            <p class="desc"><span data-l="en">Stacks of 10 and 14 pancakes, A*, IDA* and HDA* of PBeFS with the gap heuristic, the stack flipping along its solution path.</span><span data-l="it" lang="it">Pile di 10 e 14 frittelle, A*, IDA* e HDA* di PBeFS con l'euristica dei salti, la pila che si ribalta lungo il suo cammino soluzione.</span></p>
+            <ul class="tags"><li><span data-l="en">Heuristic Search</span><span data-l="it" lang="it">Ricerca euristica</span></li><li><span data-l="en">Parallel Search</span><span data-l="it" lang="it">Ricerca parallela</span></li><li>PBeFS</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/games-pancake.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/games-topspin.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-topspin.webp" width="640" height="442" alt="TopSpin" loading="lazy"><img class="th-dark" src="/assets/play/games-topspin-dark.webp" width="640" height="442" alt="TopSpin" loading="lazy"></a>
+          <div class="text">
+            <p class="num">08 / 09</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/games-topspin.html">TopSpin</a></h3>
+            <p class="desc"><span data-l="en">TopSpin with 12 tokens and a turnstile of 4, A*, IDA* and HDA* of PBeFS, the tokens moving along the solution path.</span><span data-l="it" lang="it">TopSpin con 12 gettoni e un tornello di 4, A*, IDA* e HDA* di PBeFS, i gettoni che si muovono lungo il cammino soluzione.</span></p>
+            <ul class="tags"><li><span data-l="en">Heuristic Search</span><span data-l="it" lang="it">Ricerca euristica</span></li><li><span data-l="en">Parallel Search</span><span data-l="it" lang="it">Ricerca parallela</span></li><li>PBeFS</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/games-topspin.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/games-knapsack.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/games-knapsack.webp" width="640" height="442" alt="0-1 knapsack" loading="lazy"><img class="th-dark" src="/assets/play/games-knapsack-dark.webp" width="640" height="442" alt="0-1 knapsack" loading="lazy"></a>
+          <div class="text">
+            <p class="num">09 / 09</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/games-knapsack.html"><span data-l="en">0-1 knapsack</span><span data-l="it" lang="it">Zaino 0-1</span></a></h3>
+            <p class="desc"><span data-l="en">The 0-1 knapsack with 20 and 30 items, the branch-and-bound of PBeFS sequential, shared and distributed, its tree growing node by node.</span><span data-l="it" lang="it">Lo zaino 0-1 con 20 e 30 oggetti, il branch-and-bound di PBeFS sequenziale, condiviso e distribuito, il suo albero che cresce nodo per nodo.</span></p>
+            <ul class="tags"><li><span data-l="en">Branch and Bound</span><span data-l="it" lang="it">Branch and bound</span></li><li><span data-l="en">Parallel Search</span><span data-l="it" lang="it">Ricerca parallela</span></li><li>PBeFS</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/games-knapsack.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
       </div>
     </div>
   </div>
@@ -1939,30 +2016,86 @@ Decomposition methods and solvers for large-scale
   <div class="grid">
     <h2><a href="/sky" data-l="en" data-section="sky">Sky</a><a href="/cielo" data-l="it" lang="it" data-section="sky">Cielo</a></h2>
     <div class="body">
-      <p data-l="en">Scenes of the sky computed in the browser from the ephemerides of Astronomy Engine, grouped in two tabs: astronomy, for the sky itself, and astrology, for the natal chart, i.e., the sky of one moment seen from one place and drawn on the ecliptic. Astrology has no demonstrated predictive validity, since in the double-blind test of Carlson (<i>Nature</i>, 1985) astrologers did not match natal charts to the personality profiles of their owners better than chance; the chart is shown here as a cultural object with two millennia of history and as an exact geometry of the sky, and no interpretation is given.</p>
-      <p data-l="it" lang="it">Scene del cielo calcolate nel browser dalle effemeridi di Astronomy Engine, raccolte in due schede: l&rsquo;astronomia, per il cielo in s&eacute;, e l&rsquo;astrologia, per la carta natale, cio&egrave; il cielo di un istante visto da un luogo e disegnato sull&rsquo;eclittica. L&rsquo;astrologia non ha validit&agrave; predittiva dimostrata, poich&eacute; nel test in doppio cieco di Carlson (<i>Nature</i>, 1985) gli astrologi non hanno associato le carte natali ai profili di personalit&agrave; dei loro titolari meglio del caso; la carta &egrave; mostrata qui come un oggetto culturale con due millenni di storia e come una geometria esatta del cielo, e non se ne d&agrave; alcuna interpretazione.</p>
+      <p data-l="en">Scenes of the sky computed in the browser from the ephemerides of Astronomy Engine, in two tabs: astronomy, for the motions of the sky that a chart summarizes, from the loops of the planets to the precession of the equinoxes and the cycles of the eclipses, and astrology, for the natal chart, i.e., the sky of one moment seen from one place and drawn on the ecliptic. Astrology has no demonstrated predictive validity, since in the double-blind test of Carlson (<i>Nature</i>, 1985) astrologers did not match natal charts to the personality profiles of their owners better than chance; the chart is shown here as a cultural object with two millennia of history and as an exact geometry of the sky, and its booklet is assembled by explicit rules from texts written for this site.</p>
+      <p data-l="it" lang="it">Scene del cielo calcolate nel browser dalle effemeridi di Astronomy Engine, in due schede: l&rsquo;astronomia, per i moti del cielo che una carta riassume, dai cappi dei pianeti alla precessione degli equinozi e ai cicli delle eclissi, e l&rsquo;astrologia, per la carta natale, cio&egrave; il cielo di un istante visto da un luogo e disegnato sull&rsquo;eclittica. L&rsquo;astrologia non ha validit&agrave; predittiva dimostrata, poich&eacute; nel test in doppio cieco di Carlson (<i>Nature</i>, 1985) gli astrologi non hanno associato le carte natali ai profili di personalit&agrave; dei loro titolari meglio del caso; la carta &egrave; mostrata qui come un oggetto culturale con due millenni di storia e come una geometria esatta del cielo, e il suo fascicolo &egrave; composto da regole esplicite con testi scritti per questo sito.</p>
       <div class="subnav" role="tablist">
-        <button type="button" role="tab" data-sub="astronomy" data-empty><span data-l="en">Astronomy</span><span data-l="it" lang="it">Astronomia</span> <span class="count">0</span></button>
+        <button type="button" role="tab" data-sub="astronomy"><span data-l="en">Astronomy</span><span data-l="it" lang="it">Astronomia</span> <span class="count">6</span></button>
         <button type="button" role="tab" data-sub="astrology"><span data-l="en">Astrology</span><span data-l="it" lang="it">Astrologia</span> <span class="count">1</span></button>
       </div>
-      <div class="sub" data-sub="astronomy" role="tabpanel">
-      <p class="eyebrow label"><span data-l="en">Astronomy</span><span data-l="it" lang="it">Astronomia</span></p>
-      <p class="empty"><span data-l="en">In preparation.</span><span data-l="it" lang="it">In preparazione.</span></p>
+      <div class="sub scenes" data-sub="astronomy" role="tabpanel">
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/sky-retrograde.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/sky-retrograde.webp" width="640" height="442" alt="Retrograde motion" loading="lazy"><img class="th-dark" src="/assets/play/sky-retrograde-dark.webp" width="640" height="442" alt="Retrograde motion" loading="lazy"></a>
+          <div class="text">
+            <p class="num">01 / 06</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/sky-retrograde.html"><span data-l="en">Retrograde motion</span><span data-l="it" lang="it">Il moto retrogrado</span></a></h3>
+            <p class="desc"><span data-l="en">Around an opposition, the orbits seen from above, the loop that the planet draws on the sky and the Ptolemaic epicycle that reproduces it, on the same clock.</span><span data-l="it" lang="it">Intorno a un'opposizione, le orbite viste dall'alto, il cappio che il pianeta disegna sul cielo e l'epiciclo tolemaico che lo riproduce, sullo stesso orologio.</span></p>
+            <ul class="tags"><li><span data-l="en">Planets</span><span data-l="it" lang="it">Pianeti</span></li><li><span data-l="en">Epicycles</span><span data-l="it" lang="it">Epicicli</span></li><li><span data-l="en">Ptolemy</span><span data-l="it" lang="it">Tolomeo</span></li><li><span data-l="en">Kepler</span><span data-l="it" lang="it">Keplero</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/sky-retrograde.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/sky-precession.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/sky-precession.webp" width="640" height="442" alt="Precession and the zodiac" loading="lazy"><img class="th-dark" src="/assets/play/sky-precession-dark.webp" width="640" height="442" alt="Precession and the zodiac" loading="lazy"></a>
+          <div class="text">
+            <p class="num">02 / 06</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/sky-precession.html"><span data-l="en">Precession and the zodiac</span><span data-l="it" lang="it">La precessione e lo zodiaco</span></a></h3>
+            <p class="desc"><span data-l="en">The equinox sliding along the ecliptic over 28000 years, the tropical signs moving off the IAU constellations, and the astrological ages under three conventions.</span><span data-l="it" lang="it">L'equinozio che scorre lungo l'eclittica in 28000 anni, i segni tropicali che si staccano dalle costellazioni IAU, e le ere astrologiche secondo tre convenzioni.</span></p>
+            <ul class="tags"><li><span data-l="en">Precession</span><span data-l="it" lang="it">Precessione</span></li><li><span data-l="en">Constellations</span><span data-l="it" lang="it">Costellazioni</span></li><li><span data-l="en">Zodiac</span><span data-l="it" lang="it">Zodiaco</span></li><li><span data-l="en">Ages</span><span data-l="it" lang="it">Ere</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/sky-precession.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/sky-houses.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/sky-houses.webp" width="640" height="442" alt="Houses compared" loading="lazy"><img class="th-dark" src="/assets/play/sky-houses-dark.webp" width="640" height="442" alt="Houses compared" loading="lazy"></a>
+          <div class="text">
+            <p class="num">03 / 06</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/sky-houses.html"><span data-l="en">Houses compared</span><span data-l="it" lang="it">I sistemi di case a confronto</span></a></h3>
+            <p class="desc"><span data-l="en">Seven house systems for one moment of the sky while the latitude rises toward the pole, and why Placidus and Koch vanish beyond the polar circle.</span><span data-l="it" lang="it">Sette sistemi di case per un istante del cielo mentre la latitudine sale verso il polo, e perché Placidus e Koch scompaiono oltre il circolo polare.</span></p>
+            <ul class="tags"><li><span data-l="en">Houses</span><span data-l="it" lang="it">Case</span></li><li><span data-l="en">Spherical Geometry</span><span data-l="it" lang="it">Geometria sferica</span></li><li><span data-l="en">Astrology</span><span data-l="it" lang="it">Astrologia</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/sky-houses.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/sky-roses.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/sky-roses.webp" width="640" height="442" alt="The pentagram of Venus" loading="lazy"><img class="th-dark" src="/assets/play/sky-roses-dark.webp" width="640" height="442" alt="The pentagram of Venus" loading="lazy"></a>
+          <div class="text">
+            <p class="num">04 / 06</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/sky-roses.html"><span data-l="en">The pentagram of Venus</span><span data-l="it" lang="it">Il pentagramma di Venere</span></a></h3>
+            <p class="desc"><span data-l="en">The path of Venus around the Earth over 8 years, the 13:8 ratio of the periods, and the roses of the other planets from the continued fraction of their periods.</span><span data-l="it" lang="it">Il cammino di Venere intorno alla Terra in 8 anni, il rapporto 13:8 dei periodi, e le rose degli altri pianeti dalla frazione continua dei loro periodi.</span></p>
+            <ul class="tags"><li><span data-l="en">Venus</span><span data-l="it" lang="it">Venere</span></li><li><span data-l="en">Synodic Period</span><span data-l="it" lang="it">Periodo sinodico</span></li><li><span data-l="en">Continued Fractions</span><span data-l="it" lang="it">Frazioni continue</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/sky-roses.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/sky-analemma.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/sky-analemma.webp" width="640" height="442" alt="The analemma" loading="lazy"><img class="th-dark" src="/assets/play/sky-analemma-dark.webp" width="640" height="442" alt="The analemma" loading="lazy"></a>
+          <div class="text">
+            <p class="num">05 / 06</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/sky-analemma.html"><span data-l="en">The analemma</span><span data-l="it" lang="it">L'analemma</span></a></h3>
+            <p class="desc"><span data-l="en">The Sun at the same mean time every day of a year, and the equation of time split into its parts due to eccentricity and obliquity.</span><span data-l="it" lang="it">Il Sole alla stessa ora media ogni giorno di un anno, e l'equazione del tempo separata nelle parti dovute all'eccentricità e all'obliquità.</span></p>
+            <ul class="tags"><li><span data-l="en">Sun</span><span data-l="it" lang="it">Sole</span></li><li><span data-l="en">Equation of Time</span><span data-l="it" lang="it">Equazione del tempo</span></li><li><span data-l="en">Sundials</span><span data-l="it" lang="it">Meridiane</span></li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/sky-analemma.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/sky-saros.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/sky-saros.webp" width="640" height="442" alt="The Saros cycle" loading="lazy"><img class="th-dark" src="/assets/play/sky-saros-dark.webp" width="640" height="442" alt="The Saros cycle" loading="lazy"></a>
+          <div class="text">
+            <p class="num">06 / 06</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/sky-saros.html"><span data-l="en">The Saros cycle</span><span data-l="it" lang="it">Il ciclo di Saros</span></a></h3>
+            <p class="desc"><span data-l="en">The eclipses of 1901 to 2100 arranged by Saros series, and one series followed through its twelve centuries from one pole of the Earth to the other.</span><span data-l="it" lang="it">Le eclissi dal 1901 al 2100 ordinate per serie di Saros, e una serie seguita nei suoi dodici secoli da un polo all'altro della Terra.</span></p>
+            <ul class="tags"><li><span data-l="en">Eclipses</span><span data-l="it" lang="it">Eclissi</span></li><li><span data-l="en">Moon</span><span data-l="it" lang="it">Luna</span></li><li>Saros</li></ul>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/sky-saros.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <button type="button" class="next" data-goto="astrology"><span data-l="en">Next: Astrology</span><span data-l="it" lang="it">Avanti: Astrologia</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
       </div>
-      <div class="sub" data-sub="astrology" role="tabpanel">
-      <p class="eyebrow label"><span data-l="en">Astrology</span><span data-l="it" lang="it">Astrologia</span></p>
-      <div class="scenes">
+      <div class="sub scenes" data-sub="astrology" role="tabpanel">
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/astro-chart.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/play/astro-chart.webp" width="640" height="442" alt="The natal chart" loading="lazy"><img class="th-dark" src="/assets/play/astro-chart-dark.webp" width="640" height="442" alt="The natal chart" loading="lazy"></a>
           <div class="text">
             <p class="num">01 / 01</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/astro-chart.html"><span data-l="en">The natal chart</span><span data-l="it" lang="it">La carta natale</span></a></h3>
-            <p class="desc"><span data-l="en">The sky of one moment, seen from one place, drawn on the wheel of the ecliptic with its signs, the Ascendant, the Midheaven and the houses in four systems, beside the celestial sphere of the place, which a projection carries onto the wheel; the positions are computed in the browser by Astronomy Engine, to within about one arcminute.</span><span data-l="it" lang="it">Il cielo di un istante, visto da un luogo, disegnato sulla ruota dell'eclittica con i suoi segni, l'Ascendente, il Medio cielo e le case in quattro sistemi, accanto alla sfera celeste del luogo, che una proiezione porta sulla ruota; le posizioni sono calcolate nel browser da Astronomy Engine, a meno di circa un primo d'arco.</span></p>
+            <p class="desc"><span data-l="en">The sky of one moment, seen from one place, drawn on the wheel of the ecliptic with its signs, the Ascendant, the Midheaven and the houses, beside the celestial sphere of the place, which a projection carries onto the wheel; the button Booklet opens a booklet of original texts on the chart, all still drafts.</span><span data-l="it" lang="it">Il cielo di un istante, visto da un luogo, disegnato sulla ruota dell'eclittica con i suoi segni, l'Ascendente, il Medio cielo e le case, accanto alla sfera celeste del luogo, che una proiezione porta sulla ruota; il pulsante Fascicolo apre un fascicolo di testi originali sulla carta, tutti ancora in bozza.</span></p>
             <ul class="tags"><li><span data-l="en">Ecliptic</span><span data-l="it" lang="it">Eclittica</span></li><li><span data-l="en">Celestial Sphere</span><span data-l="it" lang="it">Sfera celeste</span></li><li><span data-l="en">Houses</span><span data-l="it" lang="it">Case</span></li><li>Astronomy Engine</li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/astro-chart.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
-      </div>
       </div>
     </div>
   </div>
@@ -1978,7 +2111,7 @@ Decomposition methods and solvers for large-scale
       <p class="order" data-l="en">Every shape on this page can be ordered as a 3D print, also customized in size, color and parameters: write to me at <a href="mailto:donato.meoli@outlook.com?subject=Stampa%203D">donato.meoli@outlook.com</a>, or use the button "Request this print" in its scene, which sends the link to the shape with the settings you chose.</p>
       <p class="order" data-l="it" lang="it">Puoi ordinare ogni forma di questa pagina come stampa 3D, anche personalizzata in dimensione, colore e parametri: scrivimi a <a href="mailto:donato.meoli@outlook.com?subject=Stampa%203D">donato.meoli@outlook.com</a>, oppure usa nella sua scena il pulsante "Richiedi questa stampa", che manda il link alla forma con le impostazioni che hai scelto.</p>
       <div class="subnav" role="tablist">
-        <button type="button" role="tab" data-sub="optimization-forms"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span> <span class="count">4</span></button>
+        <button type="button" role="tab" data-sub="optimization-forms"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span> <span class="count">6</span></button>
         <button type="button" role="tab" data-sub="nature"><span data-l="en">Nature</span><span data-l="it" lang="it">Natura</span> <span class="count">6</span></button>
         <button type="button" role="tab" data-sub="mathematics"><span data-l="en">Mathematics</span><span data-l="it" lang="it">Matematica</span> <span class="count">7</span></button>
         <button type="button" role="tab" data-sub="nerd">Nerd <span class="count">4</span></button>
@@ -1992,7 +2125,7 @@ Decomposition methods and solvers for large-scale
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/simplex-path.html?print" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/forms/simplex-path.webp" width="640" height="442" alt="The Simplex on a Polytope" loading="lazy"><img class="th-dark" src="/assets/forms/simplex-path-dark.webp" width="640" height="442" alt="The Simplex on a Polytope" loading="lazy"></a>
           <div class="text">
-            <p class="num">01 / 04</p>
+            <p class="num">01 / 06</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/simplex-path.html?print"><span data-l="en">The Simplex on a Polytope</span><span data-l="it" lang="it">Il simplesso su un politopo</span></a></h3>
             <p class="desc"><span data-l="en">The feasible region of a linear program in three variables as a solid, with the path of the simplex method raised on its edges; on the Klee-Minty cube the rule of Dantzig visits all 8 vertices.</span><span data-l="it" lang="it">La regione ammissibile di un programma lineare in tre variabili come solido, con il cammino del metodo del simplesso in rilievo sui suoi spigoli; sul cubo di Klee-Minty la regola di Dantzig visita tutti gli 8 vertici.</span></p>
             <ul class="tags"><li><span data-l="en">Linear programming</span><span data-l="it" lang="it">Programmazione lineare</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
@@ -2003,7 +2136,7 @@ Decomposition methods and solvers for large-scale
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/lagrangian-dual.html?print" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/forms/lagrangian-dual.webp" width="640" height="442" alt="The Lagrangian Dual" loading="lazy"><img class="th-dark" src="/assets/forms/lagrangian-dual-dark.webp" width="640" height="442" alt="The Lagrangian Dual" loading="lazy"></a>
           <div class="text">
-            <p class="num">02 / 04</p>
+            <p class="num">02 / 06</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/lagrangian-dual.html?print"><span data-l="en">The Lagrangian Dual</span><span data-l="it" lang="it">Il duale lagrangiano</span></a></h3>
             <p class="desc"><span data-l="en">The dual function of a small knapsack problem with two relaxed constraints, a concave polyhedral roof with one facet per point, climbed by a bundle method whose path is engraved on it.</span><span data-l="it" lang="it">La funzione duale di un piccolo problema di zaino con due vincoli rilassati, un tetto poliedrico concavo con una faccia per punto, scalato da un metodo bundle il cui cammino vi è inciso.</span></p>
             <ul class="tags"><li><span data-l="en">Lagrangian relaxation</span><span data-l="it" lang="it">Rilassamento lagrangiano</span></li><li><span data-l="en">Bundle methods</span><span data-l="it" lang="it">Metodi bundle</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
@@ -2014,7 +2147,7 @@ Decomposition methods and solvers for large-scale
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/loss-landscape.html" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/forms/loss-landscape.webp" width="640" height="442" alt="Loss Landscapes" loading="lazy"><img class="th-dark" src="/assets/forms/loss-landscape-dark.webp" width="640" height="442" alt="Loss Landscapes" loading="lazy"></a>
           <div class="text">
-            <p class="num">03 / 04</p>
+            <p class="num">03 / 06</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/loss-landscape.html"><span data-l="en">Loss Landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a></h3>
             <p class="desc"><span data-l="en">The loss of a deep network and of a logistic regression on planes through their trained weights, after Li et al. (2018), side by side as reliefs with the path of gradient descent; the first surface is rugged, while the second is convex.</span><span data-l="it" lang="it">La loss di una rete profonda e di una regressione logistica su piani per i loro pesi addestrati, secondo Li et al. (2018), affiancate come rilievi con il cammino della discesa del gradiente; la prima superficie è accidentata, mentre la seconda è convessa.</span></p>
             <ul class="tags"><li>Machine learning</li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
@@ -2025,12 +2158,34 @@ Decomposition methods and solvers for large-scale
         <article class="scene">
           <a class="media" href="https://dmeoli.github.io/opt-playground/packing-mip.html?print" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/forms/packing-mip.webp" width="640" height="442" alt="A Packing Puzzle by MIP" loading="lazy"><img class="th-dark" src="/assets/forms/packing-mip-dark.webp" width="640" height="442" alt="A Packing Puzzle by MIP" loading="lazy"></a>
           <div class="text">
-            <p class="num">04 / 04</p>
+            <p class="num">04 / 06</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/packing-mip.html?print"><span data-l="en">A Packing Puzzle by MIP</span><span data-l="it" lang="it">Un puzzle di impaccamento con la MIP</span></a></h3>
             <p class="desc"><span data-l="en">Pentominoes and the Soma cube placed in their tray by an integer program that maximizes the area covered, so that the tray is full only at the optimum; tray and pieces can be ordered as a 3D print.</span><span data-l="it" lang="it">Pentamini e cubo Soma messi nel loro vassoio da un programma intero che massimizza l'area coperta, così che il vassoio è pieno solo all'ottimo; vassoio e pezzi si possono ordinare come stampa 3D.</span></p>
             <ul class="tags"><li><span data-l="en">Integer programming</span><span data-l="it" lang="it">Programmazione intera</span></li><li><span data-l="en">Puzzles</span><span data-l="it" lang="it">Rompicapi</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
             <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
             <a class="go" href="https://dmeoli.github.io/opt-playground/packing-mip.html?print"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/lp3d.html?print" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/forms/lp3d.webp" width="640" height="442" alt="A Linear Program in Three Variables" loading="lazy"><img class="th-dark" src="/assets/forms/lp3d-dark.webp" width="640" height="442" alt="A Linear Program in Three Variables" loading="lazy"></a>
+          <div class="text">
+            <p class="num">05 / 06</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/lp3d.html?print"><span data-l="en">A Linear Program in Three Variables</span><span data-l="it" lang="it">Un programma lineare in tre variabili</span></a></h3>
+            <p class="desc"><span data-l="en">The polytope of a linear program in three variables with the path of its method as a tube: the simplex along the edges of a solid, or the central path of the barrier method inside a frame of struts.</span><span data-l="it" lang="it">Il politopo di un programma lineare in tre variabili con il cammino del suo metodo come un tubo: il simplesso lungo gli spigoli di un solido, o il cammino centrale del metodo barriera dentro un telaio di aste.</span></p>
+            <ul class="tags"><li><span data-l="en">Linear programming</span><span data-l="it" lang="it">Programmazione lineare</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
+            <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/lp3d.html?print"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </article>
+        <article class="scene">
+          <a class="media" href="https://dmeoli.github.io/opt-playground/polarity.html?print" tabindex="-1" aria-hidden="true"><img class="th-light" src="/assets/forms/polarity.webp" width="640" height="442" alt="A Polytope and Its Polar" loading="lazy"><img class="th-dark" src="/assets/forms/polarity-dark.webp" width="640" height="442" alt="A Polytope and Its Polar" loading="lazy"></a>
+          <div class="text">
+            <p class="num">06 / 06</p>
+            <h3><a href="https://dmeoli.github.io/opt-playground/polarity.html?print"><span data-l="en">A Polytope and Its Polar</span><span data-l="it" lang="it">Un politopo e il suo polare</span></a></h3>
+            <p class="desc"><span data-l="en">A polytope and its polar as two solids at one scale, every face of one matching a vertex of the other: the cube and the octahedron, the dodecahedron and the icosahedron, a prism and its bipyramid.</span><span data-l="it" lang="it">Un politopo e il suo polare come due solidi alla stessa scala, ogni faccia dell'uno che corrisponde a un vertice dell'altro: il cubo e l'ottaedro, il dodecaedro e l'icosaedro, un prisma e la sua bipiramide.</span></p>
+            <ul class="tags"><li><span data-l="en">Convex geometry</span><span data-l="it" lang="it">Geometria convessa</span></li><li><span data-l="en">3D printing</span><span data-l="it" lang="it">Stampa 3D</span></li></ul>
+            <p class="print"><span data-l="en">On request, also customized</span><span data-l="it" lang="it">Su richiesta, anche personalizzata</span></p>
+            <a class="go" href="https://dmeoli.github.io/opt-playground/polarity.html?print"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
       </div>

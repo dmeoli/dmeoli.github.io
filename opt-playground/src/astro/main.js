@@ -4,19 +4,17 @@
 // core.js drawn as the wheel, the sphere and three tables. Nothing leaves the
 // page, and the data enter the address only through Copy link.
 
-import { chart, civilToUtc, HOUSE_SYSTEMS, GLYPH, SIGN_GLYPH, SIGNS, SIGNS_IT, NAME_EN, NAME_IT, ASPECTS, signOf, dm, fmtOrb } from './core.js';
+import { chart, civilToUtc, HOUSE_SYSTEMS } from './core.js';
 import { drawWheel, drawKey } from './wheel.js';
 import { makeSphere } from './sphere.js';
-import { portrait } from './portrait.js';
+import { positionsTable, cuspsTable, aspectsTable } from './tables.js';
+import { EXAMPLE, readHash, toHash } from './state.js';
 import { t, lang, onLang, onTheme } from '../i18n.js';
 
 const $ = id => document.getElementById(id);
 const still = matchMedia('(prefers-reduced-motion: reduce)');
 const fold = s => s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
-// the example: the greatest eclipse of the total solar eclipse of
-// 11 August 1999, 11:03 UT, near Râmnicu Vâlcea (14:03 summer time there)
-const EXAMPLE = { date: '1999-08-11', time: '14:03:00', place: 'Râmnicu Vâlcea, Vâlcea County, RO', lat: 45.1, lon: 24.3667, zone: 'Europe/Bucharest', houses: 'P', node: 'true' };
 const state = { ...EXAMPLE };
 let ch = null, sphere = null;
 
@@ -120,17 +118,13 @@ const pad = n => String(n).padStart(2, '0');
 const offs = m => `UTC${m < 0 ? '\u2212' : '+'}${pad(Math.floor(Math.abs(m) / 60))}:${pad(Math.abs(m) % 60)}`;
 const hms = hours => { let s = Math.round(hours * 3600) % 86400; return `${Math.floor(s / 3600)}h${pad(Math.floor(s / 60) % 60)}m${pad(s % 60)}s`; };
 const iso = ms => { const d = new Date(ms); return `${String(d.getUTCFullYear()).padStart(4, '0')}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}`; };
-const nm = n => t(NAME_EN[n] || n, NAME_IT[n]);
-const sign = l => t(SIGNS[signOf(l)], SIGNS_IT[signOf(l)]);
 
 function render() {
   drawWheel($('wheel'), ch);
   drawKey($('aspkey'));
   sphere.update(ch);
   info(); tables(); hoverLinks();
-  const p = portrait(ch, lang());
-  $('portrait').hidden = !p;
-  if (p) $('portrait').innerHTML = p;
+  bookletLink();
 }
 
 function info() {
@@ -156,31 +150,9 @@ function info() {
 }
 
 function tables() {
-  const th = cells => `<tr>${cells.map(c => `<th${c[1] ? ` class="${c[1]}"` : ''}>${c[0]}</th>`).join('')}</tr>`;
-  let h = '<thead>' + th([['', 'g'], [t('body', 'corpo')], ['', 'g'], [t('sign', 'segno'), 'sn'], [t('degree', 'grado'), 'num'], [t('house', 'casa'), 'num'], ['']]) + '</thead><tbody>';
-  for (const b of ch.bodies) {
-    h += `<tr data-name="${b.name}"><td class="g body">${GLYPH[b.name]}</td><td>${nm(b.name)}</td><td class="g">${SIGN_GLYPH[signOf(b.lon)]}</td><td class="sn">${sign(b.lon)}</td><td class="num">${dm(b.lon)}</td><td class="num">${b.house}</td><td class="r">${b.speed < 0 ? 'R' : ''}</td></tr>`;
-  }
-  for (const [n, l] of [['Asc', ch.asc], ['MC', ch.mc]]) {
-    h += `<tr class="ang" data-name="${n}"><td class="g body">${n === 'Asc' ? 'AC' : 'MC'}</td><td>${nm(n)}</td><td class="g">${SIGN_GLYPH[signOf(l)]}</td><td class="sn">${sign(l)}</td><td class="num">${dm(l)}</td><td class="num"></td><td></td></tr>`;
-  }
-  $('positions').innerHTML = h + '</tbody>';
-
-  h = '<thead>' + th([[t('house', 'casa'), 'num'], ['', 'g'], [t('sign', 'segno')], [t('cusp', 'cuspide'), 'num']]) + '</thead><tbody>';
-  for (let k = 1; k <= 12; k++) {
-    const l = ch.houses.cusps[k];
-    h += `<tr><td class="num">${k}</td><td class="g">${SIGN_GLYPH[signOf(l)]}</td><td>${sign(l)}</td><td class="num">${dm(l)}</td></tr>`;
-  }
-  $('cusps').innerHTML = h + '</tbody>';
-
-  h = '<thead>' + th([['', 'g'], [t('aspect', 'aspetto')], ['', 'g'], [t('orb', 'orbita'), 'num'], ['']]) + '</thead><tbody>';
-  const gl = n => (n === 'Asc' ? 'AC' : GLYPH[n]);
-  for (const a of ch.aspects) {
-    const A = ASPECTS.find(x => x.key === a.type);
-    h += `<tr data-a="${a.a}" data-b="${a.b}"><td class="g body" title="${nm(a.a)}">${gl(a.a)}</td><td class="${a.type}">${A.glyph} ${t(A.en, A.it)}</td><td class="g body" title="${nm(a.b)}">${gl(a.b)}</td><td class="num">${fmtOrb(a.orb)}</td><td>${a.applying ? 'a' : 's'}</td></tr>`;
-  }
-  if (!ch.aspects.length) h += `<tr><td colspan="5">${t('none', 'nessuno')}</td></tr>`;
-  $('aspects').innerHTML = h + '</tbody>';
+  $('positions').innerHTML = positionsTable(ch);
+  $('cusps').innerHTML = cuspsTable(ch);
+  $('aspects').innerHTML = aspectsTable(ch);
 }
 
 // pointing at a body in the wheel or at its row lights its aspects
@@ -205,23 +177,9 @@ function hoverLinks() {
 
 /* ------------------------------------------------- the link and now ---- */
 
-function readHash() {
-  const p = new URLSearchParams(location.hash.slice(1));
-  if (!p.has('d')) return;
-  const ok = (k, re) => p.has(k) && re.test(p.get(k));
-  if (ok('d', /^\d{4}-\d\d-\d\d$/)) state.date = p.get('d');
-  if (ok('t', /^\d\d:\d\d(:\d\d)?$/)) state.time = p.get('t').length === 5 ? p.get('t') + ':00' : p.get('t');
-  if (ok('lat', /^-?\d+(\.\d+)?$/)) state.lat = +p.get('lat');
-  if (ok('lon', /^-?\d+(\.\d+)?$/)) state.lon = +p.get('lon');
-  if (p.has('tz')) state.zone = p.get('tz');
-  state.place = p.get('p') || `${(+state.lat).toFixed(4)}, ${(+state.lon).toFixed(4)}`;
-  if (ok('h', /^[PKEW]$/)) state.houses = p.get('h');
-  if (ok('n', /^(true|mean)$/)) state.node = p.get('n');
-}
-function link() {
-  const p = new URLSearchParams({ d: state.date, t: state.time, lat: (+state.lat).toFixed(4), lon: (+state.lon).toFixed(4), tz: state.zone, p: state.place, h: state.houses, n: state.node });
-  return location.origin + location.pathname + '#' + p.toString();
-}
+const link = (page = location.pathname) => location.origin + page + toHash(state);
+// the booklet opens in its own tab with the chart in the hash
+const bookletLink = () => { $('booklet').href = link(new URL('astro-booklet.html', location.href).pathname); };
 function nowInZone() {
   const f = new Intl.DateTimeFormat('en-CA', { timeZone: state.zone, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
   const p = {};
@@ -263,7 +221,7 @@ function relang() {
 }
 
 fillZones();
-readHash();
+readHash(location.hash, state);
 toInputs();
 suggestBox();
 sphere = makeSphere($('stage'));

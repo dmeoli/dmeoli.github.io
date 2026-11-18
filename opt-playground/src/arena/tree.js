@@ -5,6 +5,8 @@
 const NS = 'http://www.w3.org/2000/svg';
 const el = (n, a) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); return e; };
 
+import { WORKERS } from './search.js';
+
 export function drawTree(svg, nodes, current) {
   svg.replaceChildren();
   if (!nodes.size) { svg.setAttribute('viewBox', '0 0 100 30'); return; }
@@ -27,7 +29,9 @@ export function drawTree(svg, nodes, current) {
     }
   };
   walk(root, 0);
-  const dx = 34, dy = 40, W = Math.max(1, leaf) * dx + 20, H = (depth + 1) * dy + 14;
+  // a large tree (the knapsack) is drawn small, without the labels
+  const big = nodes.size > 40;
+  const dx = big ? 12 : 34, dy = big ? 14 : 40, W = Math.max(1, leaf) * dx + 20, H = (depth + 1) * dy + 14;
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   svg.setAttribute('width', W * 1.3); svg.setAttribute('height', H * 1.3);
   const at = id => { const [x, d] = pos.get(id); return [10 + dx / 2 + x * dx, 16 + d * dy]; };
@@ -39,8 +43,12 @@ export function drawTree(svg, nodes, current) {
   for (const n of nodes.values()) {
     if (!pos.has(n.id)) continue;
     const [x, y] = at(n.id), g = el('g', { class: `anode ${n.status}${n.id === current ? ' hot' : ''}` });
-    g.append(el('circle', { cx: x, cy: y, r: 9 }));
-    const tx = el('text', { x, y: y + 3.5, class: 'tval' }); tx.textContent = n.id; g.append(tx);
+    const c = el('circle', { cx: x, cy: y, r: big ? 4.5 : 9 });
+    if (n.w !== undefined && n.status === 'branched') c.style.fill = WORKERS[n.w % WORKERS.length];
+    g.append(c);
+    if (big) { svg.append(g); continue; }
+    // the ids of the knapsack (items fixed:items taken) say little: no label
+    if (!String(n.id).includes(':')) { const tx = el('text', { x, y: y + 3.5, class: 'tval' }); tx.textContent = n.id; g.append(tx); }
     if (n.bound !== null && n.bound !== undefined) {
       const b = el('text', { x, y: y + 21, class: 'tick' }); b.textContent = +(+n.bound).toPrecision(4); g.append(b);
     }

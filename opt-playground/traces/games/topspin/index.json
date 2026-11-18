@@ -1,0 +1,107 @@
+{
+ "game": "topspin",
+ "traces": [
+  {
+   "file": "topspin-random.1-astar-breakpoints-1.jsonl",
+   "instance": "topspin-random",
+   "solver": {
+    "id": "astar-breakpoints-1",
+    "name": "A*",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS e328929",
+    "config": {
+     "algorithm": "astar",
+     "heuristic": "breakpoints",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "topspin-random.2-idastar-breakpoints-1.jsonl",
+   "instance": "topspin-random",
+   "solver": {
+    "id": "idastar-breakpoints-1",
+    "name": "IDA*",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS e328929",
+    "config": {
+     "algorithm": "idastar",
+     "heuristic": "breakpoints",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "topspin-random.3-hda-breakpoints-4.jsonl",
+   "instance": "topspin-random",
+   "solver": {
+    "id": "hda-breakpoints-4",
+    "name": "HDA* 4 threads",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS e328929",
+    "config": {
+     "algorithm": "hda",
+     "heuristic": "breakpoints",
+     "threads": 4
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "topspin-walk20.1-astar-breakpoints-1.jsonl",
+   "instance": "topspin-walk20",
+   "solver": {
+    "id": "astar-breakpoints-1",
+    "name": "A*",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS e328929",
+    "config": {
+     "algorithm": "astar",
+     "heuristic": "breakpoints",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "topspin-walk20.2-idastar-breakpoints-1.jsonl",
+   "instance": "topspin-walk20",
+   "solver": {
+    "id": "idastar-breakpoints-1",
+    "name": "IDA*",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS e328929",
+    "config": {
+     "algorithm": "idastar",
+     "heuristic": "breakpoints",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "topspin-walk20.3-hda-breakpoints-4.jsonl",
+   "instance": "topspin-walk20",
+   "solver": {
+    "id": "hda-breakpoints-4",
+    "name": "HDA* 4 threads",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS e328929",
+    "config": {
+     "algorithm": "hda",
+     "heuristic": "breakpoints",
+     "threads": 4
+    }
+   },
+   "sample": false
+  }
+ ]
+}

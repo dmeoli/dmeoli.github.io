@@ -204,6 +204,64 @@
    "thumb": "forms/thumbs/packing-mip"
   },
   {
+   "id": "lp3d",
+   "group": "optimization-forms",
+   "order": 5,
+   "page": "lp3d.html?print",
+   "nav": {
+    "en": "LP in 3D",
+    "it": "PL in 3D"
+   },
+   "title": {
+    "en": "A Linear Program in Three Variables",
+    "it": "Un programma lineare in tre variabili"
+   },
+   "blurb": {
+    "en": "The polytope of a linear program in three variables with the path of its method as a tube: the simplex along the edges of a solid, or the central path of the barrier method inside a frame of struts.",
+    "it": "Il politopo di un programma lineare in tre variabili con il cammino del suo metodo come un tubo: il simplesso lungo gli spigoli di un solido, o il cammino centrale del metodo barriera dentro un telaio di aste."
+   },
+   "tags": [
+    {
+     "en": "Linear programming",
+     "it": "Programmazione lineare"
+    },
+    {
+     "en": "3D printing",
+     "it": "Stampa 3D"
+    }
+   ],
+   "thumb": "forms/thumbs/lp3d"
+  },
+  {
+   "id": "polarity",
+   "group": "optimization-forms",
+   "order": 6,
+   "page": "polarity.html?print",
+   "nav": {
+    "en": "Polarity",
+    "it": "Polarità"
+   },
+   "title": {
+    "en": "A Polytope and Its Polar",
+    "it": "Un politopo e il suo polare"
+   },
+   "blurb": {
+    "en": "A polytope and its polar as two solids at one scale, every face of one matching a vertex of the other: the cube and the octahedron, the dodecahedron and the icosahedron, a prism and its bipyramid.",
+    "it": "Un politopo e il suo polare come due solidi alla stessa scala, ogni faccia dell'uno che corrisponde a un vertice dell'altro: il cubo e l'ottaedro, il dodecaedro e l'icosaedro, un prisma e la sua bipiramide."
+   },
+   "tags": [
+    {
+     "en": "Convex geometry",
+     "it": "Geometria convessa"
+    },
+    {
+     "en": "3D printing",
+     "it": "Stampa 3D"
+    }
+   ],
+   "thumb": "forms/thumbs/polarity"
+  },
+  {
    "id": "shells",
    "group": "nature",
    "order": 10,

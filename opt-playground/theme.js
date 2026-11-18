@@ -54,7 +54,7 @@
   var path = location.pathname.replace(/\/$/, '/index.html'),
       back = /^\/opt-playground\/(games|arena)(-[a-z]+)?(\.html)?$/.test(path)
         ? '<a class="home" href="/games"><span data-l="en">&larr; Games</span><span data-l="it" lang="it">&larr; Giochi</span></a>'
-        : /^\/opt-playground\/astro(-[a-z]+)?(\.html)?$/.test(path)
+        : /^\/opt-playground\/(astro|sky)(-[a-z]+)?(\.html)?$/.test(path)
         ? '<a class="home" href="/sky"><span data-l="en">&larr; Sky</span><span data-l="it" lang="it">&larr; Cielo</span></a>'
         : /^\/opt-playground\/(index|components|benders|lp|lp3d|integer|polarity|packing-mip|simplex-path|lagrangian-dual)?(\.html)?$/.test(path)
         ? '<a class="home" href="/optimization"><span data-l="en">&larr; Optimization</span><span data-l="it" lang="it">&larr; Ottimizzazione</span></a>'

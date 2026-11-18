@@ -82,7 +82,7 @@ export class Replay {
     this.last = e;
     switch (e.type) {
       case 'decide': this.assign(e.lit, e.level); break;
-      case 'propagate': for (const l of e.lits || []) this.assign(l, e.level); break;
+      case 'propagate': case 'split': for (const l of e.lits || []) this.assign(l, e.level); break;
       case 'flip': for (const l of e.lits || []) this.assign(l, 0); break;   // WalkSAT
       case 'backtrack':
         for (let v = 1; v <= this.nvars; v++) if (this.val[v] && this.lev[v] > e.level) this.val[v] = 0;
@@ -90,6 +90,8 @@ export class Replay {
       case 'node': {
         const old = this.nodes.get(e.id);
         this.nodes.set(e.id, { ...old, ...e });
+        if ('lb' in e) this.lb = e.lb;
+        if ('ub' in e) this.ub = e.ub;
         if (e.status === 'open' || !old) {      // the board shows the fixings of the node
           this.node = e.id;
           this.val.fill(0);

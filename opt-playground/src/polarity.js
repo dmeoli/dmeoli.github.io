@@ -121,6 +121,7 @@ function build() {
     s.position.set(...p); group.add(s); return s;
   });
   model = { Fo, dots, Vi, counts: [Fo.length, Vo.length, Fi.length, Vi.length], outerP };
+  window.__polarity = { V, W };       // for the print panel of the page opened from Forms
   // which inner vertex belongs to which outer face: the polar maps facet i of
   // the outer to the vertex n_i/d_i, i.e., Vi[i] when the outer is P; when the
   // outer is the polar, match the inner vertex with the facet normal
@@ -151,8 +152,13 @@ function pick() {
 }
 
 for (const [k, s] of Object.entries(shapes)) $('shape').append(new Option(s.label, k));
-// #shape=<id> opens that polytope (e.g. #shape=triprism, the prism of a logo)
-{ const k = new URLSearchParams(location.hash.slice(1)).get('shape'); if (k && shapes[k]) $('shape').value = k; }
+// #shape=<id> opens that polytope (e.g. #shape=triprism, the prism of a logo),
+// &scale=<s> at that scale
+{
+  const h = new URLSearchParams(location.hash.slice(1)), k = h.get('shape'), sc = +h.get('scale');
+  if (k && shapes[k]) $('shape').value = k;
+  if (sc >= 0.6 && sc <= 1.6) { $('scale').value = sc; $('scaleOut').textContent = sc; }
+}
 // the words that depend on the language: title and options
 function words() {
   document.title = t('Polarity playground', 'Laboratorio di polarità');
