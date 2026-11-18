@@ -73,7 +73,7 @@ export class GraphView {
   place() { for (const it of this.cities.values()) it.m.scale.z = it.h; }
   frame(dt) {
     let moving = false;
-    for (const it of this.cities.values()) if (Math.abs(it.h - it.target) > 1e-4) { it.h += (it.target - it.h) * Math.min(1, dt * 9); moving = true; }
+    for (const it of this.cities.values()) if (Math.abs(it.h - it.target) > 1e-4) { it.h += (it.target - it.h) * Math.min(1, dt * 6); moving = true; }
     if (moving) this.place();
   }
 }

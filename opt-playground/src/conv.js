@@ -281,14 +281,14 @@ function drawAdversarial() {
   ctx.font = '11px IBM Plex Mono, monospace'; ctx.fillStyle = P.soft; ctx.textAlign = 'start';
   $('useadv').disabled = !adv;
   if (!adv) {
-    ctx.fillText(t('press Attack to perturb the current input', "si prema Attacca per perturbare l'ingresso corrente"), 0, 14);
+    ctx.fillText(t('press Attack to perturb the current input', "premi Attacca per perturbare l'ingresso corrente"), 0, 14);
     drawProb($('advprob'), F.prob);
     $('advnote').textContent = t(`The network says ${argmax(F.prob)} on the input; choose a target and ε, then Attack.`,
-      `Sull'ingresso la rete dice ${argmax(F.prob)}; si scelgano un bersaglio ed ε, poi Attacca.`);
+      `Sull'ingresso la rete dice ${argmax(F.prob)}; scegli un bersaglio ed ε, poi premi Attacca.`);
     return;
   }
   const d = adv.xa.map((v, k) => v - adv.x0[k]), e = Math.max(adv.eps, 1e-9);
-  ctx.fillText('x', 0, 14); ctx.fillText(t(`x' − x, scaled by 1/ε`, `x' − x, scalato di 1/ε`), N * c + gap, 14); ctx.fillText(`x'`, 2 * (N * c + gap), 14);
+  ctx.fillText('x', 0, 14); ctx.fillText(t(`x' − x, scaled by 1/ε`, `x' − x, moltiplicato per 1/ε`), N * c + gap, 14); ctx.fillText(`x'`, 2 * (N * c + gap), 14);
   grid(ctx, adv.x0, 0, top, c, v => seq(P.ink, v));
   grid(ctx, d, N * c + gap, top, c, v => div(v / e));
   grid(ctx, adv.xa, 2 * (N * c + gap), top, c, v => seq(P.ink, v));
@@ -343,7 +343,7 @@ function refresh() {
       `it depends on rows ${r0}-${r1} and columns ${c0}-${c1} of the input (${np} pixels).`,
       `strato ${hover.stage[1]}, ${name} ${hover.m + 1}, cella (${hover.i}, ${hover.j}) = ${v}: ` +
       `dipende dalle righe ${r0}-${r1} e dalle colonne ${c0}-${c1} dell'ingresso (${np} pixel).`);
-  } else $('hover').textContent = t('Hover a cell of a map to see its receptive field.', 'Si passi col puntatore su una cella di una mappa per vederne il campo recettivo.');
+  } else $('hover').textContent = t('Hover a cell of a map to see its receptive field.', 'Passa col puntatore su una cella di una mappa per vederne il campo recettivo.');
 }
 
 function save() { history.replaceState(null, '', '#' + new URLSearchParams({ c1: S.c1, c2: S.c2, lr: S.lr, seed: S.seed, f: S.f, salc: S.salc, salx: S.salx, tgt: S.tgt, eps: S.eps, iters: S.iters })); }
@@ -409,7 +409,7 @@ $('next').onclick = () => { stopSlide(); pos = (pos + 1) % (N * N); drawSlide();
 $('play').onclick = () => {
   if (sliding) return stopSlide();
   $('play').textContent = t('Stop', 'Ferma');
-  sliding = setInterval(() => { pos = (pos + 1) % (N * N); drawSlide(); }, 45);
+  sliding = setInterval(() => { pos = (pos + 1) % (N * N); drawSlide(); }, 150);
 };
 
 // ------------------------------------------------------------------ controls
@@ -443,7 +443,7 @@ function words() {
   document.title = t('Convolution playground', 'Laboratorio della convoluzione');
   $('reset').textContent = t('Reset', 'Ricomincia'); $('step').textContent = t('Step', 'Passo');
   $('train').textContent = running ? t('Pause', 'Pausa') : t('Play', 'Avvia');
-  $('clear').textContent = t('Clear', 'Cancella'); $('sample').textContent = t('Held-out digit', 'Cifra di test');
+  $('clear').textContent = t('Clear', 'Cancella'); $('sample').textContent = t('Held-out digit', 'Cifra tenuta da parte');
   $('next').textContent = t('Next position', 'Posizione successiva');
   $('play').textContent = sliding ? t('Stop', 'Ferma') : t('Slide', 'Scorri');
   $('attack').textContent = t('Attack', 'Attacca'); $('useadv').textContent = t('Use as input', 'Usa come ingresso');

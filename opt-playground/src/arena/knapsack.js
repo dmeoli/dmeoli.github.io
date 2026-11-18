@@ -70,7 +70,7 @@ export class KnapsackView {
     let moving = false;
     for (const it of this.items) {
       if (Math.abs(it.y - it.ty) + Math.abs(it.z - it.tz) > 1e-4) {
-        const k = Math.min(1, dt * 8);
+        const k = Math.min(1, dt * 5);
         it.y += (it.ty - it.y) * k; it.z += (it.tz - it.z) * k; moving = true;
       }
     }

@@ -85,14 +85,14 @@ export function drawPoles(cv, { poles, D, dt, sel }) {
   text(ctx, P, 'Re λ', pad + sw, sy(0) - 8, 'right', 'middle');
   text(ctx, P, 'Im λ', sx(0) + 4, pad + 8, 'left', 'middle');
   for (const v of [-2, -1]) text(ctx, P, String(v), sx(v), sy(0) + 9, 'center');
-  text(ctx, P, tx('continuous λ', 'continuo λ'), pad, pad - 10, 'left', 'middle', 'accent');
+  text(ctx, P, tx('continuous λ', 'λ continuo'), pad, pad - 10, 'left', 'middle', 'accent');
   // the disc
   const cx = half + half / 2, cy = H / 2, R = Math.min(half / 2 - pad, H / 2 - pad) * 0.92;
   ctx.fillStyle = col(P, 'ground'); ctx.beginPath(); ctx.arc(cx, cy, R, 0, 2 * Math.PI); ctx.fill();
   ctx.strokeStyle = col(P, 'ink-soft', 0.3); ctx.lineWidth = 1; ctx.stroke();
   line(ctx, [[cx - R - 8, cy], [cx + R + 8, cy]], col(P, 'rule')); line(ctx, [[cx, cy - R - 8], [cx, cy + R + 8]], col(P, 'rule'));
   text(ctx, P, '1', cx + R + 3, cy + 9, 'left'); text(ctx, P, '0', cx + 3, cy + 9, 'left');
-  text(ctx, P, tx('discrete Ā = exp(Δλ)', 'discreto Ā = exp(Δλ)'), half + pad * 0.3, pad - 10, 'left', 'middle', 'accent');
+  text(ctx, P, tx('discrete Ā = exp(Δλ)', 'Ā discreto = exp(Δλ)'), half + pad * 0.3, pad - 10, 'left', 'middle', 'accent');
   const zx = re => cx + re * R, zy = im => cy - im * R;
   poles.forEach((p, n) => {
     const d = D[n], hot = n === sel;

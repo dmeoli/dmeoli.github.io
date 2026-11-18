@@ -142,7 +142,7 @@ function tables() {
     <tr><td>${t('last eclipse', 'ultima eclissi')}</td><td class="num">${y(life[life.length - 1].ms)}</td></tr>
     <tr><td>${t('length', 'durata')}</td><td class="num">${((life[life.length - 1].ms - life[0].ms) / 864e5 / 365.25).toFixed(0)} ${t('years', 'anni')}</td></tr>` +
     Object.keys(KIND).filter(k => count[k]).map(k => `<tr><td>${kname(k)}</td><td class="num">${count[k]}</td></tr>`).join('') +
-    `<tr><td>${t('eclipses in 1901-2100, all series', 'eclissi nel 1901-2100, tutte le serie')}</td><td class="num">${list.length}</td></tr>`;
+    `<tr><td>${t('eclipses in 1901-2100, all series', 'eclissi fra il 1901 e il 2100, tutte le serie')}</td><td class="num">${list.length}</td></tr>`;
 }
 
 /* ------------------------------------------------------------ shell ---- */

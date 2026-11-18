@@ -314,7 +314,7 @@ function drawNeighbours(nb) {
   ctx.font = '12px IBM Plex Mono, monospace'; ctx.fillStyle = P.soft;
   ctx.fillText(t(`a ${sample.Y[i]}, in ${NAMES[hover.l]}`, `un ${sample.Y[i]}, in ${NAMES[hover.l]}`), 0, 12);
   const x0 = big + 18;
-  ctx.fillText(t('its 8 nearest neighbours', 'i suoi 8 vicini più prossimi'), x0, 12);
+  ctx.fillText(t('its 8 nearest neighbors', 'i suoi 8 vicini più prossimi'), x0, 12);
   nb.forEach((j, k) => {
     const cx = x0 + (k % 4) * (th + gap + 12), cy = 18 + Math.floor(k / 4) * (th + 22);
     digitAt(ctx, sample.X[j], cx, cy, th);
@@ -392,7 +392,7 @@ function draw() {
       `Epoca ${epoch}: la rete classifica ${netAcc === null ? '…' : (100 * netAcc).toFixed(1) + '%'} delle 500 cifre tenute da parte`) +
       (lossAvg === null ? '' : t(` (training loss ${lossAvg.toFixed(3)})`, ` (loss di addestramento ${lossAvg.toFixed(3)})`)) +
       t(`; the maps show the activations of epoch ${layers[1].epoch ?? 0}`, `; le mappe mostrano le attivazioni dell'epoca ${layers[1].epoch ?? 0}`);
-    if (S.view === 'tsne' && T) msg += t(`, t-SNE at iteration ${T.iter}`, `, t-SNE all'iterazione ${T.iter}`) + (layers[2].kl === null ? '' : t(` with KL ${layers[2].kl.toFixed(3)} in hidden 2`, ` con KL ${layers[2].kl.toFixed(3)} in nascosto 2`));
+    if (S.view === 'tsne' && T) msg += t(`, t-SNE at iteration ${T.iter}`, `, t-SNE all'iterazione ${T.iter}`) + (layers[2].kl === null ? '' : t(` with KL ${layers[2].kl.toFixed(3)} in hidden 2`, ` con KL ${layers[2].kl.toFixed(3)} nello strato nascosto 2`));
     if (S.view === 'probe') msg += t(', the probe classifying in 2D ', ', la sonda che classifica in 2D ') + `${layers.map((L2, l) => `${NAMES[l]} ${!(L2.pAcc >= 0) ? '…' : (100 * L2.pAcc).toFixed(0) + '%'}`).join(', ')}` + t(' of the 500', ' dei 500');
     if (S.view === 'pca') msg += t(`, ${what} keeping ${layers.map(L2 => L2.pca ? (100 * (L2.pca.lambda[0] + L2.pca.lambda[1]) / L2.pca.tr).toFixed(0) + '%' : '…').join(', ')} of the variance`,
       `, con ${what} che conserva ${layers.map(L2 => L2.pca ? (100 * (L2.pca.lambda[0] + L2.pca.lambda[1]) / L2.pca.tr).toFixed(0) + '%' : '…').join(', ')} della varianza`);
@@ -460,7 +460,7 @@ for (let k = 0; k < 10; k++) { const li = document.createElement('li'), i = docu
 // the texts that are not in the page twice: title, buttons, options
 function labels() {
   document.title = t('Representations playground', 'Laboratorio delle rappresentazioni');
-  $('step').textContent = t('Step', 'Passo');
+  $('step').textContent = t('Step', 'Passo'); $('reset').textContent = t('Reset', 'Ricomincia');
   $('clear').textContent = t('Clear', 'Cancella');
   $('sample').textContent = t('Held-out digit', 'Cifra tenuta da parte');
   const O = { tsne: ['t-SNE', 't-SNE'], pca: ['PCA', 'PCA'], probe: ['linear probe', 'sonda lineare'], dots: ['dots', 'punti'], digits: ['numerals', 'numeri'] };

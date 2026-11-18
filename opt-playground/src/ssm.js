@@ -43,7 +43,7 @@ $('play1').onclick = () => {
   if (timer1) return stop1();
   if (S1.k >= L1 - 1) S1.k = 0;
   $('play1').textContent = tx('Pause', 'Pausa');
-  timer1 = setInterval(step1, 140);
+  timer1 = setInterval(step1, 600);
 };
 // dragging a pole, in the s-plane or in the disc
 const at = (cv, e) => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
@@ -99,7 +99,7 @@ function draw2() {
   $('Nv').textContent = S2.N;
 }
 function stop2() { clearInterval(timer2); timer2 = null; $('play2').textContent = tx('Play', 'Avvia'); }
-function step2() { S2.k = Math.min(M2, S2.k + 8); draw2(); if (S2.k === M2) stop2(); }
+function step2(n = 8) { S2.k = Math.min(M2, S2.k + n); draw2(); if (S2.k === M2) stop2(); }
 $('N').oninput = e => { S2.N = +e.target.value; recompute2(); draw2(); };
 $('hkind').onchange = e => { S2.kind = e.target.value; u2 = history(S2.kind, M2, S2.seed); recompute2(); draw2(); };
 $('hnew').onclick = () => { S2.seed++; u2 = history(S2.kind, M2, S2.seed); recompute2(); draw2(); };
@@ -109,7 +109,8 @@ $('play2').onclick = () => {
   if (timer2) return stop2();
   if (S2.k >= M2) S2.k = 8;
   $('play2').textContent = tx('Pause', 'Pausa');
-  timer2 = setInterval(step2, 50);
+  // 2 samples every 40 ms: t sweeps [0, 1] in 8 s
+  timer2 = setInterval(() => step2(2), 40);
 };
 // drawing the input: a soft brush around the pointer
 let painting = false, lastP = null;
@@ -144,8 +145,8 @@ function draw3() {
   drawCurves($('loss3'), run.hist, 'loss', run.epoch);
   const a = run.hist.sel.at(-1).acc, b = run.hist.lti.at(-1).acc, pct = v => `${(100 * v).toFixed(0)}%`;
   $('rep').textContent = tx(
-    `After ${run.epoch} steps of Adam (${run.epoch * 4} minibatches of 32 fresh sequences) the selective model names the colour after the marker in ${pct(a)} of the test sequences, the time-invariant one in ${pct(b)}; naming the colour seen most often gives ${pct(run.majority)}, chance 25%.`,
-    `Dopo ${run.epoch} passi di Adam (${run.epoch * 4} minibatch di 32 sequenze nuove) il modello selettivo indica il colore dopo il marcatore nel ${pct(a)} delle sequenze di test, quello tempo-invariante nel ${pct(b)}; indicare il colore visto più spesso dà il ${pct(run.majority)}, il caso il 25%.`);
+    `After ${run.epoch} steps of Adam (${run.epoch * 4} minibatches of 32 fresh sequences) the selective model names the color after the marker in ${pct(a)} of the test sequences, the time-invariant one in ${pct(b)}; naming the color seen most often gives ${pct(run.majority)}, chance 25%.`,
+    `Dopo ${run.epoch} passi di Adam (${run.epoch * 4} minibatch di 32 sequenze nuove) il modello selettivo indica il colore dopo il marcatore nel ${pct(a)} delle sequenze di test, quello tempo-invariante nel ${pct(b)}; indicare il colore visto più spesso dà il ${pct(run.majority)}, la scelta a caso il 25%.`);
   $('ep').textContent = run.epoch;
 }
 function stop3() { if (raf) cancelAnimationFrame(raf); raf = null; $('play3').textContent = tx('Play', 'Avvia'); }
@@ -177,7 +178,7 @@ const OPTS = {
 function words() {
   document.title = tx('State-Space Models', 'Modelli a spazio di stato');
   for (const [id, o] of Object.entries(OPTS)) for (const op of $(id).options) op.textContent = tx(...o[op.value]);
-  for (const n of ['1', '2', '3']) { $('reset' + n).textContent = tx('Reset', 'Reset'); $('step' + n).textContent = tx('Step', 'Passo'); }
+  for (const n of ['1', '2', '3']) { $('reset' + n).textContent = tx('Reset', 'Ricomincia'); $('step' + n).textContent = tx('Step', 'Passo'); }
   $('play1').textContent = timer1 ? tx('Pause', 'Pausa') : tx('Play', 'Avvia');
   $('play2').textContent = timer2 ? tx('Pause', 'Pausa') : tx('Play', 'Avvia');
   $('play3').textContent = raf ? tx('Pause', 'Pausa') : tx('Play', 'Avvia');

@@ -24,8 +24,8 @@ function addColumn(state, problem, o) {
 
 export const subgradient = {
   get name() { return t('Subgradient', "Subgradiente"); },
-  params: { l0: { get label() { return t('start', "inizio"); }, min: 0, max: 3, step: 0.1, value: 0 },
-            s0: { get label() { return t('step size', "passo"); }, min: 0.05, max: 2, step: 0.05, value: 0.6 } },
+  params: { l0: { get label() { return t('start', "punto iniziale"); }, min: 0, max: 3, step: 0.1, value: 0 },
+            s0: { get label() { return t('step size', "ampiezza del passo"); }, min: 0.05, max: 2, step: 0.05, value: 0.6 } },
   get explain() { return t('Moves along the subgradient with a step that shrinks as \\(1/\\sqrt{k}\\): it uses only the last cut, so it zig-zags around the maximum.', "Si muove lungo il subgradiente con un passo che decresce come \\(1/\\sqrt{k}\\): usa solo l'ultimo taglio, e per questo oscilla a zig-zag attorno al massimo."); },
   init: (problem, p) => start(problem, p.l0),
   step(problem, s, p) {
@@ -42,7 +42,7 @@ export const subgradient = {
 
 export const kelley = {
   get name() { return t("Kelley's cutting plane", "Piano di taglio di Kelley"); },
-  params: { l0: { get label() { return t('start', "inizio"); }, min: 0, max: 3, step: 0.1, value: 0 } },
+  params: { l0: { get label() { return t('start', "punto iniziale"); }, min: 0, max: 3, step: 0.1, value: 0 } },
   get explain() { return t('Maximizes the model, the minimum of all the cuts found so far, over the whole interval: the next point can jump far away from a good one.', "Massimizza il modello, il minimo di tutti i tagli trovati finora, sull'intero intervallo: il punto successivo può saltare lontano da uno buono."); },
   init: (problem, p) => start(problem, p.l0),
   step(problem, s) {
@@ -58,10 +58,10 @@ export const kelley = {
 
 export const bundle = {
   get name() { return t('Proximal bundle', "Bundle prossimale"); },
-  params: { l0: { get label() { return t('start', "inizio"); }, min: 0, max: 3, step: 0.1, value: 0 },
+  params: { l0: { get label() { return t('start', "punto iniziale"); }, min: 0, max: 3, step: 0.1, value: 0 },
             t: { label: 'prox \\(t\\)', min: 0.05, max: 5, step: 0.05, value: 0.5 },
             m1: { get label() { return t('descent \\(m_1\\)', "discesa \\(m_1\\)"); }, min: 0.01, max: 0.9, step: 0.01, value: 0.1 } },
-  get explain() { return t('Maximizes the model minus \\((\\lambda - c)^2 / 2t\\) around the stability centre \\(c\\): the centre moves only when the new point improves enough (serious step), otherwise the cut just enriches the model (null step).', "Massimizza il modello meno \\((\\lambda - c)^2 / 2t\\) attorno al centro di stabilità \\(c\\): il centro si sposta solo quando il nuovo punto migliora abbastanza (passo serio), altrimenti il taglio arricchisce soltanto il modello (passo nullo)."); },
+  get explain() { return t('Maximizes the model minus \\((\\lambda - c)^2 / 2t\\) around the stability center \\(c\\): the center moves only when the new point improves enough (serious step), otherwise the cut just enriches the model (null step).', "Massimizza il modello meno \\((\\lambda - c)^2 / 2t\\) attorno al centro di stabilità \\(c\\): il centro si sposta solo quando il nuovo punto migliora abbastanza (passo serio), altrimenti il taglio arricchisce soltanto il modello (passo nullo)."); },
   init: (problem, p) => start(problem, p.l0),
   step(problem, s, p) {
     const model = l => Math.min(...s.cuts.map(k => k.value + k.slope * l));

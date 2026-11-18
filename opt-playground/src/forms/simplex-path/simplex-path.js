@@ -142,7 +142,7 @@ function table() {
   steps.forEach((s, i) => {
     const moved = i === 0 || !s.degenerate;
     if (i > 0 && moved) vi++;
-    const piv = i === 0 ? t('start: the slack basis', 'inizio: la base delle slack')
+    const piv = i === 0 ? t('start: the slack basis', 'inizio: la base delle variabili di scarto')
       : `${varName(s.enter)} ${t('enters', 'entra')}, ${varName(s.leave)} ${t('leaves', 'esce')}${s.degenerate ? t(' (degenerate)', ' (degenere)') : ''}`;
     rows.push(`<tr class="${vi === k ? 'on' : ''}${vi > k ? ' later' : ''}"><td>${i}</td><td>(${s.x.map(fmt).join(', ')})</td><td>${fmt(s.z)}</td><td>${piv}</td></tr>`);
   });
@@ -170,7 +170,7 @@ function play() {
   timer = setInterval(() => {
     if (state.k >= L.idx.length - 1) return stop();
     state.k++; draw(); table();
-  }, 750);
+  }, 1000);   // one pivot a second
 }
 
 function syncControls() {

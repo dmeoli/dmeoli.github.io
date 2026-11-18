@@ -84,7 +84,8 @@ export class QueensView {
         b.frac.forEach((v, j) => { if (v > f) { f = v; best = j; } });
         if (best >= 0 && f > 1e-6) { row = best; s = f; }
       }
-      if (row >= 0) { const [x, y] = this.at(i, row); q.g.position.set(x, y, 0); }
+      // a queen already standing slides to its new row; one that rises starts there
+      if (row >= 0) { q.to = this.at(i, row); if (still || q.s < 0.05 || !q.p) q.p = q.to.slice(); q.g.position.set(q.p[0], q.p[1], 0); }
       q.target = s; if (still) q.s = s;
       q.mat.emissive.copy(hot.has(b.id) ? RED : new THREE.Color(0, 0, 0)).multiplyScalar(0.6);
       q.mat.color.copy(b.colour >= 0 ? P.accent : P.accent2);
@@ -96,7 +97,14 @@ export class QueensView {
   }
   frame(dt) {
     let moving = false;
-    for (const q of this.queens) if (Math.abs(q.s - q.target) > 1e-3) { q.s += (q.target - q.s) * Math.min(1, dt * 10); moving = true; }
+    for (const q of this.queens) {
+      if (Math.abs(q.s - q.target) > 1e-3) { q.s += (q.target - q.s) * Math.min(1, dt * 6); moving = true; }
+      if (q.p && q.to && Math.abs(q.p[0] - q.to[0]) + Math.abs(q.p[1] - q.to[1]) > 1e-4) {
+        const a = Math.min(1, dt * 6);
+        q.p = [q.p[0] + (q.to[0] - q.p[0]) * a, q.p[1] + (q.to[1] - q.p[1]) * a];
+        q.g.position.set(q.p[0], q.p[1], 0);
+      }
+    }
     if (moving) this.place();
   }
 }
@@ -172,7 +180,7 @@ export class SudokuView {
   }
   frame(dt) {
     let moving = false;
-    for (const it of this.cells) if (Math.abs(it.h - it.target) > 1e-4) { it.h += (it.target - it.h) * Math.min(1, dt * 10); moving = true; }
+    for (const it of this.cells) if (Math.abs(it.h - it.target) > 1e-4) { it.h += (it.target - it.h) * Math.min(1, dt * 6); moving = true; }
     if (moving) this.place();
   }
 }

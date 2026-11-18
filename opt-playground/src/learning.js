@@ -220,7 +220,7 @@ const HZ = 600, TRAIL = 30, SPEEDS = [1, 2, 5, 10, 20, 30, 60, 120];
 let Fname = 'rosenbrock', F = functions[Fname], start = F.start.slice(), logScale = !!F.log;
 let chosen = new Set(['gd', 'polyak', 'adam', 'newton', 'bfgs', 'bundle']);
 const params = { lr: 0.002, t: 0.5 };
-let runs = [], replays = [], done = 0, k = 0, ips = 30, playing = false, traceSrc = '';
+let runs = [], replays = [], done = 0, k = 0, ips = 5, playing = false, traceSrc = '';
 let hoverMap = null, hover3d = null, C = null;
 
 function reset() {
@@ -511,7 +511,7 @@ function texts() {
   for (const o of $('traceSel').options) if (TRACES[o.value]) o.textContent = tr(...TRACES[o.value]);
   for (const n of document.querySelectorAll('#algos .algo')) n.lastChild.textContent = label(algorithms[n.querySelector('i').dataset.k]);
   $('play').textContent = playing ? tr('Pause', 'Pausa') : tr('Play', 'Avvia');
-  $('step').textContent = tr('Step', 'Passo');
+  $('step').textContent = tr('Step', 'Passo'); $('reset').textContent = tr('Reset', 'Ricomincia');
   fsTexts();
   document.title = tr('Learning playground', 'Laboratorio di apprendimento');
 }
@@ -529,7 +529,7 @@ for (const [key, a] of Object.entries(algorithms)) {
 for (const key of ['lr', 't']) $(key).addEventListener('input', e => { params[key] = +e.target.value; $(key + 'Out').textContent = e.target.value; reset(); });
 $('log').addEventListener('change', e => { logScale = e.target.checked; computeField(); draw(); save(); });
 $('sc').addEventListener('change', e => { surf?.setSurfaceLines(e.target.checked); save(); });
-const setSpeed = i => { ips = SPEEDS[i]; $('speed').value = i; $('speedOut').textContent = ips + '/s'; };
+const setSpeed = i => { ips = SPEEDS[i]; $('speed').value = i; $('speedOut').textContent = ips + ' iter/s'; };
 $('speed').addEventListener('input', e => { setSpeed(+e.target.value); save(); });
 $('scrub').max = HZ;
 $('scrub').addEventListener('input', e => { stop(); goTo(+e.target.value); });
@@ -593,7 +593,7 @@ async function init() {
   if (q.has('log') && +q.get('log') !== +logScale) { logScale = q.get('log') === '1'; $('log').checked = logScale; computeField(); }
   if (q.get('sc') === '1') $('sc').checked = true;
   const si = SPEEDS.indexOf(+q.get('ips'));
-  setSpeed(si >= 0 ? si : SPEEDS.indexOf(30));
+  setSpeed(si >= 0 ? si : SPEEDS.indexOf(5));
   try {
     surf = createSurface($('surface'), { onHover: p => { hover3d = p; readout(p); drawMap(); } });
     surf.setColors(C); computeField(); surf.setSurfaceLines($('sc').checked);

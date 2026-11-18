@@ -22,7 +22,7 @@ export function pieces(den = 112) {
   const c = coef(den);
   return [
     { id: 'p', side: 'upper', a: 0, b: 0.5, straight: true, y: () => 2.25,
-      tex: 'p(x) = 2.25\\, t\\big(-(x - 0.5)(x + 0.5)\\big)', en: 'top of the head', it: 'sommo della testa' },
+      tex: 'p(x) = 2.25\\, t\\big(-(x - 0.5)(x + 0.5)\\big)', en: 'top of the head', it: 'sommità della testa' },
     { id: 'h', side: 'upper', a: 0.5, b: 0.75, straight: true, y: x => 3 * x + 0.75,
       tex: 'h(x) = 3|x| + 0.75\\, t\\big(-(|x| - 0.5)(|x| - 0.75)\\big)', en: 'inner side of the ears', it: 'lato interno delle orecchie' },
     { id: 'g', side: 'upper', a: 0.75, b: 1, straight: true, y: x => 9 - 8 * x,
@@ -30,11 +30,11 @@ export function pieces(den = 112) {
     { id: 'q', side: 'upper', a: 1, b: 3, y: x => 6 * S10 / 7 + 1.5 - 0.5 * x - 3 * S10 / 7 * Math.sqrt(Math.max(0, 4 - (x - 1) ** 2)),
       tex: 'q(x) = \\tfrac{6\\sqrt{10}}{7} + (1.5 - 0.5|x|)\\, t(|x| - 1) - \\tfrac{6\\sqrt{10}}{14} \\sqrt{4 - (|x| - 1)^2}', en: 'shoulders', it: 'spalle' },
     { id: 'r', side: 'upper', a: 3, b: 7, y: x => 3 * Math.sqrt(Math.max(0, 1 - (x / 7) ** 2)),
-      tex: 'r(x) = 3 \\sqrt{1 - (x/7)^2}\\; t(|x| - 3)', en: 'top of the wings', it: 'sopra delle ali' },
+      tex: 'r(x) = 3 \\sqrt{1 - (x/7)^2}\\; t(|x| - 3)', en: 'top of the wings', it: 'bordo superiore delle ali' },
     { id: 's', side: 'lower', a: 4, b: 7, y: x => -3 * Math.sqrt(Math.max(0, 1 - (x / 7) ** 2)),
-      tex: 's(x) = -3 \\sqrt{1 - (x/7)^2}\\; t(|x| - 4)', en: 'bottom of the wings', it: 'sotto delle ali' },
+      tex: 's(x) = -3 \\sqrt{1 - (x/7)^2}\\; t(|x| - 4)', en: 'bottom of the wings', it: 'bordo inferiore delle ali' },
     { id: 'f', side: 'lower', a: 0, b: 4, y: x => x / 2 - c * x * x - 3 + Math.sqrt(Math.max(0, 1 - (Math.abs(x - 2) - 1) ** 2)),
-      tex: `f(x) = \\left|\\tfrac{x}{2}\\right| - \\tfrac{3\\sqrt{33} - 7}{${den}}\\, x^2 - 3 + \\sqrt{1 - \\big(||x| - 2| - 1\\big)^2}`, en: 'scallops of the bottom', it: 'festoni del fondo' },
+      tex: `f(x) = \\left|\\tfrac{x}{2}\\right| - \\tfrac{3\\sqrt{33} - 7}{${den}}\\, x^2 - 3 + \\sqrt{1 - \\big(||x| - 2| - 1\\big)^2}`, en: 'scallops of the bottom', it: 'festoni del bordo inferiore' },
   ];
 }
 

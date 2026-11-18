@@ -159,7 +159,7 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => draw
 // the texts that are not in the page twice: title, buttons, options
 function texts() {
   document.title = t('Attention playground', "Laboratorio dell'attention");
-  $('step').textContent = t('Step', 'Passo');
+  $('step').textContent = t('Step', 'Passo'); $('reset').textContent = t('Reset', 'Ricomincia');
   $('train').textContent = timer ? t('Pause', 'Pausa') : t('Play', 'Avvia');
   $('random').textContent = t('Random', 'Casuale');
   $('prompt').setAttribute('aria-label', t('prompt digits', 'cifre del prompt'));

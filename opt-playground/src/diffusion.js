@@ -62,12 +62,12 @@ function stop() {
   startSampling();
 }
 
-// ------------------------------------------------------------------ sampling, about 70 frames 30 ms apart
+// ------------------------------------------------------------------ sampling, about 70 frames 60 ms apart
 function startSampling() {
   smp = makeSampler(sc, S.sampler, NSAMPLE, S.seed + 11 + steps);
   trails = Array.from({ length: NTRAIL }, (_, i) => [smp.X[2 * i], smp.X[2 * i + 1]]);
   swLast = null;
-  if (!sampling) { sampling = true; setTimeout(sampleLoop, 30); }
+  if (!sampling) { sampling = true; setTimeout(sampleLoop, 60); }
   $('sample').textContent = tt('Stop', 'Ferma');
 }
 function stopSampling() { sampling = false; $('sample').textContent = tt('Sample', 'Campiona'); }
@@ -80,7 +80,7 @@ function sampleLoop() {
   }
   if (smp.done) { swLast = slicedW(smp.X, data); stopSampling(); }
   draw();
-  if (sampling) setTimeout(sampleLoop, 30);
+  if (sampling) setTimeout(sampleLoop, 60);
 }
 
 // ------------------------------------------------------------------ colours and frames
@@ -156,7 +156,7 @@ function drawCoef() {
 // redrawn only when the network, t, the option or the colours change
 let fieldKey = '';
 function drawField() {
-  const key = [steps, S.t, $('exact').checked, P.accent, net.sizes.join()].join('|');
+  const key = [steps, S.t, $('exact').checked, P.accent, net.sizes.join(), tt('en', 'it')].join('|');
   if (key === fieldKey) return;
   fieldKey = key;
   const cv = $('field'), F = frame(cv), { ctx, X, Y, s } = F, t = S.t, T = sc.T;
@@ -285,7 +285,7 @@ $('anim').onclick = () => {
     S.t = Math.min(sc.T, S.t + Math.max(1, Math.round(sc.T / 100)));
     $('t').value = S.t; draw();
     if (S.t >= sc.T) { clearInterval(animT); animT = null; $('anim').textContent = tt('Animate', 'Anima'); save(); }
-  }, 40);
+  }, 60);
 };
 $('exact').onchange = () => draw();
 $('sample').onclick = () => sampling ? (stopSampling(), draw()) : startSampling();
@@ -303,7 +303,7 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { pa
 // the texts that are not in the page twice: title, buttons, options
 function labels() {
   document.title = tt('Diffusion playground', 'Laboratorio della diffusione');
-  $('step').textContent = tt('Step', 'Passo');
+  $('step').textContent = tt('Step', 'Passo'); $('reset').textContent = tt('Reset', 'Ricomincia');
   $('train').textContent = running ? tt('Pause', 'Pausa') : tt('Play', 'Avvia');
   $('sample').textContent = sampling ? tt('Stop', 'Ferma') : tt('Sample', 'Campiona');
   $('anim').textContent = animT ? tt('Stop', 'Ferma') : tt('Animate', 'Anima');

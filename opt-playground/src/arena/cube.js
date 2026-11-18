@@ -108,7 +108,7 @@ export class CubeView {
   frame(dt) {
     const A = this.anim;
     if (!A) return;
-    A.t = Math.min(1, A.t + dt * 3.2);
+    A.t = Math.min(1, A.t + dt * 2);
     const e = 1 - (1 - A.t) ** 3;
     A.pivot.setRotationFromAxisAngle(A.axis, A.from * (1 - e));
     if (A.t >= 1) this.finish();

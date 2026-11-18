@@ -186,7 +186,7 @@ function play() {
   timer = setInterval(() => {
     if (state.k >= steps.length - 1) return stop();
     state.k++; draw(); stats(); writeHash();
-  }, 700);
+  }, 1000);   // one oracle call a second
 }
 
 // the options of the selects in both languages

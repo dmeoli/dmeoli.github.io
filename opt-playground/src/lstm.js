@@ -72,11 +72,8 @@ function step() { run.trainEpoch(); run.measure(); draw(); }
 function train() {
   if (timer) return stopTrain();
   $('train').textContent = tx('Pause', 'Pausa');
-  timer = setInterval(() => {
-    const t0 = performance.now();
-    for (let k = 0; k < 8 && (k === 0 || performance.now() - t0 < 30); k++) run.trainEpoch();
-    run.measure(); draw();
-  }, 40);
+  // one epoch per frame, at most 25 a second
+  timer = setInterval(() => { run.trainEpoch(); run.measure(); draw(); }, 40);
 }
 function setT(v) { S.t = Math.max(1, Math.min(S.T, v)); save(); draw(); }
 
@@ -121,7 +118,7 @@ const OPTS = {
 function words() {
   document.title = tx('LSTM playground', 'Laboratorio LSTM');
   for (const [id, o] of Object.entries(OPTS)) for (const op of $(id).options) op.textContent = tx(...o[op.value]);
-  $('reset').textContent = tx('Reset', 'Reset'); $('step').textContent = tx('Step', 'Passo');
+  $('reset').textContent = tx('Reset', 'Ricomincia'); $('step').textContent = tx('Step', 'Passo');
   $('train').textContent = timer ? tx('Pause', 'Pausa') : tx('Play', 'Avvia');
   $('seq').textContent = tx('New sequence', 'Nuova sequenza');
   $('prev').setAttribute('aria-label', tx('previous step', 'passo precedente'));

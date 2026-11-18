@@ -7,8 +7,15 @@ const el = (n, a) => { const e = document.createElementNS(NS, n); for (const k i
 
 import { WORKERS } from './search.js';
 
+// the nodes each tree has drawn, so that a node new at this step fades in
+const SEEN = new WeakMap();
+
 export function drawTree(svg, nodes, current) {
   svg.replaceChildren();
+  const seen = SEEN.get(svg) || new Set(), fresh = id => !seen.has(id);
+  // a step back or a new trace: the tree is drawn again without fading
+  const back = [...seen].some(id => !nodes.has(id));
+  SEEN.set(svg, new Set(nodes.keys()));
   if (!nodes.size) { svg.setAttribute('viewBox', '0 0 100 30'); return; }
   const kids = new Map();
   let root = null;
@@ -42,7 +49,7 @@ export function drawTree(svg, nodes, current) {
   }
   for (const n of nodes.values()) {
     if (!pos.has(n.id)) continue;
-    const [x, y] = at(n.id), g = el('g', { class: `anode ${n.status}${n.id === current ? ' hot' : ''}` });
+    const [x, y] = at(n.id), g = el('g', { class: `anode ${n.status}${n.id === current ? ' hot' : ''}${!back && seen.size && fresh(n.id) ? ' fresh' : ''}` });
     const c = el('circle', { cx: x, cy: y, r: big ? 4.5 : 9 });
     if (n.w !== undefined && n.status === 'branched') c.style.fill = WORKERS[n.w % WORKERS.length];
     g.append(c);

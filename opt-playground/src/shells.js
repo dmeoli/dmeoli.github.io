@@ -270,7 +270,7 @@ function choose(name) {
 function fillPresets() {
   const sel = $('preset'), v = sel.value;
   sel.replaceChildren();
-  const none = document.createElement('option'); none.value = ''; none.textContent = t('(your own)', '(a mano)'); sel.appendChild(none);
+  const none = document.createElement('option'); none.value = ''; none.textContent = t('(your own)', '(personalizzata)'); sel.appendChild(none);
   for (const [k, p] of Object.entries(presets)) {
     const o = document.createElement('option'); o.value = k; o.textContent = t(p.en, p.it); sel.appendChild(o);
   }

@@ -102,7 +102,7 @@ function step() {
   draw();
 }
 function stop() { clearInterval(timer); timer = null; $('play').textContent = t('Play', 'Avvia'); }
-function play() { if (timer) return stop(); $('play').textContent = t('Pause', 'Pausa'); timer = setInterval(step, 700); }
+function play() { if (timer) return stop(); $('play').textContent = t('Pause', 'Pausa'); timer = setInterval(step, 1000); }   // one iteration a second
 
 // ------------------------------------------------------------------ drawing
 const NS = 'http://www.w3.org/2000/svg';
@@ -177,6 +177,7 @@ function texts() {
   document.title = t('Benders playground', 'Laboratorio di Benders');
   $('play').textContent = timer ? t('Pause', 'Pausa') : t('Play', 'Avvia');
   $('step').textContent = t('Step', 'Passo');
+  $('reset').textContent = t('Reset', 'Ricomincia');
 }
 onLang(() => { texts(); draw(); });
 texts();

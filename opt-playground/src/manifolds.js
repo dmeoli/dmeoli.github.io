@@ -97,7 +97,7 @@ function draw() {
   const actTex = S.act === 'tanh' ? '\\(\\tanh\\)' : '\\(\\mathrm{ReLU}\\)';
   const phase = S.T >= 3 * S.layers ? t(`the last hidden layer, where the output unit draws a ${S.width === 3 ? 'plane (translucent)' : 'line (dashed)'}`,
     `l'ultimo strato nascosto, dove l'unità di uscita traccia ${S.width === 3 ? 'un piano (traslucido)' : 'una retta (tratteggiata)'}`) :
-    `${t('layer', 'strato')} ${k + 1}, ${[t('the linear map \\(W\\)', 'la mappa lineare \\(W\\)'), t('the translation \\(b\\)', 'la traslazione \\(b\\)'), t(`the activation ${actTex}`, `l'attivazione ${actTex}`)][Math.min(2, Math.floor(loc))]}`;
+    `${t('layer', 'strato')} ${k + 1}, ${[t('the linear map \\(W\\)', 'la trasformazione lineare \\(W\\)'), t('the translation \\(b\\)', 'la traslazione \\(b\\)'), t(`the activation ${actTex}`, `l'attivazione ${actTex}`)][Math.min(2, Math.floor(loc))]}`;
   const { W } = layerParams(k), det = M.det(W);
   // the formulas are typeset only when they change, the number is plain text
   setTex($('phase'), phase);
@@ -204,7 +204,7 @@ $('step').onclick = () => { trainEpoch(); draw(); };
 $('play').onclick = () => {
   if (timer) return stopTrain();
   $('play').textContent = t('Pause', 'Pausa');
-  timer = setInterval(() => { for (let i = 0; i < 5; i++) trainEpoch(); draw(); }, 60);
+  timer = setInterval(() => { for (let i = 0; i < 2; i++) trainEpoch(); draw(); }, 40);
 };
 $('morph').onclick = () => {
   if (morph) return stopMorph();

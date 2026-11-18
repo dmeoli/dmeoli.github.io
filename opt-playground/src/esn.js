@@ -105,18 +105,18 @@ function draw() {
   const q = echo[300] / echo[0];
   $('echotxt').textContent = q === 0
     ? tx('After 300 steps the two runs coincide to the last digit: the reservoir has forgotten where it started.',
-      "Dopo 300 passi le due corse coincidono fino all'ultima cifra: il serbatoio ha dimenticato da dove è partito.")
+      "Dopo 300 passi le due esecuzioni coincidono fino all'ultima cifra: il serbatoio ha dimenticato da dove è partito.")
     : q < 1e-6
     ? tx(`After 300 steps the two runs differ by ${fmt(q)} of their initial distance: the reservoir has forgotten where it started.`,
-      `Dopo 300 passi le due corse differiscono di ${fmt(q)} della distanza iniziale: il serbatoio ha dimenticato da dove è partito.`)
+      `Dopo 300 passi le due esecuzioni differiscono di ${fmt(q)} della distanza iniziale: il serbatoio ha dimenticato da dove è partito.`)
     : tx(`After 300 steps the two runs still differ by ${fmt(q)} of their initial distance: with these values the state depends on where it started, and the echo state property is lost.`,
-      `Dopo 300 passi le due corse differiscono ancora di ${fmt(q)} della distanza iniziale: con questi valori lo stato dipende da dove è partito, e la proprietà dell'eco si perde.`);
+      `Dopo 300 passi le due esecuzioni differiscono ancora di ${fmt(q)} della distanza iniziale: con questi valori lo stato dipende da dove è partito, e la proprietà dell'eco si perde.`);
   const L = LAB[S.bench], same = S.N === L.N && Math.abs(S.rho - L.rho) < 1e-9 && Math.abs(S.om - L.om) < 1e-9 && S.lam === L.lam && S.leak === 1 && S.conn === 1;
   $('rep').textContent = tx(
-    `${BENCH[S.bench].name[0]}: the readout of ${N + 1} weights, solved in closed form on ${G.n} steps, gives a test MSE of ${fmt(err.te.mse)} (NMSE ${fmt(err.te.nmse)}), ` +
-    `the whole pipeline in ${Math.round(err.ms)} ms. ` + (L.mse ? (same ? `These are the hyperparameters the lab selected, for which it reports a test MSE of ${fmt(L.mse.esn)}.` : `With the hyperparameters it selected, the lab reports a test MSE of ${fmt(L.mse.esn)}.`) : 'The lab ran only the NARMA10 of the course file.'),
-    `${BENCH[S.bench].name[1]}: il readout di ${N + 1} pesi, risolto in forma chiusa su ${G.n} passi, dà un MSE di test di ${fmt(err.te.mse)} (NMSE ${fmt(err.te.nmse)}), ` +
-    `l'intera catena in ${Math.round(err.ms)} ms. ` + (L.mse ? (same ? `Sono gli iperparametri scelti dal lab, per i quali riporta un MSE di test di ${fmt(L.mse.esn)}.` : `Con gli iperparametri che ha scelto, il lab riporta un MSE di test di ${fmt(L.mse.esn)}.`) : 'Il lab ha usato solo il NARMA10 del file del corso.'));
+    `${BENCH[S.bench].name[0]}: the readout of ${N + 1} weights, solved in closed form on ${G.n} steps, gives a test MSE of ${fmt(err.te.mse)} (NMSE ${fmt(err.te.nmse)}). ` +
+    (L.mse ? (same ? `These are the hyperparameters the lab selected, for which it reports a test MSE of ${fmt(L.mse.esn)}.` : `With the hyperparameters it selected, the lab reports a test MSE of ${fmt(L.mse.esn)}.`) : 'The lab ran only the NARMA10 of the course file.'),
+    `${BENCH[S.bench].name[1]}: il readout di ${N + 1} pesi, risolto in forma chiusa su ${G.n} passi, dà un MSE di test di ${fmt(err.te.mse)} (NMSE ${fmt(err.te.nmse)}). ` +
+    (L.mse ? (same ? `Sono gli iperparametri scelti dal laboratorio, che con essi riporta un MSE di test di ${fmt(L.mse.esn)}.` : `Con gli iperparametri che ha scelto, il laboratorio riporta un MSE di test di ${fmt(L.mse.esn)}.`) : 'Il laboratorio ha usato solo il NARMA10 del file del corso.'));
   for (const e of document.querySelectorAll('.eq[data-bench]')) e.classList.toggle('lit', e.dataset.bench === S.bench);
 }
 function drawMemory() {
@@ -199,12 +199,12 @@ onTheme(() => draw());
 function words() {
   document.title = tx('Echo State Networks', 'Echo state network');
   for (const op of $('bench').options) op.textContent = tx(...BENCH[op.value].name);
-  $('reset').textContent = 'Reset'; $('step').textContent = tx('Step', 'Passo');
+  $('reset').textContent = tx('Reset', 'Ricomincia'); $('step').textContent = tx('Step', 'Passo');
   $('play').textContent = playing ? tx('Pause', 'Pausa') : tx('Play', 'Avvia');
   $('train').textContent = training ? tx('Pause', 'Pausa') : tx('Train', 'Addestra');
   $('netreset').textContent = tx('New networks', 'Nuove reti');
   $('seed').textContent = tx('New reservoir', 'Nuovo serbatoio');
-  $('lab').textContent = tx('Lab settings', 'Valori del lab');
+  $('lab').textContent = tx('Lab settings', 'Valori del laboratorio');
 }
 onLang(() => { words(); draw(); drawMemory(); });
 words();

@@ -191,7 +191,7 @@ function draw() {
 }
 function step() { if (smoStep()) { iter++; draw(); } else { stop(); kkt = true; $('status').textContent = tr('KKT satisfied', 'KKT soddisfatte'); } }
 function stop() { clearInterval(timer); timer = null; $('play').textContent = tr('Play', 'Avvia'); }
-function play() { if (timer) return stop(); $('play').textContent = tr('Pause', 'Pausa'); timer = setInterval(step, 250); }
+function play() { if (timer) return stop(); $('play').textContent = tr('Pause', 'Pausa'); timer = setInterval(step, 800); }
 function reset() { stop(); makeData(); kkt = false; draw(); }
 // the texts of the page in its language: the options, the title, the button
 const OPTS = { blobs: ['Two clusters', 'Due gruppi'], rings: ['Disc in a ring', 'Disco in un anello'],
@@ -200,6 +200,7 @@ function texts() {
   for (const o of [...$('data').options, ...$('kernel').options]) o.textContent = tr(...OPTS[o.value]);
   $('play').textContent = timer ? tr('Pause', 'Pausa') : tr('Play', 'Avvia');
   $('step').textContent = tr('Step', 'Passo'); $('regen').textContent = tr('Regenerate', 'Rigenera');
+  $('reset').textContent = tr('Reset', 'Ricomincia');
   document.title = tr('SVM playground', 'Laboratorio SVM');
 }
 texts();

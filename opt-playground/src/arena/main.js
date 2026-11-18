@@ -137,8 +137,8 @@ function model(id) {
     };
   }
   box.dataset.state = 'loading';
-  $('mstatus').textContent = t('Loading Python (Pyodide) and the modules of aima-python in the page...',
-    'Carico Python (Pyodide) e i moduli di aima-python nella pagina...');
+  $('mstatus').innerHTML = bi('Loading Python (Pyodide) and the modules of aima-python in the page...',
+    'Caricamento di Python (Pyodide) e dei moduli di aima-python nella pagina...');
   worker.postMessage({ id: req, instance: id });
 }
 let lastModel = null;
@@ -146,21 +146,21 @@ const esc = s => String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', 
 function renderModel(m) {
   lastModel = m;
   if (!m) return;
-  const r = info.ready;
-  $('mstatus').textContent = r ? t(`Pyodide started in ${r.pyodide.toFixed(1)} s and imported aima-python in ${r.modules.toFixed(1)} s, in this browser; the translation took ${(info.modelSeconds * 1000).toFixed(0)} ms.`,
-    `Pyodide è partito in ${r.pyodide.toFixed(1)} s e ha importato aima-python in ${r.modules.toFixed(1)} s, in questo browser; la traduzione ha richiesto ${(info.modelSeconds * 1000).toFixed(0)} ms.`) : '';
+  // no timings here: the page shows no seconds of any machine
+  $('mstatus').textContent = t('Computed in this browser by the modules of aima-python, run in Pyodide.',
+    'Calcolato in questo browser dai moduli di aima-python, eseguiti in Pyodide.');
   const csp = GAME !== 'coloring', c = m.cnf;
-  const kinds = { alo: csp ? t('at least one value per variable', 'almeno un valore per variabile') : t('at least one colour per vertex', 'almeno un colore per vertice'),
-    amo: csp ? t('at most one value per variable', 'al più un valore per variabile') : t('at most one colour per vertex', 'al più un colore per vertice'),
-    edge: csp ? t('two values that the constraint of two neighbours rejects', 'due valori che il vincolo di due vicini respinge') : t('the two ends of an edge differ', 'i due estremi di un lato differiscono'),
+  const kinds = { alo: csp ? t('at least one value per variable', 'almeno un valore per variabile') : t('at least one color per vertex', 'almeno un colore per vertice'),
+    amo: csp ? t('at most one value per variable', 'al più un valore per variabile') : t('at most one color per vertex', 'al più un colore per vertice'),
+    edge: csp ? t('two values that the constraint of two neighbors rejects', 'due valori che il vincolo di due vicini respinge') : t('the two ends of an edge differ', 'i due estremi di un lato differiscono'),
     nary: t('a prefix of the tuples that a constraint on more than two variables rejects', 'un prefisso delle tuple che un vincolo su più di due variabili respinge'),
     given: t('a value outside the domain (the givens)', 'un valore fuori dal dominio (i dati del problema)') };
   for (const g of Object.keys(kinds)) if (!m.sample[g] || !m.sample[g].length) delete kinds[g];
-  const what = { coloring: [t('One variable per vertex, its colour; one constraint "different" per edge.', 'Una variabile per vertice, il suo colore; un vincolo "diverso" per lato.'), 'MapColoringSAT'],
+  const what = { coloring: [t('One variable per vertex, its color; one constraint "different" per edge.', 'Una variabile per vertice, il suo colore; un vincolo "diverso" per lato.'), 'MapColoringSAT'],
     queens: [t('NQueensCSP of aima-python: one variable per column, the row of its queen; one constraint per pair of columns, no shared row or diagonal.', 'NQueensCSP di aima-python: una variabile per colonna, la riga della sua regina; un vincolo per coppia di colonne, nessuna riga o diagonale in comune.'), 'translate_csp'],
     sudoku: [t('Sudoku of aima-python: one variable per cell, its digit (a given has a domain of one digit); one constraint "different" per pair of cells in a row, column or box.', 'Sudoku di aima-python: una variabile per cella, la sua cifra (un dato ha un dominio di una cifra); un vincolo "diverso" per coppia di celle in una riga, colonna o riquadro.'), 'translate_csp'],
-    zebra: [t('Zebra of aima-python: one variable per attribute (a colour, a pet, a drink, a nationality, a smoke), its house from 1 to 5; one constraint per pair of attributes of a group (different houses) and per clue.', 'Zebra di aima-python: una variabile per attributo (un colore, un animale, una bevanda, una nazionalità, un tipo di sigaretta), la sua casa da 1 a 5; un vincolo per coppia di attributi di un gruppo (case diverse) e per indizio.'), 'translate_csp'],
-    kakuro: [t('Kakuro of aima-python, a NaryCSP: one variable per white cell, its digit; for each run of cells a constraint of sum and one of all different, on the whole run.', 'Kakuro di aima-python, un NaryCSP: una variabile per cella bianca, la sua cifra; per ogni sequenza di celle un vincolo di somma e uno di tutte diverse, sull\'intera sequenza.'), 'translate_csp'],
+    zebra: [t('Zebra of aima-python: one variable per attribute (a color, a pet, a drink, a nationality, a smoke), its house from 1 to 5; one constraint per pair of attributes of a group (different houses) and per clue.', 'Zebra di aima-python: una variabile per attributo (un colore, un animale, una bevanda, una nazionalità, un tipo di sigaretta), la sua casa da 1 a 5; un vincolo per coppia di attributi di un gruppo (case diverse) e per indizio.'), 'translate_csp'],
+    kakuro: [t('Kakuro of aima-python, a NaryCSP: one variable per white cell, its digit; for each run of cells a constraint of sum and one of all different, on the whole run.', 'Kakuro di aima-python, un NaryCSP: una variabile per cella bianca, la sua cifra; per ogni sequenza di celle un vincolo di somma e uno "tutte diverse", sull\'intera sequenza.'), 'translate_csp'],
     crypto: [t('A NaryCSP of aima-python: one variable per letter, its digit, and one per carry; all the letters different, and one constraint per column of the sum on its letters and carries.', 'Un NaryCSP di aima-python: una variabile per lettera, la sua cifra, e una per riporto; tutte le lettere diverse, e un vincolo per colonna della somma sulle sue lettere e sui riporti.'), 'translate_csp'],
     crossword: [t('Crossword of aima-python, a NaryCSP: one variable per white cell, its letter; one constraint per run of cells, which must spell a word of the list.', 'Crossword di aima-python, un NaryCSP: una variabile per cella bianca, la sua lettera; un vincolo per sequenza di celle, che deve formare una parola dell\'elenco.'), 'translate_csp'] }[GAME];
   const list = (g, f) => m.sample[g].map(s => `<li><code>${esc(f(s))}</code></li>`).join('');
@@ -171,16 +171,16 @@ function renderModel(m) {
   $('mcnf').innerHTML = `<dl class="stats"><div><dt>${t('variables', 'variabili')}</dt><dd>${c.variables}</dd></div>
     <div><dt>${t('clauses', 'clausole')}</dt><dd>${c.clauses}</dd></div><div><dt>${t('distinct', 'distinte')}</dt><dd>${c.distinct}</dd></div></dl>
     <p class="note">${NARY ? t(`A Boolean variable <code>v_c</code> for each variable v and value c, the direct encoding of the CSP. A constraint "all different" becomes the pairs of values it rejects; any other constraint becomes, for each prefix of a tuple it accepts and each value of the next variable that no accepted tuple has after it, the clause that forbids both; the tuples are asked of the constraint of aima-python.`,
-      `Una variabile booleana <code>v_c</code> per variabile v e valore c, la codifica diretta del CSP. Un vincolo "tutte diverse" diventa le coppie di valori che respinge; ogni altro vincolo diventa, per ogni prefisso di una tupla che accetta e ogni valore della variabile successiva che nessuna tupla accettata ha dopo di esso, la clausola che li vieta insieme; le tuple sono chieste al vincolo di aima-python.`)
+      `Una variabile booleana <code>v_c</code> per ogni variabile v e ogni valore c, la codifica diretta del CSP. Un vincolo "tutte diverse" si traduce nelle coppie di valori che respinge; ogni altro vincolo si traduce, per ogni prefisso di una tupla che accetta e per ogni valore della variabile successiva che nessuna tupla accettata ha dopo quel prefisso, nella clausola che li vieta insieme; le tuple sono chieste al vincolo di aima-python.`)
       : csp ? t(`A Boolean variable <code>v_c</code> for each variable v and value c, the direct encoding of the CSP: the pairs of values that a constraint rejects are asked of the constraint of aima-python.`,
-      `Una variabile booleana <code>v_c</code> per variabile v e valore c, la codifica diretta del CSP: le coppie di valori che un vincolo respinge sono chieste al vincolo di aima-python.`)
-      : t(`A Boolean variable <code>v_c</code> for each vertex v and colour c. The edge clauses are written once from each end, so the ${c.by_kind.edge} of them are ${c.by_kind.edge / 2} distinct ones twice.`,
-      `Una variabile booleana <code>v_c</code> per vertice v e colore c. Le clausole dei lati sono scritte una volta da ciascun estremo, quindi le ${c.by_kind.edge} sono ${c.by_kind.edge / 2} distinte, ognuna due volte.`)}</p>
+      `Una variabile booleana <code>v_c</code> per ogni variabile v e ogni valore c, la codifica diretta del CSP: le coppie di valori che un vincolo respinge sono chieste al vincolo di aima-python.`)
+      : t(`A Boolean variable <code>v_c</code> for each vertex v and color c. The edge clauses are written once from each end, so the ${c.by_kind.edge} of them are ${c.by_kind.edge / 2} distinct ones twice.`,
+      `Una variabile booleana <code>v_c</code> per ogni vertice v e ogni colore c. Le clausole dei lati sono scritte una volta da ciascun estremo, quindi le ${c.by_kind.edge} sono ${c.by_kind.edge / 2} distinte, ognuna due volte.`)}</p>
     ${Object.keys(kinds).map(g => `<p class="kind">${kinds[g]} (${c.by_kind[g]})</p><ul class="cl">${list(g, s => s.text)}</ul>`).join('')}`;
   $('mmilp').innerHTML = `<dl class="stats"><div><dt>${t('columns', 'colonne')}</dt><dd>${m.milp.columns}</dd></div>
-    <div><dt>${t('rows', 'righe')}</dt><dd>${m.milp.rows}</dd></div><div><dt>${t('nonzeros', 'non zeri')}</dt><dd>${m.milp.nonzeros}</dd></div></dl>
+    <div><dt>${t('rows', 'righe')}</dt><dd>${m.milp.rows}</dd></div><div><dt>${t('nonzeros', 'non nulli')}</dt><dd>${m.milp.nonzeros}</dd></div></dl>
     <p class="note">${t(`As SATBlock represents a CNF: a binary x per variable (${m.milp.x}), a binary r per clause (${m.milp.r}, fixed to 0 since every clause is hard), and the row \\(\\sum_{P} x_i - \\sum_{N} x_i + r_c \\ge 1 - |N|\\) per clause.`,
-      `Come SATBlock rappresenta una CNF: una x binaria per variabile (${m.milp.x}), una r binaria per clausola (${m.milp.r}, fissata a 0 perché ogni clausola è dura), e la riga \\(\\sum_{P} x_i - \\sum_{N} x_i + r_c \\ge 1 - |N|\\) per clausola.`)}</p>
+      `Come SATBlock rappresenta una CNF: una x binaria per variabile (${m.milp.x}), una r binaria per clausola (${m.milp.r}, fissata a 0 perché ogni clausola è obbligatoria), e la riga \\(\\sum_{P} x_i - \\sum_{N} x_i + r_c \\ge 1 - |N|\\) per clausola.`)}</p>
     ${Object.keys(kinds).map(g => `<ul class="cl">${list(g, s => s.row)}</ul>`).join('')}`;
   if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([$('mmilp')]).catch(() => {});
 }
@@ -222,7 +222,7 @@ function describe(rep, e) {
       if (e.reason === 'pure') return t(`Pure symbol at depth ${e.level}: ${L(e.lits || [])}.`, `Simbolo puro alla profondità ${e.level}: ${L(e.lits || [])}.`);
       if (e.reason === 'unit') return t(`Unit clause at depth ${e.level}: ${L(e.lits || [])}.`, `Clausola unitaria alla profondità ${e.level}: ${L(e.lits || [])}.`);
       return t(`Propagation at level ${e.level}: ${L(e.lits || [])}.`, `Propagazione al livello ${e.level}: ${L(e.lits || [])}.`);
-    case 'split': return t(`Split at depth ${e.level}: ${L((e.lits || []).filter(l => l < 0))}.`, `Divisione alla profondità ${e.level}: ${L((e.lits || []).filter(l => l < 0))}.`);
+    case 'split': return t(`Split at depth ${e.level}: ${L((e.lits || []).filter(l => l < 0))}.`, `Suddivisione alla profondità ${e.level}: ${L((e.lits || []).filter(l => l < 0))}.`);
     case 'flip': return t(`Flip: ${L(e.lits || [])}.`, `Inversione: ${L(e.lits || [])}.`);
     case 'assign': return t(`${e.var} = ${e.value}; ${e.conflicted < 0 ? 'the first assignment is not complete yet' : e.conflicted + ' variables in conflict'}.`,
       `${e.var} = ${e.value}; ${e.conflicted < 0 ? 'il primo assegnamento non è ancora completo' : e.conflicted + ' variabili in conflitto'}.`);
@@ -230,10 +230,10 @@ function describe(rep, e) {
       if (e.vars) return t(`Wipeout: no value left for ${e.vars.join(', ')}.`, `Dominio vuoto: nessun valore rimasto per ${e.vars.join(', ')}.`);
       if (!e.clause) return t(`Conflict at level ${e.level}.`, `Conflitto al livello ${e.level}.`);
       return t(`Conflict: every literal of (${L(e.clause || [])}) is false.`, `Conflitto: ogni letterale di (${L(e.clause || [])}) è falso.`);
-    case 'backtrack': return e.restart ? t('Restart.', 'Ripartenza.') : t(`Backtrack to level ${e.level}.`, `Ritorno al livello ${e.level}.`);
+    case 'backtrack': return e.restart ? t('Restart.', 'Riavvio.') : t(`Backtrack to level ${e.level}.`, `Ritorno al livello ${e.level}.`);
     case 'node': return t(`Node ${e.id} (depth ${e.depth}): ${e.status}${e.fix && e.fix.length ? ', fixed ' + L(e.fix) : ''}.`,
       `Nodo ${e.id} (profondità ${e.depth}): ${({ open: 'aperto', branched: 'ramificato', pruned: 'potato', infeasible: 'inammissibile', feasible: 'ammissibile' })[e.status] || e.status}${e.fix && e.fix.length ? ', fissati ' + L(e.fix) : ''}.`);
-    case 'bound': return t(`Bound ${fmt(e.lb)}, incumbent ${fmt(e.ub)}.`, `Bound ${fmt(e.lb)}, incumbente ${fmt(e.ub)}.`);
+    case 'bound': return t(`Bound ${fmt(e.lb)}, incumbent ${fmt(e.ub)}.`, `Bound ${fmt(e.lb)}, miglior soluzione ${fmt(e.ub)}.`);
     case 'iterate': return t(`Iteration: value ${fmt(e.value)}.`, `Iterazione: valore ${fmt(e.value)}.`);
     default: return e.type;
   }
@@ -285,7 +285,7 @@ function updateSearchLane(L, prev) {
   if (!NOSTRIP.has(h.game)) {
     const ida = h.solver.config && h.solver.config.algorithm === 'idastar';
     art.querySelector('.stripbox figcaption').textContent = ida
-      ? t('f of the state expanded against the threshold of the iteration (IDA* keeps no OPEN)', 'f dello stato espanso rispetto alla soglia dell\'iterazione (IDA* non tiene un OPEN)')
+      ? t('f of the state expanded against the threshold of the iteration (IDA* keeps no OPEN)', 'f dello stato espanso rispetto alla soglia dell\'iterazione (IDA* non mantiene una lista OPEN)')
       : t('the frontier: the states generated and not yet expanded, by f (darker where more)', 'la frontiera: gli stati generati e non ancora espansi, per f (più scuro dove sono di più)');
     drawStrip(art.querySelector('.strip'), rep);
   }
@@ -330,12 +330,12 @@ function updateLane(L, k) {
   if (L.hasTree) drawTree(L.art.querySelector('.tree'), L.rep.nodes, L.rep.node);
   const pd = h.solver.paradigm;
   L.art.querySelector('.bounds').textContent = L.hasTree || L.rep.lb !== null || L.rep.ub !== null
-    ? t(`bound ${fmt(L.rep.lb)} · incumbent ${fmt(L.rep.ub)}`, `bound ${fmt(L.rep.lb)} · incumbente ${fmt(L.rep.ub)}`)
+    ? t(`bound ${fmt(L.rep.lb)} · incumbent ${fmt(L.rep.ub)}`, `bound ${fmt(L.rep.lb)} · miglior soluzione ${fmt(L.rep.ub)}`)
     : GAME === 'zebra' ? t('the pegs in a cell are the attributes of its group that may still stand in that house', 'i pioli in una cella sono gli attributi del suo gruppo che possono ancora stare in quella casa')
     : pd === 'csp' && GAME !== 'queens' ? t('the pegs are the values left in each domain', 'i pioli sono i valori rimasti in ogni dominio')
     : pd === 'local search' ? t('a complete assignment, repaired step by step', 'un assegnamento completo, riparato passo per passo')
     : GAME === 'queens' ? t('a dark cell is a row ruled out for its column', 'una cella scura è una riga esclusa per la sua colonna')
-    : GAME === 'coloring' ? t('the pegs are the colours not yet ruled out', 'i pioli sono i colori non ancora esclusi')
+    : GAME === 'coloring' ? t('the pegs are the colors not yet ruled out', 'i pioli sono i colori non ancora esclusi')
     : t('the pegs are the values not yet ruled out', 'i pioli sono i valori non ancora esclusi');
 }
 

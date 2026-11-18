@@ -331,7 +331,7 @@ function report() {
       `${name(A.rule)} con η = ${fmt(eta())}${vs}: w₀ = (${f3(A.w[0])}, ${f3(A.w[1])}) sta a ${aA.toFixed(1)}° dalla retta di e₁ = (${f3(E.e1[0])}, ${f3(E.e1[1])}), con λ₁ = ${f3(E.l1)} e λ₂ = ${f3(E.l2)}. Passo presenta ${unit}, Avvia prosegue fino alle ${epochs()} epoche del laboratorio.`);
   } else if (done === 'diverged') {
     s = tx(`At epoch ${ep.toFixed(2)} a norm has passed 1e200 and the run stops: the ascent has no maximum, and the angle of ${name(A.rule)} to e₁ is ${aA.toFixed(3)}°.`,
-      `All'epoca ${ep.toFixed(2)} una norma ha superato 1e200 e la corsa si ferma: la salita non ha un massimo, e l'angolo di ${name(A.rule)} con e₁ è ${aA.toFixed(3)}°.`);
+      `All'epoca ${ep.toFixed(2)} una norma ha superato 1e200 e l'esecuzione si ferma: la salita non ha un massimo, e l'angolo di ${name(A.rule)} con e₁ è ${aA.toFixed(3)}°.`);
   } else if ((S.speed === '1' || S.speed === '10') && last) {
     const u = last.u;
     s = tx(`Point ${last.k + 1} of the cloud, u = (${f3(u[0])}, ${f3(u[1])}): the output is v = w·u = ${fmt(A.v)} and the update Δw = (${fmt(A.dw[0])}, ${fmt(A.dw[1])})${A.rule === 'bcm' ? `, with θ = ${fmt(A.theta)} (Δw is along u when v > θ, against it when 0 < v < θ)` : ''}.`,
@@ -361,8 +361,10 @@ function play() {
   $('play').textContent = tx('Pause', 'Pausa');
   let t0 = 0;
   const loop = now => {
-    const slow = S.speed === '1';
-    if (!slow || now - t0 > 90) { advance(); draw(); t0 = now; }
+    // one or ten points at a time stay on the screen for 0.8 s, so that the
+    // ringed point and the update can be read; epochs go one per frame
+    const slow = S.speed === '1' || S.speed === '10';
+    if (!slow || now - t0 >= 800) { advance(); draw(); t0 = now; }
     if (done) return stop();
     timer = requestAnimationFrame(loop);
   };
@@ -380,7 +382,7 @@ const OPTS = {
 function words() {
   document.title = tx('Hebbian Learning', 'Apprendimento hebbiano');
   for (const [id, o] of Object.entries(OPTS)) for (const op of $(id).options) op.textContent = tx(...o[op.value]);
-  $('reset').textContent = 'Reset'; $('step').textContent = tx('Step', 'Passo');
+  $('reset').textContent = tx('Reset', 'Ricomincia'); $('step').textContent = tx('Step', 'Passo');
   $('play').textContent = timer ? tx('Pause', 'Pausa') : tx('Play', 'Avvia');
   $('neww').textContent = tx('New w₀', 'Nuovo w₀');
 }

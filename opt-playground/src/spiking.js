@@ -273,7 +273,7 @@ function drawCurves() {
     axes(ctx, box, X, Y, ticks(0, xmax, 5), ticks(0, ymax, 4), tx('epoch', 'epoca'), '');
     curve(ctx, ep, hs.map(h => h.acc), X, Y, col(P.gold), 1.8, [5, 3]);
     curve(ctx, ep, hs.map(h => h.loss), X, Y, col(P.accent), 2.2);
-    legend(ctx, box[2] - 150, box[1] + 10, [[col(P.accent), tx('test loss', 'loss di test')], [col(P.gold), tx('test accuracy', 'accuratezza di test'), [5, 3]]]);
+    legend(ctx, box[2] - 150, box[1] + 10, [[col(P.accent), tx('test loss', 'perdita di test')], [col(P.gold), tx('test accuracy', 'accuratezza di test'), [5, 3]]]);
   }
   {
     const cv = $('rate'), { ctx, W } = fit(cv, 220), box = [40, 22, W - 12, 184];
@@ -304,8 +304,8 @@ function report() {
   $('rep').textContent = tx(
     `After ${run.epoch} epochs, with ${CODE_EN[S.code]} over ${S.T} steps, the network classifies ${pct(h.acc)} of the test points right (loss ${h.loss.toFixed(3)}); ` +
       `its hidden neurons fire ${h.rate.toFixed(3)} spikes per neuron per step, about ${(h.rate * S.T * S.H).toFixed(0)} spikes per point, and ${pct(h.silent)} of them never fire.`,
-    `Dopo ${run.epoch} epoche, con la ${CODE_IT[S.code]} su ${S.T} passi, la rete classifica correttamente il ${pct(h.acc)} dei punti di test (loss ${h.loss.toFixed(3)}); ` +
-      `i suoi neuroni nascosti emettono ${h.rate.toFixed(3)} impulsi per neurone per passo, circa ${(h.rate * S.T * S.H).toFixed(0)} impulsi per punto, e il ${pct(h.silent)} di essi non spara mai.`);
+    `Dopo ${run.epoch} epoche, con la ${CODE_IT[S.code]} su ${S.T} passi, la rete classifica correttamente il ${pct(h.acc)} dei punti di test (perdita ${h.loss.toFixed(3)}); ` +
+      `i suoi neuroni nascosti emettono ${h.rate.toFixed(3)} impulsi per neurone per passo, circa ${(h.rate * S.T * S.H).toFixed(0)} impulsi per punto, e il ${pct(h.silent)} di essi non scarica mai.`);
   $('epoch').textContent = run.epoch;
 }
 function drawNet() { drawPlane(); drawRaster(); drawCurves(); report(); }
@@ -328,9 +328,12 @@ function play() {
 // the neuron runs on its own, one step per frame, while it is on the screen
 let visible = true;
 new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe($('scope'));
+// with reduced motion the scope is filled at once and redrawn when a knob moves
+const still = matchMedia('(prefers-reduced-motion: reduce)');
+function scopeFill() { for (let k = 0; k < N; k++) scopeStep(); drawScope(); }
 let last = 0;
 function scopeLoop(ts) {
-  if (visible && ts - last > 30) { last = ts; scopeStep(); drawScope(); }
+  if (visible && !still.matches && ts - last > 30) { last = ts; scopeStep(); drawScope(); }
   requestAnimationFrame(scopeLoop);
 }
 
@@ -351,7 +354,7 @@ for (const [k, d] of Object.entries(KNOBS)) {
   $(k).value = S[k]; $(k + 'v').textContent = S[k].toFixed(d);
   $(k).oninput = e => {
     S[k] = +e.target.value; $(k + 'v').textContent = S[k].toFixed(d); save();
-    if (k === 'k') { run.k = S.k; drawSurr(); } else drawFI();
+    if (k === 'k') { run.k = S.k; drawSurr(); } else { drawFI(); if (still.matches) scopeFill(); }
   };
 }
 $('reset').onclick = reset;
@@ -376,7 +379,7 @@ const OPTS = {
 function words() {
   document.title = tx('Spiking Networks', 'Reti a impulsi');
   for (const [id, o] of Object.entries(OPTS)) for (const op of $(id).options) op.textContent = tx(...o[op.value]);
-  $('reset').textContent = 'Reset'; $('step').textContent = tx('Step', 'Passo');
+  $('reset').textContent = tx('Reset', 'Ricomincia'); $('step').textContent = tx('Step', 'Passo');
   $('play').textContent = playing ? tx('Pause', 'Pausa') : tx('Play', 'Avvia');
 }
 function redrawAll() { palette(); drawScope(); drawFI(); drawSurr(); if (run) drawNet(); }

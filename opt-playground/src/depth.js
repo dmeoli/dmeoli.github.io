@@ -6,7 +6,7 @@
 // every layer the page draws its activations and the gradient of its weights.
 
 import { createRun, DATA } from './depth-run.js';
-const DATA_IT = { circle: 'Cerchio', xor: 'Or esclusivo', gauss: 'Gaussiane', spiral: 'Spirale' };
+const DATA_IT = { circle: 'Cerchio', xor: 'XOR', gauss: 'Gaussiane', spiral: 'Spirale' };
 import { INITS } from './depth-net.js';
 import { drawMap, drawLoss, drawLayers, drawStrip, nice } from './depth-views.js';
 import { t as tr, onLang } from './i18n.js';
@@ -50,11 +50,8 @@ function step() { run.trainEpoch(); run.measure(); draw(); }
 function play() {
   if (timer) return stop();
   $('train').textContent = tr('Pause', 'Pausa');
-  timer = setInterval(() => {
-    const t0 = performance.now();
-    for (let k = 0; k < 10 && (k === 0 || performance.now() - t0 < 25); k++) run.trainEpoch();
-    run.measure(); draw();
-  }, 40);
+  // one epoch per frame, at most 25 a second
+  timer = setInterval(() => { run.trainEpoch(); run.measure(); draw(); }, 40);
 }
 
 // the range of the activation histograms and of the unit maps: [-1, 1] for
@@ -97,7 +94,7 @@ function explain(m) {
   return tr(`Epoch ${run.epoch}: the gradient with respect to the weights of layer 1 has norm ${sci(g1)} and ${ratio}; ` +
     `the activations of layer ${d} have standard deviation ${sci(sd)}${sat ? ', and ' + sat : ''}. Test accuracy ${(100 * m.testAcc).toFixed(0)}%.`,
     `Epoca ${run.epoch}: il gradiente rispetto ai pesi dello strato 1 ha norma ${sci(g1)} e ${ratio}; ` +
-    `le attivazioni dello strato ${d} hanno deviazione standard ${sci(sd)}${sat ? ', e ' + sat : ''}. Accuratezza sul test set ${(100 * m.testAcc).toFixed(0)}%.`);
+    `le attivazioni dello strato ${d} hanno deviazione standard ${sci(sd)}${sat ? ', e ' + sat : ''}. Accuratezza di test ${(100 * m.testAcc).toFixed(0)}%.`);
 }
 const pct = (a, f) => `${(100 * a.reduce((s, v) => s + (f(v) ? 1 : 0), 0) / a.length).toFixed(0)}%`;
 
@@ -145,7 +142,7 @@ function texts() {
   for (const k of Object.keys(OPTS)) for (const o of $(k).options) o.textContent = tr(OPTS_EN[k][o.value], OPTS[k][o.value] ?? OPTS_EN[k][o.value]);
   for (const b of document.querySelectorAll('.presets button')) b.textContent = tr(PRESETS[+b.dataset.k][0], PRESETS[+b.dataset.k][2]);
   $('train').textContent = timer ? tr('Pause', 'Pausa') : tr('Play', 'Avvia');
-  $('step').textContent = tr('Step', 'Passo');
+  $('step').textContent = tr('Step', 'Passo'); $('reset').textContent = tr('Reset', 'Ricomincia');
   document.title = tr('Depth playground', 'Laboratorio della profondità');
 }
 texts();

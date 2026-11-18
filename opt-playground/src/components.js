@@ -153,7 +153,7 @@ function step() {
   draw();
 }
 function stop() { clearInterval(timer); timer = null; $('play').textContent = t('Play', 'Avvia'); }
-function play() { if (timer) return stop(); $('play').textContent = t('Pause', 'Pausa'); timer = setInterval(step, 400); }
+function play() { if (timer) return stop(); $('play').textContent = t('Pause', 'Pausa'); timer = setInterval(step, 800); }   // 0.8 s a round: the rings and the curves are followed by eye
 
 // ------------------------------------------------------------------ drawing
 const NS = 'http://www.w3.org/2000/svg';
@@ -210,6 +210,7 @@ function texts() {
   for (const o of $('inst').options) o.textContent = instances[o.value].label;
   $('play').textContent = timer ? t('Pause', 'Pausa') : t('Play', 'Avvia');
   $('step').textContent = t('Step', 'Passo');
+  $('reset').textContent = t('Reset', 'Ricomincia');
 }
 onLang(() => { texts(); draw(); });
 texts();

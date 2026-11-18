@@ -87,7 +87,7 @@ const nodeName = (v) => {
   if (n.kind === 'lit') return t(`literal ${n.text}`, `letterale ${n.text}`);
   if (n.kind === 'clause') return t('clause', 'clausola') + ` ${n.text} (${n.clause.map(l => D.display.nodes[l].text).join(' ∨ ')})`;
   if (S.task === 'triangles') return t(`node ${v % 6 + 1} of the ${v < 6 ? 'left' : 'right'} graph`, `nodo ${v % 6 + 1} del grafo di ${v < 6 ? 'sinistra' : 'destra'}`);
-  return t(`node ${v + 1}${n.labelled ? `, labelled ${'ABC'[n.y]}` : `, community ${'ABC'[n.y]}`}`,
+  return t(`node ${v + 1}${n.labelled ? `, labeled ${'ABC'[n.y]}` : `, community ${'ABC'[n.y]}`}`,
     `nodo ${v + 1}${n.labelled ? `, etichettato ${'ABC'[n.y]}` : `, comunità ${'ABC'[n.y]}`}`);
 };
 
@@ -140,29 +140,29 @@ function texts(R, up) {
   const time = t(`after ${last.step} steps of Adam (${(trainMs / 1000).toFixed(1)} s of training)`, `dopo ${last.step} passi di Adam (${(trainMs / 1000).toFixed(1)} s di addestramento)`);
   let st = '', cap = '', ccap = '', leg = '';
   if (S.task === 'community') {
-    st = t(`Accuracy ${pct(last.acc)} on the ${g.test.length} unlabelled nodes of the graph drawn, ${time}; the graph drawn is never trained on, only its ${g.lab.length} labels are used.`,
+    st = t(`Accuracy ${pct(last.acc)} on the ${g.test.length} unlabeled nodes of the graph drawn, ${time}; the graph drawn is never trained on, only its ${g.lab.length} labels are used.`,
       `Accuratezza ${pct(last.acc)} sui ${g.test.length} nodi non etichettati del grafo disegnato, ${time}; la rete non è mai addestrata sul grafo disegnato, se ne usano solo le ${g.lab.length} etichette.`);
-    cap = t(`A graph of a stochastic block model (${S.comm} communities of ${S.comm === 2 ? 16 : 14} nodes, an edge with probability 0.25 inside a community and 0.02 across); only the framed nodes have a feature, their label (A, B${S.comm === 3 ? ', C' : ''}), the others start from zero. The network is trained on fresh graphs of the same model to guess the unlabelled nodes; a dashed ring marks a wrong guess. Scrub the rounds to see the labels spread; drag a node to move it.`,
+    cap = t(`A graph of a stochastic block model (${S.comm} communities of ${S.comm === 2 ? 16 : 14} nodes, an edge with probability 0.25 inside a community and 0.02 across); only the framed nodes have a feature, their label (A, B${S.comm === 3 ? ', C' : ''}), the others start from zero. The network is trained on fresh graphs of the same model to guess the unlabeled nodes; a dashed ring marks a wrong guess. Scrub the rounds to see the labels spread; drag a node to move it.`,
       `Un grafo di uno stochastic block model (${S.comm} comunità di ${S.comm === 2 ? 16 : 14} nodi, un arco con probabilità 0.25 dentro una comunità e 0.02 fra comunità diverse); solo i nodi incorniciati hanno una feature, la loro etichetta (A, B${S.comm === 3 ? ', C' : ''}), gli altri partono da zero. La rete è addestrata su grafi sempre nuovi dello stesso modello a indovinare i nodi non etichettati; un anello tratteggiato segna una risposta sbagliata. Scorrendo i turni si vedono le etichette diffondersi; un nodo si sposta trascinandolo.`);
-    ccap = t('Accuracy (violet) on the unlabelled nodes of the graph drawn and cross-entropy on the same nodes (gold, log scale), against the steps of Adam (4 fresh graphs per step).',
+    ccap = t('Accuracy (violet) on the unlabeled nodes of the graph drawn and cross-entropy on the same nodes (gold, log scale), against the steps of Adam (4 fresh graphs per step).',
       'Accuratezza (viola) sui nodi non etichettati del grafo disegnato ed entropia incrociata sugli stessi nodi (oro, scala logaritmica), in funzione dei passi di Adam (4 grafi nuovi per passo).');
   } else if (S.task === 'clauses') {
-    st = t(`Clauses right ${pct(last.acc)}, falsified clauses found ${pct(last.acc2)}, assignments checked right (every clause of the formula right) ${pct(ev.accF)}, on 200 held-out formulas, ${time}`,
+    st = t(`Clauses right ${pct(last.acc)}, falsified clauses found ${pct(last.acc2)}, assignments checked right (all clauses of the formula right) ${pct(ev.accF)}, on 200 held-out formulas, ${time}`,
       `Clausole giuste ${pct(last.acc)}, clausole falsificate trovate ${pct(last.acc2)}, assegnamenti verificati correttamente (ogni clausola della formula giusta) ${pct(ev.accF)}, su 200 formule tenute da parte, ${time}`) +
       (S.K === 1 ? t('; with one round a clause made only of negated literals cannot know their values.', '; con un solo turno una clausola fatta solo di letterali negati non può conoscerne i valori.') : '.');
-    cap = t(`A random 3-CNF formula of ${g.n} variables and ${g.m} clauses as its literal-clause graph (circles the literals, squares the clauses, an edge between x and ¬x). A hidden assignment is written on the positive literals only (true or false under them); every clause has to say whether it is satisfied, and the false ones are marked. What is learnt is the OR of the literal values, i.e., the check of a given assignment, not satisfiability, which NeuroSAT learns with many more rounds and much more training.`,
-      `Una formula 3-CNF casuale di ${g.n} variabili e ${g.m} clausole, come grafo letterali-clausole (cerchi i letterali, quadrati le clausole, un arco fra x e ¬x). Un assegnamento nascosto è scritto solo sui letterali positivi (vero o falso sotto di essi); ogni clausola deve dire se è soddisfatta, e quelle false sono segnate. Ciò che si impara è l'OR dei valori dei letterali, cioè la verifica di un assegnamento dato, non la soddisfacibilità, che NeuroSAT impara con molti più turni e molto più addestramento.`);
+    cap = t(`A random 3-CNF formula of ${g.n} variables and ${g.m} clauses as its literal-clause graph (circles the literals, squares the clauses, an edge between x and ¬x). A hidden assignment is written on the positive literals only (true or false under them); each clause has to say whether it is satisfied, and the false ones are marked. The network learns the OR of the literal values, i.e., it checks a given assignment; satisfiability itself is learned by NeuroSAT, with many more rounds and much more training.`,
+      `Una formula 3-CNF casuale di ${g.n} variabili e ${g.m} clausole, come grafo letterali-clausole (cerchi i letterali, quadrati le clausole, un arco fra x e ¬x). Un assegnamento nascosto è scritto solo sui letterali positivi (vero o falso sotto di essi); ogni clausola deve dire se è soddisfatta, e quelle false sono segnate. La rete impara l'OR dei valori dei letterali, cioè la verifica di un assegnamento dato; la soddisfacibilità vera e propria la impara NeuroSAT, con molti più turni e molto più addestramento.`);
     ccap = t('Accuracy on all the clauses (violet) and on the falsified ones only (dashed), and the weighted cross-entropy (gold, log scale; a false clause weighs 7, since a random 3-clause is false with probability 1/8), on 200 held-out formulas, against the steps of Adam (8 fresh formulas per step).',
       'Accuratezza su tutte le clausole (viola) e sulle sole falsificate (tratteggiata), ed entropia incrociata pesata (oro, scala logaritmica; una clausola falsa pesa 7, poiché una 3-clausola casuale è falsa con probabilità 1/8), su 200 formule tenute da parte, in funzione dei passi di Adam (8 formule nuove per passo).');
     leg = `<span><i style="background:var(--accent)"></i>${t('all clauses', 'tutte le clausole')}</span><span><i class="dash"></i>${t('falsified clauses', 'clausole falsificate')}</span><span><i style="background:var(--gold)"></i>loss</span>`;
   } else {
     const pp = vw.parts, same = Math.abs(pp[0].p - pp[1].p) < 1e-9;
-    st = t(`Accuracy ${pct(last.acc)} on 200 held-out random graphs, ${time}; on the pair drawn the network answers p = ${pp[0].p.toFixed(3)} and ${pp[1].p.toFixed(3)}${same ? ', the same number, so that one of the two is wrong whatever the weights' : ''}.`,
-      `Accuratezza ${pct(last.acc)} su 200 grafi casuali tenuti da parte, ${time}; sulla coppia disegnata la rete risponde p = ${pp[0].p.toFixed(3)} e ${pp[1].p.toFixed(3)}${same ? ', lo stesso numero, così che una delle due risposte è sbagliata quali che siano i pesi' : ''}.`) +
-      (S.agg === 'gcn' ? t(' With the GCN normalisation the coefficients of a node sum to nearly 1 whatever its degree, so that on nodes without features the network sees almost nothing; the sum of GIN counts the neighbours.',
-        ' Con la normalizzazione GCN i coefficienti di un nodo sommano quasi a 1 qualunque sia il suo grado, così che su nodi senza feature la rete non vede quasi nulla; la somma di GIN conta i vicini.') : '');
-    cap = t(`Two graphs of 6 nodes, every node of degree ${S.pair === 'ring' ? 2 : 3}, side by side: every node starts from the same vector and receives, in every round, the same multiset of messages, so that the states are identical in every round (the 1-WL test of Xu et al., which bounds every network of this kind), although only one of the two has a triangle. The network is trained to say whether a random graph of 6 to 9 nodes contains a triangle, and reads the mean of the last states.`,
-      `Due grafi di 6 nodi, ogni nodo di grado ${S.pair === 'ring' ? 2 : 3}, affiancati: ogni nodo parte dallo stesso vettore e riceve, a ogni turno, lo stesso multinsieme di messaggi, così che gli stati sono identici a ogni turno (il test 1-WL di Xu et al., che limita ogni rete di questo tipo), benché solo uno dei due abbia un triangolo. La rete è addestrata a dire se un grafo casuale di 6-9 nodi contiene un triangolo, e legge la media degli ultimi stati.`);
+    st = t(`Accuracy ${pct(last.acc)} on 200 held-out random graphs, ${time}; on the pair drawn the network answers p = ${pp[0].p.toFixed(3)} and ${pp[1].p.toFixed(3)}${same ? ', the same number, and therefore one of the two is wrong whatever the weights' : ''}.`,
+      `Accuratezza ${pct(last.acc)} su 200 grafi casuali tenuti da parte, ${time}; sulla coppia disegnata la rete risponde p = ${pp[0].p.toFixed(3)} e ${pp[1].p.toFixed(3)}${same ? ', lo stesso numero, e quindi una delle due risposte è sbagliata quali che siano i pesi' : ''}.`) +
+      (S.agg === 'gcn' ? t(' With the GCN normalization the coefficients of a node sum to nearly 1 whatever its degree, and therefore on nodes without features the network sees almost nothing; the sum of GIN counts the neighbors.',
+        ' Con la normalizzazione GCN i coefficienti di un nodo sommano quasi a 1 qualunque sia il suo grado, e quindi su nodi senza feature la rete non vede quasi nulla; la somma di GIN conta i vicini.') : '');
+    cap = t(`Two graphs of 6 nodes, each node of degree ${S.pair === 'ring' ? 2 : 3}, side by side: all nodes start from the same vector and receive, in each round, the same multiset of messages, and therefore the states are identical at each round (the 1-WL test of Xu et al., which bounds all the networks of this kind), although only one of the two has a triangle. The network is trained to say whether a random graph of 6 to 9 nodes contains a triangle, and reads the mean of the last states.`,
+      `Due grafi di 6 nodi, ogni nodo di grado ${S.pair === 'ring' ? 2 : 3}, affiancati: ogni nodo parte dallo stesso vettore e riceve, a ogni turno, lo stesso multinsieme di messaggi, e quindi gli stati sono identici a ogni turno (il test 1-WL di Xu et al., che limita tutte le reti di questo tipo), benché solo uno dei due abbia un triangolo. La rete è addestrata a dire se un grafo casuale di 6-9 nodi contiene un triangolo, e legge la media degli ultimi stati.`);
     ccap = t('Accuracy (violet) and cross-entropy (gold, log scale) on 200 held-out random graphs, half with a triangle, against the steps of Adam (16 fresh graphs per step).',
       'Accuratezza (viola) ed entropia incrociata (oro, scala logaritmica) su 200 grafi casuali tenuti da parte, metà con un triangolo, in funzione dei passi di Adam (16 grafi nuovi per passo).');
   }
@@ -172,7 +172,7 @@ function texts(R, up) {
     ? `\\(\\hat y = \\operatorname{softmax}\\big(W_{\\text{out}}\\,\\tfrac{1}{|V|}\\textstyle\\sum_{v} h_v^{(${S.K})} + b_{\\text{out}}\\big)\\)`
     : `\\(\\hat y_v = \\operatorname{softmax}\\big(W_{\\text{out}}\\, h_v^{(${S.K})} + b_{\\text{out}}\\big)\\), \\(h_v^{(0)} = W_{\\text{in}} x_v + b_{\\text{in}}\\)`);
   // the hovered node
-  if (hover < 0) $('readout').innerHTML = t('hover a node: its messages light the edges and its update is drawn on the right', 'passa su un nodo: i suoi messaggi illuminano gli archi e il suo aggiornamento è disegnato a destra');
+  if (hover < 0) $('readout').innerHTML = t('hover a node: its messages light the edges and its update is drawn on the right', 'passa col puntatore su un nodo: i suoi messaggi illuminano gli archi e il suo aggiornamento è disegnato a destra');
   else {
     const n = g.nodes[hover], C = D.C, deg = incoming(g, S.agg)[hover].length - 1;
     let pred = '';
@@ -270,7 +270,7 @@ let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(dra
 // the texts that are not in the page twice: title, buttons, options
 function labels() {
   document.title = t('Graph networks playground', 'Laboratorio delle reti su grafi');
-  $('step').textContent = t('Step', 'Passo');
+  $('step').textContent = t('Step', 'Passo'); $('reset').textContent = t('Reset', 'Ricomincia');
   $('train').textContent = timer ? t('Pause', 'Pausa') : t('Play', 'Avvia');
   $('regen').textContent = t('New graph', 'Nuovo grafo');
   $('prev').setAttribute('aria-label', t('previous round', 'turno precedente'));
@@ -278,7 +278,7 @@ function labels() {
   const O = {
     community: ['communities', 'comunità'], clauses: ['clauses of a formula', 'clausole di una formula'], triangles: ['triangles (1-WL)', 'triangoli (1-WL)'],
     ring: ['C6 and two triangles', 'C6 e due triangoli'], k33: ['K3,3 and the prism', 'K3,3 e il prisma'],
-    gcn: ['GCN (normalised)', 'GCN (normalizzata)'], gin: ['sum (GIN)', 'somma (GIN)'],
+    gcn: ['GCN (normalized)', 'GCN (normalizzata)'], gin: ['sum (GIN)', 'somma (GIN)'],
   };
   for (const id of ['task', 'pair', 'agg']) for (const o of $(id).options) o.textContent = t(...O[o.value]);
 }

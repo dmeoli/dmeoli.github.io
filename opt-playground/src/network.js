@@ -275,7 +275,7 @@ function sel(id, entries, value, on) {
   s.onchange = () => on(s.value);
 }
 function buildControls() {
-  const datas = S.problem === 'regression' ? [['plane', tr('Plane', 'Piano')], ['gaussreg', tr('Gaussians', 'Gaussiane')]] : [['circle', tr('Circle', 'Cerchio')], ['xor', tr('Exclusive or', 'Or esclusivo')], ['gauss', tr('Gaussians', 'Gaussiane')], ['spiral', tr('Spiral', 'Spirale')]];
+  const datas = S.problem === 'regression' ? [['plane', tr('Plane', 'Piano')], ['gaussreg', tr('Gaussians', 'Gaussiane')]] : [['circle', tr('Circle', 'Cerchio')], ['xor', tr('Exclusive or', 'XOR')], ['gauss', tr('Gaussians', 'Gaussiane')], ['spiral', tr('Spiral', 'Spirale')]];
   sel('problem', [['classification', tr('Classification', 'Classificazione')], ['regression', tr('Regression', 'Regressione')]], S.problem, v => { S.problem = v; S.data = v === 'regression' ? 'plane' : 'circle'; reset(); });
   const db = $('datas'); db.replaceChildren();
   for (const [k, l] of datas) {
@@ -343,10 +343,10 @@ function texts() {
   const D = { random: ['random, filter-normalized', 'casuali, normalizzate per filtro'], pca: ['principal, of the path', 'principali, del cammino'] };
   for (const o of $('landDir').options) o.textContent = tr(...D[o.value]);
   $('dropLab').title = tr('probability of dropping a hidden neuron in a training mini-batch; off at test time', "probabilità di spegnere un neurone nascosto in un minibatch dell'addestramento; nessuno spento in fase di test");
-  $('datas').setAttribute('aria-label', tr('data set', 'data set'));
+  $('datas').setAttribute('aria-label', tr('data set', 'insieme di dati'));
   $('wedit').querySelector('input').setAttribute('aria-label', tr('weight', 'peso'));
   $('play').textContent = timer ? tr('Pause', 'Pausa') : tr('Play', 'Avvia');
-  $('step').textContent = tr('Step', 'Passo');
+  $('step').textContent = tr('Step', 'Passo'); $('reset').textContent = tr('Reset', 'Ricomincia');
   document.title = tr('Network playground', 'Laboratorio di reti neurali');
 }
 texts();

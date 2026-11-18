@@ -140,7 +140,7 @@ export class BoardView {
     const still = reduced();
     let moving = false;
     for (const it of this.items.values()) {
-      if (Math.abs(it.h - it.target) > 1e-4) { it.h += (it.target - it.h) * Math.min(1, dt * 9); moving = true; }
+      if (Math.abs(it.h - it.target) > 1e-4) { it.h += (it.target - it.h) * Math.min(1, dt * 6); moving = true; }
       if (it.hot) {
         // red, pulsing for a moment, or steady when motion is reduced
         const a = still ? 0.55 : 0.55 * (0.5 + 0.5 * Math.cos(this.flash * 18)) * Math.max(0, 1 - this.flash / 1.2);

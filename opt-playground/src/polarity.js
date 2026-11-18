@@ -72,8 +72,11 @@ function setup() {
     pointer.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
   });
   renderer.domElement.addEventListener('pointerleave', () => pointer.set(2, 2));
-  const loop = () => {
-    if ($('spin').checked) group.rotation.z += 0.0025;
+  // a full turn in 40 s, whatever the refresh rate of the screen
+  let last = performance.now();
+  const loop = now => {
+    const dt = Math.min(0.1, ((now ?? last) - last) / 1000); last = now ?? last;
+    if ($('spin').checked) group.rotation.z += dt * 2 * Math.PI / 40;
     controls.update(); pick(); renderer.render(scene, camera); requestAnimationFrame(loop);
   };
   loop();
@@ -175,5 +178,7 @@ document.addEventListener('keydown', e => {
   if (e.key !== ' ' || ['SELECT', 'INPUT'].includes(e.target.tagName)) return;
   e.preventDefault(); $('spin').checked = !$('spin').checked;
 });
+// with reduced motion the polytopes do not turn until asked
+if (matchMedia('(prefers-reduced-motion: reduce)').matches) $('spin').checked = false;
 setup();
 build();

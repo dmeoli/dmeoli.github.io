@@ -131,13 +131,13 @@ function info() {
   const dt = (en, it, v) => `<div><dt>${t(en, it)}</dt><dd>${v}</dd></div>`;
   const lmst = (ch.armc / 15 + 24) % 24;
   $('info').innerHTML = dt('universal time', 'tempo universale', iso(ch.ms)) +
-    dt('offset', 'scarto', `${offs(civil.offset)}`) +
+    dt('offset', 'differenza oraria', `${offs(civil.offset)}`) +
     dt('local sidereal time', 'tempo siderale locale', hms(lmst)) +
     dt('obliquity', 'obliquità', `${ch.eps.toFixed(4)}\u00B0`) +
     dt('place', 'luogo', `${Math.abs(ch.lat).toFixed(2)}\u00B0${ch.lat >= 0 ? 'N' : 'S'} ${Math.abs(ch.lon).toFixed(2)}\u00B0${ch.lon >= 0 ? 'E' : t('W', 'O')}`);
   const w = [];
   if (civil.status === 'gap') w.push(t('This time does not exist in this zone, since the clocks were moved forward over it; it is read with the offset in force before the change.',
-    "Quest'ora non esiste in questo fuso, perché gli orologi sono stati portati avanti scavalcandola; la si legge con lo scarto in vigore prima del cambio."));
+    "Quest'ora non esiste in questo fuso, perché gli orologi sono stati portati avanti scavalcandola; la si legge con la differenza oraria in vigore prima del cambio."));
   if (civil.status === 'twice') w.push(t('This time occurs twice in this zone, since the clocks were moved back over it; the first of the two is used.',
     "Quest'ora ricorre due volte in questo fuso, perché gli orologi sono stati portati indietro; si usa la prima delle due."));
   if (ch.houses.failed) {

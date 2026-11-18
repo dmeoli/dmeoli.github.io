@@ -177,7 +177,7 @@ $('step').onclick = () => { trainSteps(20); draw(); };
 $('play').onclick = () => {
   if (timer) return stop();
   $('play').textContent = t('Pause', 'Pausa');
-  timer = setInterval(() => { trainSteps(20); draw(); if (steps >= 4000) stop(); }, 30);
+  timer = setInterval(() => { trainSteps(10); draw(); if (steps >= 4000) stop(); }, 40);
 };
 document.addEventListener('keydown', e => {
   // not while typing or choosing; on a slider the arrows move the slider

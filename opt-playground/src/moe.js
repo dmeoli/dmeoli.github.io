@@ -254,7 +254,7 @@ function report() {
   texClear(el); el.textContent = s; el.dataset.s = s; texSet(el);
 }
 function drawProbe() {
-  if (!probe) { $('probe').textContent = tx('Point at the map to read the gates of the router there.', 'Si punti la mappa per leggere lì i gate del router.'); return; }
+  if (!probe) { $('probe').textContent = tx('Point at the map to read the gates of the router there.', 'Passa col puntatore sulla mappa per leggervi i gate del router.'); return; }
   const C = cache(M); forward(M, probe.x / 6, probe.y / 6, kOf(), C);
   const gs = Array.from(C.g).map((g, i) => `${i + 1}: ${g.toFixed(2)}`).join('  ');
   $('probe').innerHTML = `(${probe.x.toFixed(1)}, ${probe.y.toFixed(1)}) · g = ${gs} · y = <b>${C.y.toFixed(2)}</b>`;
@@ -337,7 +337,7 @@ function words() {
   ps.value = S.preset;
   $('datas').setAttribute('aria-label', tx('data set', 'insieme di dati'));
   $('play').textContent = playing ? tx('Pause', 'Pausa') : tx('Play', 'Avvia');
-  $('step').textContent = tx('Step', 'Passo');
+  $('step').textContent = tx('Step', 'Passo'); $('reset').textContent = tx('Reset', 'Ricomincia');
   thumbs();
 }
 onLang(() => { words(); syncControls(); delete $('rep').dataset.s; draw(); });

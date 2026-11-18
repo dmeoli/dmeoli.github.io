@@ -30,11 +30,11 @@ const scenes = {
   a2: {
     get label() { return t('Two multipliers', 'Due moltiplicatori'); }, problems: p2, algorithms: a2, preset: 'ring',
     get dualCaption() {
-      return t('Dual: the space of the two multipliers, split into the regions where each column found so far is the lowest in the model (a polyhedral complex, colored per column, darker where the model is lower); the star is the maximum of \\(L\\), the line the path of the iterates (hollow: null steps), the circle the stability centre.',
+      return t('Dual: the space of the two multipliers, split into the regions where each column found so far is the lowest in the model (a polyhedral complex, colored per column, darker where the model is lower); the star is the maximum of \\(L\\), the line the path of the iterates (hollow: null steps), the circle the stability center.',
         "Duale: lo spazio dei due moltiplicatori, diviso nelle regioni in cui ciascuna colonna trovata finora è la più bassa nel modello (un complesso poliedrale, colorato per colonna, più scuro dove il modello è più basso); la stella è il massimo di \\(L\\), la linea il cammino degli iterati (vuoti: passi nulli), il cerchio il centro di stabilità.");
     },
     get caption3d() {
-      return t('Dual in 3D (drag to turn, wheel to zoom): the Lagrangian function is a concave roof of flat faces, one per column (the faint wire); the model is the roof of the cuts found so far, colored per column, which comes down onto the true one as cuts are added. The iterates sit on the true roof, with a line down to the plane of the multipliers; the gold octahedron is the maximum, the ring the stability centre.',
+      return t('Dual in 3D (drag to turn, wheel to zoom): the Lagrangian function is a concave roof of flat faces, one per column (the faint wire); the model is the roof of the cuts found so far, colored per column, which comes down onto the true one as cuts are added. The iterates sit on the true roof, with a line down to the plane of the multipliers; the gold octahedron is the maximum, the ring the stability center.',
         "Duale in 3D (trascina per ruotare, rotella per lo zoom): la funzione lagrangiana è un tetto concavo di facce piane, una per colonna (il reticolo tenue); il modello è il tetto dei tagli trovati finora, colorato per colonna, che scende sul tetto vero man mano che si aggiungono tagli. Gli iterati stanno sul tetto vero, con una linea che scende al piano dei moltiplicatori; l'ottaedro dorato è il massimo, l'anello il centro di stabilità.");
     },
     drawOne(run, k, ctx) {
@@ -48,7 +48,7 @@ const scenes = {
   a1: {
     get label() { return t('One multiplier', 'Un moltiplicatore'); }, problems: p1, algorithms: a1, preset: 'disc',
     get dualCaption() {
-      return t('Dual: the Lagrangian function (dashed), the cuts, the model (their minimum), the iterates (hollow: null steps) and, for the bundle, the stability centre and the proximal term.',
+      return t('Dual: the Lagrangian function (dashed), the cuts, the model (their minimum), the iterates (hollow: null steps) and, for the bundle, the stability center and the proximal term.',
         'Duale: la funzione lagrangiana (tratteggiata), i tagli, il modello (il loro minimo), gli iterati (vuoti: passi nulli) e, per il bundle, il centro di stabilità e il termine prossimale.');
     },
     drawOne(run, k, ctx) {
@@ -180,7 +180,7 @@ function stop() { clearInterval(timer); timer = null; $('play').textContent = t(
 function play() {
   if (timer) return stop();
   $('play').textContent = t('Pause', 'Pausa');
-  timer = setInterval(step, 700);
+  timer = setInterval(step, 1000);   // one iteration a second: the eye follows the new cut
 }
 
 $('scene').addEventListener('change', e => {
@@ -235,6 +235,7 @@ function texts() {
   document.title = t('Decomposition playground', 'Laboratorio di decomposizione');
   $('play').textContent = timer ? t('Pause', 'Pausa') : t('Play', 'Avvia');
   $('step').textContent = t('Step', 'Passo');
+  $('reset').textContent = t('Reset', 'Ricomincia');
   $('exportTrace').textContent = t('Export trace', 'Esporta la traccia');
   const real = t(' (real run)', ' (esecuzione reale)');
   for (const o of $('traceSel').options)

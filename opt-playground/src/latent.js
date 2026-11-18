@@ -203,11 +203,11 @@ function refresh() {
       `<br>densità della prior in quel punto: ${(Math.exp(-(st.probe[0] ** 2 + st.probe[1] ** 2) / 2) / (2 * Math.PI)).toFixed(3)} (nell'origine 0.159)`) : '') +
     (nb ? t(`<br>nearest held-out code: a ${nb.y}, at distance ${nb.d.toFixed(2)}`, `<br>codice tenuto da parte più vicino: un ${nb.y}, a distanza ${nb.d.toFixed(2)}`) : '');
   const dist = st.path ? (Math.hypot(st.path[0][0] - st.path[1][0], st.path[0][1] - st.path[1][1])).toFixed(2) : '';
-  $('pathnote').textContent = st.sel.length === 0 ? t('Click a digit on the plane to choose A, then another to choose B.', 'Un clic su una cifra del piano sceglie A, un altro su una seconda cifra sceglie B.')
-    : st.sel.length === 1 ? t(`A is a held-out ${test.Y[st.sel[0]]}; now click B.`, `A è un ${test.Y[st.sel[0]]} tenuto da parte; ora si scelga B.`)
+  $('pathnote').textContent = st.sel.length === 0 ? t('Click a digit on the plane to choose A, then another to choose B.', 'Clicca una cifra del piano per scegliere A, poi un\'altra per scegliere B.')
+    : st.sel.length === 1 ? t(`A is a held-out ${test.Y[st.sel[0]]}; now click B.`, `A è un ${test.Y[st.sel[0]]} tenuto da parte; ora scegli B.`)
     : !st.path ? t(`From a ${test.Y[st.sel[0]]} to a ${test.Y[st.sel[1]]}.`, `Da un ${test.Y[st.sel[0]]} a un ${test.Y[st.sel[1]]}.`)
     : t(`From a ${test.Y[st.sel[0]]} to a ${test.Y[st.sel[1]]}, ${dist} apart in the plane; click again to start over.`,
-      `Da un ${test.Y[st.sel[0]]} a un ${test.Y[st.sel[1]]}, a distanza ${dist} nel piano; un altro clic ricomincia.`);
+      `Da un ${test.Y[st.sel[0]]} a un ${test.Y[st.sel[1]]}, a distanza ${dist} nel piano; clicca di nuovo per ricominciare.`);
   if (st.codes && st.codes.every(Boolean)) {
     let empty = 0;
     const full = new Uint8Array(G * G);
@@ -369,13 +369,13 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { pa
 // the texts that are not in the page twice: title, buttons, options
 function labels() {
   document.title = t('Latent space playground', 'Laboratorio dello spazio latente');
-  $('step').textContent = t('Step', 'Passo');
+  $('step').textContent = t('Step', 'Passo'); $('reset').textContent = t('Reset', 'Ricomincia');
   $('train').textContent = running ? t('Pause', 'Pausa') : t('Play', 'Avvia');
   $('clear').textContent = t('Clear', 'Cancella');
   $('sample').textContent = t('Held-out digit', 'Cifra tenuta da parte');
   for (const o of $('model').options) o.textContent = o.value === 'ae' ? 'autoencoder' : t('variational (VAE)', 'variazionale (VAE)');
 }
-onLang(() => { labels(); if (data) refresh(); });
+onLang(() => { labels(); refresh(); });
 
 labels();
 reset();

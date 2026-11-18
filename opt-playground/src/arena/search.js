@@ -168,7 +168,7 @@ export class PuzzleView {
       if (!it.at || !it.to) continue;
       const dx = it.to[0] - it.at[0], dy = it.to[1] - it.at[1];
       if (Math.abs(dx) + Math.abs(dy) > 1e-4) {
-        const a = Math.min(1, dt * 14);
+        const a = Math.min(1, dt * 6);
         it.at = [it.at[0] + dx * a, it.at[1] + dy * a]; moving = true;
       }
     }
@@ -183,7 +183,7 @@ export class GridView {
   constructor(box, inst) {
     this.inst = inst;
     this.S = stage3d(box, { camera: [0, -1.95, 2.1], target: [0, 0.05, 0], aspect: 0.8,
-      onTheme: () => this.build(), onFrame: () => {} });
+      onTheme: () => this.build(), onFrame: dt => this.frame(dt) });
     this.S.controls.enableDamping = !reduced();
     this.build();
   }
@@ -198,6 +198,8 @@ export class GridView {
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) this.blocked[y * W + x] = inst.rows[y][x] === '@' ? 1 : 0;
     this.cols = { free: P.ground.clone().lerp(P.rule, 0.5), wall: P.soft.clone().lerp(P.ground, 0.45), open: P.lilac.clone(), path: new THREE.Color('#d9b23a') };
     this.cur = new Array(n).fill('');
+    // the height of each cell, and the height it rises or sinks to
+    this.h = new Float32Array(n); this.th = new Float32Array(n); this.moving = new Set();
     for (let c = 0; c < n; c++) this.paint(c, '', true);
     S.content.add(mesh);
     const mk = (c, col) => {
@@ -209,29 +211,45 @@ export class GridView {
     };
     mk(inst.start, P.accent); mk(inst.goal, new THREE.Color('#d9b23a'));
     const set = this.lastSet; this.lastSet = null;
-    if (set) this.show(set);
+    if (set) this.show(set, true);     // a new theme: the cells at their heights at once
   }
   paint(c, v, force) {
     if (!force && this.cur[c] === v) return false;
     this.cur[c] = v;
-    const { inst, u } = this, W = inst.width, H = inst.height, x = c % W, y = Math.floor(c / W);
+    const { u } = this;
     let h = u * 0.25, col = this.cols.free;
     if (this.blocked[c]) { h = u * 2.2; col = this.cols.wall; }
     else if (v === 'p') { h = u * 2.4; col = this.cols.path; }
     else if (v && v[0] === 'e') { h = u * 1.3; col = new THREE.Color(WORKERS[+v.slice(1) % WORKERS.length]); }
     else if (v === 'o') { h = u * 0.6; col = this.cols.open; }
-    const m = new THREE.Matrix4().makeScale(1, 1, h);
-    m.setPosition((x - (W - 1) / 2) * u, ((H - 1) / 2 - y) * u, 0);
-    this.mesh.setMatrixAt(c, m);
+    this.th[c] = h;
+    if (force || reduced()) { this.h[c] = h; this.moving.delete(c); this.lift(c); } else this.moving.add(c);
     this.mesh.setColorAt(c, col);
     return true;
   }
+  lift(c) {
+    const { inst, u } = this, W = inst.width, H = inst.height, x = c % W, y = Math.floor(c / W);
+    const m = new THREE.Matrix4().makeScale(1, 1, this.h[c]);
+    m.setPosition((x - (W - 1) / 2) * u, ((H - 1) / 2 - y) * u, 0);
+    this.mesh.setMatrixAt(c, m);
+  }
+  // the cells rise or sink to their height in about half a second
+  frame(dt) {
+    if (!this.moving.size) return;
+    const a = Math.min(1, dt * 6);
+    for (const c of this.moving) {
+      this.h[c] += (this.th[c] - this.h[c]) * a;
+      if (Math.abs(this.th[c] - this.h[c]) < 1e-4) { this.h[c] = this.th[c]; this.moving.delete(c); }
+      this.lift(c);
+    }
+    this.mesh.instanceMatrix.needsUpdate = true;
+  }
   // set: the cells by index (as strings) to o, e<worker> or p
-  show(set) {
+  show(set, force) {
     this.lastSet = set;
     const n = this.inst.width * this.inst.height;
     let changed = false;
-    for (let c = 0; c < n; c++) changed = this.paint(c, set.get(String(c)) || '') || changed;
+    for (let c = 0; c < n; c++) changed = this.paint(c, set.get(String(c)) || '', force) || changed;
     if (changed) { this.mesh.instanceMatrix.needsUpdate = true; if (this.mesh.instanceColor) this.mesh.instanceColor.needsUpdate = true; }
   }
 }

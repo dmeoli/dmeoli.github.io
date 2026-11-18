@@ -45,7 +45,7 @@ class StackBase {
   }
   frame(dt) {
     let moving = false;
-    for (const it of this.items) if (it.t < 1) { it.t = Math.min(1, it.t + dt * 3); moving = true; }
+    for (const it of this.items) if (it.t < 1) { it.t = Math.min(1, it.t + dt * 1.8); moving = true; }
     if (moving) this.place();
   }
 }
@@ -73,7 +73,20 @@ export class PancakeView extends StackBase {
   }
   // position 0 is the top of the stack
   at(pos) { return [0, this.dh * (this.N - pos - 0.5)]; }
-  place() { for (const it of this.items) { const [x, z] = this.pos(it); it.m.position.set(x, 0, z); } }
+  // a flip turns the pancakes above the spatula as one block about the
+  // middle of their heights, each pancake sweeping out on a half circle and
+  // tilting with the block
+  place() {
+    for (const it of this.items) {
+      const f = it.from || it.to, e = ease(it.t), d = (f[1] - it.to[1]) / 2, a = Math.PI * e;
+      const moving = it.t < 1 && Math.abs(d) > 1e-6;
+      const x = f[0] * (1 - e) + (moving ? d * Math.sin(a) * 1.6 : 0);
+      const z = moving ? (f[1] + it.to[1]) / 2 + d * Math.cos(a) : this.pos(it)[1];
+      it.m.position.set(x, 0, z);
+      it.m.rotation.order = 'YXZ';     // the tilt about the horizontal axis of the view
+      it.m.rotation.set(Math.PI / 2, moving ? a : 0, 0);
+    }
+  }
 }
 
 export class TopSpinView extends StackBase {

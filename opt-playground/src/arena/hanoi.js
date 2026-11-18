@@ -79,7 +79,7 @@ export class HanoiView {
   }
   frame(dt) {
     let moving = false;
-    for (const it of this.disks) if (it.t < 1) { it.t = Math.min(1, it.t + dt * 4); moving = true; }
+    for (const it of this.disks) if (it.t < 1) { it.t = Math.min(1, it.t + dt * 1.8); moving = true; }
     if (moving) this.place();
   }
 }

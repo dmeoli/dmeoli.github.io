@@ -26,8 +26,8 @@ function addColumn(s, problem, o) {
   if (!s.cuts.some(k => same(k.v))) s.cuts.push(problem.cut(o.column));
 }
 const startParams = {
-  l1: { get label() { return t('start \\(\\lambda_1\\)', "inizio \\(\\lambda_1\\)"); }, min: 0, max: 3, step: 0.1, value: 1.8 },
-  l2: { get label() { return t('start \\(\\lambda_2\\)', "inizio \\(\\lambda_2\\)"); }, min: 0, max: 3, step: 0.1, value: 1.8 },
+  l1: { get label() { return t('start \\(\\lambda_1\\)', "\\(\\lambda_1\\) iniziale"); }, min: 0, max: 3, step: 0.1, value: 1.8 },
+  l2: { get label() { return t('start \\(\\lambda_2\\)', "\\(\\lambda_2\\) iniziale"); }, min: 0, max: 3, step: 0.1, value: 1.8 },
 };
 
 // ----------------------------------------------------------------------------
@@ -50,7 +50,7 @@ export const subgradSolver = {
     tau: { label: 'Volume \\(\\tau\\)', min: 0.1, max: 1, step: 0.05, value: 1 },
     gamma: { label: 'PrimalDual \\(\\gamma\\)', min: 0.2, max: 10, step: 0.2, value: 2 },
   },
-  get explain() { return t('The subgradient method of SMS++ (Frangioni, Gorgone, Gendron 2017): a target-value step \\(\\nu = \\beta\\,(f(c) - f_{\\mathrm{lev}}) / \\|d\\|^2\\) along a deflected direction \\(d\\); Polyak uses a lower bound as target, ColorTV adapts \\(\\beta\\) by the colour of the iteration, FumeroTV moves the target between the lower bound and the record; Volume deflection mixes the new subgradient with the old direction and moves the centre only on serious steps; PrimalDual is dual averaging from the start.', "Il metodo del subgradiente di SMS++ (Frangioni, Gorgone, Gendron 2017): un passo a valore bersaglio \\(\\nu = \\beta\\,(f(c) - f_{\\mathrm{lev}}) / \\|d\\|^2\\) lungo una direzione deflessa \\(d\\); Polyak usa come bersaglio una limitazione inferiore, ColorTV adatta \\(\\beta\\) secondo il colore dell'iterazione, FumeroTV sposta il bersaglio fra la limitazione inferiore e il record; la deflessione Volume combina il nuovo subgradiente con la direzione precedente e sposta il centro solo nei passi seri; PrimalDual è il dual averaging fin dall'inizio."); },
+  get explain() { return t('The subgradient method of SMS++ (Frangioni, Gorgone, Gendron 2017): a target-value step \\(\\nu = \\beta\\,(f(c) - f_{\\mathrm{lev}}) / \\|d\\|^2\\) along a deflected direction \\(d\\); Polyak uses a lower bound as target, ColorTV adapts \\(\\beta\\) by the color of the iteration, FumeroTV moves the target between the lower bound and the record; Volume deflection mixes the new subgradient with the old direction and moves the center only on serious steps; PrimalDual is dual averaging from the start.', "Il metodo del subgradiente di SMS++ (Frangioni, Gorgone, Gendron 2017): un passo a valore bersaglio \\(\\nu = \\beta\\,(f(c) - f_{\\mathrm{lev}}) / \\|d\\|^2\\) lungo una direzione deflessa \\(d\\); Polyak usa come bersaglio una limitazione inferiore, ColorTV adatta \\(\\beta\\) secondo il colore dell'iterazione, FumeroTV sposta il bersaglio fra la limitazione inferiore e il record; la deflessione Volume combina il nuovo subgradiente con la direzione precedente e sposta il centro solo nei passi seri; PrimalDual è il dual averaging fin dall'inizio."); },
   init(problem, p) {
     const s = start(problem, p);
     const o = s.trace[0];
@@ -117,7 +117,7 @@ export const subgradSolver = {
       }
     }
     s.frec = Math.min(s.frec, fn);
-    // the centre moves on every step without deflection, on serious steps with it
+    // the center moves on every step without deflection, on serious steps with it
     const deflected = rule !== 'PrimalDual' && DEFL[p.strDeflection] !== 'none';
     const serious = rule === 'PrimalDual' ? false : (!deflected || fn < s.fc - 1e-9);
     addColumn(s, problem, o);

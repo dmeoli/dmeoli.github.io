@@ -87,7 +87,7 @@ export class CellGridView {
         const top = new THREE.MeshStandardMaterial({ map: this.tex[0], roughness: 0.7 });
         const m = new THREE.Mesh(cgeo, [side, side, side, side, top, side]);
         m.position.set(x, y, 0);
-        const plate = new THREE.Mesh(new THREE.BoxGeometry(u * 0.96, u * 0.96, 0.012), new THREE.MeshStandardMaterial({ color: P.ground, roughness: 0.9 }));
+        const plate = new THREE.Mesh(new THREE.BoxGeometry(u * 0.96, u * 0.96, 0.012), new THREE.MeshStandardMaterial({ color: P.rule, roughness: 0.9 }));
         plate.position.set(x, y, -0.008);
         S.content.add(m, plate);
         const pegs = [];
@@ -111,10 +111,12 @@ export class CellGridView {
     }
     // the blocked cells of a grid; the rule over the sum of a cryptarithm
     if (inst.kind !== 'crypto') {
+      // darker than the ground in both themes (the soft ink is light in the dark one)
+      const block = P.ground.getHSL({}).l < 0.5 ? P.ground.clone().multiplyScalar(0.55) : P.soft;
       for (let r = 0; r < rows; r++) for (let c = 0; c < inst.cols; c++) {
         if (used.has(r + ',' + c)) continue;
         const [x, y] = at(r, c);
-        const m = new THREE.Mesh(new THREE.BoxGeometry(u * 0.96, u * 0.96, u * 0.12), new THREE.MeshStandardMaterial({ color: P.soft, roughness: 0.9 }));
+        const m = new THREE.Mesh(new THREE.BoxGeometry(u * 0.96, u * 0.96, u * 0.12), new THREE.MeshStandardMaterial({ color: block, roughness: 0.9 }));
         m.position.set(x, y, u * 0.06);
         S.content.add(m);
       }
@@ -147,7 +149,7 @@ export class CellGridView {
   }
   frame(dt) {
     let moving = false;
-    for (const cells of this.vars) for (const it of cells) if (Math.abs(it.h - it.target) > 1e-4) { it.h += (it.target - it.h) * Math.min(1, dt * 10); moving = true; }
+    for (const cells of this.vars) for (const it of cells) if (Math.abs(it.h - it.target) > 1e-4) { it.h += (it.target - it.h) * Math.min(1, dt * 6); moving = true; }
     if (moving) this.place();
   }
 }
@@ -181,7 +183,7 @@ export class ZebraView {
       const row = [];
       for (let h = 0; h < H; h++) {
         const [x, y] = at(g, h);
-        const plate = new THREE.Mesh(new THREE.BoxGeometry(u * 0.96, v * 0.9, 0.012), new THREE.MeshStandardMaterial({ color: P.ground, roughness: 0.9 }));
+        const plate = new THREE.Mesh(new THREE.BoxGeometry(u * 0.96, v * 0.9, 0.012), new THREE.MeshStandardMaterial({ color: P.rule, roughness: 0.9 }));
         plate.position.set(x, y, -0.008);
         S.content.add(plate);
         const pegs = grp.map((_, j) => {
@@ -228,7 +230,7 @@ export class ZebraView {
   }
   frame(dt) {
     let moving = false;
-    for (const row of this.cells) for (const c of row) if (Math.abs(c.h - c.target) > 1e-4) { c.h += (c.target - c.h) * Math.min(1, dt * 10); moving = true; }
+    for (const row of this.cells) for (const c of row) if (Math.abs(c.h - c.target) > 1e-4) { c.h += (c.target - c.h) * Math.min(1, dt * 6); moving = true; }
     if (moving) this.place();
   }
 }

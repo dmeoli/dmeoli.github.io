@@ -39,7 +39,7 @@
 <div class="keys">
   <button id="prev" type="button">◀ PgUp</button><button id="next" type="button">PgDn ▶</button>
   <button id="full" type="button">Full screen (F)</button>
-  <span data-l="en">inside a scene: arrow right one step, space play and pause</span><span data-l="it" lang="it">dentro una scena: freccia a destra un passo, spazio avvia e mette in pausa</span>
+  <span data-l="en">inside a scene: right arrow for one step, space to play and pause</span><span data-l="it" lang="it">dentro una scena: freccia a destra un passo, spazio avvia e mette in pausa</span>
 </div>
 <script type="module">
   import { t, onLang } from './src/i18n.js';
@@ -94,7 +94,7 @@
       ti: 'Strati come deformazioni', ni: 'Ogni strato piega il piano finché le due classi si separano con una retta.',
       u: 'manifolds.html' },
     { t: 'Superposition', n: 'When the features are sparse, more of them fit than there are dimensions.',
-      ti: 'Superposition', ni: 'Quando le feature sono sparse, ne entrano più di quante siano le dimensioni.',
+      ti: 'Sovrapposizione', ni: 'Quando le feature sono sparse, ne entrano più di quante siano le dimensioni.',
       u: 'superposition.html' },
     { t: 'Convolution', n: 'The filter slides over the input, and each cell of a map depends on a window of the image.',
       ti: 'Convoluzione', ni: 'Il filtro scorre sull\'input, e ogni cella di una mappa dipende da una finestra dell\'immagine.',
@@ -112,7 +112,7 @@
       ti: 'Reti su grafi', ni: 'Il message passing round per round, e due grafi che nessun numero di round distingue.',
       u: 'gnn.html' },
     { t: 'Mixture of experts', n: 'The router carves the plane into regions, one expert each; without the balancing loss it collapses onto few of them.',
-      ti: 'Mixture of experts', ni: 'Il router divide il piano in regioni, una per esperto; senza la loss di bilanciamento si concentra su pochi di loro.',
+      ti: 'Mixture of experts', ni: 'Il router divide il piano in regioni, una per esperto; senza il termine di bilanciamento nella funzione di perdita si concentra su pochi di essi.',
       u: 'moe.html' },
     { t: 'Representations', n: 'What each layer has learnt, projected in the plane layer by layer.',
       ti: 'Rappresentazioni', ni: 'Ciò che ogni strato ha imparato, proiettato nel piano strato per strato.',
@@ -130,13 +130,13 @@
       ti: 'Reti di Hopfield', ni: "Il richiamo è una discesa dell'energia, e la memoria densa è l'attention.",
       u: 'hopfield.html' },
     { t: 'Izhikevich neurons', n: 'Twenty firing patterns from four parameters, in the phase plane.',
-      ti: 'Neuroni di Izhikevich', ni: 'Venti comportamenti di sparo da quattro parametri, nel piano delle fasi.',
+      ti: 'Neuroni di Izhikevich', ni: 'Venti tipi di scarica da quattro parametri, nel piano delle fasi.',
       u: 'izhikevich.html' },
     { t: 'Spiking networks', n: 'The step has no derivative, and a surrogate one trains the network all the same.',
       ti: 'Reti a impulsi', ni: 'Il gradino non ha derivata, e una derivata surrogata addestra comunque la rete.',
       u: 'spiking.html' },
     { t: 'Echo state networks', n: 'A random reservoir and a readout trained by ridge regression, a convex problem.',
-      ti: 'Echo state network', ni: 'Un serbatoio casuale e una lettura addestrata con la ridge regression, un problema convesso.',
+      ti: 'Echo state network', ni: 'Un serbatoio casuale e un readout addestrato con la regressione ridge, un problema convesso.',
       u: 'esn.html' },
   ];
   let i = Math.max(0, Math.min(slides.length - 1, (+location.hash.slice(1) || 1) - 1));

@@ -79,9 +79,9 @@ export function drawSeries(cv, o) {
   ctx.stroke();
   const wl = X(wash) - X(0) > 64;
   if (wl) text(ctx, P, 'washout', X(0) + 3, oy0 - 4, { size: 10 });
-  const dl = tx('design: the readout is fitted here', 'progetto: qui si stima il readout'), dx = wl ? X(wash) + 4 : X(0) + 3;
+  const dl = tx('design: the readout is fitted here', 'design: qui si stima il readout'), dx = wl ? X(wash) + 4 : X(0) + 3;
   ctx.font = `10px ${MONO}`;
-  text(ctx, P, dx + ctx.measureText(dl).width + 8 < X(design) ? dl : tx('design', 'progetto'), dx, oy0 - 4, { size: 10 });
+  text(ctx, P, dx + ctx.measureText(dl).width + 8 < X(design) ? dl : tx('design', 'design'), dx, oy0 - 4, { size: 10 });
   text(ctx, P, tx('test', 'test'), X(design) + 4, oy0 - 4, { size: 10 });
   const win = o.win, w0 = clamp(t - Math.round(0.75 * win), 0, T - win), w1 = w0 + win;
   ctx.strokeStyle = col(P.accent); ctx.lineWidth = 1.5; ctx.strokeRect(X(w0), oy0 - 1, Math.max(2, X(w1) - X(w0)), oh + 2);
@@ -244,7 +244,7 @@ export function drawCompare(cv, o) {
     }
     text(ctx, P, s, cx, bot + 14, { align: 'center', c: 'ink' });
   });
-  text(ctx, P, tx('test MSE: filled here, dashed in the lab', 'MSE di test: piena qui, tratteggiata nel lab'), R, bot + 26, { align: 'right', size: 10 });
+  text(ctx, P, tx('test MSE: filled here, dashed in the lab', 'MSE di test: piena qui, tratteggiata nel laboratorio'), R, bot + 26, { align: 'right', size: 10 });
 }
 // the test MSE of the two networks along the epochs, and that of the ESN
 export function drawCurves(cv, o) {

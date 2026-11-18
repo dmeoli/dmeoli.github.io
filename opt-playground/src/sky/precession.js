@@ -115,7 +115,10 @@ function makeSphere(stage) {
   for (const [name, ra, dec] of STARS) {
     const v = eqToEcl({ x: Math.cos(dec * D) * Math.cos(ra * 15 * D), y: Math.cos(dec * D) * Math.sin(ra * 15 * D), z: Math.sin(dec * D) });
     dot(W3(v), 'star', 0.014, fixed);
-    starLabels.push(label(name, 'star', W3(v).multiplyScalar(1.04), fixed));
+    const l = label(name, 'star', W3(v).multiplyScalar(1.04), fixed);
+    // Kochab and Thuban are 10 degrees apart: one label above, one below
+    if (name === 'Kochab') l.center.set(0.5, 1.2); else if (name === 'Thuban') l.center.set(0.5, -0.2);
+    starLabels.push(l);
   }
   const path = [];
   for (let y = Y0; y <= Y1; y += 100) path.push(W3(eqToEcl(S.equinox(y).pole)));

@@ -109,9 +109,9 @@ function draw2d(animate) {
   const steps = [];
   let t0 = 0;
   for (const id of ORDER) {
-    const p = plot.pieces[id].path, len = p.getTotalLength(), dur = 260 + 90 * len / K;
+    const p = plot.pieces[id].path, len = p.getTotalLength(), dur = 400 + 150 * len / K;   // about 270 px a second: the longest piece takes 2.4 s
     p.style.strokeDasharray = `${len} ${len}`;
-    steps.push([p, 'strokeDashoffset', t0, dur, len, 0], [plot.pieces[id].g.querySelector('text'), 'opacity', t0 + dur * 0.6, 200, 0, 1]);
+    steps.push([p, 'strokeDashoffset', t0, dur, len, 0], [plot.pieces[id].g.querySelector('text'), 'opacity', t0 + dur * 0.6, 400, 0, 1]);
     t0 += dur;
   }
   steps.push([plot.region, 'opacity', t0, 700, 0, 1]);
@@ -141,7 +141,7 @@ function hover(id, pin) {
   }
   if (!show) {
     tip.classList.remove('show'); tip.style.removeProperty('--tipc');
-    tip.textContent = t('Point at a curve, or touch it, for its formula.', 'Punta una curva, o toccala, per la sua formula.');
+    tip.textContent = t('Point at a curve, or touch it, for its formula.', 'Passa il puntatore su una curva, o toccala, per vederne la formula.');
     return;
   }
   const P = PS.find(p => p.id === show);

@@ -82,7 +82,7 @@ export class PlanView {
   place() { for (const it of this.tiles) it.m.scale.z = it.z; }
   frame(dt) {
     let moving = false;
-    for (const it of this.tiles) if (Math.abs(it.z - it.target) > 1e-4) { it.z += (it.target - it.z) * Math.min(1, dt * 9); moving = true; }
+    for (const it of this.tiles) if (Math.abs(it.z - it.target) > 1e-4) { it.z += (it.target - it.z) * Math.min(1, dt * 6); moving = true; }
     if (moving) this.place();
   }
 }

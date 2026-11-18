@@ -158,10 +158,11 @@ function onFrame(dt) {
   placeLevel();
   if (anim.s >= 1) { anim = null; drawPath(); }
 }
+const still = matchMedia('(prefers-reduced-motion: reduce)');
 function go(pts, dur) {
   const len = [0];
   for (let i = 1; i < pts.length; i++) len.push(len[i - 1] + Math.hypot(...pts[i].map((v, d) => v - pts[i - 1][d])));
-  anim = { pts, len, s: 0, dur };
+  anim = { pts, len, s: 0, dur: still.matches ? 1e-3 : dur };
 }
 
 function step() {
@@ -172,12 +173,12 @@ function step() {
   } else {
     if (k + 1 >= B.iters.length) return stop();
     k++;
-    go(B.dense.slice(B.iters[k - 1], B.iters[k] + 1).map(p => D(p.x)), 0.5);
+    go(B.dense.slice(B.iters[k - 1], B.iters[k] + 1).map(p => D(p.x)), 0.6);
   }
   drawPath(); show();
 }
 function stop() { clearInterval(timer); timer = null; $('play').textContent = t('Play', 'Avvia'); }
-function play() { if (timer) return stop(); $('play').textContent = t('Pause', 'Pausa'); timer = setInterval(step, mode === 'simplex' ? 1300 : 650); }
+function play() { if (timer) return stop(); $('play').textContent = t('Pause', 'Pausa'); timer = setInterval(step, mode === 'simplex' ? 1300 : 900); }   // a pivot: 0.9 s of motion and a pause; a barrier step: 0.6 s and a pause
 
 // the panel: the basis with the values and the reduced costs, or the barrier
 function show() {
@@ -216,8 +217,8 @@ function show() {
       `Ogni vincolo con il suo scarto e la stima del suo moltiplicatore \\(\\mu / s\\) (per \\(x_j \\ge 0\\), il costo ridotto); sul cammino centrale i prodotti valgono tutti \\(\\mu\\), quindi il gap è \\(${C.G.length}\\mu\\).`));
     $('info').textContent = k === 0
       ? t('The analytic center: the maximum of the sum of the logarithms of the slacks, where μ is infinite.', 'Il centro analitico: il massimo della somma dei logaritmi degli scarti, dove μ è infinito.')
-      : t(`μ = ${p.mu.toExponential(2)}, x = ${vec(p.x.map(v => +v.toFixed(4)))}; each iteration divides μ by 0.6 and recenters with Newton's method.`,
-        `μ = ${p.mu.toExponential(2)}, x = ${vec(p.x.map(v => +v.toFixed(4)))}; ogni iterazione divide μ per 0.6 e ricentra con il metodo di Newton.`);
+      : t(`μ = ${p.mu.toExponential(2)}, x = ${vec(p.x.map(v => +v.toFixed(4)))}; each iteration multiplies μ by 0.6 and recenters with Newton's method.`,
+        `μ = ${p.mu.toExponential(2)}, x = ${vec(p.x.map(v => +v.toFixed(4)))}; ogni iterazione moltiplica μ per 0.6 e ricentra con il metodo di Newton.`);
     $('dual').textContent = k === 0 ? '' : t(`Dual estimate y = ${vec(p.y.map(v => +v.toFixed(4)))}; it is feasible all along and reaches the optimal dual as μ goes to 0.`,
       `Stima duale y = ${vec(p.y.map(v => +v.toFixed(4)))}; è ammissibile lungo tutto il cammino e raggiunge il duale ottimo quando μ tende a 0.`);
     $('pval').textContent = p.z.toFixed(4);
@@ -240,6 +241,7 @@ function words() {
   for (const o of [...$('mode').options, ...$('rule').options]) o.textContent = t(...optWords[o.value]);
   $('play').textContent = timer ? t('Pause', 'Pausa') : t('Play', 'Avvia');
   $('step').textContent = t('Step', 'Passo');
+  $('reset').textContent = t('Reset', 'Ricomincia');
   $('regen').textContent = t('Regenerate', 'Rigenera');
 }
 words();

@@ -92,7 +92,7 @@ function ipmStep() {
 
 function step() { if (!(mode === 'simplex' ? simplexStep() : ipmStep())) stop(); draw(); }
 function stop() { clearInterval(timer); timer = null; $('play').textContent = t('Play', 'Avvia'); }
-function play() { if (timer) return stop(); $('play').textContent = t('Pause', 'Pausa'); timer = setInterval(step, 600); }
+function play() { if (timer) return stop(); $('play').textContent = t('Pause', 'Pausa'); timer = setInterval(step, mode === 'simplex' ? 1000 : 800); }   // a pivot a second, a barrier step in 0.8 s
 
 // ------------------------------------------------------------------ drawing
 const NS = 'http://www.w3.org/2000/svg';
@@ -165,6 +165,7 @@ function words() {
   for (const o of $('mode').options) o.textContent = o.value === 'simplex' ? t('Simplex', 'Simplesso') : t('Interior point (barrier)', 'Punto interno (barriera)');
   $('play').textContent = timer ? t('Pause', 'Pausa') : t('Play', 'Avvia');
   $('step').textContent = t('Step', 'Passo');
+  $('reset').textContent = t('Reset', 'Ricomincia');
 }
 for (const [k, v] of Object.entries(instances)) $('inst').append(new Option(v.label, k));
 words();

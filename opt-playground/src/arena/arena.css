@@ -1,4 +1,4 @@
-/* The scenes of the solver arena (arena-*.html). The lanes stand on one row,
+/* The scenes of the solver arena (games-*.html). The lanes stand on one row,
    of equal width, and every lane is a subgrid of the same five rows (header,
    counters, event, board, the panel of its paradigm), so that each part
    sits on the same line in every lane; on a narrow screen the row scrolls
@@ -47,6 +47,10 @@ svg.tree { display: block; margin: 0 auto; max-width: 100%; height: auto; max-he
 .anode.infeasible circle, .anode.pruned circle { fill: var(--rule); stroke: var(--ink-soft); }
 .anode.hot circle { stroke: var(--ink); stroke-width: 3; }
 .anode .tval { fill: var(--ink); }
+/* a node new at this step fades in */
+.anode.fresh { animation: anode-in .5s ease-out; }
+@keyframes anode-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .anode.fresh { animation: none; } }
 /* the timeline and the scoreboard, under the row and as wide as it */
 .timeline { display: flex; gap: 10px; align-items: center; margin: 0 0 6px; }
 #time { width: 100%; }

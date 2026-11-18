@@ -99,14 +99,14 @@ function report(w) {
   const m = ov[bo], k = keys[bo], f = v => v.toFixed(2);
   let s;
   if (!run.t) s = tx(`The cue is ${name(S.cue)}${S.cue.length === 1 ? ` with ${Math.round(100 * S.noise)}% of its pixels flipped` : ''}, at energy ${f(run.hist[0].E)}; Step updates ${dense() ? 'the whole state once' : 'one neuron, Play keeps going until a whole sweep flips nothing'}.`,
-    `L'indizio è ${name(S.cue)}${S.cue.length === 1 ? ` con il ${Math.round(100 * S.noise)}% dei pixel invertiti` : ''}, a energia ${f(run.hist[0].E)}; Passo aggiorna ${dense() ? "l'intero stato una volta" : 'un neurone, Avvia prosegue finché un giro completo non inverte più nulla'}.`);
+    `L'indizio è ${name(S.cue)}${S.cue.length === 1 ? ` con il ${Math.round(100 * S.noise)}% dei pixel invertiti` : ''}, con energia ${f(run.hist[0].E)}; Passo aggiorna ${dense() ? "l'intero stato una volta" : 'un neurone, Avvia prosegue finché un giro completo non inverte più nulla'}.`);
   else if (!run.done && !dense()) {
     const L = run.last, r = Math.floor(L.i / 12) + 1, c = (L.i % 12) + 1;
     s = L.flipped
       ? tx(`Update ${run.t}: the neuron in row ${r}, column ${c} has local field h = ${L.h.toFixed(3)} and flips from ${L.old} to ${L.v}, so the energy drops by 2|h| = ${(-L.dE).toFixed(3)}.`,
         `Aggiornamento ${run.t}: il neurone di riga ${r}, colonna ${c} ha campo locale h = ${L.h.toFixed(3)} e passa da ${L.old} a ${L.v}, così l'energia scende di 2|h| = ${(-L.dE).toFixed(3)}.`)
       : tx(`Update ${run.t}: the neuron in row ${r}, column ${c} has local field h = ${L.h.toFixed(3)}, of the same sign as its state, and stays; the energy does not change.`,
-        `Aggiornamento ${run.t}: il neurone di riga ${r}, colonna ${c} ha campo locale h = ${L.h.toFixed(3)}, dello stesso segno del suo stato, e resta; l'energia non cambia.`);
+        `Aggiornamento ${run.t}: il neurone di riga ${r}, colonna ${c} ha campo locale h = ${L.h.toFixed(3)}, dello stesso segno del suo stato, e non cambia; l'energia non cambia.`);
   } else if (!run.done) {
     s = tx(`Update ${run.t}: the softmax puts ${f(Math.max(...run.last.p))} of its weight on ${keys[best]}, and the new state is the average of the stored glyphs with these weights.`,
       `Aggiornamento ${run.t}: la softmax mette ${f(Math.max(...run.last.p))} del suo peso su ${keys[best]}, e il nuovo stato è la media dei glifi memorizzati con questi pesi.`);
@@ -122,7 +122,7 @@ function report(w) {
         : m >= 0.95 ? tx(`its signs have overlap ${f(m)} with ${k}, not with the glyph of the cue`, `i suoi segni hanno sovrapposizione ${f(m)} con ${k}, non con il glifo dell'indizio`)
           : tx(`no stored glyph is there: the largest overlap is ${f(m)}, with ${k}, so it is a spurious minimum, typically a mixture of several glyphs`,
             `lì non c'è alcun glifo memorizzato: la sovrapposizione più grande è ${f(m)}, con ${k}, quindi è un minimo spurio, tipicamente una miscela di più glifi`);
-    s = tx(`The state has reached ${where} at energy ${f(run.hist.at(-1).E)}; ${what}.`, `Lo stato ha raggiunto ${where} a energia ${f(run.hist.at(-1).E)}; ${what}.`);
+    s = tx(`The state has reached ${where} at energy ${f(run.hist.at(-1).E)}; ${what}.`, `Lo stato ha raggiunto ${where} con energia ${f(run.hist.at(-1).E)}; ${what}.`);
   }
   $('rep').textContent = s;
 }
@@ -206,7 +206,7 @@ function capPlay() {
   if (capTimer) return capStop();
   if (cap.k >= SCHED.length) capReset();
   $('capplay').textContent = tx('Pause', 'Pausa');
-  capTimer = setInterval(capStep, 60);
+  capTimer = setInterval(capStep, 700);   // one value of p every 0.7 s, so that its report can be read
 }
 function drawCap() {
   drawCapacity($('cap'), { N, pMax: PMAX, classical: cap.classical, dense: cap.dense });
@@ -229,8 +229,10 @@ function play() {
   $('play').textContent = tx('Pause', 'Pausa');
   let last = 0;
   const loop = now => {
-    if (dense()) { if (now - last > 450) { step(); last = now; draw(); } }
-    else { for (let k = 0; k < 3 && !run.done; k++) step(); draw(); }
+    // a synchronous update of the dense network stays for 0.8 s; the classical
+    // network updates one neuron per frame, a sweep of the 144 in about 2.4 s
+    if (dense()) { if (now - last >= 800) { step(); last = now; draw(); } }
+    else { step(); draw(); }
     if (run.done) return stop();
     timer = requestAnimationFrame(loop);
   };
@@ -302,12 +304,12 @@ const OPTS = { net: { hebb: ['classical, Hebbian rule', 'classica, regola di Heb
 function words() {
   document.title = tx('Hopfield Networks', 'Reti di Hopfield');
   for (const [id, o] of Object.entries(OPTS)) for (const op of $(id).options) op.textContent = tx(...o[op.value]);
-  $('reset').textContent = 'Reset'; $('step').textContent = tx('Step', 'Passo');
+  $('reset').textContent = tx('Reset', 'Ricomincia'); $('step').textContent = tx('Step', 'Passo');
   $('play').textContent = timer ? tx('Pause', 'Pausa') : tx('Play', 'Avvia');
   $('newcue').textContent = tx('New cue', 'Nuovo indizio');
   $('capadd').textContent = tx('Add pattern', 'Aggiungi pattern');
   $('capplay').textContent = capTimer ? tx('Pause', 'Pausa') : tx('Play', 'Avvia');
-  $('capreset').textContent = 'Reset';
+  $('capreset').textContent = tx('Reset', 'Ricomincia');
   if (keys) cueOptions();
 }
 onLang(() => { words(); if (run) { draw(); drawCap(); } });

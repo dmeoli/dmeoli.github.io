@@ -152,7 +152,7 @@ function cutStep() {
 const steps = { bb: () => bbStep(), gomory: () => gomoryStep(), cuts: () => cutStep(), cover: () => coverStep() };
 function step() { if (!steps[mode]()) stop(); draw(); }
 function stop() { clearInterval(timer); timer = null; $('play').textContent = t('Play', 'Avvia'); }
-function play() { if (timer) return stop(); $('play').textContent = t('Pause', 'Pausa'); timer = setInterval(step, 700); }
+function play() { if (timer) return stop(); $('play').textContent = t('Pause', 'Pausa'); timer = setInterval(step, 1000); }   // one node or one cut a second
 
 // ------------------------------------------------------------------ drawing
 const NS = 'http://www.w3.org/2000/svg';
@@ -227,7 +227,7 @@ function drawTree() {
 
 // the status of a node stays in English (it names a class of the style); its
 // words in the language of the page
-const statusWords = { open: 'aperto', integer: 'intero', infeasible: 'non ammissibile', branched: 'diviso', 'pruned (bound)': 'potato (bound)' };
+const statusWords = { open: 'aperto', integer: 'intero', infeasible: 'non ammissibile', branched: 'ramificato', 'pruned (bound)': 'potato (bound)' };
 const nodeName = n => (n.label === 'root' ? t('root', 'radice') : n.label);
 function draw() {
   drawPlane(); drawTree();
@@ -251,6 +251,7 @@ function words() {
   for (const o of [...$('mode').options, ...$('rule').options]) o.textContent = t(...optWords[o.value]);
   $('play').textContent = timer ? t('Pause', 'Pausa') : t('Play', 'Avvia');
   $('step').textContent = t('Step', 'Passo');
+  $('reset').textContent = t('Reset', 'Ricomincia');
 }
 words();
 onLang(() => { words(); draw(); });

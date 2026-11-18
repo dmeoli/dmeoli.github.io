@@ -3,7 +3,7 @@
 //   with 2 or 3 communities, a few labelled nodes, the others to be guessed
 //   (semi-supervised); only the labelled nodes have a feature, their label,
 //   and the network learns to spread it, being trained on fresh graphs of the
-//   same model to guess the labels of their unlabelled nodes;
+//   same model to guess the labels of their unlabeled nodes;
 // - clauses: a random 3-CNF formula drawn as its literal-clause graph (an edge
 //   from a literal to every clause containing it, and one between x and not x,
 //   as in NeuroSAT); a hidden assignment is written on the positive literals
@@ -57,7 +57,7 @@ const community = {
     const d = labelledGraph(S.comm, S.lab, rng(S.g * 7717 + 3));
     return { C: S.comm, F: S.comm, lab: S.lab, display: d, pcaSet: [d] };
   },
-  // every step 4 fresh graphs of the same model, whose unlabelled nodes have to
+  // every step 4 fresh graphs of the same model, whose unlabeled nodes have to
   // be guessed from its labelled ones; the graph drawn is never trained on
   step(M, D, r, lr) {
     zeroGrad(M);
@@ -67,7 +67,7 @@ const community = {
     }
     adam(M, lr);
   },
-  // the unlabelled nodes of the graph drawn
+  // the unlabeled nodes of the graph drawn
   evaluate(M, D) {
     const g = D.display, R = forward(M, g), C = D.C;
     let ok = 0, loss = 0;
