@@ -668,10 +668,10 @@ footer {
    in the lilac of the accent; the two rows are centred on each other */
 .sections .menu { display: inline-flex; flex-direction: column; align-items: center; gap: var(--f5); max-width: 100%; }
 .sections .row1 { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--f5) var(--f21); }
-.sections .row2 { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--f5) var(--f21); }
+.sections .row2, .sections .row3 { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--f5) var(--f21); }
 @media (max-width: 760px) {
   .sections .menu { display: flex; }
-  .sections .row1, .sections .row2 { justify-content: center; padding: 0; }
+  .sections .row1, .sections .row2, .sections .row3 { justify-content: center; padding: 0; }
   .links { justify-content: center; }
   .contact { grid-template-columns: minmax(0, 1fr); }
 }
@@ -1132,8 +1132,10 @@ footer {
   <div class="row2">
   <a class="side" href="/optimization" data-l="en" data-section="optimization">Optimization</a><a class="side" href="/ottimizzazione" data-l="it" lang="it" data-section="optimization">Ottimizzazione</a>
   <a class="side" href="/ml" data-l="en" data-section="ml">Machine Learning</a><a class="side" href="/ml" data-l="it" lang="it" data-section="ml">Machine learning</a>
-  <a class="side" href="/translate" data-l="en" data-section="translate">Translate</a><a class="side" href="/traduci" data-l="it" lang="it" data-section="translate">Traduci</a>
   <a class="side" href="/experts" data-l="en" data-section="experts">Expert Systems</a><a class="side" href="/esperti" data-l="it" lang="it" data-section="experts">Sistemi esperti</a>
+  </div>
+  <div class="row3">
+  <a class="side" href="/translate" data-l="en" data-section="translate">Translate</a><a class="side" href="/traduci" data-l="it" lang="it" data-section="translate">Traduci</a>
   <a class="side" href="/forms" data-l="en" data-section="forms">Forms</a><a class="side" href="/forme" data-l="it" lang="it" data-section="forms">Forme</a>
   <a class="side" href="/art" data-l="en" data-section="art">Art</a><a class="side" href="/arte" data-l="it" lang="it" data-section="art">Arte</a>
   </div>
@@ -1504,7 +1506,7 @@ footer {
             <p class="num">04 / 07</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/arena-puzzle.html"><span data-l="en">Sliding puzzle</span><span data-l="it" lang="it">Gioco del 15</span></a></h3>
             <p class="desc"><span data-l="en">The 8- and 15-puzzle solved by the A* family of PBeFS (A*, IDA* and the parallel HDA*), each lane sliding the tiles to the state it expands while the strip under the board shows the frontier by f; once the search ends, each lane walks its solution path.</span><span data-l="it" lang="it">Il gioco dell'8 e del 15 risolti dalla famiglia A* di PBeFS (A*, IDA* e HDA* parallelo), con le tessere di ogni corsia che scorrono fino allo stato espanso mentre la striscia sotto la tavola mostra la frontiera per f; a ricerca finita, ogni corsia percorre il suo cammino soluzione.</span></p>
-            <ul class="tags"><li>A*</li><li>PBeFS</li></ul>
+            <ul class="tags"><li>A*</li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/arena-puzzle.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
@@ -1514,7 +1516,7 @@ footer {
             <p class="num">05 / 07</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/arena-grid.html"><span data-l="en">Grid paths</span><span data-l="it" lang="it">Cammini su griglia</span></a></h3>
             <p class="desc"><span data-l="en">Shortest paths on a grid with obstacles, searched by A* and by HDA* with 2 and 4 threads of PBeFS: every cell expanded rises in the colour of the worker that expanded it, so that one sees how the parallel search shares the space.</span><span data-l="it" lang="it">Cammini minimi su una griglia con ostacoli, cercati da A* e da HDA* di PBeFS con 2 e 4 thread: ogni cella espansa si solleva nel colore del worker che l'ha espansa, così che si vede come la ricerca parallela si divide lo spazio.</span></p>
-            <ul class="tags"><li>A*</li><li>PBeFS</li></ul>
+            <ul class="tags"><li>A*</li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/arena-grid.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
@@ -1524,7 +1526,7 @@ footer {
             <p class="num">06 / 07</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/arena-hanoi.html"><span data-l="en">Towers of Hanoi</span><span data-l="it" lang="it">Torri di Hanoi</span></a></h3>
             <p class="desc"><span data-l="en">The Towers of Hanoi with four pegs, 8 and 10 disks, searched by PBeFS blind or with additive pattern databases on the two halves of the disks; the disks move to every state expanded, and the lanes show how much of the blind search the tables spare.</span><span data-l="it" lang="it">Le torri di Hanoi a quattro pioli, con 8 e 10 dischi, cercate da PBeFS alla cieca o con pattern database additivi sulle due metà dei dischi; i dischi si spostano in ogni stato espanso, e le corsie mostrano quanta parte della ricerca cieca le tabelle risparmiano.</span></p>
-            <ul class="tags"><li>A*</li><li>PBeFS</li></ul>
+            <ul class="tags"><li>A*</li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/arena-hanoi.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
@@ -1534,7 +1536,7 @@ footer {
             <p class="num">07 / 07</p>
             <h3><a href="https://dmeoli.github.io/opt-playground/arena-cube.html"><span data-l="en">The cube</span><span data-l="it" lang="it">Il cubo</span></a></h3>
             <p class="desc"><span data-l="en">A scrambled 3x3x3 cube solved by IDA*, A* and HDA* of PBeFS with the pattern databases of Korf (1997); during the search the base takes the colour of the worker that expands, and once the search ends the cube makes the moves of the solution path.</span><span data-l="it" lang="it">Un cubo 3x3x3 rimescolato, risolto da IDA*, A* e HDA* di PBeFS con i pattern database di Korf (1997); durante la ricerca la base prende il colore del worker che espande, e a ricerca finita il cubo esegue le mosse del cammino soluzione.</span></p>
-            <ul class="tags"><li>A*</li><li>IDA*</li><li>PBeFS</li></ul>
+            <ul class="tags"><li>A*</li><li>IDA*</li></ul>
             <a class="go" href="https://dmeoli.github.io/opt-playground/arena-cube.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
