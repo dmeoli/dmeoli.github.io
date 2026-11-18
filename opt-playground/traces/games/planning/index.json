@@ -1,0 +1,209 @@
+{
+ "game": "planning",
+ "traces": [
+  {
+   "file": "air-cargo.1-aima-graphplan.jsonl",
+   "instance": "air-cargo",
+   "solver": {
+    "id": "aima-graphplan",
+    "name": "aima GraphPlan",
+    "block": "aima-python",
+    "paradigm": "heuristic search",
+    "code": "aima-python 49ebbc3",
+    "config": {
+     "algorithm": "graphplan",
+     "heuristic": "",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "air-cargo.2-aima-forward-astar.jsonl",
+   "instance": "air-cargo",
+   "solver": {
+    "id": "aima-forward-astar",
+    "name": "aima ForwardPlan, A*",
+    "block": "aima-python",
+    "paradigm": "heuristic search",
+    "code": "aima-python 49ebbc3",
+    "config": {
+     "algorithm": "forward-astar",
+     "heuristic": "ignore delete lists",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "air-cargo.3-aima-backward-astar.jsonl",
+   "instance": "air-cargo",
+   "solver": {
+    "id": "aima-backward-astar",
+    "name": "aima BackwardPlan, A*",
+    "block": "aima-python",
+    "paradigm": "heuristic search",
+    "code": "aima-python 49ebbc3",
+    "config": {
+     "algorithm": "backward-astar",
+     "heuristic": "ignore delete lists",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "air-cargo.4-aima-forward-ucs.jsonl",
+   "instance": "air-cargo",
+   "solver": {
+    "id": "aima-forward-ucs",
+    "name": "aima ForwardPlan, uniform cost",
+    "block": "aima-python",
+    "paradigm": "heuristic search",
+    "code": "aima-python 49ebbc3",
+    "config": {
+     "algorithm": "forward-ucs",
+     "heuristic": "",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "spare-tire.1-aima-graphplan.jsonl",
+   "instance": "spare-tire",
+   "solver": {
+    "id": "aima-graphplan",
+    "name": "aima GraphPlan",
+    "block": "aima-python",
+    "paradigm": "heuristic search",
+    "code": "aima-python 49ebbc3",
+    "config": {
+     "algorithm": "graphplan",
+     "heuristic": "",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "spare-tire.2-aima-forward-astar.jsonl",
+   "instance": "spare-tire",
+   "solver": {
+    "id": "aima-forward-astar",
+    "name": "aima ForwardPlan, A*",
+    "block": "aima-python",
+    "paradigm": "heuristic search",
+    "code": "aima-python 49ebbc3",
+    "config": {
+     "algorithm": "forward-astar",
+     "heuristic": "ignore delete lists",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "spare-tire.3-aima-backward-astar.jsonl",
+   "instance": "spare-tire",
+   "solver": {
+    "id": "aima-backward-astar",
+    "name": "aima BackwardPlan, A*",
+    "block": "aima-python",
+    "paradigm": "heuristic search",
+    "code": "aima-python 49ebbc3",
+    "config": {
+     "algorithm": "backward-astar",
+     "heuristic": "ignore delete lists",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "spare-tire.4-aima-forward-ucs.jsonl",
+   "instance": "spare-tire",
+   "solver": {
+    "id": "aima-forward-ucs",
+    "name": "aima ForwardPlan, uniform cost",
+    "block": "aima-python",
+    "paradigm": "heuristic search",
+    "code": "aima-python 49ebbc3",
+    "config": {
+     "algorithm": "forward-ucs",
+     "heuristic": "",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "sussman.1-aima-graphplan.jsonl",
+   "instance": "sussman",
+   "solver": {
+    "id": "aima-graphplan",
+    "name": "aima GraphPlan",
+    "block": "aima-python",
+    "paradigm": "heuristic search",
+    "code": "aima-python 49ebbc3",
+    "config": {
+     "algorithm": "graphplan",
+     "heuristic": "",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "sussman.2-aima-forward-astar.jsonl",
+   "instance": "sussman",
+   "solver": {
+    "id": "aima-forward-astar",
+    "name": "aima ForwardPlan, A*",
+    "block": "aima-python",
+    "paradigm": "heuristic search",
+    "code": "aima-python 49ebbc3",
+    "config": {
+     "algorithm": "forward-astar",
+     "heuristic": "ignore delete lists",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "sussman.3-aima-backward-astar.jsonl",
+   "instance": "sussman",
+   "solver": {
+    "id": "aima-backward-astar",
+    "name": "aima BackwardPlan, A*",
+    "block": "aima-python",
+    "paradigm": "heuristic search",
+    "code": "aima-python 49ebbc3",
+    "config": {
+     "algorithm": "backward-astar",
+     "heuristic": "ignore delete lists",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "sussman.4-aima-forward-ucs.jsonl",
+   "instance": "sussman",
+   "solver": {
+    "id": "aima-forward-ucs",
+    "name": "aima ForwardPlan, uniform cost",
+    "block": "aima-python",
+    "paradigm": "heuristic search",
+    "code": "aima-python 49ebbc3",
+    "config": {
+     "algorithm": "forward-ucs",
+     "heuristic": "",
+     "threads": 1
+    }
+   },
+   "sample": false
+  }
+ ]
+}

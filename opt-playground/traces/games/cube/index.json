@@ -1,0 +1,158 @@
+{
+ "game": "cube",
+ "traces": [
+  {
+   "file": "cube-walk10.1-idastar-korf-1.jsonl",
+   "instance": "cube-walk10",
+   "solver": {
+    "id": "idastar-korf-1",
+    "name": "IDA* Korf",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 30d49e3",
+    "config": {
+     "algorithm": "idastar",
+     "heuristic": "korf",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "cube-walk10.2-astar-korf-1.jsonl",
+   "instance": "cube-walk10",
+   "solver": {
+    "id": "astar-korf-1",
+    "name": "A* Korf",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 30d49e3",
+    "config": {
+     "algorithm": "astar",
+     "heuristic": "korf",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "cube-walk10.3-hda-korf-4.jsonl",
+   "instance": "cube-walk10",
+   "solver": {
+    "id": "hda-korf-4",
+    "name": "HDA* Korf 4 threads",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 30d49e3",
+    "config": {
+     "algorithm": "hda",
+     "heuristic": "korf",
+     "threads": 4
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "cube-walk13.1-idastar-korf-1.jsonl",
+   "instance": "cube-walk13",
+   "solver": {
+    "id": "idastar-korf-1",
+    "name": "IDA* Korf",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 30d49e3",
+    "config": {
+     "algorithm": "idastar",
+     "heuristic": "korf",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "cube-walk13.2-astar-korf-1.jsonl",
+   "instance": "cube-walk13",
+   "solver": {
+    "id": "astar-korf-1",
+    "name": "A* Korf",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 30d49e3",
+    "config": {
+     "algorithm": "astar",
+     "heuristic": "korf",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "cube-walk13.3-hda-korf-4.jsonl",
+   "instance": "cube-walk13",
+   "solver": {
+    "id": "hda-korf-4",
+    "name": "HDA* Korf 4 threads",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 30d49e3",
+    "config": {
+     "algorithm": "hda",
+     "heuristic": "korf",
+     "threads": 4
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "cube-walk5.1-idastar-korf-1.jsonl",
+   "instance": "cube-walk5",
+   "solver": {
+    "id": "idastar-korf-1",
+    "name": "IDA* Korf",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 30d49e3",
+    "config": {
+     "algorithm": "idastar",
+     "heuristic": "korf",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "cube-walk5.2-astar-korf-1.jsonl",
+   "instance": "cube-walk5",
+   "solver": {
+    "id": "astar-korf-1",
+    "name": "A* Korf",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 30d49e3",
+    "config": {
+     "algorithm": "astar",
+     "heuristic": "korf",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "cube-walk5.3-hda-korf-4.jsonl",
+   "instance": "cube-walk5",
+   "solver": {
+    "id": "hda-korf-4",
+    "name": "HDA* Korf 4 threads",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 30d49e3",
+    "config": {
+     "algorithm": "hda",
+     "heuristic": "korf",
+     "threads": 4
+    }
+   },
+   "sample": false
+  }
+ ]
+}

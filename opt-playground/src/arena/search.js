@@ -1,6 +1,6 @@
 // The lanes of the search games of the arena (the sliding-tile puzzles and
 // grid pathfinding), whose traces come from PBeFS through
-// tools/pbefs_to_arena.py: the replay of the events into the state of the
+// tools/pbefs_to_games.py: the replay of the events into the state of the
 // board, and the board in 3D (the tiles sliding to the state being
 // expanded, or the cells of the grid rising as they are expanded, coloured
 // by worker), with the strip of the frontier under it. Nothing is solved

@@ -1,6 +1,6 @@
 // The traces of the arena (docs/study-search-games.md, section 5.1): a file
 // of JSON lines, header, events, result, read as it arrives, from a file of
-// traces/arena/<game>/ or, once the service of section 3 exists, from its
+// traces/games/<game>/ or, once the service of section 3 exists, from its
 // stream; and the replay of the events into the state of a board, which only
 // applies what the trace says (no solving here).
 
@@ -83,6 +83,7 @@ export class Replay {
     switch (e.type) {
       case 'decide': this.assign(e.lit, e.level); break;
       case 'propagate': for (const l of e.lits || []) this.assign(l, e.level); break;
+      case 'flip': for (const l of e.lits || []) this.assign(l, 0); break;   // WalkSAT
       case 'backtrack':
         for (let v = 1; v <= this.nvars; v++) if (this.val[v] && this.lev[v] > e.level) this.val[v] = 0;
         break;

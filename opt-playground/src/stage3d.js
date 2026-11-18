@@ -49,7 +49,10 @@ export function ball(p, r, material) {
 export function clear(group) {
   group.traverse(o => {
     if (o.geometry) o.geometry.dispose();
-    if (o.material) { if (o.material.map) o.material.map.dispose(); o.material.dispose(); }
+    for (const m of [].concat(o.material || [])) {
+      if (m.map && typeof m.map.dispose === 'function') m.map.dispose();
+      if (typeof m.dispose === 'function') m.dispose();
+    }
   });
   group.clear();
 }

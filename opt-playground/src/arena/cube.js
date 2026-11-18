@@ -1,6 +1,6 @@
 // The board of the cube in the arena: 27 cubies with the 54 facelets of a
 // state of the trace (the letters U, R, F, D, L, B of Kociemba, which
-// tools/pbefs_to_arena.py decodes from the cubies of PBeFS), drawn with R on
+// tools/pbefs_to_games.py decodes from the cubies of PBeFS), drawn with R on
 // +x, B on +y and U on +z; along the solution path the layer of each move
 // starts turned back by the move and turns into place, so that the cube is
 // seen making the move. Nothing is solved here: the states and the moves are
@@ -16,7 +16,7 @@ const FACE = { U: '#f2f0ea', R: '#c2453d', F: '#3f9a5a', D: '#e3c02f', L: '#e07b
 const NORMAL = { U: [0, 0, 1], D: [0, 0, -1], F: [0, -1, 0], B: [0, 1, 0], R: [1, 0, 0], L: [-1, 0, 0] };
 
 // the cell and the outward normal of the facelet k (the same map as _place
-// in tools/pbefs_to_arena.py, which checks the moves against it)
+// in tools/pbefs_to_games.py, which checks the moves against it)
 function place(k) {
   const f = 'URFDLB'[Math.floor(k / 9)], r = Math.floor(k % 9 / 3), c = k % 3;
   return { U: [[c - 1, 1 - r, 1], NORMAL.U], D: [[c - 1, r - 1, -1], NORMAL.D], F: [[c - 1, -1, 1 - r], NORMAL.F],

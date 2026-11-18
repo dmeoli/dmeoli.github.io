@@ -1,0 +1,90 @@
+{
+ "game": "romania",
+ "traces": [
+  {
+   "file": "romania.5-aima-bfs.jsonl",
+   "instance": "romania",
+   "solver": {
+    "id": "aima-bfs",
+    "name": "aima breadth-first",
+    "block": "aima-python",
+    "paradigm": "heuristic search",
+    "code": "aima-python 49ebbc3",
+    "config": {
+     "algorithm": "bfs",
+     "heuristic": "",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "romania.6-aima-ucs.jsonl",
+   "instance": "romania",
+   "solver": {
+    "id": "aima-ucs",
+    "name": "aima uniform cost",
+    "block": "aima-python",
+    "paradigm": "heuristic search",
+    "code": "aima-python 49ebbc3",
+    "config": {
+     "algorithm": "ucs",
+     "heuristic": "",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "romania.7-aima-greedy.jsonl",
+   "instance": "romania",
+   "solver": {
+    "id": "aima-greedy",
+    "name": "aima greedy best-first",
+    "block": "aima-python",
+    "paradigm": "heuristic search",
+    "code": "aima-python 49ebbc3",
+    "config": {
+     "algorithm": "greedy",
+     "heuristic": "straight-line distance",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "romania.8-aima-astar.jsonl",
+   "instance": "romania",
+   "solver": {
+    "id": "aima-astar",
+    "name": "aima A*",
+    "block": "aima-python",
+    "paradigm": "heuristic search",
+    "code": "aima-python 49ebbc3",
+    "config": {
+     "algorithm": "astar",
+     "heuristic": "straight-line distance",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "romania.9-aima-rbfs.jsonl",
+   "instance": "romania",
+   "solver": {
+    "id": "aima-rbfs",
+    "name": "aima RBFS",
+    "block": "aima-python",
+    "paradigm": "heuristic search",
+    "code": "aima-python 49ebbc3",
+    "config": {
+     "algorithm": "rbfs",
+     "heuristic": "straight-line distance",
+     "threads": 1
+    }
+   },
+   "sample": false
+  }
+ ]
+}

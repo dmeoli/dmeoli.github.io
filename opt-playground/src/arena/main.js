@@ -17,20 +17,26 @@ import { SearchReplay, PuzzleView, GridView, drawStrip, WORKERS } from './search
 import { CubeView } from './cube.js';
 import { QueensView, SudokuView } from './cells.js';
 import { HanoiView } from './hanoi.js';
+import { GraphView } from './graph.js';
+import { PlanView } from './plan.js';
 
 const $ = id => document.getElementById(id);
 const GAME = document.body.dataset.game;
 const MAXLANES = 4;
-const STATE = { inst: '', lanes: [], align: 'event', speed: 4, pos: 0, playing: false };
-const BASE = `traces/arena/${GAME}/`;
+const STATE = { inst: '', lanes: [], align: 'event', speed: 1, pos: 0, playing: false };
+const BASE = `traces/games/${GAME}/`;
 // the games whose traces come from SMS++ on a CNF, whose model the page
 // computes by aima-python; the others are searches of PBeFS
 const SAT = ['coloring', 'queens', 'sudoku'].includes(GAME);
 const SEARCH = !SAT;
 // the instances offered are those of the traces, but for map colouring
 const LISTED = GAME !== 'coloring';
-// the lanes of SMS++ in this order
-const SOLVERS = ['cadical', 'minisat', 'highs', 'scip', 'bnx'];
+// the games whose board is a set of places (cells, cities) marked by the trace
+const SETBOARD = new Set(['grid', 'romania']);
+// the games with no strip of the frontier under the board
+const NOSTRIP = new Set(['grid', 'romania', 'planning']);
+// the lanes in this order, the first four shown by default
+const SOLVERS = ['cadical', 'aima-cdcl', 'aima-bt-mac', 'aima-minconf', 'aima-bt-fc', 'aima-ac3', 'aima-dpll', 'aima-walksat', 'highs'];
 // a trace of the minimum sum colouring of an instance, and the name of a lane
 const MINSUM = file => /-minsum-/.test(file);
 const laneName = (file, name) => name + (MINSUM(file) ? t(', minimum sum', ', somma minima') : '');
@@ -47,9 +53,13 @@ const INSTNAMES = {
   'cube-walk13': ['13 random moves, seed 3', '13 mosse casuali, seme 3'],
   'hanoi-8': ['8 disks, all from the first peg to the last', '8 dischi, tutti dal primo piolo all\'ultimo'],
   'hanoi-10': ['10 disks, all from the first peg to the last', '10 dischi, tutti dal primo piolo all\'ultimo'],
+  romania: ['from Arad to Bucharest', 'da Arad a Bucarest'],
+  sussman: ['three blocks, the Sussman anomaly', 'tre blocchi, l\'anomalia di Sussman'],
+  'spare-tire': ['the spare tire', 'la ruota di scorta'], 'have-cake': ['have the cake and eat it too', 'avere la torta e mangiarla'],
+  'air-cargo': ['air cargo', 'trasporto aereo di merci'],
   'queens-8': ['8 queens', '8 regine'], 'queens-12': ['12 queens', '12 regine'], 'queens-20': ['20 queens', '20 regine'],
   'sudoku-easy1': ['easy1 of aima-python', 'easy1 di aima-python'], 'sudoku-harder1': ['harder1 of aima-python', 'harder1 di aima-python'] };
-const info = window.__arena = { errors: [], pyodide: null, modelSeconds: null, game: GAME };
+const info = window.__arena = { errors: [], pyodide: null, modelSeconds: null, game: GAME, lanes: () => lanes };
 window.addEventListener('error', e => { if (!/ResizeObserver loop/.test(e.message)) info.errors.push(String(e.message)); });
 window.addEventListener('unhandledrejection', e => info.errors.push(String(e.reason && e.reason.message || e.reason)));
 
@@ -161,8 +171,14 @@ function describeSearch(rep, e) {
   const W = rep.tr.header.workers > 1 ? (w => t(`Worker ${w + 1}`, `Il worker ${w + 1}`)) : () => t('The search', 'La ricerca');
   const N = rep.tr.result ? rep.tr.result.path.length - 1 : 0;
   switch (e.type) {
-    case 'expand': return t(`${W(e.w)} expands a state with g ${fmt(e.g)}, h ${fmt(e.h)}, f ${fmt(e.f)}.`,
+    case 'expand':
+      if (GAME === 'planning') return /^backward/.test(rep.tr.header.solver.config.algorithm)
+        ? t(`The search regresses a subgoal ${fmt(e.g)} actions before the goal.`, `La ricerca regredisce un sottobiettivo ${fmt(e.g)} azioni prima dell'obiettivo.`)
+        : t(`The search expands a state reached in ${fmt(e.g)} actions.`, `La ricerca espande uno stato raggiunto in ${fmt(e.g)} azioni.`);
+      return t(`${W(e.w)} expands a state with g ${fmt(e.g)}, h ${fmt(e.h)}, f ${fmt(e.f)}.`,
       `${W(e.w)} espande uno stato con g ${fmt(e.g)}, h ${fmt(e.h)}, f ${fmt(e.f)}.`);
+    case 'level': return t(`Level ${e.g} of the planning graph: ${e.n.propositions} propositions, ${e.n.actions} actions, ${e.n.mutexes} mutexes.`,
+      `Livello ${e.g} del grafo di pianificazione: ${e.n.propositions} proposizioni, ${e.n.actions} azioni, ${e.n.mutexes} mutex.`);
     case 'threshold': return t(`A new iteration, with threshold ${fmt(e.g)} on f.`, `Una nuova iterazione, con soglia ${fmt(e.g)} su f.`);
     case 'solution': return t(`${W(e.w)} reaches the goal with cost ${fmt(e.cost)}.`, `${W(e.w)} raggiunge l'obiettivo con costo ${fmt(e.cost)}.`);
     case 'path': return e.i === 0 ? t(`The solution path, ${N} moves: the start.`, `Il cammino soluzione, ${N} mosse: la partenza.`)
@@ -177,8 +193,19 @@ function describe(rep, e) {
   const L = ls => { const a = ls.slice(0, 5).map(l => litText(sym, l)).join(', '); return ls.length > 5 ? a + t(` and ${ls.length - 5} more`, ` e altri ${ls.length - 5}`) : a; };
   switch (e.type) {
     case 'decide': return t(`Decision at level ${e.level}: ${litText(sym, e.lit)}.`, `Decisione al livello ${e.level}: ${litText(sym, e.lit)}.`);
-    case 'propagate': return t(`Propagation at level ${e.level}: ${L(e.lits || [])}.`, `Propagazione al livello ${e.level}: ${L(e.lits || [])}.`);
-    case 'conflict': return t(`Conflict: every literal of (${L(e.clause || [])}) is false.`, `Conflitto: ogni letterale di (${L(e.clause || [])}) è falso.`);
+    case 'propagate':
+      if (e.reason === 'given') return t(`The givens of the puzzle: ${L(e.lits || [])}.`, `I dati del problema: ${L(e.lits || [])}.`);
+      if (e.reason === 'random start') return t('A random assignment of every variable.', 'Un assegnamento casuale di ogni variabile.');
+      if (e.reason === 'pure') return t(`Pure symbol at depth ${e.level}: ${L(e.lits || [])}.`, `Simbolo puro alla profondità ${e.level}: ${L(e.lits || [])}.`);
+      if (e.reason === 'unit') return t(`Unit clause at depth ${e.level}: ${L(e.lits || [])}.`, `Clausola unitaria alla profondità ${e.level}: ${L(e.lits || [])}.`);
+      return t(`Propagation at level ${e.level}: ${L(e.lits || [])}.`, `Propagazione al livello ${e.level}: ${L(e.lits || [])}.`);
+    case 'flip': return t(`Flip: ${L(e.lits || [])}.`, `Inversione: ${L(e.lits || [])}.`);
+    case 'assign': return t(`${e.var} = ${e.value}; ${e.conflicted < 0 ? 'the first assignment is not complete yet' : e.conflicted + ' variables in conflict'}.`,
+      `${e.var} = ${e.value}; ${e.conflicted < 0 ? 'il primo assegnamento non è ancora completo' : e.conflicted + ' variabili in conflitto'}.`);
+    case 'conflict':
+      if (e.vars) return t(`Wipeout: no value left for ${e.vars.join(', ')}.`, `Dominio vuoto: nessun valore rimasto per ${e.vars.join(', ')}.`);
+      if (!e.clause) return t(`Conflict at level ${e.level}.`, `Conflitto al livello ${e.level}.`);
+      return t(`Conflict: every literal of (${L(e.clause || [])}) is false.`, `Conflitto: ogni letterale di (${L(e.clause || [])}) è falso.`);
     case 'backtrack': return e.restart ? t('Restart.', 'Ripartenza.') : t(`Backtrack to level ${e.level}.`, `Ritorno al livello ${e.level}.`);
     case 'node': return t(`Node ${e.id} (depth ${e.depth}): ${e.status}${e.fix && e.fix.length ? ', fixed ' + L(e.fix) : ''}.`,
       `Nodo ${e.id} (profondità ${e.depth}): ${({ open: 'aperto', branched: 'ramificato', pruned: 'potato', infeasible: 'inammissibile', feasible: 'ammissibile' })[e.status] || e.status}${e.fix && e.fix.length ? ', fissati ' + L(e.fix) : ''}.`);
@@ -218,18 +245,19 @@ function buildSearchLane(file, tr) {
   art.classList.add('search');
   art.querySelector('.panel').innerHTML = `<figure class="stripbox"><figcaption></figcaption><canvas class="strip"></canvas></figure><p class="workers"></p>`;
   const box = art.querySelector('.board');
-  const view = h.game === 'grid' ? new GridView(box, h.instance) : h.game === 'cube' ? new CubeView(box, h.instance)
+  const view = h.game === 'grid' ? new GridView(box, h.instance) : h.game === 'romania' ? new GraphView(box, h.instance)
+    : h.game === 'cube' ? new CubeView(box, h.instance) : h.game === 'planning' ? new PlanView(box, h.instance)
     : h.game === 'hanoi' ? new HanoiView(box, h.instance) : new PuzzleView(box, h.instance);
-  art.querySelector('.stripbox').hidden = h.game === 'grid';
+  art.querySelector('.stripbox').hidden = NOSTRIP.has(h.game);
   return { file, tr, rep: new SearchReplay(tr), view, art, search: true, k: -1 };
 }
 function updateSearchLane(L, prev) {
   const { rep, art, tr } = L, h = tr.header, e = rep.last;
   const w = e && e.type === 'expand' && h.workers > 1 ? e.w : null;
-  if (h.game === 'grid') L.view.show(rep.set);
+  if (SETBOARD.has(h.game)) L.view.show(rep.set);
   else if (h.game === 'cube') L.view.show(rep.x || h.instance.facelets, w, e && e.type === 'path' && L.k === prev + 1 ? e.move : null);
-  else L.view.show(rep.x || h.instance.board || h.instance.start, w);
-  if (h.game !== 'grid') {
+  else L.view.show(rep.x || h.instance.board || h.instance.start || h.instance.initial, w);
+  if (!NOSTRIP.has(h.game)) {
     const ida = h.solver.config && h.solver.config.algorithm === 'idastar';
     art.querySelector('.stripbox figcaption').textContent = ida
       ? t('f of the state expanded against the threshold of the iteration (IDA* keeps no OPEN)', 'f dello stato espanso rispetto alla soglia dell\'iterazione (IDA* non tiene un OPEN)')
@@ -246,7 +274,8 @@ function updateSearchLane(L, prev) {
 function buildLane(file, tr) {
   if (tr.header.solver.paradigm === 'heuristic search') return buildSearchLane(file, tr);
   const h = tr.header;
-  const art = laneShell(laneName(file, h.solver.name), [h.solver.block, h.solver.code, h.solver.config].filter(Boolean).join(' · '),
+  const art = laneShell(laneName(file, h.solver.name), [h.solver.code && h.solver.code.startsWith(h.solver.block) ? '' : h.solver.block,
+    h.solver.code, h.solver.config].filter(Boolean).join(' · '),
     h.sample ? `<span class="badge">${bi('sample, not a run', 'esempio, non un\'esecuzione')}</span>` : '');
   if (h.sample) art.classList.add('sample');
   const hasTree = tr.events.some(e => e.type === 'node');
@@ -265,16 +294,21 @@ function updateLane(L, k) {
   L.rep.seek(k);
   const h = L.tr.header, names = h.counters || Object.keys(L.rep.n);
   L.art.querySelector('.counters').innerHTML = `<div><dt>${t('event', 'evento')}</dt><dd>${k} / ${L.tr.events.length}</dd></div>` +
-    names.map(n => `<div><dt>${esc(n)}</dt><dd>${L.rep.n[n] ?? 0}</dd></div>`).join('');
+    names.map(n => `<div><dt>${esc(n)}</dt><dd>${(L.rep.n[n] ?? 0) < 0 ? '–' : L.rep.n[n] ?? 0}</dd></div>`).join('');
   const e = k > 0 ? L.tr.events[k - 1] : null;
   L.art.querySelector('.evline').textContent = describe(L.rep, e) + (k === L.tr.events.length && L.tr.result ? ' ' + t(`End: ${L.tr.result.status}.`, `Fine: ${L.tr.result.status}.`) : '');
   L.art.classList.toggle('conflict', !!e && e.type === 'conflict');
   if (L.search) { updateSearchLane(L, prev); return; }
   L.view.show(L.rep.board(), L.rep.hot());
   if (L.hasTree) drawTree(L.art.querySelector('.tree'), L.rep.nodes, L.rep.node);
+  const pd = h.solver.paradigm;
   L.art.querySelector('.bounds').textContent = L.hasTree || L.rep.lb !== null || L.rep.ub !== null
     ? t(`bound ${fmt(L.rep.lb)} · incumbent ${fmt(L.rep.ub)}`, `bound ${fmt(L.rep.lb)} · incumbente ${fmt(L.rep.ub)}`)
-    : t('no bound: a SAT solver gives none', 'nessun bound: un solutore SAT non ne dà');
+    : pd === 'csp' && GAME !== 'queens' ? t('the pegs are the values left in each domain', 'i pioli sono i valori rimasti in ogni dominio')
+    : pd === 'local search' ? t('a complete assignment, repaired step by step', 'un assegnamento completo, riparato passo per passo')
+    : GAME === 'queens' ? t('a dark cell is a row ruled out for its column', 'una cella scura è una riga esclusa per la sua colonna')
+    : GAME === 'coloring' ? t('the pegs are the colours not yet ruled out', 'i pioli sono i colori non ancora esclusi')
+    : t('the pegs are the values not yet ruled out', 'i pioli sono i valori non ancora esclusi');
 }
 
 let boardOnly = null;
@@ -306,7 +340,7 @@ async function loadLanes() {
   $('lanes').dataset.n = lanes.length;
   if (!lanes.length && GAME === 'coloring' && lastModel && lastModel.instance.id === STATE.inst) emptyBoard(lastModel.instance);
   const canTime = lanes.length > 0 && lanes.every(L => timed(L.tr));
-  const canWork = lanes.length > 0 && lanes.every(L => L.search);
+  const canWork = lanes.length > 0 && lanes.every(L => L.search) && GAME !== 'planning';
   $('align').querySelector('[value=time]').disabled = !canTime;
   $('align').querySelector('[value=work]').disabled = !canWork;
   if (!canTime && STATE.align === 'time') STATE.align = 'event';
@@ -318,23 +352,30 @@ async function loadLanes() {
 }
 
 // ---------------------------------------------------------------- timeline
-const TICKS = 1000;
-// align by work: the first TICKS positions are the expansions, up to those
-// of the lane that expands most, and the positions after them walk the
-// solution paths move by move
+// The timeline has few positions, so that a run lasts about a minute at the
+// default speed of one position a second and the line of the event can be
+// read: by work, SEARCHPOS positions for the expansions (up to those of the
+// lane that expands most) and at most MAXPATH for the solution paths; by
+// event and by time, at most MAXEV; a long trace is sampled evenly.
+const SEARCHPOS = 50, MAXPATH = 40, MAXEV = 80;
+// a search with few expansions takes one position for each
+const searchPos = () => Math.min(SEARCHPOS, Math.max(1, ...lanes.map(L => L.rep.work)));
 const pathLen = L => L.tr.events.length - L.rep.nsearch;
+const longest = f => Math.max(0, ...lanes.map(f));
+const pathStride = () => Math.max(1, longest(pathLen) / MAXPATH);
+const evStride = () => Math.max(1, longest(L => L.tr.events.length) / MAXEV);
 function maxPos() {
-  if (STATE.align === 'work') return TICKS + Math.max(0, ...lanes.map(pathLen));
-  return STATE.align === 'time' ? TICKS : Math.max(0, ...lanes.map(L => L.tr.events.length));
+  if (STATE.align === 'work') return searchPos() + Math.ceil(longest(pathLen) / pathStride());
+  return STATE.align === 'time' ? MAXEV : Math.ceil(longest(L => L.tr.events.length) / evStride());
 }
 const maxWork = () => Math.max(1, ...lanes.map(L => L.rep.work));
 function laneK(L, p) {
   if (STATE.align === 'work') {
-    if (p > TICKS) return L.rep.nsearch + Math.min(p - TICKS, pathLen(L));
-    return L.rep.atWork(maxWork() * p / TICKS);
+    if (p > searchPos()) return L.rep.nsearch + Math.min(Math.round((p - searchPos()) * pathStride()), pathLen(L));
+    return L.rep.atWork(maxWork() * p / searchPos());
   }
-  if (STATE.align !== 'time') return Math.min(p, L.tr.events.length);
-  const T = Math.max(...lanes.map(L => L.tr.events.at(-1).t)) * p / TICKS, ev = L.tr.events;
+  if (STATE.align !== 'time') return Math.min(Math.round(p * evStride()), L.tr.events.length);
+  const T = Math.max(...lanes.map(L => L.tr.events.at(-1).t)) * p / MAXEV, ev = L.tr.events;
   let lo = 0, hi = ev.length;
   while (lo < hi) { const m = (lo + hi) >> 1; if (ev[m].t <= T) lo = m + 1; else hi = m; }
   return lo;
@@ -343,12 +384,12 @@ function setPos(p) {
   STATE.pos = Math.max(0, Math.min(p, maxPos()));
   $('time').max = maxPos(); $('time').value = STATE.pos;
   if (STATE.align === 'time' && lanes.length) {
-    const T = Math.max(...lanes.map(L => L.tr.events.at(-1).t)) * STATE.pos / TICKS;
+    const T = Math.max(...lanes.map(L => L.tr.events.at(-1).t)) * STATE.pos / MAXEV;
     $('iter').textContent = (T * 1000).toFixed(T < 0.01 ? 2 : 1) + ' ms';
   } else if (STATE.align === 'work' && lanes.length) {
-    $('iter').textContent = STATE.pos <= TICKS ? Math.round(maxWork() * STATE.pos / TICKS) + t(' expanded', ' espansi')
-      : t('path ', 'cammino ') + (STATE.pos - TICKS);
-  } else $('iter').textContent = STATE.pos;
+    $('iter').textContent = STATE.pos <= searchPos() ? Math.round(maxWork() * STATE.pos / searchPos()) + t(' expanded', ' espansi')
+      : t('path ', 'cammino ') + Math.min(Math.round((STATE.pos - searchPos()) * pathStride()), longest(pathLen));
+  } else $('iter').textContent = `${STATE.pos} / ${maxPos()}`;
   for (const L of lanes) updateLane(L, laneK(L, STATE.pos));
   if (STATE.pos >= maxPos()) stop();
 }
@@ -356,8 +397,7 @@ let acc = 0, lastT = 0;
 function tick(now) {
   if (!STATE.playing) return;
   const dt = Math.min(0.25, (now - lastT) / 1000); lastT = now;
-  const rate = STATE.align === 'time' ? STATE.speed * TICKS / 60 : STATE.align === 'work' && STATE.pos < TICKS ? STATE.speed * TICKS / 300 : STATE.speed;
-  acc += dt * rate;
+  acc += dt * STATE.speed;
   if (acc >= 1) { const s = Math.floor(acc); acc -= s; setPos(STATE.pos + s); }
   requestAnimationFrame(tick);
 }

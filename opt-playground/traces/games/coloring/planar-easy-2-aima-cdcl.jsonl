@@ -1,0 +1,24 @@
+{"kind":"arena","v":1,"game":"coloring","sample":false,"instance":{"id":"planar-easy-2","kind":"planar","level":"easy","seed":2,"colours":["R","G","B","Y"],"vertices":["v0","v1","v2","v3","v4","v5","v6","v7","v8","v9","v10","v11"],"xy":[[0.9121,0.8957],[-0.8869,-0.8303],[0.671,0.4719],[0.3395,-0.3837],[0.2119,0.2136],[0.1624,-0.6832],[-0.1387,-0.2129],[0.446,0.9896],[0.8988,0.0884],[-0.24,0.7836],[-0.5278,-0.9523],[-0.3497,-0.7266]],"edges":[["v10","v11"],["v1","v10"],["v2","v8"],["v3","v6"],["v4","v6"],["v2","v7"],["v4","v8"],["v7","v9"],["v4","v9"],["v3","v8"],["v0","v8"],["v1","v6"],["v1","v9"]]},"encoding":{"form":"cnf","translator":"aima.logic.MapColoringSAT","variables":48,"clauses":188,"symbols":["v0_R","v0_G","v0_B","v0_Y","v1_R","v1_G","v1_B","v1_Y","v2_R","v2_G","v2_B","v2_Y","v3_R","v3_G","v3_B","v3_Y","v4_R","v4_G","v4_B","v4_Y","v5_R","v5_G","v5_B","v5_Y","v6_R","v6_G","v6_B","v6_Y","v7_R","v7_G","v7_B","v7_Y","v8_R","v8_G","v8_B","v8_Y","v9_R","v9_G","v9_B","v9_Y","v10_R","v10_G","v10_B","v10_Y","v11_R","v11_G","v11_B","v11_Y"]},"solver":{"id":"aima-cdcl","name":"aima CDCL","block":"aima-python","paradigm":"sat","code":"aima-python 49ebbc3","config":"cdcl"},"counters":["decisions","propagations","conflicts"],"machine":{"name":"golia","load":19.6,"note":"counts are the measure; the seconds of Python on a busy machine are not comparable"}}
+{"step":0,"type":"decide","level":1,"lit":33,"n":{"decisions":1,"propagations":0,"conflicts":0}}
+{"step":1,"type":"propagate","level":1,"lits":[-1,-9,-13,-17,-34,-35,-36],"n":{"decisions":1,"propagations":7,"conflicts":0}}
+{"step":2,"type":"decide","level":2,"lit":14,"n":{"decisions":2,"propagations":7,"conflicts":0}}
+{"step":3,"type":"propagate","level":2,"lits":[-15,-16,-26],"n":{"decisions":2,"propagations":10,"conflicts":0}}
+{"step":4,"type":"decide","level":3,"lit":6,"n":{"decisions":3,"propagations":10,"conflicts":0}}
+{"step":5,"type":"propagate","level":3,"lits":[-5,-7,-8,-38,-42],"n":{"decisions":3,"propagations":15,"conflicts":0}}
+{"step":6,"type":"decide","level":4,"lit":23,"n":{"decisions":4,"propagations":15,"conflicts":0}}
+{"step":7,"type":"propagate","level":4,"lits":[-21,-22,-24],"n":{"decisions":4,"propagations":18,"conflicts":0}}
+{"step":8,"type":"decide","level":5,"lit":19,"n":{"decisions":5,"propagations":18,"conflicts":0}}
+{"step":9,"type":"propagate","level":5,"lits":[-18,-20,-27,-39],"n":{"decisions":5,"propagations":22,"conflicts":0}}
+{"step":10,"type":"decide","level":6,"lit":41,"n":{"decisions":6,"propagations":22,"conflicts":0}}
+{"step":11,"type":"propagate","level":6,"lits":[-43,-44,-45],"n":{"decisions":6,"propagations":25,"conflicts":0}}
+{"step":12,"type":"decide","level":7,"lit":29,"n":{"decisions":7,"propagations":25,"conflicts":0}}
+{"step":13,"type":"propagate","level":7,"lits":[-30,-31,-32,-37,40],"n":{"decisions":7,"propagations":30,"conflicts":0}}
+{"step":14,"type":"decide","level":8,"lit":10,"n":{"decisions":8,"propagations":30,"conflicts":0}}
+{"step":15,"type":"propagate","level":8,"lits":[-11,-12],"n":{"decisions":8,"propagations":32,"conflicts":0}}
+{"step":16,"type":"decide","level":9,"lit":25,"n":{"decisions":9,"propagations":32,"conflicts":0}}
+{"step":17,"type":"propagate","level":9,"lits":[-28],"n":{"decisions":9,"propagations":33,"conflicts":0}}
+{"step":18,"type":"decide","level":10,"lit":2,"n":{"decisions":10,"propagations":33,"conflicts":0}}
+{"step":19,"type":"propagate","level":10,"lits":[-3,-4],"n":{"decisions":10,"propagations":35,"conflicts":0}}
+{"step":20,"type":"decide","level":11,"lit":48,"n":{"decisions":11,"propagations":35,"conflicts":0}}
+{"step":21,"type":"propagate","level":11,"lits":[-46,-47],"n":{"decisions":11,"propagations":37,"conflicts":0}}
+{"type":"result","status":"sat","seconds":1.6929,"stats":{"decisions":11,"propagations":37,"conflicts":0},"events":22,"capped":false,"model":[2,6,10,14,19,23,25,29,33,40,41,48]}

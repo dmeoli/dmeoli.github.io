@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The natal chart</title>
+<!-- scene-meta (tools/scene_meta.py) -->
+<meta name="description" content="A natal chart draws the sky of one moment, seen from one place, on a single circle, which is the ecliptic (the apparent path of the Sun among the stars, near which the Moon and the planets also…">
+<link rel="canonical" href="https://dmeoli.github.io/opt-playground/astro-chart.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="The natal chart">
+<meta property="og:description" content="A natal chart draws the sky of one moment, seen from one place, on a single circle, which is the ecliptic (the apparent path of the Sun among the stars, near which the Moon and the planets also…">
+<meta property="og:url" content="https://dmeoli.github.io/opt-playground/astro-chart.html">
+<meta property="og:image" content="https://dmeoli.github.io/assets/play/astro-chart.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="src/astro/astro.css">
+<script src="src/astro/vendor/astronomy.browser.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="lagrangian-dual.html"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="simplex-path.html"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a> · <a href="packing-mip.html"><span data-l="en">Packing</span><span data-l="it" lang="it">Impaccamento</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attenzione</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Misture di esperti</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Hebbiano</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html">Talk</a><br><span class="group"><span data-l="en">Games</span><span data-l="it" lang="it">Giochi</span></span> <!--games-nav--><a href="games.html"><span data-l="en">All</span><span data-l="it" lang="it">Tutti</span></a> · <a href="games-coloring.html"><span data-l="en">Map colouring</span><span data-l="it" lang="it">Colorazione di mappe</span></a> · <a href="games-queens.html"><span data-l="en">Queens</span><span data-l="it" lang="it">Regine</span></a> · <a href="games-sudoku.html">Sudoku</a> · <a href="games-puzzle.html"><span data-l="en">Sliding puzzle</span><span data-l="it" lang="it">Gioco del 15</span></a> · <a href="games-grid.html"><span data-l="en">Grid paths</span><span data-l="it" lang="it">Cammini su griglia</span></a> · <a href="games-romania.html">Romania</a> · <a href="games-planning.html"><span data-l="en">Planning</span><span data-l="it" lang="it">Pianificazione</span></a> · <a href="games-hanoi.html"><span data-l="en">Towers of Hanoi</span><span data-l="it" lang="it">Torri di Hanoi</span></a> · <a href="games-cube.html"><span data-l="en">Cube</span><span data-l="it" lang="it">Cubo</span></a><!--/games-nav--><br><span class="group"><span data-l="en">Forms</span><span data-l="it" lang="it">Forme</span></span> <!--forms-nav--><a href="simplex-path.html?print"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="lagrangian-dual.html?print"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="loss-landscape.html"><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a> · <a href="packing-mip.html?print"><span data-l="en">Packing by MIP</span><span data-l="it" lang="it">Impaccamento con MIP</span></a> · <a href="shells.html"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></a> · <a href="phyllotaxis.html"><span data-l="en">Phyllotaxis</span><span data-l="it" lang="it">Fillotassi</span></a> · <a href="radiolarian.html"><span data-l="en">Radiolarians</span><span data-l="it" lang="it">Radiolari</span></a> · <a href="coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a> · <a href="plants.html"><span data-l="en">Plants</span><span data-l="it" lang="it">Piante</span></a> · <a href="snowflakes.html"><span data-l="en">Snowflakes</span><span data-l="it" lang="it">Fiocchi di neve</span></a> · <a href="batman.html">Batman</a> · <a href="minimal-surfaces.html"><span data-l="en">Minimal surfaces</span><span data-l="it" lang="it">Superfici minime</span></a> · <a href="knots.html"><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></a> · <a href="attractors.html"><span data-l="en">Attractors</span><span data-l="it" lang="it">Attrattori</span></a> · <a href="polytopes.html"><span data-l="en">4D polytopes</span><span data-l="it" lang="it">Politopi 4D</span></a> · <a href="chladni.html">Chladni</a> · <a href="equations.html"><span data-l="en">Equations</span><span data-l="it" lang="it">Equazioni</span></a> · <a href="dice.html"><span data-l="en">Fair dice</span><span data-l="it" lang="it">Dadi equi</span></a> · <a href="hat.html"><span data-l="en">The hat</span><span data-l="it" lang="it">Il cappello</span></a> · <a href="fractals.html"><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></a> · <a href="lithophane.html"><span data-l="en">Lithophanes</span><span data-l="it" lang="it">Litofanie</span></a> · <a href="monsters.html"><span data-l="en">Monsters</span><span data-l="it" lang="it">Mostri</span></a> · <a href="monster-cards.html"><span data-l="en">Monster cards</span><span data-l="it" lang="it">Carte dei mostri</span></a> · <a href="dragon-curve.html"><span data-l="en">Dragon curve</span><span data-l="it" lang="it">Curva del drago</span></a> · <a href="robots.html"><span data-l="en">Robots</span><span data-l="it" lang="it">Robot</span></a> · <a href="magic-circles.html"><span data-l="en">Magic circles</span><span data-l="it" lang="it">Cerchi magici</span></a> · <a href="origami.html">Origami</a> · <a href="wagara.html"><span data-l="en">Japanese patterns</span><span data-l="it" lang="it">Motivi giapponesi</span></a> · <a href="twisty.html"><span data-l="en">Twisty puzzles</span><span data-l="it" lang="it">Rompicapi a rotazione</span></a> · <a href="wang-dungeon.html"><span data-l="en">Wang dungeon</span><span data-l="it" lang="it">Dungeon di Wang</span></a> · <a href="mana-crystals.html"><span data-l="en">Wulff crystals</span><span data-l="it" lang="it">Cristalli di Wulff</span></a> · <a href="dragon-eggs.html"><span data-l="en">Dragon eggs</span><span data-l="it" lang="it">Uova di drago</span></a> · <a href="galton-tower.html"><span data-l="en">Galton tower</span><span data-l="it" lang="it">Torre di Galton</span></a> · <a href="escher-monsters.html"><span data-l="en">Escher monsters</span><span data-l="it" lang="it">Mostri alla Escher</span></a> · <a href="minotaur-sphere.html"><span data-l="en">Sphere labyrinth</span><span data-l="it" lang="it">Labirinto sferico</span></a> · <a href="elven-knots.html"><span data-l="en">Elven amulets</span><span data-l="it" lang="it">Amuleti elfici</span></a> · <a href="slime-den.html"><span data-l="en">Slime den</span><span data-l="it" lang="it">Tana degli slime</span></a> · <a href="antigravity-castle.html"><span data-l="en">Antigravity castle</span><span data-l="it" lang="it">Castello antigravità</span></a> · <a href="erosion-island.html"><span data-l="en">Eroded island</span><span data-l="it" lang="it">Isola erosa</span></a> · <a href="damascus-swords.html"><span data-l="en">Damascus swords</span><span data-l="it" lang="it">Spade di Damasco</span></a> · <a href="kraken-tree.html"><span data-l="en">Kraken and tree</span><span data-l="it" lang="it">Kraken e albero</span></a> · <a href="starships.html"><span data-l="en">Starships</span><span data-l="it" lang="it">Astronavi</span></a> · <a href="automaton.html"><span data-l="en">Automaton</span><span data-l="it" lang="it">Automa</span></a> · <a href="puzzle-chest.html"><span data-l="en">Puzzle chest</span><span data-l="it" lang="it">Baule a incastro</span></a> · <a href="biomorphs.html"><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></a><!--/forms-nav--><br><span class="group"><span data-l="en">Sky</span><span data-l="it" lang="it">Cielo</span></span> <!--sky-nav--><a href="astro-chart.html" aria-current="page"><span data-l="en">Natal chart</span><span data-l="it" lang="it">Carta natale</span></a><!--/sky-nav--></nav>
+<header>
+  <h1><span data-l="en">The natal chart</span><span data-l="it" lang="it">La carta natale</span></h1>
+  <p class="lede" data-l="en">A natal chart draws the sky of one moment, seen from one place, on a
+  single circle, which is the ecliptic (the apparent path of the Sun among the stars, near which
+  the Moon and the planets also move), divided into twelve signs of 30° counted from the March
+  equinox. On that circle the tradition marks the Ascendant and the Midheaven, i.e., the points of
+  the ecliptic that are rising on the eastern horizon and crossing the meridian, and the twelve
+  houses into which it divides the daily turn of the sky, by rules that differ from one system
+  to another. The positions are computed in this page by Astronomy Engine, to within about one
+  arcminute; the sphere shows the sky from which the circle is taken, and its projection carries
+  it onto the wheel.</p>
+  <p class="lede" data-l="it" lang="it">Una carta natale disegna il cielo di un istante, visto da un
+  luogo, su un solo cerchio, che è l'eclittica (il percorso apparente del Sole fra le stelle,
+  vicino al quale si muovono anche la Luna e i pianeti), divisa in dodici segni di 30° contati
+  dall'equinozio di marzo. Su quel cerchio la tradizione segna l'Ascendente e il Medio cielo, cioè
+  i punti dell'eclittica che sorgono all'orizzonte est e che attraversano il meridiano, e le dodici
+  case in cui divide il giro quotidiano del cielo, con regole che cambiano da un sistema
+  all'altro. Le posizioni sono calcolate in questa pagina da Astronomy Engine, a meno di circa un
+  primo d'arco; la sfera mostra il cielo da cui il cerchio è preso, e la sua proiezione lo porta
+  sulla ruota.</p>
+</header>
+<section class="controls" aria-label="Date, time and place">
+  <div class="settings">
+    <label><span data-l="en">date</span><span data-l="it" lang="it">data</span><input id="date" type="date" min="1000-01-01" max="2999-12-31" required></label>
+    <label><span data-l="en">local time</span><span data-l="it" lang="it">ora locale</span><input id="time" type="time" step="1" required></label>
+    <div class="field place">
+      <label for="place"><span data-l="en">place</span><span data-l="it" lang="it">luogo</span></label>
+      <input id="place" type="search" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="suggest">
+      <ul id="suggest" role="listbox" hidden></ul>
+    </div>
+    <label><span data-l="en">latitude</span><span data-l="it" lang="it">latitudine</span><input id="lat" type="number" step="0.0001" min="-89.9" max="89.9"></label>
+    <label><span data-l="en">longitude</span><span data-l="it" lang="it">longitudine</span><input id="lon" type="number" step="0.0001" min="-180" max="180"></label>
+    <label><span data-l="en">time zone</span><span data-l="it" lang="it">fuso orario</span><select id="zone"></select></label>
+    <label><span data-l="en">houses</span><span data-l="it" lang="it">case</span><select id="houses">
+      <option value="P">Placidus</option><option value="K">Koch</option>
+      <option value="E" data-it="Uguali">Equal</option><option value="W" data-it="Segno intero">Whole sign</option></select></label>
+    <label><span data-l="en">node</span><span data-l="it" lang="it">nodo</span><select id="node">
+      <option value="true" data-it="vero">true</option><option value="mean" data-it="medio">mean</option></select></label>
+  </div>
+  <div class="transport">
+    <button type="button" id="now"><span data-l="en">Now</span><span data-l="it" lang="it">Adesso</span></button>
+    <button type="button" id="reset">Reset</button>
+    <button type="button" id="copy"><span data-l="en">Copy link</span><span data-l="it" lang="it">Copia link</span></button>
+  </div>
+  <dl class="stats row" id="info"></dl>
+  <p class="row warn" id="warn" hidden></p>
+</section>
+<main class="astro">
+  <figure>
+    <figcaption><span data-l="en">The wheel, with the Ascendant on the left and the signs running
+    counterclockwise from it, as the ecliptic is seen from its north pole. The cusps of the houses
+    start from the inner circle, where the numbers of the houses are; every body has a tick at its
+    longitude and, if it had to be moved to stay clear of its neighbours, a short line from the
+    tick to its glyph. The lines inside join the bodies in aspect (the angles and the node are
+    only in the table).</span><span data-l="it" lang="it">La ruota, con l'Ascendente a sinistra e
+    i segni che da lì girano in senso antiorario, come si vede l'eclittica dal suo polo nord. Le
+    cuspidi delle case partono dal cerchio interno, dove stanno i numeri delle case; ogni corpo ha
+    una tacca alla sua longitudine e, se è stato spostato per non coprire i vicini, una breve linea
+    dalla tacca al suo glifo. Le linee all'interno uniscono i corpi in aspetto (gli angoli e il
+    nodo sono solo nella tabella).</span></figcaption>
+    <svg id="wheel" viewBox="-40 -40 680 680" role="img" aria-label="Natal chart wheel"></svg>
+    <ul class="key" id="aspkey"></ul>
+  </figure>
+  <figure>
+    <figcaption><span data-l="en">The celestial sphere of the place, seen from outside and from
+    the north, with the horizon (grey), the celestial equator (dotted), the meridian, the ecliptic
+    with its twelve signs (violet) and the bodies; through each cusp passes the circle of
+    longitude that ends at the poles of the ecliptic, and with Placidus also the line of equal
+    fractions of the semi-arcs that defines that cusp in the sky. The projection turns the sphere
+    until the ecliptic faces the reader, with the Ascendant on the left, and flattens it on its
+    plane: the circles of longitude become the radii of the wheel.</span><span data-l="it" lang="it">La sfera celeste del luogo, vista da fuori e da nord,
+    con l'orizzonte (grigio), l'equatore celeste (punteggiato), il meridiano, l'eclittica con i suoi
+    dodici segni (viola) e i corpi; per ogni cuspide passa il cerchio di longitudine che finisce ai
+    poli dell'eclittica, e con Placidus anche la linea delle frazioni uguali dei semiarchi che
+    definisce quella cuspide nel cielo. La proiezione ruota la sfera finché l'eclittica non è di
+    fronte a chi guarda, con l'Ascendente a sinistra, e la schiaccia sul suo piano: i cerchi di
+    longitudine diventano i raggi della ruota.</span></figcaption>
+    <div id="stage" class="stage"></div>
+    <div class="proj">
+      <label><span data-l="en">projection</span><span data-l="it" lang="it">proiezione</span><input id="proj" type="range" min="0" max="1" step="0.001" value="0"></label>
+      <button type="button" id="play"><span data-l="en">Project</span><span data-l="it" lang="it">Proietta</span></button>
+    </div>
+  </figure>
+</main>
+<section class="tables">
+  <figure>
+    <figcaption><span data-l="en">Positions on the true ecliptic of date (tropical zodiac), with
+    the house and the direction of motion (R when the longitude is decreasing, as seen from the
+    Earth).</span><span data-l="it" lang="it">Posizioni sull'eclittica vera della data (zodiaco
+    tropicale), con la casa e il verso del moto (R quando la longitudine decresce, vista dalla
+    Terra).</span></figcaption>
+    <table id="positions"></table>
+  </figure>
+  <figure>
+    <figcaption><span data-l="en">Cusps of the houses in the system chosen; the first is the
+    Ascendant and, except in the equal and whole-sign systems, the tenth is the
+    Midheaven.</span><span data-l="it" lang="it">Cuspidi delle case nel sistema scelto; la prima è
+    l'Ascendente e, salvo nei sistemi uguale e a segno intero, la decima è il Medio
+    cielo.</span></figcaption>
+    <table id="cusps"></table>
+  </figure>
+  <figure>
+    <figcaption><span data-l="en">Aspects within their orbs, the closest first (orb 8° for
+    conjunction and opposition, 7° for trine and square, 5° for sextile, 3° for quincunx, at most
+    5° with the node and the angles); a marks an applying aspect, s a separating
+    one.</span><span data-l="it" lang="it">Aspetti entro le loro orbite, dal più stretto (orbita
+    8° per congiunzione e opposizione, 7° per trigono e quadrato, 5° per sestile, 3° per
+    quinconce, al più 5° con il nodo e gli angoli); a indica un aspetto applicativo, s uno
+    separativo.</span></figcaption>
+    <table id="aspects"></table>
+  </figure>
+</section>
+<section id="portrait" hidden></section>
+<section class="note">
+  <h2><span data-l="en">What this page is</span><span data-l="it" lang="it">Che cosa è questa pagina</span></h2>
+  <p data-l="en">Astrology has no demonstrated predictive validity: in the double-blind test of
+  Carlson (<i>Nature</i>, 1985) astrologers who had accepted the protocol in advance did not match
+  natal charts to the personality profiles of their owners better than chance, and the comparison
+  of people born a few minutes apart discussed by Dean and Kelly (2003) did not find the
+  resemblances that the tradition predicts. The chart is shown here as a cultural object with two
+  millennia of history and as an exact geometry of the sky, whose positions are those of the
+  planets at the moment chosen; no interpretation is given. Nothing typed here leaves the page,
+  since the computation runs in the browser and the list of places is part of it, and the date
+  and the place enter the address only through the button Copy link.</p>
+  <p data-l="it" lang="it">L'astrologia non ha validità predittiva dimostrata: nel test in doppio
+  cieco di Carlson (<i>Nature</i>, 1985) astrologi che avevano accettato il protocollo in anticipo
+  non hanno associato le carte natali ai profili di personalità dei loro titolari meglio del caso,
+  e il confronto fra persone nate a pochi minuti di distanza discusso da Dean e Kelly (2003) non
+  ha trovato le somiglianze che la tradizione prevede. La carta è mostrata qui come un oggetto
+  culturale con due millenni di storia e come una geometria esatta del cielo, le cui posizioni sono
+  quelle dei pianeti nell'istante scelto; non se ne dà alcuna interpretazione. Nulla di ciò che
+  scrivi esce dalla pagina, poiché il calcolo avviene nel browser e la lista dei luoghi ne fa
+  parte, e la data e il luogo entrano nell'indirizzo solo con il pulsante Copia link.</p>
+</section>
+<footer><span data-l="en">Positions from Astronomy Engine 2.1.19 by Don Cross (MIT licence),
+within 18 arcseconds of the Swiss Ephemeris in the charts I checked, and within 3 of the examples of
+Meeus, <i>Astronomical Algorithms</i>; houses after the General Manual of the Swiss Ephemeris; places
+from GeoNames (CC BY 4.0), the cities of more than 300000 inhabitants, the capitals and the
+Italian towns of more than 15000; time zones from the tz database of the browser, which goes back
+to the local mean time of each zone. The example is the greatest eclipse of the total solar
+eclipse of 11 August 1999, at 11:03 UT near Râmnicu Vâlcea, in Romania.</span><span data-l="it" lang="it">Posizioni da Astronomy Engine 2.1.19 di Don Cross
+(licenza MIT), entro 18 secondi d'arco dalla Swiss Ephemeris nelle carte che ho controllato, ed entro 3 dagli
+esempi di Meeus, <i>Astronomical Algorithms</i>; case secondo il General Manual della Swiss Ephemeris; luoghi da
+GeoNames (CC BY 4.0), le città con più di 300000 abitanti, le capitali e i comuni italiani con
+più di 15000; fusi orari dal database tz del browser, che risale fino al tempo medio locale di
+ogni fuso. L'esempio è il massimo dell'eclissi totale di Sole dell'11 agosto 1999, alle 11:03 UT
+vicino a Râmnicu Vâlcea, in Romania.</span></footer>
+<script type="module" src="src/astro/main.js"></script>
+</body>
+</html>

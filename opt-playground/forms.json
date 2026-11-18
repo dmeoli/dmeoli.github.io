@@ -24,9 +24,9 @@
  },
  "groups": [
   {
-   "id": "research-forms",
-   "en": "Research",
-   "it": "Ricerca",
+   "id": "optimization-forms",
+   "en": "Optimization",
+   "it": "Ottimizzazione",
    "intro": null
   },
   {
@@ -80,8 +80,70 @@
  ],
  "forms": [
   {
+   "id": "simplex-path",
+   "group": "optimization-forms",
+   "order": 1,
+   "page": "simplex-path.html?print",
+   "nav": {
+    "en": "Simplex path",
+    "it": "Cammino del simplesso"
+   },
+   "title": {
+    "en": "The Simplex on a Polytope",
+    "it": "Il simplesso su un politopo"
+   },
+   "blurb": {
+    "en": "The feasible region of a linear program in three variables as a solid, with the path of the simplex method raised on its edges; on the Klee-Minty cube the rule of Dantzig visits all 8 vertices.",
+    "it": "La regione ammissibile di un programma lineare in tre variabili come solido, con il cammino del metodo del simplesso in rilievo sui suoi spigoli; sul cubo di Klee-Minty la regola di Dantzig visita tutti gli 8 vertici."
+   },
+   "tags": [
+    {
+     "en": "Linear programming",
+     "it": "Programmazione lineare"
+    },
+    {
+     "en": "3D printing",
+     "it": "Stampa 3D"
+    }
+   ],
+   "thumb": "forms/thumbs/simplex-path"
+  },
+  {
+   "id": "lagrangian-dual",
+   "group": "optimization-forms",
+   "order": 2,
+   "page": "lagrangian-dual.html?print",
+   "nav": {
+    "en": "Lagrangian dual",
+    "it": "Duale lagrangiano"
+   },
+   "title": {
+    "en": "The Lagrangian Dual",
+    "it": "Il duale lagrangiano"
+   },
+   "blurb": {
+    "en": "The dual function of a small knapsack problem with two relaxed constraints, a concave polyhedral roof with one facet per point, climbed by a bundle method whose path is engraved on it.",
+    "it": "La funzione duale di un piccolo problema di zaino con due vincoli rilassati, un tetto poliedrico concavo con una faccia per punto, scalato da un metodo bundle il cui cammino vi è inciso."
+   },
+   "tags": [
+    {
+     "en": "Lagrangian relaxation",
+     "it": "Rilassamento lagrangiano"
+    },
+    {
+     "en": "Bundle methods",
+     "it": "Metodi bundle"
+    },
+    {
+     "en": "3D printing",
+     "it": "Stampa 3D"
+    }
+   ],
+   "thumb": "forms/thumbs/lagrangian-dual"
+  },
+  {
    "id": "loss-landscape",
-   "group": "research-forms",
+   "group": "optimization-forms",
    "order": 3,
    "page": "loss-landscape.html",
    "nav": {
@@ -107,6 +169,39 @@
     }
    ],
    "thumb": "forms/thumbs/loss-landscape"
+  },
+  {
+   "id": "packing-mip",
+   "group": "optimization-forms",
+   "order": 4,
+   "page": "packing-mip.html?print",
+   "nav": {
+    "en": "Packing by MIP",
+    "it": "Impaccamento con MIP"
+   },
+   "title": {
+    "en": "A Packing Puzzle by MIP",
+    "it": "Un puzzle di impaccamento con la MIP"
+   },
+   "blurb": {
+    "en": "Pentominoes and the Soma cube placed in their tray by an integer program that maximizes the area covered, so that the tray is full only at the optimum; tray and pieces can be ordered as a 3D print.",
+    "it": "Pentamini e cubo Soma messi nel loro vassoio da un programma intero che massimizza l'area coperta, così che il vassoio è pieno solo all'ottimo; vassoio e pezzi si possono ordinare come stampa 3D."
+   },
+   "tags": [
+    {
+     "en": "Integer programming",
+     "it": "Programmazione intera"
+    },
+    {
+     "en": "Puzzles",
+     "it": "Rompicapi"
+    },
+    {
+     "en": "3D printing",
+     "it": "Stampa 3D"
+    }
+   ],
+   "thumb": "forms/thumbs/packing-mip"
   },
   {
    "id": "shells",

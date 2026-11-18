@@ -1,0 +1,73 @@
+{"kind":"arena","v":1,"game":"planning","sample":false,"instance":{"id":"air-cargo","kind":"planning","problem":"air_cargo","fluents":["At(C1, JFK)","At(C1, SFO)","At(C2, JFK)","At(C2, SFO)","At(P1, JFK)","At(P1, SFO)","At(P2, JFK)","At(P2, SFO)","In(C1, P1)","In(C1, P2)","In(C2, P1)","In(C2, P2)"],"initial":[1,2,5,6],"goal":[0,3]},"solver":{"id":"aima-forward-astar","name":"aima ForwardPlan, A*","block":"aima-python","paradigm":"heuristic search","code":"aima-python 49ebbc3","config":{"algorithm":"forward-astar","heuristic":"ignore delete lists","threads":1}},"counters":["expanded","generated"],"workers":1,"lane":"recorded run of aima-python ForwardPlan, A* on golia","machine":{"name":"golia","load":18.5,"note":"counts are the measure; the seconds of Python on a busy machine are not comparable"}}
+{"step":0,"type":"expand","w":0,"g":0,"h":0,"f":6,"x":[1,2,5,6],"n":{"expanded":1,"generated":4}}
+{"step":1,"type":"expand","w":0,"g":1,"h":0,"f":6,"x":[1,5,6,11],"n":{"expanded":2,"generated":8}}
+{"step":2,"type":"expand","w":0,"g":1,"h":0,"f":6,"x":[2,5,6,8],"n":{"expanded":3,"generated":12}}
+{"step":3,"type":"expand","w":0,"g":1,"h":0,"f":6,"x":[1,2,4,6],"n":{"expanded":4,"generated":16}}
+{"step":4,"type":"expand","w":0,"g":1,"h":0,"f":6,"x":[1,2,5,7],"n":{"expanded":5,"generated":20}}
+{"step":5,"type":"expand","w":0,"g":2,"h":0,"f":6,"x":[5,6,8,11],"n":{"expanded":6,"generated":24}}
+{"step":6,"type":"expand","w":0,"g":2,"h":0,"f":6,"x":[1,5,7,11],"n":{"expanded":7,"generated":29}}
+{"step":7,"type":"expand","w":0,"g":2,"h":0,"f":6,"x":[5,6,8,11],"n":{"expanded":8,"generated":33}}
+{"step":8,"type":"expand","w":0,"g":2,"h":0,"f":6,"x":[2,4,6,8],"n":{"expanded":9,"generated":38}}
+{"step":9,"type":"expand","w":0,"g":2,"h":0,"f":6,"x":[2,5,7,8],"n":{"expanded":10,"generated":41}}
+{"step":10,"type":"expand","w":0,"g":2,"h":0,"f":6,"x":[1,4,6,10],"n":{"expanded":11,"generated":44}}
+{"step":11,"type":"expand","w":0,"g":2,"h":0,"f":6,"x":[2,5,7,8],"n":{"expanded":12,"generated":47}}
+{"step":12,"type":"expand","w":0,"g":3,"h":0,"f":6,"x":[4,6,8,11],"n":{"expanded":13,"generated":51}}
+{"step":13,"type":"expand","w":0,"g":3,"h":0,"f":6,"x":[5,7,8,11],"n":{"expanded":14,"generated":55}}
+{"step":14,"type":"expand","w":0,"g":3,"h":0,"f":6,"x":[5,7,8,11],"n":{"expanded":15,"generated":59}}
+{"step":15,"type":"expand","w":0,"g":3,"h":0,"f":6,"x":[5,7,9,11],"n":{"expanded":16,"generated":63}}
+{"step":16,"type":"expand","w":0,"g":3,"h":0,"f":6,"x":[1,3,5,7],"n":{"expanded":17,"generated":69}}
+{"step":17,"type":"expand","w":0,"g":3,"h":0,"f":6,"x":[4,6,8,11],"n":{"expanded":18,"generated":73}}
+{"step":18,"type":"expand","w":0,"g":3,"h":0,"f":6,"x":[5,7,8,11],"n":{"expanded":19,"generated":77}}
+{"step":19,"type":"expand","w":0,"g":3,"h":0,"f":6,"x":[4,6,8,10],"n":{"expanded":20,"generated":81}}
+{"step":20,"type":"expand","w":0,"g":3,"h":0,"f":6,"x":[4,6,8,11],"n":{"expanded":21,"generated":85}}
+{"step":21,"type":"expand","w":0,"g":3,"h":0,"f":6,"x":[0,2,4,6],"n":{"expanded":22,"generated":91}}
+{"step":22,"type":"expand","w":0,"g":4,"h":0,"f":6,"x":[0,4,6,11],"n":{"expanded":23,"generated":96}}
+{"step":23,"type":"expand","w":0,"g":4,"h":0,"f":6,"x":[4,7,8,11],"n":{"expanded":24,"generated":100}}
+{"step":24,"type":"expand","w":0,"g":4,"h":0,"f":6,"x":[3,5,7,8],"n":{"expanded":25,"generated":105}}
+{"step":25,"type":"expand","w":0,"g":4,"h":0,"f":6,"x":[4,7,8,11],"n":{"expanded":26,"generated":109}}
+{"step":26,"type":"expand","w":0,"g":4,"h":0,"f":6,"x":[3,5,7,8],"n":{"expanded":27,"generated":114}}
+{"step":27,"type":"expand","w":0,"g":4,"h":0,"f":6,"x":[4,7,8,11],"n":{"expanded":28,"generated":118}}
+{"step":28,"type":"expand","w":0,"g":4,"h":0,"f":6,"x":[3,5,7,9],"n":{"expanded":29,"generated":123}}
+{"step":29,"type":"expand","w":0,"g":4,"h":0,"f":6,"x":[3,5,7,8],"n":{"expanded":30,"generated":128}}
+{"step":30,"type":"expand","w":0,"g":4,"h":0,"f":6,"x":[3,5,7,9],"n":{"expanded":31,"generated":133}}
+{"step":31,"type":"expand","w":0,"g":4,"h":0,"f":6,"x":[0,4,6,11],"n":{"expanded":32,"generated":138}}
+{"step":32,"type":"expand","w":0,"g":4,"h":0,"f":6,"x":[4,7,8,11],"n":{"expanded":33,"generated":142}}
+{"step":33,"type":"expand","w":0,"g":4,"h":0,"f":6,"x":[3,5,7,8],"n":{"expanded":34,"generated":147}}
+{"step":34,"type":"expand","w":0,"g":4,"h":0,"f":6,"x":[4,7,8,11],"n":{"expanded":35,"generated":151}}
+{"step":35,"type":"expand","w":0,"g":4,"h":0,"f":6,"x":[0,4,6,10],"n":{"expanded":36,"generated":156}}
+{"step":36,"type":"expand","w":0,"g":4,"h":0,"f":6,"x":[0,4,6,11],"n":{"expanded":37,"generated":161}}
+{"step":37,"type":"expand","w":0,"g":4,"h":0,"f":6,"x":[4,7,8,11],"n":{"expanded":38,"generated":165}}
+{"step":38,"type":"expand","w":0,"g":4,"h":0,"f":6,"x":[0,4,6,10],"n":{"expanded":39,"generated":170}}
+{"step":39,"type":"expand","w":0,"g":4,"h":0,"f":6,"x":[0,4,6,11],"n":{"expanded":40,"generated":175}}
+{"step":40,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[0,4,7,11],"n":{"expanded":41,"generated":179}}
+{"step":41,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[3,4,7,8],"n":{"expanded":42,"generated":183}}
+{"step":42,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[0,4,7,11],"n":{"expanded":43,"generated":187}}
+{"step":43,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[3,4,7,8],"n":{"expanded":44,"generated":191}}
+{"step":44,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[3,4,7,8],"n":{"expanded":45,"generated":195}}
+{"step":45,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[0,4,7,11],"n":{"expanded":46,"generated":199}}
+{"step":46,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[3,4,7,8],"n":{"expanded":47,"generated":203}}
+{"step":47,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[3,4,7,8],"n":{"expanded":48,"generated":207}}
+{"step":48,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[0,4,7,11],"n":{"expanded":49,"generated":211}}
+{"step":49,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[3,5,6,9],"n":{"expanded":50,"generated":215}}
+{"step":50,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[3,4,7,8],"n":{"expanded":51,"generated":219}}
+{"step":51,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[3,5,6,9],"n":{"expanded":52,"generated":223}}
+{"step":52,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[0,4,7,11],"n":{"expanded":53,"generated":227}}
+{"step":53,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[3,4,7,8],"n":{"expanded":54,"generated":231}}
+{"step":54,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[0,4,7,11],"n":{"expanded":55,"generated":235}}
+{"step":55,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[3,4,7,8],"n":{"expanded":56,"generated":239}}
+{"step":56,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[3,4,7,8],"n":{"expanded":57,"generated":243}}
+{"step":57,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[0,4,7,11],"n":{"expanded":58,"generated":247}}
+{"step":58,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[0,5,6,10],"n":{"expanded":59,"generated":251}}
+{"step":59,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[0,4,7,11],"n":{"expanded":60,"generated":255}}
+{"step":60,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[3,4,7,8],"n":{"expanded":61,"generated":259}}
+{"step":61,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[0,4,7,11],"n":{"expanded":62,"generated":263}}
+{"step":62,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[0,5,6,10],"n":{"expanded":63,"generated":267}}
+{"step":63,"type":"expand","w":0,"g":5,"h":0,"f":6,"x":[0,4,7,11],"n":{"expanded":64,"generated":271}}
+{"step":64,"type":"path","n":{"expanded":64,"generated":271},"i":0,"x":[1,2,5,6]}
+{"step":65,"type":"path","n":{"expanded":64,"generated":271},"i":1,"x":[1,5,6,11],"move":"Load(C2, P2, JFK)"}
+{"step":66,"type":"path","n":{"expanded":64,"generated":271},"i":2,"x":[5,6,8,11],"move":"Load(C1, P1, SFO)"}
+{"step":67,"type":"path","n":{"expanded":64,"generated":271},"i":3,"x":[4,6,8,11],"move":"Fly(P1, SFO, JFK)"}
+{"step":68,"type":"path","n":{"expanded":64,"generated":271},"i":4,"x":[0,4,6,11],"move":"Unload(C1, P1, JFK)"}
+{"step":69,"type":"path","n":{"expanded":64,"generated":271},"i":5,"x":[0,4,7,11],"move":"Fly(P2, JFK, SFO)"}
+{"step":70,"type":"path","n":{"expanded":64,"generated":271},"i":6,"x":[0,3,4,7],"move":"Unload(C2, P2, SFO)"}
+{"type":"result","status":"optimal","cost":6,"path":[[1,2,5,6],[1,5,6,11],[5,6,8,11],[4,6,8,11],[0,4,6,11],[0,4,7,11],[0,3,4,7]],"moves":["Load(C2, P2, JFK)","Load(C1, P1, SFO)","Fly(P1, SFO, JFK)","Unload(C1, P1, JFK)","Fly(P2, JFK, SFO)","Unload(C2, P2, SFO)"],"seconds":10.1874,"stats":{"expanded":64,"generated":271},"events":71,"capped":false}

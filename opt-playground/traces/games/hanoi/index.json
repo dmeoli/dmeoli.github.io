@@ -1,0 +1,73 @@
+{
+ "game": "hanoi",
+ "traces": [
+  {
+   "file": "hanoi-10.1-astar-pdb-1.jsonl",
+   "instance": "hanoi-10",
+   "solver": {
+    "id": "astar-pdb-1",
+    "name": "A* PDB",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 39e14eb",
+    "config": {
+     "algorithm": "astar",
+     "heuristic": "pdb",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "hanoi-10.2-hda-pdb-4.jsonl",
+   "instance": "hanoi-10",
+   "solver": {
+    "id": "hda-pdb-4",
+    "name": "HDA* PDB 4 threads",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 39e14eb",
+    "config": {
+     "algorithm": "hda",
+     "heuristic": "pdb",
+     "threads": 4
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "hanoi-8.2-astar-pdb-1.jsonl",
+   "instance": "hanoi-8",
+   "solver": {
+    "id": "astar-pdb-1",
+    "name": "A* PDB",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 39e14eb",
+    "config": {
+     "algorithm": "astar",
+     "heuristic": "pdb",
+     "threads": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "hanoi-8.3-hda-pdb-4.jsonl",
+   "instance": "hanoi-8",
+   "solver": {
+    "id": "hda-pdb-4",
+    "name": "HDA* PDB 4 threads",
+    "block": "PBeFS",
+    "paradigm": "heuristic search",
+    "code": "PBeFS 39e14eb",
+    "config": {
+     "algorithm": "hda",
+     "heuristic": "pdb",
+     "threads": 4
+    }
+   },
+   "sample": false
+  }
+ ]
+}

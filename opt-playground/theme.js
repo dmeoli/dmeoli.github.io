@@ -36,6 +36,12 @@
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () { window.dispatchEvent(new Event('themechange')); });
 
   // the bar, only when the scene is not shown inside the site
+  // a scene of Optimization that is also a form (<meta name="forms-mode"
+  // content="print">) is the form, with its print panel (.print-only) and the
+  // way back to Forms, only when its address asks for it with ?print
+  var printOnly = document.querySelector('meta[name="forms-mode"][content="print"]'),
+      printing = /[?&]print(&|=|$)/.test(location.search);
+  if (printOnly && printing) root.classList.add('print-mode');
   var inside = false;
   try { inside = window.top !== window; } catch (e) { inside = true; }
   if (inside) { root.classList.add('embedded'); return; }
@@ -46,14 +52,18 @@
   // the way back goes to the section of the site that lists the scene: a form
   // says its group in <meta name="forms-group" content="nature">
   var path = location.pathname.replace(/\/$/, '/index.html'),
-      back = /^\/opt-playground\/(index|components|benders|lp|lp3d|integer|polarity|packing-mip|simplex-path|lagrangian-dual|arena(?:-[a-z]+)?)?(\.html)?$/.test(path)
+      back = /^\/opt-playground\/(games|arena)(-[a-z]+)?(\.html)?$/.test(path)
+        ? '<a class="home" href="/games"><span data-l="en">&larr; Games</span><span data-l="it" lang="it">&larr; Giochi</span></a>'
+        : /^\/opt-playground\/astro(-[a-z]+)?(\.html)?$/.test(path)
+        ? '<a class="home" href="/sky"><span data-l="en">&larr; Sky</span><span data-l="it" lang="it">&larr; Cielo</span></a>'
+        : /^\/opt-playground\/(index|components|benders|lp|lp3d|integer|polarity|packing-mip|simplex-path|lagrangian-dual)?(\.html)?$/.test(path)
         ? '<a class="home" href="/optimization"><span data-l="en">&larr; Optimization</span><span data-l="it" lang="it">&larr; Ottimizzazione</span></a>'
         : '<a class="home" href="/ml"><span data-l="en">&larr; Machine Learning</span><span data-l="it" lang="it">&larr; Machine learning</span></a>';
   document.addEventListener('DOMContentLoaded', function () {
     var bar = document.createElement('div');
     bar.className = 'scenebar';
     var form = document.querySelector('meta[name="forms-group"]');
-    if (form) back = '<a class="home" href="/forms#' + form.content + '"><span data-l="en">&larr; Forms</span><span data-l="it" lang="it">&larr; Forme</span></a>';
+    if (form && (!printOnly || printing)) back = '<a class="home" href="/forms#' + form.content + '"><span data-l="en">&larr; Forms</span><span data-l="it" lang="it">&larr; Forme</span></a>';
     bar.innerHTML = back +
       '<button type="button" data-set="en">EN</button><span aria-hidden="true">&middot;</span>' +
       '<button type="button" data-set="it">IT</button>' +

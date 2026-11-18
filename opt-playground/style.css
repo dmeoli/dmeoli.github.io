@@ -240,3 +240,5 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: h
 .scenebar .theme { font-size: 14px; margin-left: 6px; }
 /* bilingual text inside a button of the bar keeps the look of the button */
 .controls button span { text-transform: none; letter-spacing: normal; font-size: inherit; color: inherit; }
+/* the print panel of a scene that is a form only when opened with ?print (theme.js) */
+html:not(.print-mode) .print-only { display: none !important; }

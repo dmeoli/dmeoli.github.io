@@ -1,0 +1,9 @@
+{"kind":"arena","v":1,"game":"planning","sample":false,"instance":{"id":"sussman","kind":"planning","problem":"three_block_tower","fluents":["Clear(A)","Clear(B)","Clear(C)","Clear(Table)","On(A, B)","On(A, C)","On(A, Table)","On(B, A)","On(B, C)","On(B, Table)","On(C, A)","On(C, B)","On(C, Table)"],"initial":[1,2,6,9,10],"goal":[4,8]},"solver":{"id":"aima-forward-astar","name":"aima ForwardPlan, A*","block":"aima-python","paradigm":"heuristic search","code":"aima-python 49ebbc3","config":{"algorithm":"forward-astar","heuristic":"ignore delete lists","threads":1}},"counters":["expanded","generated"],"workers":1,"lane":"recorded run of aima-python ForwardPlan, A* on golia","machine":{"name":"golia","load":17.4,"note":"counts are the measure; the seconds of Python on a busy machine are not comparable"}}
+{"step":0,"type":"expand","w":0,"g":0,"h":0,"f":3,"x":[1,2,6,9,10],"n":{"expanded":1,"generated":3}}
+{"step":1,"type":"expand","w":0,"g":1,"h":0,"f":3,"x":[0,1,2,6,9,12],"n":{"expanded":2,"generated":9}}
+{"step":2,"type":"expand","w":0,"g":2,"h":0,"f":3,"x":[0,1,3,6,8,12],"n":{"expanded":3,"generated":12}}
+{"step":3,"type":"path","n":{"expanded":3,"generated":12},"i":0,"x":[1,2,6,9,10]}
+{"step":4,"type":"path","n":{"expanded":3,"generated":12},"i":1,"x":[0,1,2,6,9,12],"move":"MoveToTable(C, A)"}
+{"step":5,"type":"path","n":{"expanded":3,"generated":12},"i":2,"x":[0,1,3,6,8,12],"move":"Move(B, Table, C)"}
+{"step":6,"type":"path","n":{"expanded":3,"generated":12},"i":3,"x":[0,3,4,8,12],"move":"Move(A, Table, B)"}
+{"type":"result","status":"optimal","cost":3,"path":[[1,2,6,9,10],[0,1,2,6,9,12],[0,1,3,6,8,12],[0,3,4,8,12]],"moves":["MoveToTable(C, A)","Move(B, Table, C)","Move(A, Table, B)"],"seconds":0.3159,"stats":{"expanded":3,"generated":12},"events":7,"capped":false}
