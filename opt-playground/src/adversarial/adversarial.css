@@ -1,0 +1,41 @@
+/* The scenes of the two-player games (games-tictactoe.html,
+   games-connect4.html): the lanes of arena.css, and under each board the
+   game tree that the search explores (gametree.js). */
+:root { --gt-bad: #c0281e; }
+:root[data-theme="dark"] { --gt-bad: #ff8a7a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --gt-bad: #ff8a7a; } }
+.gtpanel { margin: 0; min-width: 0; }
+.gtpanel .scap { font-size: 12px; line-height: 1.4; color: var(--ink-soft); margin-bottom: 4px; }
+.gtpanel .sbox { overflow: auto; max-height: 460px; min-height: 60px; border: 1px solid var(--rule); border-radius: 6px; overscroll-behavior: contain; }
+.gtpanel .sstat { font: 11px/1.4 'IBM Plex Mono', monospace; color: var(--ink-soft); margin: 3px 0 0; }
+svg.gtree { display: block; max-width: none; }
+.gtn { transition: transform .45s ease-out; animation: gtin .45s ease-out; }
+@keyframes gtin { from { opacity: 0; } to { opacity: 1; } }
+.gtn .gs { fill: var(--panel); stroke: var(--accent-2); stroke-width: 1.3; }
+.gtn.done .gs { fill: var(--lilac); }
+.gtn.path .gs { fill: var(--accent-2); stroke: var(--ink-soft); }
+.gtn.cut .gs { stroke-dasharray: 2 1.5; }
+.gtn.hot .gs { stroke: var(--ink); stroke-width: 3; }
+.gtn.chosen .gs { fill: var(--gold); stroke: var(--gold); }
+.gtn.pruned .gs { fill: var(--rule); stroke: var(--ink-soft); stroke-dasharray: 2 2; opacity: .7; }
+.gtn text { font: 9.5px 'IBM Plex Mono', monospace; text-anchor: middle; fill: var(--ink); paint-order: stroke; stroke: var(--panel); stroke-width: 3px; stroke-linejoin: round; }
+.gtn .gm { fill: var(--ink-soft); }
+.gtn .gv { font-weight: 500; }
+.gtn .gf { fill: var(--ink-soft); font-size: 8.5px; }
+.gtn.pruned text { fill: var(--ink-soft); }
+.gtn.chosen .gv, .gtn.chosen .gm { fill: var(--gold); font-weight: 500; }
+.gte { fill: none; stroke: var(--rule); stroke-width: 1.2; transition: d .45s ease-out; }
+.gte.path { stroke: var(--ink-soft); stroke-width: 1.8; }
+.gte.pruned { stroke-dasharray: 2 3; }
+.gte.chosen { stroke: var(--gold); stroke-width: 2.4; }
+.gtgut text { font: 9px 'IBM Plex Mono', monospace; fill: var(--ink-soft); }
+.gtgut .gk { font-weight: 500; fill: var(--accent); }
+@media (prefers-reduced-motion: reduce) { .gtn, .gte { transition: none; animation: none; } }
+/* the lane "You": a refused move frames the board in red for a moment */
+.lane.play .board { border-radius: 6px; outline: 2px solid transparent; outline-offset: 1px; transition: outline-color .3s; }
+.lane.play.refused .board { outline-color: var(--gt-bad); }
+.lane.play.conflict .evline { color: var(--gt-bad); }
+.lane.play .playbar select { font: inherit; }
+.lane.play .playbar label { flex-wrap: wrap; }
+.lane.play .playbar select { width: auto; max-width: 100%; }
+.gtn .gp { fill: var(--ink-soft); font-size: 8.5px; }

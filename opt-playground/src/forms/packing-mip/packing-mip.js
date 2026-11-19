@@ -114,7 +114,7 @@ function stats() {
     [t('cells of the tray', 'celle del vassoio'), d.cells],
     [t('optimum', 'ottimo'), `${d.optimum} / ${d.cells}`],
     [t('LP bound', 'bound del rilassamento'), d.lp],
-    [t('B&B nodes', 'nodi del B&B'), d.nodes],
+    [t('B&B nodes (HiGHS)', 'nodi del B&B (HiGHS)'), d.nodes],
   ].map(([a, b]) => `<div><dt>${a}</dt><dd>${b}</dd></div>`).join('');
 }
 

@@ -97,10 +97,23 @@ export function drawPlane(cv, st, P) {
   const { codes, Y } = st;
   if (codes) {
     ctx.globalAlpha = 0.85;
+    // a code outside the square on view stays on its border, as a small
+    // triangle that points the way to it
+    const lo = 5, hx = FR.x0 + FR.side - lo, hy = FR.y0 + FR.side - lo;
     for (let i = 0; i < codes.length; i++) {
       if (!codes[i]) continue;
       const [px, py] = toPx(v, codes[i]);
-      ctx.fillStyle = P.cls[Y[i]]; ctx.beginPath(); ctx.arc(px, py, 3, 0, 2 * Math.PI); ctx.fill();
+      ctx.fillStyle = P.cls[Y[i]]; ctx.beginPath();
+      const cx = Math.max(FR.x0 + lo, Math.min(hx, px)), cy = Math.max(FR.y0 + lo, Math.min(hy, py));
+      if (cx === px && cy === py) ctx.arc(px, py, 3, 0, 2 * Math.PI);
+      else {
+        const a = Math.atan2(py - cy, px - cx), r = 5;
+        ctx.moveTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
+        ctx.lineTo(cx + r * Math.cos(a + 2.4), cy + r * Math.sin(a + 2.4));
+        ctx.lineTo(cx + r * Math.cos(a - 2.4), cy + r * Math.sin(a - 2.4));
+        ctx.closePath();
+      }
+      ctx.fill();
     }
     ctx.globalAlpha = 1;
     // the label of every class at the median of its codes

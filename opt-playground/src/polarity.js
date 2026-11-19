@@ -26,7 +26,7 @@ const shapes = {
   tetrahedron: { label: 'Tetrahedron (self-polar)', it: 'Tetraedro (autopolare)', v: [[1, 1, 1], [1, -1, -1], [-1, 1, -1], [-1, -1, 1]] },
   dodecahedron: { label: 'Dodecahedron (polar: icosahedron)', it: 'Dodecaedro (polare: icosaedro)', v: [...signs([1, 1, 1]), ...perms(0, 1 / phi, phi).flatMap(signs)] },
   icosahedron: { label: 'Icosahedron (polar: dodecahedron)', it: 'Icosaedro (polare: dodecaedro)', v: perms(0, 1, phi).flatMap(signs).map(p => p.map(x => x * 0.85)) },
-  triprism: { label: 'Triangular prism (polar: triangular bipyramid)', it: 'Prisma triangolare (polare: bipiramide triangolare)', v: [0, 1, 2].flatMap(i => [[Math.cos(i * 2 * Math.PI / 3 + Math.PI / 2) * 1.3, Math.sin(i * 2 * Math.PI / 3 + Math.PI / 2) * 1.3, 0.9], [Math.cos(i * 2 * Math.PI / 3 + Math.PI / 2) * 1.3, Math.sin(i * 2 * Math.PI / 3 + Math.PI / 2) * 1.3, -0.9]]) },
+  triprism: { label: 'Triangular prism (polar: triangular bipyramid)', it: 'Prisma triangolare (polare: bipiramide triangolare)', v: [0, 1, 2].flatMap(i => [[Math.cos(i * 2 * Math.PI / 3 + Math.PI / 2) * 2 / Math.sqrt(3), Math.sin(i * 2 * Math.PI / 3 + Math.PI / 2) * 2 / Math.sqrt(3), 1], [Math.cos(i * 2 * Math.PI / 3 + Math.PI / 2) * 2 / Math.sqrt(3), Math.sin(i * 2 * Math.PI / 3 + Math.PI / 2) * 2 / Math.sqrt(3), -1]]) },
   prism: { label: 'Hexagonal prism (polar: bipyramid)', it: 'Prisma esagonale (polare: bipiramide)', v: [0, 1, 2, 3, 4, 5].flatMap(i => [[Math.cos(i * Math.PI / 3) * 1.2, Math.sin(i * Math.PI / 3) * 1.2, 0.9], [Math.cos(i * Math.PI / 3) * 1.2, Math.sin(i * Math.PI / 3) * 1.2, -0.9]]) },
   random: { label: 'Random polytope', it: 'Politopo casuale', v: null },
 };
@@ -184,7 +184,8 @@ function pick() {
 }
 
 for (const [k, s] of Object.entries(shapes)) $('shape').append(new Option(s.label, k));
-// #shape=<id> opens that polytope (e.g. #shape=triprism, the prism of a logo),
+// #shape=<id> opens that polytope (e.g. #shape=triprism, the prism of a logo:
+// side 2 and height 2, so that the apexes of its polar lie on its bases),
 // &scale=<s> at that scale
 {
   const h = new URLSearchParams(location.hash.slice(1)), k = h.get('shape'), sc = +h.get('scale');

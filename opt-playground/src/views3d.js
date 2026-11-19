@@ -71,11 +71,14 @@ export function dual3d(box, problem, state, hover, params, algo) {
   ctx = contexts.get(box);
   if (!ctx || !box.contains(ctx.renderer.domElement)) setup(box);
   const { group } = ctx;
-  // aim at the maximum the first time a problem is drawn
+  // the first time a problem is drawn, frame the whole box of the plot (the
+  // unit square of the multipliers, heights up to 0.75): the camera looks at
+  // its center from the distance at which its bounding sphere fills the view
   if (ctx.aimed !== problem) {
-    const t = problem.optimum.lam;
-    ctx.controls.target.set(t[0] / problem.lmax, t[1] / problem.lmax, 0.45);
-    ctx.camera.position.set(t[0] / problem.lmax + 0.95, t[1] / problem.lmax - 1.15, 1.25);
+    const c = new THREE.Vector3(0.5, 0.5, 0.375), r = Math.hypot(0.5, 0.5, 0.375);
+    const d = 1.04 * r / Math.sin(THREE.MathUtils.degToRad(ctx.camera.fov / 2));
+    ctx.controls.target.copy(c);
+    ctx.camera.position.copy(c).add(new THREE.Vector3(0.95, -1.15, 0.8).normalize().multiplyScalar(d));
     ctx.aimed = problem;
   }
   group.traverse(o => { if (o.geometry) o.geometry.dispose(); });

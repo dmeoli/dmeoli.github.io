@@ -1,0 +1,131 @@
+{
+ "game": "tictactoe",
+ "traces": [
+  {
+   "file": "end-aima-alphabeta.jsonl",
+   "instance": "end",
+   "solver": {
+    "id": "aima-alphabeta",
+    "name": "aima alpha_beta_search",
+    "block": "aima-python",
+    "paradigm": "adversarial",
+    "code": "aima-python 49ebbc3",
+    "config": {}
+   },
+   "sample": false
+  },
+  {
+   "file": "end-aima-mcts.jsonl",
+   "instance": "end",
+   "solver": {
+    "id": "aima-mcts",
+    "name": "aima monte_carlo_tree_search, N = 1000",
+    "block": "aima-python",
+    "paradigm": "adversarial",
+    "code": "aima-python 49ebbc3",
+    "config": {
+     "N": 1000,
+     "seed": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "end-aima-minimax.jsonl",
+   "instance": "end",
+   "solver": {
+    "id": "aima-minimax",
+    "name": "aima minmax_decision",
+    "block": "aima-python",
+    "paradigm": "adversarial",
+    "code": "aima-python 49ebbc3",
+    "config": {}
+   },
+   "sample": false
+  },
+  {
+   "file": "middle-aima-alphabeta.jsonl",
+   "instance": "middle",
+   "solver": {
+    "id": "aima-alphabeta",
+    "name": "aima alpha_beta_search",
+    "block": "aima-python",
+    "paradigm": "adversarial",
+    "code": "aima-python 49ebbc3",
+    "config": {}
+   },
+   "sample": false
+  },
+  {
+   "file": "middle-aima-mcts.jsonl",
+   "instance": "middle",
+   "solver": {
+    "id": "aima-mcts",
+    "name": "aima monte_carlo_tree_search, N = 1000",
+    "block": "aima-python",
+    "paradigm": "adversarial",
+    "code": "aima-python 49ebbc3",
+    "config": {
+     "N": 1000,
+     "seed": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "middle-aima-minimax.jsonl",
+   "instance": "middle",
+   "solver": {
+    "id": "aima-minimax",
+    "name": "aima minmax_decision",
+    "block": "aima-python",
+    "paradigm": "adversarial",
+    "code": "aima-python 49ebbc3",
+    "config": {}
+   },
+   "sample": false
+  },
+  {
+   "file": "opening-aima-alphabeta.jsonl",
+   "instance": "opening",
+   "solver": {
+    "id": "aima-alphabeta",
+    "name": "aima alpha_beta_search",
+    "block": "aima-python",
+    "paradigm": "adversarial",
+    "code": "aima-python 49ebbc3",
+    "config": {}
+   },
+   "sample": false
+  },
+  {
+   "file": "opening-aima-mcts.jsonl",
+   "instance": "opening",
+   "solver": {
+    "id": "aima-mcts",
+    "name": "aima monte_carlo_tree_search, N = 1000",
+    "block": "aima-python",
+    "paradigm": "adversarial",
+    "code": "aima-python 49ebbc3",
+    "config": {
+     "N": 1000,
+     "seed": 1
+    }
+   },
+   "sample": false
+  },
+  {
+   "file": "opening-aima-minimax.jsonl",
+   "instance": "opening",
+   "solver": {
+    "id": "aima-minimax",
+    "name": "aima minmax_decision",
+    "block": "aima-python",
+    "paradigm": "adversarial",
+    "code": "aima-python 49ebbc3",
+    "config": {}
+   },
+   "sample": false
+  }
+ ]
+}

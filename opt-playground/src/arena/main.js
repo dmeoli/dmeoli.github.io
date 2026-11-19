@@ -13,6 +13,7 @@ import { t, bi, onLang } from '../i18n.js';
 import { openTrace, Replay, timed } from './trace.js';
 import { BoardView } from './view3d.js';
 import { drawTree } from './tree.js';
+import { makePanel } from './panels.js';
 import { SearchReplay, PuzzleView, GridView, drawStrip, WORKERS } from './search.js';
 import { CubeView } from './cube.js';
 import { QueensView, SudokuView } from './cells.js';
@@ -358,10 +359,12 @@ function buildSearchLane(file, tr) {
     : h.game === 'hanoi' ? new HanoiView(box, h.instance) : h.game === 'pancake' ? new PancakeView(box, h.instance)
     : h.game === 'topspin' ? new TopSpinView(box, h.instance) : new PuzzleView(box, h.instance);
   art.querySelector('.stripbox').hidden = NOSTRIP.has(h.game);
-  return { file, tr, rep: new SearchReplay(tr), view, art, search: true, k: -1 };
+  const panel = makePanel(art.querySelector('.panel'), tr, null);
+  return { file, tr, rep: new SearchReplay(tr), view, art, search: true, k: -1, panel };
 }
 function updateSearchLane(L, prev) {
   const { rep, art, tr } = L, h = tr.header, e = rep.last;
+  if (L.panel) L.panel.draw(L.k);
   const w = e && e.type === 'expand' && h.workers > 1 ? e.w : null;
   if (SETBOARD.has(h.game)) {
     // the place being expanded at this event, marked on the board
@@ -392,15 +395,21 @@ function buildLane(file, tr) {
     h.sample ? `<span class="badge">${bi('sample, not a run', 'esempio, non un\'esecuzione')}</span>` : '');
   if (h.sample) art.classList.add('sample');
   const hasTree = tr.events.some(e => e.type === 'node');
-  const tcap = GAME === 'knapsack' ? bi('Branch-and-bound tree: a node by worker colour, grey when pruned', 'Albero del branch-and-bound: un nodo nel colore del worker, grigio se potato') : bi('Branch-and-bound tree', 'Albero del branch-and-bound');
+  const tcap = GAME === 'knapsack'
+    ? bi('The branch-and-bound tree: the root is the whole problem, a node a subproblem with one more item taken or left out than its parent; a node is filled in the color of the worker that branched it, gold when it is feasible, grey when pruned (its bound does not beat the incumbent) or infeasible; the ring marks the node of this event and ink its path from the root, the bound is written beside the nodes of that path (under every node of a small tree) and in the tooltip, and a big tree folds the subtrees off that path into a count.',
+      'L\'albero del branch-and-bound: la radice è l\'intero problema, un nodo un sottoproblema con un oggetto in più preso o lasciato fuori rispetto al genitore; un nodo è pieno nel colore del worker che lo ha ramificato, in oro quando è ammissibile, grigio quando è potato (il suo bound non supera la miglior soluzione) o inammissibile; l\'anello segna il nodo di questo evento e il colore inchiostro il suo cammino dalla radice, il bound è scritto accanto ai nodi di quel cammino (sotto ogni nodo di un albero piccolo) e nel suggerimento, e un albero grande raccoglie i sottoalberi fuori da quel cammino in un numero.')
+    : bi('The branch-and-bound tree: a node is a subproblem, filled in the color of its worker when branched, gold when feasible, grey when pruned or infeasible; the ring marks the node of this event.',
+      'L\'albero del branch-and-bound: un nodo è un sottoproblema, pieno nel colore del suo worker quando è ramificato, in oro se ammissibile, grigio se potato o inammissibile; l\'anello segna il nodo di questo evento.');
   art.querySelector('.panel').innerHTML = hasTree
-    ? `<figure class="treebox"><figcaption>${tcap}</figcaption><svg class="tree"></svg><p class="bounds"></p></figure>`
+    ? `<figure class="spanel treebox"><figcaption class="scap">${tcap}</figcaption><div class="sbox tree"></div><p class="bounds"></p></figure>`
     : `<p class="bounds"></p>`;
   const box = art.querySelector('.board');
   const view = GAME === 'queens' ? new QueensView(box, h.instance) : GAME === 'sudoku' ? new SudokuView(box, h.instance)
     : NARY ? new CellGridView(box, h.instance) : GAME === 'zebra' ? new ZebraView(box, h.instance)
     : GAME === 'knapsack' ? new KnapsackView(box, h.instance) : new BoardView(box, h.instance, MAPS[h.instance.id] || null);
-  return { file, tr, rep: new Replay(tr), view, art, hasTree, k: -1 };
+  const rep = new Replay(tr);
+  const panel = hasTree ? null : makePanel(art.querySelector('.panel'), tr, rep);
+  return { file, tr, rep, view, art, hasTree, k: -1, panel };
 }
 function updateLane(L, k) {
   if (L.k === k) return;
@@ -411,11 +420,12 @@ function updateLane(L, k) {
   L.art.querySelector('.counters').innerHTML = `<div><dt>${t('event', 'evento')}</dt><dd>${k} / ${L.tr.events.length}</dd></div>` +
     names.map(n => `<div><dt>${esc(n)}</dt><dd>${(L.rep.n[n] ?? 0) < 0 ? '–' : L.rep.n[n] ?? 0}</dd></div>`).join('');
   const e = k > 0 ? L.tr.events[k - 1] : null;
-  L.art.querySelector('.evline').textContent = describe(L.rep, e) + (k === L.tr.events.length && L.tr.result ? ' ' + t(`End: ${L.tr.result.status}.`, `Fine: ${L.tr.result.status}.`) : '');
+  L.art.querySelector('.evline').textContent = describe(L.rep, e) + (k === L.tr.events.length && L.tr.result ? ' ' + endText(L.tr.result.status) : '');
   L.art.classList.toggle('conflict', !!e && e.type === 'conflict');
   if (L.search) { updateSearchLane(L, prev); return; }
   L.view.show(L.rep.board(), L.rep.hot(), L.rep.focus());
-  if (L.hasTree) drawTree(L.art.querySelector('.tree'), L.rep.nodes, L.rep.node);
+  if (L.hasTree) drawTree(L.art.querySelector('.tree'), L.rep.nodes, L.rep.node, h.encoding ? h.encoding.symbols : []);
+  if (L.panel) L.panel.draw(k);
   const pd = h.solver.paradigm;
   L.art.querySelector('.bounds').textContent = L.hasTree || L.rep.lb !== null || L.rep.ub !== null
     ? t(`bound ${fmt(L.rep.lb)} · incumbent ${fmt(L.rep.ub)}`, `bound ${fmt(L.rep.lb)} · miglior soluzione ${fmt(L.rep.ub)}`)
@@ -444,6 +454,18 @@ function emptyBoard(inst) {   // the board of an instance with no trace yet
 }
 
 // a lane thrown away gives back its WebGL context
+// the end of a run in words: what the status of its result means
+const ENDS = {
+  sat: ['End: a solution is found.', 'Fine: trovata una soluzione.'],
+  optimal: ['End: an optimal solution, proved optimal.', 'Fine: una soluzione ottima, con la prova dell\'ottimalità.'],
+  feasible: ['End: a solution, with no proof that it is optimal.', 'Fine: una soluzione, senza la prova che sia ottima.'],
+  unsat: ['End: no solution exists, and the solver proved it.', 'Fine: non esiste nessuna soluzione, e il solutore lo ha dimostrato.'],
+  infeasible: ['End: no solution exists, and the solver proved it.', 'Fine: non esiste nessuna soluzione, e il solutore lo ha dimostrato.'],
+  limit: ['End: the run reached its limit of steps without a solution (a local search cannot prove that none exists).',
+    'Fine: l\'esecuzione ha raggiunto il suo limite di passi senza una soluzione (una ricerca locale non può dimostrare che non ne esiste nessuna).'],
+  'arc consistent': ['End: every arc is consistent, but cells are still open; propagation alone goes no further, and a search that branches is needed to finish.',
+    'Fine: ogni arco è consistente, ma restano celle aperte; la sola propagazione non va oltre, e per finire serve una ricerca che ramifichi.'] };
+const endText = st => t(...(ENDS[st] || [`End: ${st}.`, `Fine: ${st}.`]));
 function dispose(v) {
   if (!v) return;
   v.S.renderer.dispose();

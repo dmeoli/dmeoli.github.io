@@ -264,6 +264,8 @@ function texts() {
     o.textContent = !o.value ? t('none', 'nessuna') : { 'smspp-box-bundle': 'SMS++ BundleSolver', 'smspp-box-subgrad-volume': 'SMS++ SubGradSolver, Volume', 'smspp-box-subgrad': 'SMS++ SubGradSolver' }[o.value] + real;
 }
 onLang(() => { texts(); buildControls(); draw(); });
+// the 3D dual reads its colors when it draws: redraw it when the theme changes
+addEventListener('themechange', () => draw());
 
 texts();
 readParams(runs[0], true);

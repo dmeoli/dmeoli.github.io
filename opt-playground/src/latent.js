@@ -124,6 +124,10 @@ function follow(a) {
   const v = st.view;
   if (fresh) { Object.assign(v, t); st.probe = [t.cx, t.cy]; fresh = false; return; }
   v.cx += a * (t.cx - v.cx); v.cy += a * (t.cy - v.cy); v.R += a * (t.R - v.R);
+  // the square grows at once to hold the target one, and only shrinks slowly:
+  // early in training the codes spread by several times in a few frames, and a
+  // view that only eased toward them would leave them outside the plane
+  v.R = Math.max(v.R, Math.abs(t.cx - v.cx) + t.R, Math.abs(t.cy - v.cy) + t.R);
 }
 
 function decodeGrid() {
@@ -153,6 +157,7 @@ function idleWork() {
   if (running || !test) { idle = false; return; }
   const done = codeSlice(200);
   if (done) { follow(1); decodeGrid(); idle = false; refresh(); return; }
+  follow(0);                              // only grows, for the codes already redone
   refresh();
   requestAnimationFrame(idleWork);
 }

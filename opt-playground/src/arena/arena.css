@@ -38,19 +38,52 @@ canvas.strip { display: block; width: 100%; height: 34px; }
 .lane .workers, .bounds { font: 12px/1.4 'IBM Plex Mono', monospace; color: var(--ink-soft); margin: 0; }
 .wchip { white-space: nowrap; }
 .wchip::before { content: ''; display: inline-block; width: 9px; height: 9px; border-radius: 2px; background: var(--w); margin-right: 3px; vertical-align: -1px; }
-.treebox { margin: 0; }
-.treebox figcaption { font-size: 12px; }
-svg.tree { display: block; margin: 0 auto; max-width: 100%; height: auto; max-height: 180px; }
-.anode circle { fill: var(--lilac); stroke: var(--accent-2); stroke-width: 1.5; }
-.anode.branched circle { fill: var(--accent-2); }
-.anode.feasible circle { fill: var(--gold); stroke: var(--gold); }
-.anode.infeasible circle, .anode.pruned circle { fill: var(--rule); stroke: var(--ink-soft); }
-.anode.hot circle { stroke: var(--ink); stroke-width: 3; }
-.anode .tval { fill: var(--ink); }
-/* a node new at this step fades in */
-.anode.fresh { animation: anode-in .5s ease-out; }
-@keyframes anode-in { from { opacity: 0; } to { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .anode.fresh { animation: none; } }
+/* the panel of the structure a solver builds (panels.js, treeview.js): a
+   caption, a box that scrolls inside itself, and a line of counts */
+:root { --tree-bad: #c0281e; }
+:root[data-theme="dark"] { --tree-bad: #ff8a7a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --tree-bad: #ff8a7a; } }
+.spanel { margin: 0; min-width: 0; }
+.spanel .scap { font-size: 12px; line-height: 1.4; color: var(--ink-soft); margin-bottom: 4px; }
+.spanel .sbox { overflow: auto; max-height: 270px; min-height: 40px; border: 1px solid var(--rule); border-radius: 6px; overscroll-behavior: contain; }
+.spanel .sstat { font: 11px/1.4 'IBM Plex Mono', monospace; color: var(--ink-soft); margin: 3px 0 0; }
+.spanel .sstat:empty { display: none; }
+canvas.splot { display: block; width: 100%; }
+svg.tview, svg.pg { display: block; max-width: none; }
+.tn { transition: transform .45s ease-out; }
+.te { fill: none; stroke: var(--rule); stroke-width: 1.2; transition: d .45s ease-out; }
+.te.path { stroke: var(--ink-soft); stroke-width: 1.7; }
+.te.dead { stroke-dasharray: 2 3; }
+.te.sol { stroke: var(--gold); stroke-width: 2.4; }
+.tn circle { fill: var(--lilac); stroke: var(--accent-2); stroke-width: 1.2; }
+.tn.root circle { fill: var(--panel); stroke: var(--ink-soft); stroke-width: 1.5; }
+.tn.path circle { fill: var(--accent-2); stroke: var(--ink-soft); }
+.tn.dead circle, .tn.off circle { fill: var(--rule); stroke: var(--ink-soft); stroke-width: 1; }
+.tn.failed circle { stroke: var(--tree-bad); stroke-width: 2; }
+.tn.conflict circle { fill: var(--tree-bad); stroke: var(--tree-bad); }
+.tn.sol circle, .tn.goalnode circle { fill: var(--gold); stroke: var(--gold); }
+.tn.bb circle { fill: var(--lilac); stroke: var(--accent-2); }
+.tn.bb.branched circle { fill: var(--accent-2); }
+.tn.bb.feasible circle { fill: var(--gold); stroke: var(--gold); }
+.tn.bb.pruned circle, .tn.bb.infeasible circle { fill: var(--rule); stroke: var(--ink-soft); }
+.tn.hot circle { stroke: var(--ink); stroke-width: 3; }
+.tn .tl { font: 9.5px 'IBM Plex Mono', monospace; fill: var(--ink); paint-order: stroke; stroke: var(--panel); stroke-width: 3px; stroke-linejoin: round; }
+.tn.dead .tl, .tn.off .tl { fill: var(--ink-soft); }
+.tn.fold rect { fill: var(--panel); stroke: var(--ink-soft); stroke-width: 1; stroke-dasharray: 2 2; }
+.tn.fold .tcount { font: 9px 'IBM Plex Mono', monospace; fill: var(--ink-soft); text-anchor: middle; }
+.tarc { fill: none; stroke: var(--tree-bad); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.tarcl { font: 10px 'IBM Plex Mono', monospace; fill: var(--tree-bad); paint-order: stroke; stroke: var(--panel); stroke-width: 3px; }
+@media (prefers-reduced-motion: reduce) { .tn, .te { transition: none; } }
+/* the planning graph of GraphPlan */
+
+.pgf { font: 10px 'IBM Plex Mono', monospace; fill: var(--ink-soft); }
+.pgf.goal { fill: var(--gold); font-weight: 500; }
+.pgh { font: 500 11px 'IBM Plex Mono', monospace; fill: var(--ink); }
+.pgs { font: 9.5px 'IBM Plex Mono', monospace; fill: var(--ink-soft); }
+.pgd { fill: none; stroke: var(--rule); stroke-width: 1.2; }
+.pgd.on { fill: var(--accent-2); stroke: var(--accent-2); }
+.pgd.goal { fill: var(--gold); stroke: var(--gold); }
+.pgnow { fill: none; stroke: var(--ink); stroke-width: 1.2; }
 /* the timeline and the scoreboard, under the row and as wide as it */
 .timeline { display: flex; gap: 10px; align-items: center; margin: 0 0 6px; }
 #time { width: 100%; }

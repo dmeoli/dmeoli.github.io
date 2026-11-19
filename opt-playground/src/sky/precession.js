@@ -97,10 +97,19 @@ function makeSphere(stage) {
     if (m.isLineDashedMaterial) l.computeLineDistances();
     g.add(l); return l;
   };
+  // the text sits in an inner span, which the declutter pass below may shift
+  // away from the anchor (the outer div is placed by the CSS2DRenderer)
+  const RANK = { pole: 0, gamma: 1, star: 2, sign: 3, con: 4 };
   const label = (text, cls, pos, g) => {
-    const div = document.createElement('div'); div.className = 'lab3 ' + cls; div.textContent = text;
-    const o = new CSS2DObject(div); o.position.copy(pos); g.add(o); return o;
+    const div = document.createElement('div'); div.className = 'lab3 ' + cls;
+    const span = document.createElement('span'); span.textContent = text; span.style.display = 'inline-block';
+    div.appendChild(span);
+    const o = new CSS2DObject(div); o.position.copy(pos); o.userData.rank = RANK[cls] ?? 5; g.add(o); return o;
   };
+  // the leader lines of the labels that the declutter pass moved
+  const leaders = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  Object.assign(leaders.style, { position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', pointerEvents: 'none', overflow: 'visible' });
+  stage.appendChild(leaders);
   const dot = (pos, key, r, g) => { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 12, 8), mat(key, { point: true })); m.position.copy(pos); g.add(m); return m; };
 
   // fixed: the ecliptic, its constellations, the pole of the ecliptic, the
@@ -125,15 +134,14 @@ function makeSphere(stage) {
   line(path, mat('path', { alpha: 0.7 }), fixed);
 
   // moving: the pole and the equator of date, the equinox and the signs
-  let movingLabels = [];
+  let movingLabels = [], keep = [];   // keep: the dots of the pole and of γ, which no label covers
   function update(year) {
     for (const o of [...moving.children]) { moving.remove(o); if (o.geometry) o.geometry.dispose(); if (o.element) o.element.remove(); }
     const q = S.equinox(year), pole = eqToEcl(q.pole), g = eqToEcl(q.vec);
     const P = W3(pole), G = W3(g), Q = new THREE.Vector3().crossVectors(P, G).normalize();
     line(Array.from({ length: 160 }, (_, i) => { const a = i / 160 * 2 * Math.PI; return G.clone().multiplyScalar(Math.cos(a)).addScaledVector(Q, Math.sin(a)); }), mat('equ', { dashed: true }), moving, true);
     line([P.clone().multiplyScalar(-1.15), P.clone().multiplyScalar(1.15)], mat('axis'), moving);
-    dot(P, 'pole', 0.026, moving);
-    dot(G, 'gamma', 0.026, moving);
+    keep = [dot(P, 'pole', 0.026, moving), dot(G, 'gamma', 0.026, moving)];
     label(t('pole', 'polo'), 'pole', P.clone().multiplyScalar(1.22), moving);
     label('γ', 'gamma', G.clone().multiplyScalar(1.13), moving);
     // the tropical signs from the equinox, along the ecliptic
@@ -161,8 +169,68 @@ function makeSphere(stage) {
   controls.addEventListener('change', () => { dirty = true; });
   (function loop() {
     requestAnimationFrame(loop); controls.update();
-    if (dirty) { renderer.render(scene, camera); labels.render(scene, camera); dirty = false; }
+    if (dirty) { renderer.render(scene, camera); labels.render(scene, camera); declutter(); dirty = false; }
   })();
+
+  // labels never overlap: in order of importance (pole, equinox, stars, signs,
+  // constellations, the nearer first), each keeps its place if it is free, or
+  // moves to the nearest free place around its anchor, tied to it by a thin
+  // line; labels on the far side of the sphere are dimmed
+  function declutter() {
+    const box = stage.getBoundingClientRect(), W = box.width, H = box.height;
+    const eye = camera.position.clone().normalize(), wp = new THREE.Vector3();
+    const items = [];
+    scene.traverse(o => {
+      if (!o.isCSS2DObject) return;
+      const span = o.element.firstElementChild;
+      span.style.transform = '';
+      if (o.element.style.display === 'none') return;
+      o.getWorldPosition(wp);
+      const r = span.getBoundingClientRect();
+      const p = wp.clone().project(camera);
+      items.push({ o, span, far: wp.dot(eye) < -0.05, depth: p.z,
+        x: r.left - box.left, y: r.top - box.top, w: r.width, h: r.height,
+        ax: (p.x + 1) / 2 * W, ay: (1 - p.y) / 2 * H });
+    });
+    items.sort((a, b) => (a.o.userData.rank - b.o.userData.rank) || (a.far - b.far) || (a.depth - b.depth));
+    const placed = keep.map(m => { const p = m.position.clone().project(camera); return { x: (p.x + 1) / 2 * W - 6, y: (1 - p.y) / 2 * H - 6, w: 12, h: 12 }; });
+    const pad = 2, lines = [];
+    const hit = (x, y, w, h) => {
+      let area = 0;
+      for (const q of placed) {
+        const ix = Math.min(x + w, q.x + q.w) - Math.max(x, q.x) + pad, iy = Math.min(y + h, q.y + q.h) - Math.max(y, q.y) + pad;
+        if (ix > 0 && iy > 0) area += ix * iy;
+      }
+      return area;
+    };
+    for (const it of items) {
+      const { w, h } = it, cands = [[0, 0]];
+      for (const k of [1, 2, 3]) {
+        const sx = k * (w / 2 + 6), sy = k * (h + 2);
+        cands.push([0, -sy], [0, sy], [sx, 0], [-sx, 0], [sx, -sy], [-sx, -sy], [sx, sy], [-sx, sy]);
+      }
+      let best = null;
+      for (const [dx, dy] of cands) {
+        const x = it.x + dx, y = it.y + dy;
+        if (x < 0 || y < 0 || x + w > W || y + h > H) continue;
+        const a = hit(x, y, w, h);
+        if (!best || a < best.a) best = { dx, dy, a };
+        if (a === 0) break;
+      }
+      if (!best) best = { dx: 0, dy: 0, a: 0 };
+      const x = it.x + best.dx, y = it.y + best.dy;
+      placed.push({ x, y, w, h });
+      it.span.style.transform = best.dx || best.dy ? `translate(${best.dx}px, ${best.dy}px)` : '';
+      it.o.element.style.opacity = it.far ? '0.55' : '';
+      if (best.dx || best.dy) {
+        // from the anchor to the nearest point of the moved label
+        const ex = Math.max(x, Math.min(x + w, it.ax)), ey = Math.max(y, Math.min(y + h, it.ay));
+        if (Math.hypot(ex - it.ax, ey - it.ay) > 3) lines.push(`<line x1="${it.ax.toFixed(1)}" y1="${it.ay.toFixed(1)}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" opacity="${it.far ? 0.3 : 0.6}"/>`);
+      }
+    }
+    leaders.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    leaders.innerHTML = `<g stroke="${css('--ink-soft')}" stroke-width="0.8">${lines.join('')}</g>`;
+  }
   return { update, colours };
 }
 
