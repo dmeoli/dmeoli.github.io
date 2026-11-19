@@ -243,8 +243,12 @@ export class GridPlay {
         'Un clic su una delle 8 celle attorno alla tua ti porta lì (una diagonale costa √2 e non può tagliare l\'angolo di una cella bloccata); le frecce camminano dritto, Home, PgSu, Fine e PgGiù (o q, e, z, c) in diagonale.']
       : ['A click on one of the 4 cells next to yours walks there; the arrow keys do the same.',
         'Un clic su una delle 4 celle accanto alla tua ti porta lì; le frecce fanno lo stesso.'];
-    this.options = [{ id: 'hint', en: 'raise the cells you can step to', it: 'alza le celle dove puoi passare', on: true },
-      { id: 'follow', en: 'follow you with the camera', it: 'segui il cammino con la camera', on: true }];
+    // the camera follows the reader only on a grid too large to click from
+    // the view of the whole grid (the 64 by 64 of the traces, not the 16 by
+    // 16 of the reader's own)
+    this.big = Math.max(this.W, this.H) > 24;
+    this.options = [{ id: 'hint', en: 'raise the cells you can step to', it: 'alza le celle dove puoi passare', on: true }]
+      .concat(this.big ? [{ id: 'follow', en: 'follow you with the camera', it: 'segui il cammino con la camera', on: true }] : []);
   }
   tag() { this.view.mesh.userData.play = 'cell'; }
   reset() {
@@ -370,7 +374,7 @@ export class GridPlay {
   // the camera glides with the reader, close enough to click a cell, until
   // the option is turned off (back to the whole grid)
   follow(dt) {
-    const S = this.view.S, on = !!(this.opt && this.opt.follow);
+    const S = this.view.S, on = this.big && !!(this.opt && this.opt.follow);
     if (!on) {
       if (this.followed) { S.camera.position.copy(this.home.pos); S.controls.target.copy(this.home.target); S.controls.update(); this.followed = null; }
       return;

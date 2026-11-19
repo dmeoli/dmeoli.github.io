@@ -278,3 +278,40 @@ svg.cg, svg.ig { display: block; max-width: 100%; height: auto; }
 .ig .iedge.low { stroke-dasharray: 2 3; opacity: .5; }
 .ig .iedge.conf { stroke: var(--tree-bad); opacity: .8; }
 .ig .ichip.cside rect { stroke: var(--tree-bad); stroke-width: 1.6; }
+/* The run of the reader and the instances the reader draws (ownrun.js,
+   editor.js): the color of the lane "Your run", the two boxes under the
+   timeline, and the board of the editor, in the tokens of the theme. */
+:root { --lane-5: #a3456f; }
+:root[data-theme="dark"] { --lane-5: #ec8fb6; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --lane-5: #ec8fb6; } }
+details.ownrun, details.owndraw { margin: 12px 0 0; max-width: 980px; }
+details.ownrun > summary, details.owndraw > summary { cursor: pointer; font: 500 12px 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.ownrun .onote, .owndraw .onote { font-size: 14px; line-height: 1.5; color: var(--ink-soft); margin: 6px 0 8px; max-width: 80ch; }
+.ownrun .oform, .owndraw .dtools, .owndraw .dbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; font: 12px 'IBM Plex Mono', monospace; color: var(--ink); }
+.ownrun .oform label, .owndraw .dtools label { display: inline-flex; align-items: center; gap: 6px; }
+.ownrun .oform label[hidden], .owndraw [hidden] { display: none; }
+.ownrun .oform select { max-width: 100%; }
+.ownrun .oform input[type=number] { width: 6.5em; }
+.ownrun .ostatus, .owndraw .dmsg { font: 12px/1.45 'IBM Plex Mono', monospace; color: var(--ink); margin: 8px 0 0; min-height: 1.45em; max-width: 90ch; }
+.owndraw .dmsg.bad { color: var(--tree-bad); }
+.owndraw .dwrap { max-width: 420px; margin: 4px 0; }
+.owndraw .dsvg { display: block; width: 100%; height: auto; aspect-ratio: 1; border: 1px solid var(--rule); border-radius: 8px; background: var(--panel); cursor: crosshair; user-select: none; }
+.owndraw .dsvg:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.owndraw .dbg { fill: var(--panel); }
+.owndraw .dedge { stroke: var(--ink-soft); stroke-width: .014; cursor: pointer; }
+.owndraw .dedge:hover { stroke: var(--tree-bad); stroke-width: .024; }
+.owndraw .dedge.badl { stroke: var(--tree-bad); stroke-dasharray: .04 .03; pointer-events: none; }
+.owndraw .dv { fill: var(--lilac); stroke: var(--accent); stroke-width: .012; cursor: pointer; }
+.owndraw .dv.sel { fill: var(--gold); stroke: var(--ink); }
+.owndraw .dlab { fill: var(--ink); font: .06px 'IBM Plex Mono', monospace; text-anchor: middle; pointer-events: none; }
+.owndraw .dreg { fill: var(--ground); stroke: var(--rule); stroke-width: .006; cursor: pointer; }
+.owndraw .dreg:hover { fill: var(--lilac); }
+.owndraw .dreg.on { fill: var(--accent); fill-opacity: .55; stroke: var(--ink); }
+.owndraw .dcell { cursor: pointer; }
+.owndraw .dcell.free { fill: var(--ground); }
+.owndraw .dcell.wall { fill: var(--ink-soft); }
+.owndraw .dcell.st { fill: var(--accent); }
+.owndraw .dcell.go { fill: var(--gold); }
+.owndraw .dglyph { fill: var(--ground); font: 600 .6px 'IBM Plex Mono', monospace; text-anchor: middle; dominant-baseline: middle; pointer-events: none; }
+.owndraw .dshare input { width: 100%; max-width: 640px; font: 11px 'IBM Plex Mono', monospace; }
+@media (max-width: 700px) { .ownrun .oform label, .owndraw .dtools label { flex-wrap: wrap; } .ownrun .oform select { max-width: 92vw; } }

@@ -173,23 +173,31 @@ function domains(rep, nv, k) {
 // ---------------------------------------------------------------- constraint graph
 function constraintGraph(panel, tr, rep) {
   const h = tr.header, inst = h.instance, V = inst.vertices, nv = V.length, k = inst.colours.length;
-  const cfg = String(h.solver.config || ''), ev = tr.events;
+  // an own run of backtracking writes its choices as its config: its id names the inference
+  const cfg = /\s/.test(String(h.solver.config || '')) ? String(h.solver.id || '').replace(/^aima-/, '') : String(h.solver.config || ''), ev = tr.events;
   const fig = document.createElement('figure');
   fig.className = 'spanel cgraph';
   fig.innerHTML = '<figcaption class="scap"></figcaption><div class="sbox"></div><p class="sstat"></p><details class="smore"><summary></summary><p></p></details>';
   let S = null, built = 0, maps = null;
-  const hasArc = ev.some(e => e.arc);
+  const hasArc = ev.some(e => e.arc || e.arcs);
   // a variable of an arc, by name or by index
   const vix = x => (typeof x === 'number' ? (x >= 0 && x < nv ? x : -1) : V.indexOf(String(x)));
   // the arc revised by this event, when the trace names it: [X, Y] for a
   // binary constraint, [X, scope] (or { var, scope }) for a constraint on
   // more than two variables
-  const arcOf = e => {
-    const a = e && e.arc;
+  const arcOne = a => {
     if (!a) return null;
     const X = vix(Array.isArray(a) ? a[0] : a.var ?? a.x), Y = Array.isArray(a) ? a[1] : a.scope ?? a.with ?? a.y;
     if (X < 0) return null;
     return Array.isArray(Y) ? { X, scope: new Set(Y.map(vix)) } : { X, Y: vix(Y) };
+  };
+  // the arcs of an event: "arcs", parallel to its literals (MAC and forward
+  // checking revise several arcs in one event), or the one "arc"
+  const arcsOf = e => {
+    if (!e) return [];
+    const src = Array.isArray(e.arcs) ? e.arcs : e.arc ? [e.arc] : [], seen = new Set(), out = [];
+    for (const a of src) { const k = JSON.stringify(a); if (seen.has(k)) continue; seen.add(k); const o = arcOne(a); if (o) out.push(o); }
+    return out;
   };
   const need = inst.kind === 'map' && !inst.xy;
   const q = { fig, k: -1 };
@@ -273,10 +281,10 @@ function constraintGraph(panel, tr, rep) {
     const act = new Set([...shr, ...dec]); if (src >= 0) act.add(src);
     // a revision of AC-3 or GAC: one variable shrinks, by one of its
     // constraints, which the trace does not name
-    const arc = arcOf(e);
+    const arcs = arcsOf(e), arc = arcs.length ? arcs : null;
     const lone = !arc && e && e.type === 'propagate' && !dec.size && src < 0 && shr.size === 1 && /^(ac3|gac|bt-mac)$/.test(cfg) ? [...shr][0] : -1;
-    const isArc = (a, b) => arc && !arc.scope && ((arc.X === a && arc.Y === b) || (arc.X === b && arc.Y === a));
-    const arcHub = hb => arc && arc.scope && hb.scope.includes(arc.X) && hb.scope.length === arc.scope.size && hb.scope.every(v => arc.scope.has(v));
+    const isArc = (a, b) => arcs.some(q => !q.scope && ((q.X === a && q.Y === b) || (q.X === b && q.Y === a)));
+    const arcHub = hb => arcs.some(q => q.scope && hb.scope.includes(q.X) && hb.scope.length === q.scope.size && hb.scope.every(v => q.scope.has(v)));
     for (const ed of S.E) {
       const a = ed.a, b = ed.b;
       const cls = isArc(a, b) ? 'gold' : dec.has(a) || dec.has(b) ? (act.has(a) && act.has(b) && !(dec.has(a) && dec.has(b)) ? 'ink' : 'gold')
@@ -306,12 +314,13 @@ function constraintGraph(panel, tr, rep) {
       `Un nodo è una variabile, con i valori rimasti nel suo dominio (il suo valore su fondo lilla quando ne resta uno); ${hubs ? 'una linea o un quadratino' : 'una linea'} è un vincolo. In oro la variabile decisa${hasArc ? ' o l\'arco revisionato' : ''}, color inchiostro i domini che l'evento riduce, in rosso quello rimasto vuoto.`);
     const where = t(`The nodes stand ${S.M.grid ? 'on the cells of the board' : inst.kind === 'map' || inst.kind === 'planar' ? 'on the regions of the map' : inst.kind === 'zebra' ? 'on a row per group of attributes, whose members must stand in different houses (the clues in accent)' : inst.kind === 'queens' ? 'on a circle, a column of the board each' : 'where a force layout puts them'}${hubs ? ', and a small square is a constraint on more than two variables, joined to every variable of its scope' : ''}; gold lines are the constraints of the variable decided, ink lines those that join the domains shrunk to the decision.`,
       `I nodi stanno ${S.M.grid ? 'sulle celle della tavola' : inst.kind === 'map' || inst.kind === 'planar' ? 'sulle regioni della mappa' : inst.kind === 'zebra' ? 'su una riga per gruppo di attributi, i cui membri devono stare in case diverse (gli indizi in colore)' : inst.kind === 'queens' ? 'su un cerchio, una colonna della scacchiera ciascuno' : 'dove li mette un layout a forze'}${hubs ? ', e un quadratino è un vincolo su più di due variabili, collegato a ogni variabile del suo ambito' : ''}; le linee in oro sono i vincoli della variabile decisa, quelle color inchiostro i vincoli che collegano i domini ridotti alla decisione.`);
+    const named = t(` The trace names the arc of each revision, drawn in gold${cfg === 'ac3' || cfg === 'gac' ? '' : ' (all the arcs revised by the event, and on a domain emptied the arc that emptied it)'}: the variable that shrinks against the constraint that removes its values.`,
+      ` La traccia nomina l'arco di ogni revisione, disegnato in oro${cfg === 'ac3' || cfg === 'gac' ? '' : ' (tutti gli archi revisionati dall\'evento, e su un dominio svuotato l\'arco che l\'ha svuotato)'}: la variabile che si riduce rispetto al vincolo che ne toglie i valori.`);
     const how = cfg === 'bt-fc'
       ? t(' Forward checking removes, after each decision, the values of the neighbors that conflict with it, so the ink lines are exactly the constraints it checked.',
-        ' Il forward checking toglie, dopo ogni decisione, i valori dei vicini in conflitto con essa, quindi le linee color inchiostro sono esattamente i vincoli che ha controllato.')
+        ' Il forward checking toglie, dopo ogni decisione, i valori dei vicini in conflitto con essa, quindi le linee color inchiostro sono esattamente i vincoli che ha controllato.') + (hasArc ? named : '')
       : (cfg === 'ac3' || cfg === 'bt-mac' || cfg === 'gac') && hasArc
-      ? t(' The trace names the arc of each revision, drawn in gold: the variable that shrinks against the constraint that removes its values.',
-        ' La traccia nomina l\'arco di ogni revisione, disegnato in oro: la variabile che si riduce rispetto al vincolo che ne toglie i valori.')
+      ? named
       : cfg === 'ac3' || cfg === 'bt-mac' || cfg === 'gac'
       ? t(` The trace gives the values that ${cfg === 'gac' ? 'each revision of GAC' : cfg === 'ac3' ? 'each revision of AC-3' : 'each call of MAC (all its revisions together)'} removes but not the arc revised, ${cfg === 'gac' ? 'a variable X against one constraint of its scope' : '(X, Y)'}: the variable that shrinks is X, and when it is alone its constraints are dashed, since the one revised is among them; a field "arc" on each propagate event would let the page mark it.`,
         ` La traccia dà i valori che ${cfg === 'gac' ? 'ogni revisione di GAC' : cfg === 'ac3' ? 'ogni revisione di AC-3' : 'ogni chiamata di MAC (tutte le sue revisioni insieme)'} toglie ma non l'arco revisionato, ${cfg === 'gac' ? 'una variabile X rispetto a un vincolo del suo ambito' : '(X, Y)'}: la variabile che si riduce è X, e quando è sola i suoi vincoli sono tratteggiati, perché quello revisionato è fra loro; un campo "arc" su ogni evento propagate permetterebbe alla pagina di segnarlo.`)
@@ -521,7 +530,8 @@ function implicationGraph(panel, tr) {
     fig.querySelector('.scap').textContent = t('A row per decision level, its decision in gold; the level of the conflict in full, in the order of the trail, up to the conflict (red), with the 1UIP ringed and the cut dashed.',
       'Una riga per livello di decisione, con la decisione in oro; il livello del conflitto per intero, nell\'ordine della traccia, fino al conflitto (in rosso), con il 1UIP cerchiato e il taglio tratteggiato.');
     fig.querySelector('.smore summary').textContent = t('more', 'di più');
-    const full = hasWhy && hasClause;
+    // a trace with the reasons and no conflict at all is as complete as it can be
+    const full = hasWhy && (hasClause || !ev.some(e => e.type === 'conflict'));
     fig.querySelector('.smore p').textContent = (full
       ? t('An arrow goes from each literal of the reason of a literal (the clause that forced it) to that literal, and from the literals of the clause falsified to the conflict; a literal of a lower level starts from the line of its level. The 1UIP comes from resolving the clause falsified with the reasons, backward along the trail, until one literal of the level of the conflict is left: lilac the literals on the side of the reasons, left of the cut, and red-edged those it implies, on the side of the conflict. ',
         'Una freccia va da ogni letterale della ragione di un letterale (la clausola che lo ha forzato) a quel letterale, e dai letterali della clausola falsificata al conflitto; un letterale di un livello inferiore parte dalla riga del suo livello. Il 1UIP si ottiene risolvendo la clausola falsificata con le ragioni, all\'indietro lungo la traccia, finché resta un solo letterale del livello del conflitto: in lilla i letterali dalla parte delle ragioni, a sinistra del taglio, e bordati di rosso quelli che implica, dalla parte del conflitto. ')

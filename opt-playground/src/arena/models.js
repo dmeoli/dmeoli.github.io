@@ -69,16 +69,18 @@ export function decisionModel(tr, label) {
 }
 
 // ---------------------------------------------------------------- search tree
-// The states expanded by a state-space search, and, when the trace and the
-// instance determine it exactly, the parent of each: for a best-first graph
+// The states expanded by a state-space search, and the parent of each: the
+// one the trace gives (fields id and parent of each expand event, and
+// ancestors in a sampled trace), or, for a trace without them, the one that
+// the trace and the instance determine exactly: for a best-first graph
 // search on one worker (A*, uniform cost, breadth-first, greedy), the first
 // state expanded one move away whose g plus the cost of the move is the g of
 // the state, which is the parent that these searches keep (they change a
 // parent only for a strictly cheaper path); for a depth-first search (IDA*,
 // RBFS), the deepest state of the current path with that property. The tree
-// is not drawn, and the reason is said, when the recorder kept only a sample
-// of the expansions, when several workers expand at once, or when the game
-// has no successors in the page.
+// is not drawn, and the reason is said, when a trace without parents keeps
+// only a sample of the expansions, when several workers expand at once
+// (HDA*), or when the game has no successors in the page.
 export function searchModel(tr) {
   const h = tr.header, game = h.game, alg = (h.solver.config && h.solver.config.algorithm) || '';
   const ev = tr.events, D = domain(game, h), workers = h.workers || 1;
@@ -97,6 +99,34 @@ export function searchModel(tr) {
   });
   const total = exps.length ? (ev[exps[exps.length - 1].i].n || {}).expanded : 0;
   const sampled = exps.length > 0 && total !== exps.length;
+  // a trace that gives with each expansion its id and the id of its parent
+  // (and, when sampled, the expansions on its path from the start that no
+  // earlier event gives) determines the tree with no inference: the nodes
+  // in the order they appear, an ancestor just before the expansion that
+  // carries it, a root (parent null) of IDA* after the first starting a new
+  // iteration
+  const exact = exps.length > 0 && ev.every(e => e.type !== 'expand' || (e.id !== undefined && e.parent !== undefined));
+  if (exact) {
+    const nkey = a => (a.key !== undefined && a.key !== null ? String(a.key) : keyOf(a));
+    const nodes = [], seen = new Set(), ida = /idastar/.test(alg), itOf = new Map();
+    let it = 0, roots = 0, th = null;
+    ev.forEach((e, i) => {
+      if (e.type === 'threshold') th = e.g;
+      if (e.type !== 'expand') return;
+      for (const a of (e.ancestors || []).concat([e])) {
+        if (seen.has(a.id)) continue;
+        seen.add(a.id);
+        if (ida && a.parent === null && roots++ > 0) it++;
+        nodes.push({ i, id: a.id, p: a.parent, g: a.g, h: a.h, f: a.f, w: a.w || 0, key: nkey(a), iter: it, thr: th, anc: a !== e });
+      }
+      itOf.set(i, it);
+    });
+    exps.forEach(x => { x.iter = itOf.get(x.i); });
+    const path = [];
+    ev.forEach((e, i) => { if (e.type === 'path') path.push({ i, key: /^backward/.test(alg) ? null : pathKeyOf(e) }); });
+    return { game, alg, mode: /^(idastar|rbfs)$/.test(alg) ? 'dfs' : 'graph', exact: true, why: null, nodes, exps, path, workers, sampled, total,
+      kept: exps.length, iters: it + 1, anc: nodes.length - exps.length };
+  }
   let mode = 'layers', why = null;
   if (!D) why = 'nosucc';
   else if (sampled) why = 'sampled';

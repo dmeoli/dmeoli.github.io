@@ -220,7 +220,10 @@ export class PuzzleView {
 export class GridView {
   constructor(box, inst) {
     this.inst = inst;
-    this.S = stage3d(box, { camera: [0, -1.95, 2.1], target: [0, 0.05, 0], aspect: 0.8,
+    // a little farther on a small grid, whose taller cells and cones at the
+    // near corners would otherwise leave the picture
+    const f = Math.max(inst.width, inst.height) <= 24 ? 1.22 : 1.1;
+    this.S = stage3d(box, { camera: [0, -1.95 * f, 2.1 * f], target: [0, 0.05, 0], aspect: 0.8,
       onTheme: () => this.build(), onFrame: dt => this.frame(dt) });
     this.S.controls.enableDamping = !reduced();
     this.build();

@@ -27,6 +27,8 @@ import { PancakeView, TopSpinView } from './stacks.js';
 import { PlayLane } from './play.js';
 import { attachCode } from './pseudocode.js';
 import { Predict, arenaQuestion, arenaNote } from './predict.js';
+// the runs of the reader and the instances the reader draws (ownrun.js)
+import * as OWN from './ownrun.js';
 
 const $ = id => document.getElementById(id);
 const GAME = document.body.dataset.game;
@@ -120,13 +122,14 @@ function showInstControls() {
   if (LISTED) {
     const ids = [...new Set(INDEX.map(x => x.instance))];
     $('inst').innerHTML = ids.map(id => `<option value="${id}">${esc(INSTNAMES[id] ? t(...INSTNAMES[id]) : id)}</option>`).join('');
-    if (!ids.includes(STATE.inst)) STATE.inst = ids[0] || '';
+    if (!ids.includes(STATE.inst) && !OWN.instOption($('inst'), STATE.inst)) STATE.inst = ids[0] || '';
     $('inst').value = STATE.inst;
     return;
   }
   if ($('inst').innerHTML !== COLOURINST) $('inst').innerHTML = COLOURINST;
   if (!STATE.inst) STATE.inst = 'australia';
   const planar = STATE.inst.startsWith('planar-');
+  OWN.instOption($('inst'), STATE.inst);
   $('inst').value = planar ? 'planar' : STATE.inst;
   $('planarbox').hidden = !planar;
   if (planar) { const [, l, s] = STATE.inst.split('-'); $('level').value = l; $('seed').value = s; }
@@ -139,7 +142,7 @@ function model(id) {
   if (!SAT) return;
   const box = $('model'), req = ++modelReq;
   if (!worker) {
-    worker = new Worker('src/arena/pyworker.js');
+    worker = OWN.worker();
     worker.onerror = e => { info.errors.push('worker: ' + (e.message || 'failed')); box.dataset.state = 'error'; $('mstatus').textContent = t('Python could not be loaded in this browser.', 'Non è stato possibile caricare Python in questo browser.'); };
     worker.onmessage = e => {
       const m = e.data;
@@ -155,7 +158,7 @@ function model(id) {
   box.dataset.state = 'loading';
   $('mstatus').innerHTML = bi('Loading Python (Pyodide) and the modules of aima-python in the page...',
     'Caricamento di Python (Pyodide) e dei moduli di aima-python nella pagina...');
-  worker.postMessage({ id: req, instance: id });
+  worker.postMessage({ id: req, instance: id, custom: OWN.custom(id) });
 }
 let lastModel = null;
 const esc = s => String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
@@ -338,7 +341,7 @@ function laneOptions(sel, id, chosen) {
 function laneSelects() {
   const id = STATE.inst, n = tracesFor(id).length;
   $('laneselects').querySelectorAll('select').forEach((s, i) => { laneOptions(s, id, STATE.lanes[i]); s.disabled = !n; });
-  if ($('nolanes')) $('nolanes').hidden = n > 0;
+  if ($('nolanes')) $('nolanes').hidden = n > 0 || OWN.isCustom(id);
 }
 
 // the five rows of a lane, the same in every game
@@ -537,7 +540,7 @@ function updateLane(L, k) {
 
 let boardOnly = null;
 function emptyBoard(inst) {   // the board of an instance with no trace yet
-  if (lanes.length || inst.id !== STATE.inst) return;
+  if (lanes.length || inst.id !== STATE.inst || OWN.isCustom(inst.id)) return;
   dispose(boardOnly);
   $('lanes').innerHTML = '';
   const art = laneShell(t('The instance', 'L\'istanza'), '');
@@ -571,7 +574,7 @@ async function buildPlay(trs, req) {
   const m = PLAY[GAME];
   const Game = m && await import(m[0]).then(x => x[m[1]], err => { info.errors.push(m[0] + ': ' + err.message); return null; });
   if (!Game || req !== loadReq) return;
-  let tr = trs.find(Boolean);
+  let tr = trs.find(Boolean) || OWN.playTrace(STATE.inst);
   if (!tr) {
     const x = tracesFor(STATE.inst)[0];
     tr = x ? await openTrace({ url: BASE + x.file }).catch(() => null) : null;
@@ -602,6 +605,12 @@ async function loadLanes() {
     L.art.classList.add('lc'); L.art.style.setProperty('--lane', `var(--lane-${L.slot + 1})`);
     lanes.push(L);
   });
+  // the run of the reader, after the lanes of the traces (ownrun.js)
+  for (const o of OWN.lanes(STATE.inst)) {
+    const L = buildLane(o.file, o.tr);
+    L.slot = 4; L.art.classList.add('lc'); L.art.style.setProperty('--lane', 'var(--lane-5)');
+    lanes.push(L); OWN.decorate(L);
+  }
   // the pseudocode under each lane and the box of its questions (pseudocode.js, predict.js)
   if (PRED) PRED.pend.clear();
   for (const L of lanes) { const pn = L.art.querySelector('.panel'); L.code = attachCode(pn, L.tr.header); if (PRED) PRED.attach(L, pn, arenaNote(L.tr)); }
@@ -732,8 +741,8 @@ function charts(real) {
 }
 
 // ---------------------------------------------------------------- wiring
-function chooseInstance() {
-  STATE.inst = instId();
+function chooseInstance(id = instId()) {
+  STATE.inst = id;
   showInstControls();
   STATE.lanes = tracesFor(STATE.inst).map(x => x.file).slice(0, MAXLANES);
   laneSelects(); writeHash(); model(STATE.inst); loadLanes();
@@ -751,6 +760,7 @@ function texts() {
 
 async function main() {
   readHash();
+  await OWN.prepare(STATE.inst);
   if (!LISTED) COLOURINST = $('inst').innerHTML;
   STATE.alignAuto = !new URLSearchParams(location.hash.slice(1)).get('align');
   const [idx, maps] = await Promise.all([fetch(BASE + 'index.json').then(r => r.json()).catch(() => ({ traces: [] })),
@@ -771,7 +781,7 @@ async function main() {
   if (!STATE.lanes.length) STATE.lanes = tracesFor(STATE.inst).map(x => x.file).slice(0, MAXLANES);
   laneSelects();
   $('inst').onchange = () => { if (!LISTED) $('planarbox').hidden = $('inst').value !== 'planar'; chooseInstance(); };
-  if (!LISTED) $('level').onchange = $('seed').onchange = chooseInstance;
+  if (!LISTED) $('level').onchange = $('seed').onchange = () => chooseInstance();
   $('align').onchange = () => { STATE.align = $('align').value; STATE.alignAuto = false; writeHash(); stop(); for (const L of lanes) L.k = -1; setPos(0); };
   $('speed').onchange = () => { STATE.speed = +$('speed').value; };
   $('time').oninput = () => { stop(); setPos(+$('time').value); };
@@ -780,6 +790,8 @@ async function main() {
   PRED = info.predict = new Predict(document.querySelector('.controls .settings'));
   $('play').onclick = () => (STATE.playing ? stop() : play());
   onLang(texts);
+  OWN.init({ game: GAME, inst: () => STATE.inst, reload: loadLanes, lanes: () => lanes,
+    choose: async id => { await OWN.prepare(id); chooseInstance(id); } });
   writeHash();
   model(STATE.inst);
   await loadLanes();

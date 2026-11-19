@@ -124,7 +124,9 @@ const WHY = {
   noparent: () => ['some state has no state expanded before it one move away with the right g', 'qualche stato non ha, fra quelli espansi prima, uno stato a una mossa di distanza con il g giusto'],
   nostate: () => ['some expansion carries no state', 'qualche espansione non porta lo stato'],
   alg: () => ['the page does not know how this algorithm chooses a parent', 'la pagina non sa come questo algoritmo sceglie un genitore'] };
-const ALG = { astar: 'A*', ucs: ['uniform cost', 'costo uniforme'], bfs: ['breadth-first search', 'ricerca in ampiezza'], greedy: ['greedy best-first', 'best-first greedy'] };
+const ALG = { astar: 'A*', wastar: ['weighted A*', 'A* pesato'], ucs: ['uniform cost', 'costo uniforme'], bfs: ['breadth-first search', 'ricerca in ampiezza'], greedy: ['greedy best-first', 'best-first greedy'],
+  'forward-astar': ['ForwardPlan with A*', 'ForwardPlan con A*'], 'backward-astar': ['BackwardPlan with A*', 'BackwardPlan con A*'],
+  'forward-ucs': ['ForwardPlan with uniform cost', 'ForwardPlan con costo uniforme'] };
 function searchPanel(box, tr) {
   const M = searchModel(tr), S = shell(box, 'stree'), ev = tr.events, h = tr.header, game = h.game;
   const nsearch = (() => { const i = ev.findIndex(e => e.type === 'path'); return i < 0 ? ev.length : i; })();
@@ -132,55 +134,80 @@ function searchPanel(box, tr) {
   const name = x => (game === 'grid' ? `(${+x.key % W}, ${Math.floor(+x.key / W)})` : game === 'romania' ? x.key : '');
   const p = { el: S.fig, k: -1 };
   const dfs = M.mode === 'dfs', ida = /idastar/.test(M.alg);
+  // the nodes in the order they appear: those the trace gives (an id and a
+  // parent per expansion, and the ancestors of a sampled trace), or the
+  // expansions with the parent inferred by models.js
+  const src = M.exact ? M.nodes : M.exps.map((x, j) => ({ ...x, id: j, p: x.p >= 0 ? x.p : null, anc: false }));
   p.draw = k => {
     p.k = k;
-    const nx = below(M.exps, k, x => x.i), np = below(M.path, k, x => x.i), last = nx - 1;
+    const nx = below(M.exps, k, x => x.i), nn = below(src, k, x => x.i), np = below(M.path, k, x => x.i);
     if (M.mode === 'layers') { layers(S, M, k, nx, np); return; }
-    const it = last >= 0 ? M.exps[last].iter : 0;
+    const it = nn > 0 ? src[nn - 1].iter : 0;
     const nodes = new Map(), order = [];
-    let cur = last >= 0 ? last : null;
+    let cur = nn > 0 ? src[nn - 1].id : null;
     const byKey = new Map();
-    for (let j = 0; j < nx; j++) {
-      const x = M.exps[j];
+    for (let j = 0; j < nn; j++) {
+      const x = src[j];
       if (dfs && x.iter !== it) continue;
-      byKey.set(x.key, j);
-      nodes.set(j, { id: j, p: x.p >= 0 ? x.p : null, label: game === 'romania' ? x.key : String(+(+x.f).toPrecision(4)),
-        title: `${name(x) ? name(x) + ': ' : ''}g ${fmt(x.g)}, h ${fmt(x.h)}, f ${fmt(x.f)}` });
-      order.push(j);
+      byKey.set(x.key, x.id);
+      nodes.set(x.id, { id: x.id, p: x.p, label: game === 'romania' ? x.key : String(+(+x.f).toPrecision(4)),
+        title: `${name(x) ? name(x) + ': ' : ''}g ${fmt(x.g)}, h ${fmt(x.h)}, f ${fmt(x.f)}` + (x.anc ? t(' (on the path of an expansion kept)', ' (sul cammino di un\'espansione tenuta)') : '') });
+      order.push(x.id);
     }
-    // the solution path, once the search is over: the state of the last path
-    // event and its ancestors (a goal that was never expanded hangs under
-    // the state before it)
+    // the solution path, once the search is over: the deepest state of the
+    // path in the tree and its ancestors, and under it the states of the
+    // path that the tree does not hold (the goal, reached but not expanded,
+    // or, in a sampled trace, the states whose expansion was not kept)
     const sol = new Set();
     if (np > 0) {
-      let at = byKey.get(M.path[np - 1].key);
-      if (at === undefined && np > 1) {
-        const pre = byKey.get(M.path[np - 2].key);
-        if (pre !== undefined) {
-          nodes.set('goal', { id: 'goal', p: pre, label: t('goal', 'obiettivo'), title: t('the goal, reached but not expanded', 'l\'obiettivo, raggiunto ma non espanso') });
-          order.push('goal'); at = 'goal';
+      let q = np - 1;
+      while (q >= 0 && !byKey.has(M.path[q].key)) q--;
+      let at = q >= 0 ? byKey.get(M.path[q].key) : undefined;
+      if (at !== undefined) {
+        for (let j = q + 1; j < np; j++) {
+          const id = 'goal' + j, last = j === np - 1;
+          nodes.set(id, { id, p: at, label: last ? t('goal', 'obiettivo') : '',
+            title: last ? t('the goal, reached but not expanded', 'l\'obiettivo, raggiunto ma non espanso') : t('a state of the solution path whose expansion the trace does not keep', 'uno stato del cammino soluzione la cui espansione la traccia non tiene') });
+          order.push(id); at = id;
         }
+        cur = at;
+        for (let id = at; id !== null && id !== undefined && nodes.has(id); id = nodes.get(id).p) sol.add(id);
       }
-      if (at !== undefined) { cur = at; for (let id = at; id !== null && id !== undefined; id = nodes.get(id).p) sol.add(id); }
     }
     const stack = new Set();
     for (let id = cur; id !== null && id !== undefined && nodes.has(id); id = nodes.get(id).p) stack.add(id);
     for (const [id, n] of nodes) {
-      n.cls = 'sn' + (id === 'goal' ? ' goalnode' : '') + (sol.has(id) ? ' sol path' : stack.has(id) ? ' path' : dfs ? ' off' : '');
+      n.cls = 'sn' + (String(id).startsWith('goal') ? ' goalnode' : '') + (sol.has(id) ? ' sol path' : stack.has(id) ? ' path' : dfs ? ' off' : '');
       n.ecls = sol.has(id) ? 'sol' : stack.has(id) ? 'path' : dfs ? 'dead' : '';
     }
     const r = renderTree(S.box, { nodes, order, cur, small: true });
-    const parts = [t(`expanded ${nx}`, `espansi ${nx}`)];
+    const last = nx > 0 ? M.exps[nx - 1] : null, ne = last ? ((ev[last.i].n || {}).expanded ?? nx) : 0;
+    const parts = [t(`expanded ${ne}`, `espansi ${ne}`)];
+    if (M.exact && M.sampled) parts.push(t(`in the trace ${nx} kept, ${nn - nx} on their paths`, `nella traccia ${nx} tenuti, ${nn - nx} sui loro cammini`));
     if (dfs && ida) {
-      const x = M.exps[Math.max(0, last)];
-      parts.push(t(`iteration ${it + 1}`, `iterazione ${it + 1}`) + (x && x.thr !== null ? t(`, threshold ${fmt(x.thr)}`, `, soglia ${fmt(x.thr)}`) : ''),
-        t(`this iteration ${order.length}`, `in questa iterazione ${order.length}`));
+      parts.push(t(`iteration ${it + 1}`, `iterazione ${it + 1}`) + (last && last.thr !== null ? t(`, threshold ${fmt(last.thr)}`, `, soglia ${fmt(last.thr)}`) : ''),
+        t(`in this iteration ${order.length}`, `in questa iterazione ${order.length}`));
     }
     if (r.folded) parts.push(t(`${r.drawn} drawn, ${r.folded} folded`, `${r.drawn} disegnati, ${r.folded} raccolti`));
     if (k > nsearch) parts.push(t('gold: the solution path', 'in oro: il cammino soluzione'));
     S.stat.textContent = parts.join(' · ');
-    const lab = game === 'romania' ? 'its city' : 'its f = g + h', labIt = game === 'romania' ? 'la sua città' : 'il suo f = g + h';
+    const fx = M.alg === 'wastar' ? 'f = g + w h' : 'f = g + h';
+    const lab = game === 'romania' ? 'its city' : `its ${fx}`, labIt = game === 'romania' ? 'la sua città' : `il suo ${fx}`;
     const a = ALG[M.alg], an = Array.isArray(a) ? t(...a) : a || M.alg;
+    if (M.exact) {
+      const smp = M.sampled ? t(` The recorder kept ${M.kept} of the ${M.total} expansions, evenly spaced, together with the states on their paths from the start, so the tree drawn is the part of the tree of the run that joins them to the root.`,
+        ` La registrazione ha tenuto ${M.kept} delle ${M.total} espansioni, a intervalli regolari, insieme agli stati sui loro cammini dalla partenza, quindi l'albero disegnato è la parte dell'albero dell'esecuzione che le collega alla radice.`) : '';
+      S.cap.textContent = (dfs
+        ? (ida ? t(`The tree of the depth-first search of IDA* in its current iteration: a node is a state expanded, labeled by ${lab}, under the state of the current path it was reached from, as the solver records it with each expansion; the ring is the state of this event and its path from the root is ink, grey the branches already left (IDA* keeps only the path, so it forgets them, and every iteration, with a larger threshold on f, starts again from the root).`,
+            `L'albero della ricerca in profondità di IDA* nella sua iterazione corrente: un nodo è uno stato espanso, etichettato con ${labIt}, sotto lo stato del cammino corrente da cui è stato raggiunto, come lo registra il solutore a ogni espansione; l'anello è lo stato di questo evento e il suo cammino dalla radice è color inchiostro, grigi i rami già lasciati (IDA* tiene solo il cammino, quindi li dimentica, e ogni iterazione, con una soglia più alta su f, riparte dalla radice).`)
+          : t(`The tree of the recursive calls of RBFS: a node is a state expanded, labeled by ${lab}, under the expansion of the call that reached it, as the solver records it; the ring is the state of this event and its path from the root is ink, grey the branches RBFS has left (it keeps only the path and the best f of each sibling, so it expands again a branch it comes back to, and that branch is drawn again).`,
+            `L'albero delle chiamate ricorsive di RBFS: un nodo è uno stato espanso, etichettato con ${labIt}, sotto l'espansione della chiamata che lo ha raggiunto, come la registra il solutore; l'anello è lo stato di questo evento e il suo cammino dalla radice è color inchiostro, grigi i rami che RBFS ha lasciato (tiene solo il cammino e il miglior f di ogni fratello, quindi espande di nuovo un ramo a cui ritorna, e quel ramo è disegnato di nuovo).`))
+        : /^backward/.test(M.alg) ? t(`The search tree of ${an}: a node is a subgoal regressed, labeled by ${lab}, under the subgoal it was regressed from, as the solver records it with each expansion; the ring is the subgoal of this event and ink its path from the goal; hover over a node for g, h and f.`,
+          `L'albero di ricerca di ${an}: un nodo è un sottoobiettivo regredito, etichettato con ${labIt}, sotto il sottoobiettivo da cui è stato regredito, come lo registra il solutore a ogni espansione; l'anello è il sottoobiettivo di questo evento e color inchiostro il suo cammino dall'obiettivo; passa col puntatore su un nodo per g, h e f.`)
+        : t(`The search tree of ${an}: a node is a state expanded, labeled by ${lab}, under the expansion that generated it along its path of cost g, as the solver records it with each expansion; the ring is the state of this event, ink its path from the start, gold at the end the solution path; hover over a node for g, h and f.`,
+          `L'albero di ricerca di ${an}: un nodo è uno stato espanso, etichettato con ${labIt}, sotto l'espansione che lo ha generato lungo il suo cammino di costo g, come la registra il solutore a ogni espansione; l'anello è lo stato di questo evento, color inchiostro il suo cammino dalla partenza, in oro alla fine il cammino soluzione; passa col puntatore su un nodo per g, h e f.`)) + smp;
+      return;
+    }
     S.cap.textContent = dfs
       ? (ida ? t(`The tree of the depth-first search of IDA* in its current iteration: a node is a state expanded, labeled by ${lab}, under the state it was reached from; the ring is the state of this event and its path from the root is ink, grey the branches already left (IDA* keeps only the path, so it forgets them, and every iteration, with a larger threshold on f, starts again from the root). The parent is exact: the deepest state of the path one move away with g smaller by the cost of the move.`,
           `L'albero della ricerca in profondità di IDA* nella sua iterazione corrente: un nodo è uno stato espanso, etichettato con ${labIt}, sotto lo stato da cui è stato raggiunto; l'anello è lo stato di questo evento e il suo cammino dalla radice è color inchiostro, grigi i rami già lasciati (IDA* tiene solo il cammino, quindi li dimentica, e ogni iterazione, con una soglia più alta su f, riparte dalla radice). Il genitore è esatto: lo stato più profondo del cammino a una mossa di distanza il cui g, più il costo della mossa, è il g dello stato.`)
@@ -297,6 +324,7 @@ function domainsPanel(box, tr, rep) {
   const gone = new Uint8Array(nv * k + 1), left = [];
   let n = nv * k;
   for (const e of tr.events) { for (const l of e.lits || []) if (l < 0 && !gone[-l]) { gone[-l] = 1; n--; } left.push(n); }
+  const hasArc = tr.events.some(e => e.arc || e.arcs);
   const p = { el: S.fig, k: -1 };
   p.draw = kk => {
     p.k = kk;
@@ -320,8 +348,13 @@ function domainsPanel(box, tr, rep) {
     g.restore();
     g.fillText(t('values left in all', 'valori rimasti in tutto'), pad.l, H - 5);
     const cur = kk > 0 ? left[kk - 1] : tot;
-    S.stat.textContent = t(`values left ${cur} of ${tot} · solved variables gold`, `valori rimasti ${cur} su ${tot} · variabili risolte in oro`);
-    S.cap.textContent = t('AC-3 makes no decision, so it builds no tree: it only removes the values that no value of a neighbor supports. A bar per variable, as tall as the values left in its domain (gold when one is left), ink for the domains this event shrinks, and under them the values left in all. The trace gives the values removed but not the arc (X, Y) that removed them, so the queue of arcs cannot be drawn; a field "arc" on each propagate event would allow it.',
+    const arc = e && (e.arc || (Array.isArray(e.arcs) && e.arcs.length ? e.arcs[0] : null));
+    const arcTxt = Array.isArray(arc) && !Array.isArray(arc[1]) ? t(` · arc revised (${arc[0]}, ${arc[1]})`, ` · arco revisionato (${arc[0]}, ${arc[1]})`) : '';
+    S.stat.textContent = t(`values left ${cur} of ${tot} · solved variables gold`, `valori rimasti ${cur} su ${tot} · variabili risolte in oro`) + arcTxt;
+    S.cap.textContent = hasArc
+      ? t('AC-3 makes no decision, so it builds no tree: it only removes the values that no value of a neighbor supports. A bar per variable, as tall as the values left in its domain (gold when one is left), ink for the domain this revision shrinks, and under them the values left in all; the line below names the arc (X, Y) revised, X the variable that shrinks and Y the neighbor that no longer supports its values, which the constraint graph draws in gold.',
+        'AC-3 non prende decisioni, quindi non costruisce un albero: toglie soltanto i valori che nessun valore di un vicino sostiene. Una barra per variabile, alta quanto i valori rimasti nel suo dominio (in oro quando ne resta uno), color inchiostro per il dominio che questa revisione riduce, e sotto i valori rimasti in tutto; la riga sotto nomina l\'arco (X, Y) revisionato, X la variabile che si riduce e Y il vicino che non ne sostiene più i valori, che il grafo dei vincoli disegna in oro.')
+      : t('AC-3 makes no decision, so it builds no tree: it only removes the values that no value of a neighbor supports. A bar per variable, as tall as the values left in its domain (gold when one is left), ink for the domains this event shrinks, and under them the values left in all. The trace gives the values removed but not the arc (X, Y) that removed them, so the queue of arcs cannot be drawn; a field "arc" on each propagate event would allow it.',
       'AC-3 non prende decisioni, quindi non costruisce un albero: toglie soltanto i valori che nessun valore di un vicino sostiene. Una barra per variabile, alta quanto i valori rimasti nel suo dominio (in oro quando ne resta uno), color inchiostro per i domini che questo evento riduce, e sotto i valori rimasti in tutto. La traccia dà i valori tolti ma non l\'arco (X, Y) che li ha tolti, quindi la coda degli archi non si può disegnare; un campo "arc" su ogni evento propagate lo permetterebbe.');
   };
   return p;

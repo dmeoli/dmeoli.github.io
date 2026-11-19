@@ -187,14 +187,16 @@ export class KnapsackPlay {
     const i = s1.inn.findIndex((b, k) => b !== s0.inn[k]), name = this.inst.vertices[i];
     return s1.inn[i] ? [`take ${name}`, `prendi ${name}`] : [`take ${name} out`, `togli ${name}`];
   }
-  // the items of an optimum that a lane recorded (as x, items, a solution
-  // or a model), or null: the traces of now record its value only
+  // the items of an optimum that a lane recorded (as x, as solution, the
+  // items from 0, as items, or as a solution or model of the variables), or
+  // null for traces that record its value only
   optSet() {
     for (const L of this.ctx.results()) {
       const r = L.result;
       if (!r || r.status !== 'optimal') continue;
       let take = null;
       if (Array.isArray(r.x) && r.x.length === this.n) take = r.x.map(Boolean);
+      else if (Array.isArray(r.solution) && r.solution.every(Number.isInteger)) take = this.inst.vertices.map((v, i) => r.solution.includes(i));
       else if (Array.isArray(r.items)) take = this.inst.vertices.map((v, i) => r.items.includes(v) || r.items.includes(i));
       else { const s = solutionOf(L, this.inst.colours); if (s && Object.keys(s).length) take = this.inst.vertices.map(v => s[v] === 'in'); }
       if (take) return { by: L.name, take };
@@ -228,12 +230,17 @@ export class KnapsackPlay {
     const O = this.optSet();
     if (!O) return { by: null, rows: [], first: 0, note: ['The traces record the value of the optimum, not its items, so no lane move can stand beside yours.', 'Le tracce registrano il valore dell\'ottimo, non i suoi oggetti, quindi nessuna mossa di una corsia può stare accanto alle tue.'] };
     let first = 0;
+    const { vertices: V, p } = this.inst;
     const rows = states.slice(1).map((s, k) => {
-      const i = s.inn.findIndex((b, j) => b !== states[k].inn[j]), name = this.inst.vertices[i];
+      const i = s.inn.findIndex((b, j) => b !== states[k].inn[j]), name = V[i];
       if (!first && s.inn[i] && !O.take[i]) first = k + 1;
       return O.take[i] ? [`${name} is in the optimum`, `${name} è nell'ottimo`] : [`${name} is not`, `${name} non c'è`];
     });
-    return { by: [O.by, O.by], rows, first };
+    // after your moves, the items of the optimum that your knapsack lacks
+    const end = states[states.length - 1].inn;
+    for (let i = 0; i < this.n; i++) if (O.take[i] && !end[i]) rows.push([`${V[i]}: in the optimum, not in yours`, `${V[i]}: nell'ottimo, non nel tuo`]);
+    const its = V.filter((v, i) => O.take[i]), val = p.reduce((a, q, i) => a + (O.take[i] ? q : 0), 0);
+    return { by: [O.by, O.by], rows, first, note: [`The optimum of ${O.by} takes ${names(its, 'and')}, of value ${val}.`, `L'ottimo di ${O.by} prende ${names(its, 'e')}, di valore ${val}.`] };
   }
   // what a would do: its item framed in gold and named, the bar extended
   // by its weight (red beyond the capacity) or shortened by it

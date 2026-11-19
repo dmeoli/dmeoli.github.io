@@ -45,8 +45,8 @@ or   2 or DPLL(clauses, rest, model ∪ {P = false})`),
 top  0 BACKTRACKING-SEARCH(csp): return BACKTRACK(csp, {})
 head 0 BACKTRACK(csp, assignment):
 done 1 if assignment is complete: return assignment
-var  1 var ← SELECT-UNASSIGNED-VARIABLE(csp, assignment)   // MRV: fewest values left
-for  1 for each value in ORDER-DOMAIN-VALUES(csp, var, assignment):
+var  1 var ← SELECT-UNASSIGNED-VARIABLE(csp, assignment)   // SEL
+for  1 for each value in ORDER-DOMAIN-VALUES(csp, var, assignment):   // ORD
 cons 2 if value is consistent with assignment:
 add  3 add {var = value} to assignment
 inf  3 inferences ← INFERENCE(csp, var, value)   // INF
@@ -266,10 +266,18 @@ export function family(h) {
   if (id === 'cadical') return { key: 'cdcl', name: ['CDCL in its textbook form; CaDiCaL adds its own heuristics, restarts, clause deletion and inprocessing', 'CDCL nella forma dei manuali; CaDiCaL aggiunge le sue euristiche, i riavvii, la cancellazione di clausole e l\'inprocessing'] };
   if (id === 'aima-cdcl') return { key: 'cdcl', name: ['CDCL in its textbook form, as aima-python runs it', 'CDCL nella forma dei manuali, come la esegue aima-python'] };
   if (id === 'aima-dpll') return { key: 'dpll', name: ['DPLL as AIMA states it', 'DPLL come lo scrive AIMA'] };
-  if (id === 'aima-bt-fc' || id === 'aima-bt-mac') {
-    const fc = id === 'aima-bt-fc';
-    return { key: 'bt', sub: { INF: fc ? 'forward checking' : 'MAC: AC-3 from the arcs into var' },
-      name: [`backtracking search as AIMA states it, with MRV and ${fc ? 'forward checking' : 'MAC'} as INFERENCE`, `ricerca con backtracking come la scrive AIMA, con MRV e ${fc ? 'forward checking' : 'MAC'} come INFERENCE`] };
+  if (/^aima-bt(-fc|-mac)?$/.test(id)) {
+    // the recorded runs use MRV and the order of the domain; an own run says
+    // its choices in its config ("select mrv, order lcv, inference ...")
+    const inf = id === 'aima-bt-fc' ? 'fc' : id === 'aima-bt-mac' ? 'mac' : 'none', c = typeof cfg === 'string' ? cfg : '';
+    const mrv = !/select first/.test(c), lcv = /order lcv/.test(c);
+    const IN = { fc: ['forward checking', 'forward checking'], mac: ['MAC', 'MAC'], none: ['no inference', 'nessuna inferenza'] }[inf];
+    const sel = mrv ? ['MRV', 'MRV'] : ['the first unassigned variable', 'la prima variabile non assegnata'];
+    const ord = lcv ? [', LCV for the order of the values', ', LCV per l\'ordine dei valori'] : ['', ''];
+    return { key: 'bt', sub: { INF: inf === 'fc' ? 'forward checking' : inf === 'mac' ? 'MAC: AC-3 from the arcs into var' : 'none: no value is pruned',
+      SEL: mrv ? 'MRV: fewest values left' : 'the first unassigned', ORD: lcv ? 'LCV: the value that rules out fewest first' : 'in the order of the domain' },
+      name: [`backtracking search as AIMA states it, with ${sel[0]}${ord[0]} and ${inf === 'none' ? 'no inference' : IN[0] + ' as INFERENCE'}`,
+        `ricerca con backtracking come la scrive AIMA, con ${sel[1]}${ord[1]} e ${inf === 'none' ? 'nessuna inferenza' : IN[1] + ' come INFERENCE'}`] };
   }
   if (id === 'aima-ac3') return { key: 'ac3', name: ['AC-3 as AIMA states it', 'AC-3 come lo scrive AIMA'] };
   if (id === 'aima-gac') return { key: 'gac', name: ['generalized arc consistency with domain splitting, in the form of Poole and Mackworth that aima-python follows', 'consistenza d\'arco generalizzata con suddivisione dei domini, nella forma di Poole e Mackworth che aima-python segue'] };
@@ -292,10 +300,11 @@ export function family(h) {
   if (alg === 'bfs') return { key: 'bfs', name: ['breadth-first search as AIMA states it', 'la ricerca in ampiezza come la scrive AIMA'] };
   if (alg === 'hda') return { key: 'hda', name: ['HDA* (A* with hash distribution of the states among the workers) in its textbook form', 'HDA* (A* con distribuzione degli stati fra i worker per hash) nella forma dei manuali'] };
   const plan = /^(forward|backward)-/.exec(alg), base = alg.replace(/^(forward|backward)-/, '');
-  const F = { astar: 'A*: f = g + h', ucs: 'uniform cost: f = g', greedy: 'greedy: f = h' }[base];
+  const w = cfg && cfg.w !== undefined ? cfg.w : 'w';
+  const F = { astar: 'A*: f = g + h', wastar: `weighted A*: f = g + w·h, w = ${w}`, ucs: 'uniform cost: f = g', greedy: 'greedy: f = h' }[base];
   if (!F) return null;
   const X = !plan ? '' : plan[1] === 'forward' ? 'the actions whose preconditions hold' : 'regression through each relevant action';
-  const nm = { astar: ['A*', 'A*'], ucs: ['uniform-cost search', 'la ricerca a costo uniforme'], greedy: ['greedy best-first search', 'la ricerca best-first greedy'] }[base];
+  const nm = { astar: ['A*', 'A*'], wastar: [`weighted A* (w = ${w})`, `A* pesato (w = ${w})`], ucs: ['uniform-cost search', 'la ricerca a costo uniforme'], greedy: ['greedy best-first search', 'la ricerca best-first greedy'] }[base];
   const pl = !plan ? ['', ''] : plan[1] === 'forward' ? [', forward over the states of the plan', ', in avanti sugli stati del piano'] : [', backward over the subgoals', ', all\'indietro sui sottobiettivi'];
   return { key: 'bestfirst', sub: { F, X }, name: [`${nm[0]} as best-first search, as AIMA states it${pl[0]}`, `${nm[1]} come ricerca best-first, come la scrive AIMA${pl[1]}`] };
 }
@@ -360,17 +369,19 @@ const narrow = () => matchMedia('(max-width: 700px)').matches;
 // the block of the pseudocode at the end of box, for the trace header h;
 // show(events, k, prev, ctx) marks the lines of the event k - 1 and, faintly,
 // those of the events from prev to k - 2; null if the family is not known
+// "di" joined to the article of an Italian name (della ricerca, del ...)
+const di = n => (/^la /.test(n) ? 'della ' + n.slice(3) : /^il /.test(n) ? 'del ' + n.slice(3) : /^l'/.test(n) ? 'dell\'' + n.slice(2) : 'di ' + n);
 export function attachCode(box, h) {
   const fam = family(h);
   if (!fam) return null;
   const code = fam.key === 'cutoff' ? cutoff : CODE[fam.key];
-  const sub = s => s.replace(/\b(INF|F|X)$/, m => (fam.sub && fam.sub[m]) || '').replace(/\s*\/\/\s*$/, '');
+  const sub = s => s.replace(/\b(INF|F|X|SEL|ORD)$/, m => (fam.sub && fam.sub[m]) || '').replace(/\s*\/\/\s*$/, '');
   const det = document.createElement('details');
   det.className = 'pcode';
   det.open = !narrow();
   det.innerHTML = `<summary>${bi('Pseudocode', 'Pseudocodice')}</summary>
     <p class="pccap">${bi(`The pseudocode of ${fam.name[0]}, written compactly. The marked line is what the event of this lane carries out (red when it fails); the faint lines, the other events of the same step.`,
-      `Lo pseudocodice di ${fam.name[1]}, scritto in forma compatta. La riga evidenziata è ciò che esegue l'evento di questa corsia (in rosso quando fallisce); quelle tenui, gli altri eventi dello stesso passo.`)}</p>
+      `Lo pseudocodice ${di(fam.name[1])}, scritto in forma compatta. La riga evidenziata è ciò che esegue l'evento di questa corsia (in rosso quando fallisce); quelle tenui, gli altri eventi dello stesso passo.`)}</p>
     <div class="pclines" translate="no">${code.map(([id, ind, text]) => {
       const s = sub(text), c = s.indexOf('//');
       const body = c < 0 ? esc(s.trimEnd()) : `${esc(s.slice(0, c).trimEnd())} <span class="pcc">${esc(s.slice(c))}</span>`;
