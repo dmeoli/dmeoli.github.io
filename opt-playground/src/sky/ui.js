@@ -2,7 +2,7 @@
 // the state kept in the address, the clock of Reset, Step and Play, and the
 // formats of angles and dates.
 
-import { t } from '../i18n.js';
+import { t, lang, onLang } from '../i18n.js';
 import { norm } from './core.js';
 
 export const $ = id => document.getElementById(id);
@@ -61,12 +61,27 @@ export function clock({ seconds = 12, step = 0.05, onFrame, play = 'play', stepI
     seconds, home,
     get u() { return u; },
     set,
-    play() { if (u >= 1) u = 0; running = true; last = performance.now(); label(); requestAnimationFrame(tick); },
-    pause() { running = false; label(); },
+    play() { c.pause(); if (u >= 1) u = 0; running = true; last = performance.now(); label(); requestAnimationFrame(tick); },
+    pause() { running = false; cancelAnimationFrame(glide); aim = null; label(); },
     get running() { return running; }
   };
   btn.addEventListener('click', () => (running ? c.pause() : c.play()));
-  $(stepId)?.addEventListener('click', () => { c.pause(); set(u >= 1 ? 0 : u + step); });
+  // Step glides to the next position in 0.5 s (a jump when motion is reduced)
+  let glide = 0, aim = null;
+  const still = matchMedia('(prefers-reduced-motion: reduce)');
+  function stepTo(x) {
+    cancelAnimationFrame(glide);
+    if (still.matches) return set(x);
+    const a = u, t0 = performance.now();
+    const f = now => {
+      const k = Math.min(1, (now - t0) / 500);
+      set(a + (x - a) * k * k * (3 - 2 * k));
+      if (k < 1) glide = requestAnimationFrame(f); else aim = null;
+    };
+    aim = x;
+    glide = requestAnimationFrame(f);
+  }
+  $(stepId)?.addEventListener('click', () => { const b = aim ?? u; c.pause(); b >= 1 ? set(0) : stepTo(Math.min(1, b + step)); });
   $(reset)?.addEventListener('click', () => { c.pause(); set(c.home); });
   label();
   return c;
@@ -105,3 +120,14 @@ export function relangOptions(lang) {
     o.textContent = lang === 'it' ? o.dataset.it : o.dataset.en;
   }
 }
+
+// the labels for screen readers written aria-label="..." data-aria-it="..."
+// follow the language
+export function relangAria() {
+  for (const e of document.querySelectorAll('[data-aria-it]')) {
+    if (!e.dataset.ariaEn) e.dataset.ariaEn = e.getAttribute('aria-label');
+    e.setAttribute('aria-label', lang() === 'it' ? e.dataset.ariaIt : e.dataset.ariaEn);
+  }
+}
+relangAria();
+onLang(relangAria);

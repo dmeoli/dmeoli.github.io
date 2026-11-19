@@ -6,7 +6,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { ConvexHull } from 'three/addons/math/ConvexHull.js';
 import { setTex } from './tex.js';
-import { t, onLang } from './i18n.js';
+import { t, onLang, onTheme } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const phi = (1 + Math.sqrt(5)) / 2;
@@ -72,6 +72,11 @@ function setup() {
     pointer.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
   });
   renderer.domElement.addEventListener('pointerleave', () => pointer.set(2, 2));
+  // on a touch screen a tap points at a face too
+  renderer.domElement.addEventListener('pointerdown', e => {
+    const r = renderer.domElement.getBoundingClientRect();
+    pointer.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+  });
   // a full turn in 40 s, whatever the refresh rate of the screen
   let last = performance.now();
   const loop = now => {
@@ -101,12 +106,15 @@ function polytope(F, color, opacity, pick) {
   return faces;
 }
 
-function build() {
+let lastRandom = null;
+// keep: redraw the same random polytope (on a change of theme)
+function build(keep = false) {
   group.clear(); hot = -1;
   const sh = shapes[$('shape').value];
   let V = sh.v;
-  if (!V) {
-    V = Array.from({ length: 14 }, () => { const u = new THREE.Vector3().randomDirection().multiplyScalar(0.9 + 0.5 * Math.random()); return [u.x, u.y, u.z]; });
+  if (!V && keep && lastRandom) V = lastRandom;
+  else if (!V) {
+    V = lastRandom = Array.from({ length: 14 }, () => { const u = new THREE.Vector3().randomDirection().multiplyScalar(0.9 + 0.5 * Math.random()); return [u.x, u.y, u.z]; });
   }
   const sc = +$('scale').value;
   V = V.map(p => p.map(x => x * sc));
@@ -114,7 +122,7 @@ function build() {
   const W = FP.map(f => [f.n.x / f.d, f.n.y / f.d, f.n.z / f.d]);    // the vertices of the polar
   const FD = facets(W);
   const outerP = $('outer').value === 'P';
-  const violet = new THREE.Color(css('--accent') || '#7338a8'), gold = new THREE.Color('#b59a45');
+  const violet = new THREE.Color(css('--accent') || '#7338a8'), gold = new THREE.Color(css('--gold') || '#b59a45');
   const [Fo, Fi, Vo, Vi] = outerP ? [FP, FD, V, W] : [FD, FP, W, V];
   polytope(Fo, violet, 0.16, true);
   polytope(Fi, gold, 0.35, false);
@@ -123,7 +131,13 @@ function build() {
     const s = new THREE.Mesh(new THREE.SphereGeometry(0.045, 16, 12), new THREE.MeshLambertMaterial({ color: gold }));
     s.position.set(...p); group.add(s); return s;
   });
-  model = { Fo, dots, Vi, counts: [Fo.length, Vo.length, Fi.length, Vi.length], outerP };
+  // the normal of the face under the pointer, from the origin to the vertex it
+  // becomes: hidden until a face is pointed at
+  const ray = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]), new THREE.LineBasicMaterial({ color: gold }));
+  ray.visible = false; group.add(ray);
+  const origin = new THREE.Mesh(new THREE.SphereGeometry(0.035, 12, 8), new THREE.MeshBasicMaterial({ color: gold }));
+  origin.visible = false; group.add(origin);
+  model = { Fo, dots, Vi, counts: [Fo.length, Vo.length, Fi.length, Vi.length], outerP, ray, origin };
   window.__polarity = { V, W };       // for the print panel of the page opened from Forms
   // which inner vertex belongs to which outer face: the polar maps facet i of
   // the outer to the vertex n_i/d_i, i.e., Vi[i] when the outer is P; when the
@@ -139,8 +153,16 @@ function build() {
 // the counts of faces and vertices, in the language of the page
 function explain() {
   const [po, pi] = model.outerP ? ['P', 'P^\\circ'] : ['P^\\circ', 'P'], [fo, vo, fi, vi] = model.counts;
+  let more = '';
+  if (hot >= 0) {
+    const f = model.Fo[hot], d = f.d.toFixed(2), r = (1 / f.d).toFixed(2);
+    more = t(` The face under the pointer lies on the plane \\(n \\cdot x = ${d}\\), at distance ${d} from the origin; its polar is the enlarged vertex \\(n / ${d}\\), at distance ${r} along the same normal (the gold line).`,
+      ` La faccia sotto il puntatore sta sul piano \\(n \\cdot x = ${d}\\), a distanza ${d} dall'origine; la sua polare è il vertice ingrandito \\(n / ${d}\\), a distanza ${r} lungo la stessa normale (la linea dorata).`);
+  }
   setTex($('explain'), t(`\\(${po}\\) has ${fo} faces and ${vo} vertices; \\(${pi}\\) has ${fi} faces and ${vi} vertices.`,
     `\\(${po}\\) ha ${fo} facce e ${vo} vertici; \\(${pi}\\) ha ${fi} facce e ${vi} vertici.`));
+  // under the picture, so that the text above it does not move while pointing
+  setTex($('pointed'), more.trim() || t('Point at a face (or tap it) to see its vertex in the other polytope.', "Punta una faccia (o toccala) per vederne il vertice nell'altro politopo."));
 }
 
 function pick() {
@@ -151,7 +173,14 @@ function pick() {
   if (h === hot) return;
   if (hot >= 0) { pickable[hot].material.opacity = 0.16; const d = model.dots[model.match[hot]]; d.scale.setScalar(1); }
   hot = h;
-  if (hot >= 0) { pickable[hot].material.opacity = 0.5; const d = model.dots[model.match[hot]]; d.scale.setScalar(2.4); }
+  if (hot >= 0) {
+    pickable[hot].material.opacity = 0.5; const d = model.dots[model.match[hot]]; d.scale.setScalar(2.4);
+    // the line from the origin along the normal, through the vertex up to the face
+    const f = model.Fo[hot], far = Math.max(f.d, d.position.length());
+    model.ray.geometry.setFromPoints([new THREE.Vector3(), f.n.clone().multiplyScalar(far)]);
+  }
+  model.ray.visible = model.origin.visible = hot >= 0;
+  explain();
 }
 
 for (const [k, s] of Object.entries(shapes)) $('shape').append(new Option(s.label, k));
@@ -170,9 +199,11 @@ function words() {
 }
 words();
 onLang(() => { words(); if (model) explain(); });
-$('shape').addEventListener('change', build);
-$('outer').addEventListener('change', build);
-$('scale').addEventListener('input', e => { $('scaleOut').textContent = e.target.value; build(); });
+$('shape').addEventListener('change', () => build());
+// the colors follow the theme
+onTheme(() => { if (model) build(true); });
+$('outer').addEventListener('change', () => build(true));
+$('scale').addEventListener('input', e => { $('scaleOut').textContent = e.target.value; build(true); });
 // space starts and stops the spin, as it plays and pauses the other scenes
 document.addEventListener('keydown', e => {
   if (e.key !== ' ' || ['SELECT', 'INPUT'].includes(e.target.tagName)) return;

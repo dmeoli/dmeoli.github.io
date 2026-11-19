@@ -593,7 +593,7 @@ async function init() {
   if (q.has('log') && +q.get('log') !== +logScale) { logScale = q.get('log') === '1'; $('log').checked = logScale; computeField(); }
   if (q.get('sc') === '1') $('sc').checked = true;
   const si = SPEEDS.indexOf(+q.get('ips'));
-  setSpeed(si >= 0 ? si : SPEEDS.indexOf(5));
+  setSpeed(si >= 0 ? si : SPEEDS.indexOf(2));
   try {
     surf = createSurface($('surface'), { onHover: p => { hover3d = p; readout(p); drawMap(); } });
     surf.setColors(C); computeField(); surf.setSurfaceLines($('sc').checked);

@@ -45,7 +45,7 @@ const instances = {
   k20: { get label() { return t('20 components', '20 componenti'); }, K: 20, seed: 5 },
 };
 
-let P, Lstar, lstar, runs, timer = null;
+let P, Lstar, lstar, runs, timer = null, round = 0;
 
 // the oracle of one component: its best point at l and the line of that point
 function oracleK(k, l) {
@@ -142,13 +142,18 @@ function reset() {
     s.record = (l, v) => { s.best = Math.max(s.best, v); s.hist.push({ calls: s.calls, l, v, best: s.best }); };
     return s;
   });
+  round = 0;
   draw();
 }
 
 function step() {
   const p = { s0: +$('s0').value };
   let any = false;
-  for (const s of runs) if (!s.done && s.calls < 60 * P.K) { s.M.step(s, p); any = true; }
+  for (const s of runs) {
+    s.moved = false;
+    if (!s.done && s.calls < 60 * P.K) { s.prevL = s.l; s.nCuts = s.cuts ? s.cuts.length : 0; s.M.step(s, p); s.moved = true; any = true; }
+  }
+  round++;
   if (!any) stop();
   draw();
 }
@@ -162,8 +167,15 @@ function el(t, a, p) { const e = document.createElementNS(NS, t); for (const [k,
 function drawDual() {
   const svg = $('dual'); svg.replaceChildren();
   const W = 460, H = 360, pad = 36, n = 240, ls = Array.from({ length: n + 1 }, (_, i) => P.lmax * i / n);
-  const Ls = ls.map(L), lo = Math.min(...Ls), hi = Lstar + 0.25 * (Lstar - lo);
-  const X = l => pad + l / P.lmax * (W - 2 * pad), Y = v => H - pad - (Math.min(hi, v) - lo) / (hi - lo) * (H - 2 * pad);
+  // the vertical scale follows the values near the maximum, where the methods
+  // move; lower values rest on the axis
+  const Ls = ls.map(L), lo = [...Ls].sort((u, v) => u - v)[Math.floor(0.3 * n)], hi = Lstar + 0.3 * (Lstar - lo);
+  const X = l => pad + l / P.lmax * (W - 2 * pad), Y = v => H - pad - (Math.min(hi, Math.max(lo, v)) - lo) / (hi - lo) * (H - 2 * pad);
+  const defs = el('defs', {}, svg);
+  runs.forEach((s, i) => {
+    const tip = el('marker', { id: 'ctip' + i, viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 8, markerHeight: 8, orient: 'auto', markerUnits: 'userSpaceOnUse' }, defs);
+    el('path', { d: 'M0,0 L10,5 L0,10 z', style: `fill: ${s.M.color}` }, tip);
+  });
   el('line', { x1: X(0), x2: X(P.lmax), y1: Y(lo), y2: Y(lo), class: 'axis' }, svg);
   el('line', { x1: X(0), x2: X(0), y1: Y(lo), y2: Y(hi), class: 'axis' }, svg);
   for (let t = 0; t <= P.lmax; t++) el('text', { x: X(t), y: H - pad + 16, class: 'lab small', 'text-anchor': 'middle' }, svg).textContent = t;
@@ -172,11 +184,40 @@ function drawDual() {
   const ag = runs.find(s => s.key === 'aggregated'), dg = runs.find(s => s.key === 'disaggregated');
   if (ag.cuts.length) el('path', { d: path(l => Math.min(...ag.cuts.map(q => q.value + q.slope * l))), class: 'model', style: 'stroke: var(--m1)' }, svg);
   if (dg.models[0].length) el('path', { d: path(l => dg.models.reduce((t, M) => t + Math.min(...M.map(q => q.value + q.slope * l)), 0)), class: 'model', style: 'stroke: var(--m2)' }, svg);
+  // the cut the aggregated run of Kelley added in the last round, dashed
+  if (ag.moved && ag.cuts.length) { const q = ag.cuts.at(-1); el('path', { d: path(l => q.value + q.slope * l), class: 'freshcut', style: 'stroke: var(--m1)' }, svg); }
   el('path', { d: path(L), class: 'dualfn' }, svg);
   el('line', { x1: X(lstar), x2: X(lstar), y1: Y(lo), y2: Y(Lstar), class: 'grid' }, svg);
+  // the move of each method in the last round: an arc from its previous point
+  // to its new one, above the curve, in its color, then its ring
   runs.forEach((s, i) => {
-    el('circle', { cx: X(s.l), cy: Y(L(s.l)), r: 5 + (3 - i), style: `fill: none; stroke: ${s.M.color}; stroke-width: 2` }, svg);
+    if (s.moved && Math.abs(s.l - s.prevL) > 1e-6) {
+      const x0 = X(s.prevL), y0 = Y(L(s.prevL)), x1 = X(s.l), y1 = Y(L(s.l)), up = 22 + 9 * i;
+      el('path', { d: `M${x0},${y0} C${x0},${Math.min(y0, y1) - up} ${x1},${Math.min(y0, y1) - up} ${x1},${y1 - 8 - (3 - i)}`, class: 'move', style: `stroke: ${s.M.color}`, 'marker-end': `url(#ctip${i})` }, svg);
+    }
+    el('circle', { cx: X(s.l), cy: Y(L(s.l)), r: 5 + (3 - i), class: s.moved ? 'ring fresh' : 'ring', style: `fill: none; stroke: ${s.M.color}; stroke-width: 2.5` }, svg);
   });
+  // the legend of the rings
+  runs.forEach((s, i) => {
+    const y = H - pad - 22 - 17 * (3 - i);
+    el('circle', { cx: X(P.lmax) - 160, cy: y - 4, r: 5 + (3 - i), style: `fill: none; stroke: ${s.M.color}; stroke-width: 2.5` }, svg);
+    el('text', { x: X(P.lmax) - 146, y, class: 'lab small', style: `fill: ${s.M.color}` }, svg).textContent = s.M.name;
+  });
+  el('text', { x: X(lstar) + 4, y: Y(lo) - 6, class: 'lab small' }, svg).textContent = 'λ*';
+}
+
+// the move of the last round in words, one clause per method
+function eventText() {
+  if (!round) return t(`Every method starts at λ = 0. A round of Step gives each method ${P.K} calls, one to the oracle of each component.`,
+    `Ogni metodo parte da λ = 0. Ogni Passo dà a ciascun metodo ${P.K} chiamate, una all'oracolo di ciascuna componente.`);
+  const parts = runs.filter(s => s.moved).map(s => {
+    const mv = `${s.prevL.toFixed(2)} → ${s.l.toFixed(2)}`;
+    if (s.key === 'aggregated') return t(`${s.M.name} sums the ${P.K} answers into one cut of L (dashed) and moves to the top of its model, λ ${mv}`, `${s.M.name} somma le ${P.K} risposte in un solo taglio di L (tratteggiato) e va sulla cima del suo modello, λ ${mv}`);
+    if (s.key === 'disaggregated') return t(`${s.M.name} keeps the ${P.K} answers as ${P.K} cuts, one per component, and moves to the top of their sum, λ ${mv}`, `${s.M.name} tiene le ${P.K} risposte come ${P.K} tagli, uno per componente, e va sulla cima della loro somma, λ ${mv}`);
+    if (s.key === 'subgradient') return t(`${s.M.name} takes one step along the sum of the ${P.K} slopes, λ ${mv}`, `${s.M.name} fa un passo lungo la somma delle ${P.K} pendenze, λ ${mv}`);
+    return t(`${s.M.name} takes ${P.K} small steps, one after each component, λ ${mv}`, `${s.M.name} fa ${P.K} piccoli passi, uno dopo ogni componente, λ ${mv}`);
+  });
+  return (parts.length ? t(`Round ${round}: `, `Giro ${round}: `) + parts.join('; ') + '.' : t('Every method has stopped.', 'Tutti i metodi si sono fermati.'));
 }
 
 function drawConv() {
@@ -199,6 +240,7 @@ function drawConv() {
 
 function draw() {
   drawDual(); drawConv();
+  $('event').textContent = eventText();
   $('lstar').textContent = Lstar.toFixed(4);
   document.querySelectorAll('.K').forEach(e => { e.textContent = P.K; });
 }

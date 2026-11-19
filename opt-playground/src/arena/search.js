@@ -210,8 +210,18 @@ export class GridView {
       S.content.add(m);
     };
     mk(inst.start, P.accent); mk(inst.goal, new THREE.Color('#d9b23a'));
+    // a frame around the cell that the search expands at this event
+    const fm = new THREE.MeshBasicMaterial({ color: P.ink });
+    this.pin = new THREE.Group();
+    for (const [x, y, w, h] of [[0, 1.5, 4, 1], [0, -1.5, 4, 1], [1.5, 0, 1, 4], [-1.5, 0, 1, 4]]) {
+      const b = new THREE.Mesh(new THREE.BoxGeometry(w * u * 0.5, h * u * 0.5, u * 0.3), fm);
+      b.position.set(x * u * 0.5, y * u * 0.5, 0);
+      this.pin.add(b);
+    }
+    this.pin.visible = false;
+    S.content.add(this.pin);
     const set = this.lastSet; this.lastSet = null;
-    if (set) this.show(set, true);     // a new theme: the cells at their heights at once
+    if (set) this.show(set, this.curCell, true);     // a new theme: the cells at their heights at once
   }
   paint(c, v, force) {
     if (!force && this.cur[c] === v) return false;
@@ -244,9 +254,13 @@ export class GridView {
     }
     this.mesh.instanceMatrix.needsUpdate = true;
   }
-  // set: the cells by index (as strings) to o, e<worker> or p
-  show(set, force) {
-    this.lastSet = set;
+  // set: the cells by index (as strings) to o, e<worker> or p; cur: the
+  // cell expanded at this event, or null
+  show(set, cur = null, force = false) {
+    this.lastSet = set; this.curCell = cur;
+    const W = this.inst.width, H = this.inst.height, u = this.u;
+    this.pin.visible = cur !== null;
+    if (cur !== null) { const c = +cur; this.pin.position.set((c % W - (W - 1) / 2) * u, ((H - 1) / 2 - Math.floor(c / W)) * u, u * 1.4); }
     const n = this.inst.width * this.inst.height;
     let changed = false;
     for (let c = 0; c < n; c++) changed = this.paint(c, set.get(String(c)) || '', force) || changed;

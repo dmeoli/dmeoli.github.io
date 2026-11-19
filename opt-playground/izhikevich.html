@@ -101,10 +101,10 @@ main.izh .card canvas { width: 84px; height: 26px; border-radius: 3px; }
   <div class="picker across" id="picker"></div>
   <p class="explain across" id="note"></p>
   <figure><figcaption><span data-l="en">The membrane potential \(v(t)\) in mV, recorded as 30 at
-  each spike as the lab plots it, with the spikes marked above, and under it the input
+  each spike as the lab plots it, with the spikes marked above (the one just fired ringed), and under it the input
   \(I(t)\) of the protocol; time in ms, integrated with the step \(\tau\) of the lab, which the
   equations below give.</span><span data-l="it" lang="it">Il potenziale di membrana \(v(t)\) in mV,
-  posto a 30 a ogni impulso, come nei grafici del laboratorio, con gli impulsi segnati sopra, e
+  posto a 30 a ogni impulso, come nei grafici del laboratorio, con gli impulsi segnati sopra (quello appena emesso cerchiato), e
   sotto la corrente \(I(t)\) del protocollo; tempo in ms, integrato con il passo \(\tau\) del
   laboratorio, che le equazioni sotto riportano.</span></figcaption>
   <canvas id="scope"></canvas>
@@ -125,12 +125,12 @@ main.izh .card canvas { width: 84px; height: 26px; border-radius: 3px; }
   <figure><figcaption><span data-l="en">The phase plane \((v, u)\): the \(v\)-nullcline, the
   parabola where \(v' = 0\), which rises and falls with \(I(t)\), the \(u\)-nullcline \(u = b v\),
   where \(u' = 0\), the vector field, faint, and the trajectory, with the reset of each spike, from
-  \((30, u)\) to \((c, u + d)\), dashed. Where the nullclines cross lie the fixed points under the
+  \((30, u)\) to \((c, u + d)\), dashed, and gold for the spike just fired. Where the nullclines cross lie the fixed points under the
   current input, filled when stable and hollow when not; when they do not cross, there is no rest to
   go to and the neuron fires.</span><span data-l="it" lang="it">Il piano delle fasi \((v, u)\): l'isoclina di
   \(v\), la parabola dove \(v' = 0\), che sale e scende con \(I(t)\), l'isoclina di \(u\),
   \(u = b v\), dove \(u' = 0\), il campo vettoriale, tenue, e la traiettoria, con il reset di ogni
-  impulso, da \((30, u)\) a \((c, u + d)\), tratteggiato. Dove le isocline si incontrano stanno i punti
+  impulso, da \((30, u)\) a \((c, u + d)\), tratteggiato, e in oro per l'impulso appena emesso. Dove le isocline si incontrano stanno i punti
   fissi sotto la corrente del momento, pieni se stabili e vuoti altrimenti; quando non si incontrano, non
   c'è un riposo a cui tornare e il neurone scarica.</span></figcaption>
   <canvas id="phase"></canvas>

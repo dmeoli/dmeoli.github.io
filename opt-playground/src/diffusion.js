@@ -10,7 +10,7 @@
 import { schedule, noisy, makeNet, makeTrainer, trainStep, makeSampler, samplerStep, forward, slicedW, exactDisplacement, mulberry, gauss } from './diffusion-model.js';
 import { DATASETS, DATASETS_IT, makeData } from './diffusion-data.js';
 import { setTex } from './tex.js';
-import { t as tt, onLang } from './i18n.js';
+import { t as tt, onLang, onTheme } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const S = { data: 'spirals', sched: 'linear', T: 100, depth: 3, width: 64, lr: 0.003, sampler: 'ddpm', seed: 1, t: 30 };
@@ -190,7 +190,12 @@ function drawReverse() {
   axes(F, cv);
   dots(F, data, NDATA, P['ink-soft'], 1.3, 0.35);
   if (!smp) {
-    ctx.fillStyle = P['ink-soft']; ctx.font = 'italic 15px Spectral, Georgia, serif'; ctx.textAlign = 'center';
+    const msg = tt('Press Sample, or pause the training', 'Premi Campiona, o metti in pausa l\'addestramento');
+    ctx.font = 'italic 15px Spectral, Georgia, serif'; ctx.textAlign = 'center';
+    // a plate under the words, so that they do not mix with the data
+    const mw = ctx.measureText(msg).width;
+    ctx.fillStyle = P.panel || P.ground; ctx.globalAlpha = 0.9; ctx.fillRect(cv.width / 2 - mw / 2 - 10, cv.height / 2 - 16, mw + 20, 26); ctx.globalAlpha = 1;
+    ctx.fillStyle = P['ink-soft'];
     ctx.fillText(tt('Press Sample, or pause the training', 'Premi Campiona, o metti in pausa l\'addestramento'), cv.width / 2, cv.height / 2); ctx.textAlign = 'start';
     $('revNote').textContent = '';
     return;
@@ -214,6 +219,14 @@ function drawReverse() {
     }
   }
   dots(F, smp.X, n, P.accent, 2, lit ? 0.5 : 0.9);
+  // the denoising step being taken: the last move of each trail, in gold
+  if (k0 && !smp.done && !lit) {
+    ctx.strokeStyle = P.gold; ctx.fillStyle = P.gold; ctx.lineWidth = 1.4;
+    for (const tr of trails) {
+      const m = tr.length;
+      if (m >= 4) arrow(ctx, X(tr[m - 4]), Y(tr[m - 3]), X(tr[m - 2]), Y(tr[m - 1]), 4);
+    }
+  }
   const t = smp.ts[smp.k];
   $('revNote').textContent = smp.done ? tt(`t = 0 after ${smp.ts.length - 1} steps`, `t = 0 dopo ${smp.ts.length - 1} passi`) : tt(`t = ${t}, step ${smp.k} of ${smp.ts.length - 1}`, `t = ${t}, passo ${smp.k} di ${smp.ts.length - 1}`);
 }
@@ -298,7 +311,7 @@ document.addEventListener('keydown', e => {
   else if (e.key === 'ArrowRight') { e.preventDefault(); $('step').click(); }
 });
 // a change of the theme on the site, or of the system, recolours the canvases
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { palette(); draw(); });
+onTheme(() => { palette(); draw(); });
 
 // the texts that are not in the page twice: title, buttons, options
 function labels() {

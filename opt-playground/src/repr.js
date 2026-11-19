@@ -16,7 +16,7 @@ import { sqdist, distTo, condRows, symmetrize, TSNE, klDivergence, placeNew, mea
 import { makeSet } from './convdata.js';
 import { rng } from './nn.js';
 import { N } from './convnet.js';
-import { t, onLang } from './i18n.js';
+import { t, onLang, onTheme } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const S = { view: 'tsne', perp: 30, hid: '64-32', lr: 0.003, seed: 1, marks: 'dots' };
@@ -452,7 +452,7 @@ document.addEventListener('keydown', e => {
   if (e.key === ' ') { e.preventDefault(); $('train').click(); }
   else if (e.key === 'ArrowRight') { e.preventDefault(); $('step').click(); }
 });
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { palette(); dirty = true; });
+onTheme(() => { palette(); dirty = true; });
 
 // the legend of the classes
 for (let k = 0; k < 10; k++) { const li = document.createElement('li'), i = document.createElement('i'); i.style.background = `var(--c${k})`; li.append(i, String(k)); $('classes').append(li); }

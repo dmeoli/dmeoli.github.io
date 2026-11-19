@@ -55,12 +55,19 @@ export class GraphView {
       cone.position.set(x, y, 0.36);
       S.content.add(cone);
     }
+    // a ring around the city that the search expands at this event
+    this.ring = new THREE.Mesh(new THREE.TorusGeometry(0.068, 0.011, 8, 40), new THREE.MeshBasicMaterial({ color: P.ink, transparent: true }));
+    this.ring.visible = false;
+    S.content.add(this.ring);
     this.place();
-    if (this.lastSet) this.show(this.lastSet);
+    if (this.lastSet) this.show(this.lastSet, this.cur);
   }
-  // set: the cities to e<worker> (expanded) or p (on the path)
-  show(set) {
-    this.lastSet = set;
+  // set: the cities to e<worker> (expanded) or p (on the path); cur: the
+  // city expanded at this event, or null
+  show(set, cur = null) {
+    this.lastSet = set; this.cur = cur;
+    this.ring.visible = !!cur && this.cities.has(cur);
+    if (this.ring.visible) { const [x, y] = this.at(cur); this.ring.position.set(x, y, 0.004); this.ringA = reduced() ? 1 : 0; this.ring.material.opacity = this.ringA; }
     const P = this.S.colors, still = reduced();
     for (const [c, it] of this.cities) {
       const v = set.get(c) || '';
@@ -73,6 +80,7 @@ export class GraphView {
   place() { for (const it of this.cities.values()) it.m.scale.z = it.h; }
   frame(dt) {
     let moving = false;
+    if (this.ring && this.ringA < 1) { this.ringA = Math.min(1, this.ringA + dt / 0.35); this.ring.material.opacity = this.ringA; }
     for (const it of this.cities.values()) if (Math.abs(it.h - it.target) > 1e-4) { it.h += (it.target - it.h) * Math.min(1, dt * 6); moving = true; }
     if (moving) this.place();
   }

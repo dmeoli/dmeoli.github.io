@@ -58,6 +58,7 @@ function gomoryStep() {
       if (a[0] * r.x[0] + a[1] * r.x[1] > rhs + 1e-7) {
         rows.push([a[0], a[1], rhs]);
         cuts.push({ a, b: rhs, gomory: true });
+        last = { off: r.x };
         region = polyOf(rows);
         return true;
       }
@@ -82,6 +83,7 @@ function coverStep() {
       if (dot(a, r.x) > rhs + 1e-7 && !cuts.some(k => k.a[0] === a[0] && k.a[1] === a[1] && k.b === rhs)) {
         cuts.push({ a, b: rhs, cover: C });
         region = clip(region, a, rhs);
+        last = { off: r.x };
         return true;
       }
     }
@@ -99,6 +101,8 @@ const frac = v => Math.abs(v - Math.round(v)) > 1e-7;
 
 let rows = [];
 let I, ipts, ihull, mode = 'bb', nodes, open, incumbent, selected, cuts, region, timer = null, rule = 'best';
+// what the last step did, for the marks of the drawing and the line of the event
+let last = null;
 
 function reset() {
   stop();
@@ -113,7 +117,7 @@ function reset() {
   ihull = hull(ipts);
   const r = lp(I.poly, I.c);
   nodes = [{ id: 0, poly: I.poly, sol: r, depth: 0, parent: null, label: 'root', status: 'open' }];
-  open = [0]; incumbent = null; selected = 0; cuts = []; region = I.poly;
+  open = [0]; incumbent = null; selected = 0; cuts = []; region = I.poly; last = null;
   draw();
 }
 
@@ -123,12 +127,15 @@ function bbStep() {
   open.sort((a, b) => rule === 'best' ? nodes[b].sol.value - nodes[a].sol.value : nodes[b].depth - nodes[a].depth || b - a);
   const id = open.shift(), n = nodes[id];
   selected = id;
+  last = { node: id, kids: [] };
   if (!n.sol) { n.status = 'infeasible'; return true; }
-  if (incumbent && n.sol.value <= incumbent.value + 1e-9) { n.status = 'pruned (bound)'; return true; }
+  if (incumbent && n.sol.value <= incumbent.value + 1e-9) { n.status = 'pruned (bound)'; last.inc = incumbent.value; return true; }
   const x = n.sol.x, fi = frac(x[0]) ? 0 : frac(x[1]) ? 1 : -1;
-  if (fi < 0) { n.status = 'integer'; if (!incumbent || n.sol.value > incumbent.value) incumbent = { x, value: n.sol.value }; return true; }
+  if (fi < 0) { n.status = 'integer'; last.better = !incumbent || n.sol.value > incumbent.value; if (last.better) incumbent = { x, value: n.sol.value }; return true; }
   n.status = 'branched';
   const v = x[fi], lo = Math.floor(v), hi = lo + 1, e = fi ? [0, 1] : [1, 0];
+  n.branch = { fi, v, lo, hi };
+  last.kids = [nodes.length, nodes.length + 1];
   for (const [a, b, lab] of [[e, lo, `x${fi + 1} ≤ ${lo}`], [[-e[0], -e[1]], -hi, `x${fi + 1} ≥ ${hi}`]]) {
     const poly = clip(n.poly, a, b), sol = lp(poly, I.c);
     // an empty piece is closed at once
@@ -144,13 +151,13 @@ function cutStep() {
   if (!r || (!frac(r.x[0]) && !frac(r.x[1]))) return false;
   for (let i = 0; i < ihull.length; i++) {
     const P = ihull[i], Q = ihull[(i + 1) % ihull.length], a = [Q[1] - P[1], P[0] - Q[0]], b = dot(a, P);
-    if (dot(a, r.x) > b + 1e-7) { cuts.push({ a, b, P, Q }); region = clip(region, a, b); return true; }
+    if (dot(a, r.x) > b + 1e-7) { cuts.push({ a, b, P, Q }); region = clip(region, a, b); last = { off: r.x }; return true; }
   }
   return false;
 }
 
 const steps = { bb: () => bbStep(), gomory: () => gomoryStep(), cuts: () => cutStep(), cover: () => coverStep() };
-function step() { if (!steps[mode]()) stop(); draw(); }
+function step() { if (!steps[mode]()) { stop(); last = { done: true }; } draw(); }
 function stop() { clearInterval(timer); timer = null; $('play').textContent = t('Play', 'Avvia'); }
 function play() { if (timer) return stop(); $('play').textContent = t('Pause', 'Pausa'); timer = setInterval(step, 1000); }   // one node or one cut a second
 
@@ -160,7 +167,8 @@ function el(t, a, p) { const e = document.createElementNS(NS, t); for (const [k,
 
 function drawPlane() {
   const svg = $('plane'); svg.replaceChildren();
-  const W = 460, pad = 30, span = I.span || 8.5, X = x => pad + x / span * (W - 2 * pad), Y = y => W - pad - y / span * (W - 2 * pad);
+  // the frame fits the polygon, so that the pieces and the points are large
+  const W = 460, pad = 30, span = I.span || Math.ceil(Math.max(...I.poly.flat()) + 0.6), X = x => pad + x / span * (W - 2 * pad), Y = y => W - pad - y / span * (W - 2 * pad);
   const pts = ps => ps.map(p => `${X(p[0])},${Y(p[1])}`).join(' ');
   for (let i = 0; i <= Math.floor(span); i++) {
     el('line', { x1: X(i), x2: X(i), y1: Y(0), y2: Y(span), class: 'grid' }, svg);
@@ -171,22 +179,41 @@ function drawPlane() {
   if (mode === 'bb') {
     for (const n of nodes) if (n.poly.length && (n.status === 'open' || n.id === selected))
       el('polygon', { points: pts(n.poly), class: n.id === selected ? 'colhull' : 'bbopen' }, svg);
+    // the branch just made: the strip between floor and ceiling of the
+    // fractional coordinate, which holds no integer point and is dropped
+    const sn = nodes[selected];
+    if (sn.branch) {
+      const { fi, lo, hi } = sn.branch;
+      const cut = sn.poly.length ? clip(clip(sn.poly, fi ? [0, -1] : [-1, 0], -lo), fi ? [0, 1] : [1, 0], hi) : [];
+      if (cut.length) el('polygon', { points: pts(cut), class: 'strip' }, svg);
+      for (const v of [lo, hi]) el('line', fi ? { x1: X(0), x2: X(span), y1: Y(v), y2: Y(v), class: 'branchline' } : { y1: Y(0), y2: Y(span), x1: X(v), x2: X(v), class: 'branchline' }, svg);
+    }
   } else {
-    for (const k of cuts) {
+    const cg = el('g', { 'clip-path': 'url(#iclip)' }, svg);
+    el('rect', { x: X(0), y: Y(span), width: X(span) - X(0), height: Y(0) - Y(span) }, el('clipPath', { id: 'iclip' }, el('defs', {}, svg)));
+    cuts.forEach((k, ci) => {
       // the line a.x = b of the cut, across the frame
       const [a1, a2] = k.a, n = Math.hypot(a1, a2), p0 = [a1 * k.b / n / n, a2 * k.b / n / n], d = [-a2 / n, a1 / n];
-      el('line', { x1: X(p0[0] - 20 * d[0]), y1: Y(p0[1] - 20 * d[1]), x2: X(p0[0] + 20 * d[0]), y2: Y(p0[1] + 20 * d[1]), class: 'coupling' }, svg);
-    }
+      el('line', { x1: X(p0[0] - 20 * d[0]), y1: Y(p0[1] - 20 * d[1]), x2: X(p0[0] + 20 * d[0]), y2: Y(p0[1] + 20 * d[1]), class: ci === cuts.length - 1 && last && last.off ? 'coupling newcut' : 'coupling oldcut' }, cg);
+    });
     if (region.length) el('polygon', { points: pts(region), class: 'colhull' }, svg);
   }
   for (const p of ipts) el('circle', { cx: X(p[0]), cy: Y(p[1]), r: 3, class: 'ipt' }, svg);
   const cur = mode === 'bb' ? nodes[selected].sol : lp(region, I.c);
   if (cur) el('circle', { cx: X(cur.x[0]), cy: Y(cur.x[1]), r: 6, class: 'lpopt' }, svg);
+  // the continuous optimum that the last cut removed, crossed out in gold
+  if (mode !== 'bb' && last && last.off) {
+    const [cx, cy] = [X(last.off[0]), Y(last.off[1])];
+    el('path', { d: `M${cx - 6},${cy - 6} L${cx + 6},${cy + 6} M${cx - 6},${cy + 6} L${cx + 6},${cy - 6}`, class: 'cutoff' }, svg);
+  }
   if (incumbent && mode === 'bb') el('rect', { x: X(incumbent.x[0]) - 6, y: Y(incumbent.x[1]) - 6, width: 12, height: 12, class: 'ipopt' }, svg);
   // the objective direction
   const n = Math.hypot(...I.c);
   const o = 0.9 * span;
-  el('line', { x1: X(o), y1: Y(o), x2: X(o) + I.c[0] / n * 30, y2: Y(o) - I.c[1] / n * 30, class: 'arrow' }, svg);
+  const mk = el('marker', { id: 'itip', viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 10, markerHeight: 10, orient: 'auto', markerUnits: 'userSpaceOnUse' }, el('defs', {}, svg));
+  el('path', { d: 'M0,0 L10,5 L0,10 z', class: 'tipfill' }, mk);
+  el('line', { x1: X(o) - I.c[0] / n * 30, y1: Y(o) + I.c[1] / n * 30, x2: X(o), y2: Y(o), class: 'arrow', 'marker-end': 'url(#itip)' }, svg);
+  el('text', { x: X(o) + 4, y: Y(o) + 14, class: 'lab' }, svg).textContent = 'c';
 }
 
 function drawTree() {
@@ -218,7 +245,8 @@ function drawTree() {
     el('text', { x: (x1 + x2) / 2 + 4, y: (y1 + y2) / 2, class: 'lab small' }, svg).textContent = nodeName(n);
   }
   for (const n of nodes) {
-    const [x, y] = pos.get(n.id), g = el('g', { class: 'tnode ' + n.status.split(' ')[0] + (n.id === selected ? ' hot' : '') }, svg);
+    const fresh = last && last.kids && last.kids.includes(n.id);
+    const [x, y] = pos.get(n.id), g = el('g', { class: 'tnode ' + n.status.split(' ')[0] + (n.id === selected ? ' hot' : '') + (fresh ? ' fresh' : '') }, svg);
     el('circle', { cx: x, cy: y, r: 13 }, g);
     el('text', { x, y: y + 4, class: 'tval' }, g).textContent = n.sol ? n.sol.value.toFixed(1) : '∅';
     g.addEventListener('click', () => { selected = n.id; draw(); });
@@ -229,10 +257,36 @@ function drawTree() {
 // words in the language of the page
 const statusWords = { open: 'aperto', integer: 'intero', infeasible: 'non ammissibile', branched: 'ramificato', 'pruned (bound)': 'potato (bound)' };
 const nodeName = n => (n.label === 'root' ? t('root', 'radice') : n.label);
+// the move of the last step in words
+function eventText() {
+  const f = v => (+v).toFixed(2), pt = p => `(${f(p[0])}, ${f(p[1])})`;
+  if (!last) return mode === 'bb'
+    ? t('The root is the whole polygon; its continuous optimum is the circle. Press Step to process the best open node.', "La radice è tutto il poligono; il suo ottimo continuo è il cerchio. Premi Passo per elaborare il miglior nodo aperto.")
+    : t('The polygon of the relaxation and its continuous optimum (the circle). Press Step to add a cut.', 'Il poligono del rilassamento e il suo ottimo continuo (il cerchio). Premi Passo per aggiungere un taglio.');
+  if (last.done) return mode === 'bb'
+    ? t(`No open node is left: the best integer point found, ${incumbent ? f(incumbent.value) : '–'}, is optimal.`, `Non resta alcun nodo aperto: il miglior punto intero trovato, ${incumbent ? f(incumbent.value) : '–'}, è ottimo.`)
+    : t('The continuous optimum is integer (or no cut of this family separates it): the method stops.', "L'ottimo continuo è intero (o nessun taglio di questa famiglia lo separa): il metodo si ferma.");
+  if (mode !== 'bb') {
+    const k = cuts.at(-1), r = lp(region, I.c), eq = `${k.a[0]} x1 + ${k.a[1]} x2 ≤ ${k.b}`;
+    return t(`Cut ${cuts.length}: ${eq} (gold) holds for every integer point but not for the continuous optimum ${pt(last.off)} (crossed out), which is shaved off; the new optimum is ${r ? pt(r.x) : '–'}, with value ${r ? f(r.value) : '–'}.`,
+      `Taglio ${cuts.length}: ${eq} (in oro) vale per ogni punto intero ma non per l'ottimo continuo ${pt(last.off)} (barrato), che viene rifilato via; il nuovo ottimo è ${r ? pt(r.x) : '–'}, di valore ${r ? f(r.value) : '–'}.`);
+  }
+  const n = nodes[last.node], nm = nodeName(n);
+  if (n.status === 'infeasible') return t(`Node ${nm}: its piece is empty, so it is closed.`, `Nodo ${nm}: il suo pezzo è vuoto, quindi si chiude.`);
+  if (n.status.startsWith('pruned')) return t(`Node ${nm}: its bound ${f(n.sol.value)} is not better than the best integer value ${f(last.inc)}, so it is pruned without branching.`,
+    `Nodo ${nm}: il suo bound ${f(n.sol.value)} non è migliore del miglior valore intero ${f(last.inc)}, quindi si pota senza ramificare.`);
+  if (n.status === 'integer') return t(`Node ${nm}: its continuous optimum ${pt(n.sol.x)} is integer${last.better ? `, the new best integer point (the square), value ${f(n.sol.value)}` : ', but not better than the best one'}.`,
+    `Nodo ${nm}: il suo ottimo continuo ${pt(n.sol.x)} è intero${last.better ? `, il nuovo miglior punto intero (il quadrato), di valore ${f(n.sol.value)}` : ', ma non migliore del migliore'}.`);
+  const b = n.branch, xv = `x${b.fi + 1}`;
+  return t(`Node ${nm}: its continuous optimum ${pt(n.sol.x)} has ${xv} = ${f(b.v)}, fractional, so it branches into ${xv} ≤ ${b.lo} and ${xv} ≥ ${b.hi}; the gold strip ${b.lo} < ${xv} < ${b.hi} holds no integer point and is dropped.`,
+    `Nodo ${nm}: il suo ottimo continuo ${pt(n.sol.x)} ha ${xv} = ${f(b.v)}, frazionario, quindi si ramifica in ${xv} ≤ ${b.lo} e ${xv} ≥ ${b.hi}; la striscia dorata ${b.lo} < ${xv} < ${b.hi} non contiene punti interi e si scarta.`);
+}
+
 function draw() {
   drawPlane(); drawTree();
   const n = nodes[selected];
   $('node').textContent = mode === 'bb' ? `${nodeName(n)}: ${t(n.status, statusWords[n.status])}` + (n.sol ? t(`, bound ${n.sol.value.toFixed(3)} at (${n.sol.x.map(v => v.toFixed(2))})`, `, bound ${n.sol.value.toFixed(3)} in (${n.sol.x.map(v => v.toFixed(2))})`) : '') : '';
+  $('event').textContent = eventText();
   $('inc').textContent = incumbent ? incumbent.value.toFixed(3) : '–';
   $('zlp').textContent = lp(I.poly, I.c).value.toFixed(3);
   const zip = Math.max(...ipts.map(p => dot(I.c, p)));

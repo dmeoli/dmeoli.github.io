@@ -45,6 +45,8 @@ main.form { grid-template-columns: minmax(0, 1fr); }
 #summary { font: 13px 'IBM Plex Mono', monospace; color: var(--ink); margin: 8px 0 0; }
 .keys { font-size: 14px; color: var(--ink-soft); margin: 6px 0 0; }
 .keys i { display: inline-block; width: 18px; height: 5px; border-radius: 2px; vertical-align: middle; margin: 0 4px 0 10px; }
+/* the line that names the pivot just made */
+.event { font-family: 'IBM Plex Mono', monospace; font-size: .85rem; color: var(--ink); border-left: 3px solid var(--gold); padding: 4px 0 4px 10px; margin: 10px 0; min-height: 2.6em; }
 </style>
 </head>
 <body>
@@ -99,6 +101,7 @@ main.form { grid-template-columns: minmax(0, 1fr); }
     tocca il politopo. Gli assi sono riscalati perché il politopo riempia un cubo, un cambio di unità
     che conserva vertici, spigoli e cammino. Trascina per ruotare, rotella o pizzico per lo
     zoom.</span></figcaption>
+    <p id="event" class="event" aria-live="polite"></p>
     <div id="stage" class="stage"></div>
     <p id="summary"></p>
     <div class="tablewrap"><table id="steps"></table></div>

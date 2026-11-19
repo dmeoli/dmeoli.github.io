@@ -230,9 +230,13 @@ function play() {
   let last = 0;
   const loop = now => {
     // a synchronous update of the dense network stays for 0.8 s; the classical
-    // network updates one neuron per frame, a sweep of the 144 in about 2.4 s
+    // network runs through the neurons that keep their sign and stops for
+    // 0.5 s on each one that flips, so that every flip is seen in its frame
     if (dense()) { if (now - last >= 800) { step(); last = now; draw(); } }
-    else { step(); draw(); }
+    else if (now - last >= 500) {
+      for (let k = 0; k < N && !run.done; k++) { step(); if (run.last.flipped) break; }
+      last = now; draw();
+    }
     if (run.done) return stop();
     timer = requestAnimationFrame(loop);
   };

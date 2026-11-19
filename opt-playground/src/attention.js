@@ -13,14 +13,14 @@ import { createModel } from './attention-model.js';
 import { VOCAB, randomPrompt, answer, example, generate, evaluate, trainStep } from './attention-tasks.js';
 import { palette, label, exampleLayout, drawExample, bigLayout, drawBig, thumbsLayout, drawThumbs, qkvHeight, qkvPart, drawQKV, drawCurves } from './attention-views.js';
 import { rng } from './nn.js';
-import { t, onLang } from './i18n.js';
+import { t, onLang, onTheme } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const D = 24, MAXSTEPS = 4000;
 const S = { task: 'reverse', n: 6, layers: 1, heads: 2, causal: 1, ln: 1, lr: 0.003, seed: 1, x: '' };
 new URLSearchParams(location.hash.slice(1)).forEach((v, k) => { if (k in S) S[k] = typeof S[k] === 'number' ? +v : v; });
 
-let M, r, evalSet, hist, steps, trainMs, timer = null, prompt, gen, lit = null;
+let M, r, evalSet, hist, steps, timer = null, prompt, gen, lit = null;
 const sel = { layer: 0, head: 0, query: 0 };
 
 function reset() {
@@ -29,7 +29,7 @@ function reset() {
   r = rng(S.seed * 104729 + 1);
   const er = rng(4242 + S.n);
   evalSet = Array.from({ length: 200 }, () => example(S.task, S.n, er));
-  hist = []; steps = 0; trainMs = 0;
+  hist = []; steps = 0;
   sel.layer = S.layers - 1; sel.head = 0;
   prompt = parsePrompt(S.x) || randomPrompt(S.task, S.n, rng(S.seed + 77));
   record(); refresh();
@@ -49,11 +49,9 @@ function record() {
   hist.push({ step: steps, acc: e.acc, loss: e.loss });
 }
 function step1() {
-  const t0 = performance.now();
   trainStep(M, S.task, S.n, !!S.causal, S.lr, r);
   steps++;
   if (steps % 20 === 0) record();
-  trainMs += performance.now() - t0;
 }
 
 // the example is generated again after every change of the weights
@@ -75,8 +73,8 @@ function draw() {
   drawQKV(q, gen, sel, M, P, lit, pal);
   drawCurves($('curves2'), hist, pal);
   const last = hist.at(-1), ok = gen.preds.every(p => p.token === p.target);
-  $('status').textContent = t(`Token accuracy ${(100 * last.acc).toFixed(1)}% on 200 held-out examples (teacher forcing), loss ${last.loss.toFixed(3)}, after ${steps} steps of Adam (${(trainMs / 1000).toFixed(1)} s of training)`,
-    `Accuratezza sui token ${(100 * last.acc).toFixed(1)}% su 200 esempi tenuti da parte (teacher forcing), loss ${last.loss.toFixed(3)}, dopo ${steps} passi di Adam (${(trainMs / 1000).toFixed(1)} s di addestramento)`) +
+  $('status').textContent = t(`Token accuracy ${(100 * last.acc).toFixed(1)}% on 200 held-out examples (teacher forcing), loss ${last.loss.toFixed(3)}, after ${steps} steps of Adam`,
+    `Accuratezza sui token ${(100 * last.acc).toFixed(1)}% su 200 esempi tenuti da parte (teacher forcing), loss ${last.loss.toFixed(3)}, dopo ${steps} passi di Adam`) +
     (S.task === 'recall' && S.layers === 1 ? t('; with one layer the query cannot reach the token after its earlier copy.', '; con uno strato la query non può raggiungere il token che segue la sua copia precedente.') : '.');
   $('steps').textContent = steps;
   const pred = gen.preds.map(p => p.token === p.target ? label(p.token) : `<span class="bad">${label(p.token)}</span>`).join(' ');
@@ -154,7 +152,7 @@ $('qkv').onmousemove = e => {
 // a tap on a touch screen selects as the pointer does
 for (const id of ['example', 'big', 'qkv']) $(id).onpointerdown = e => $(id).onmousemove(e);
 for (const id of ['example', 'big', 'qkv']) $(id).onmouseleave = () => { setLit(null); draw(); };
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => draw());
+onTheme(() => draw());
 
 // the texts that are not in the page twice: title, buttons, options
 function texts() {

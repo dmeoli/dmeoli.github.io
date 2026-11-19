@@ -8,6 +8,7 @@
 
 import * as THREE from 'three';
 import { stage3d, clear } from '../stage3d.js';
+import { Marks } from './cells.js';
 
 const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -37,7 +38,7 @@ export class KnapsackView {
       g.translate(0, 0, 0.35 * inst.w[i] / wmax);
       const m = new THREE.Mesh(g, mat);
       S.content.add(m);
-      return { m, mat, base: mat.color.clone(), y: 0.03, z: 0, ty: 0.03, tz: 0, x: (i - (n - 1) / 2) * u };
+      return { m, mat, hgt: 0.7 * inst.w[i] / wmax, base: mat.color.clone(), y: 0.03, z: 0, ty: 0.03, tz: 0, x: (i - (n - 1) / 2) * u };
     });
     // the bar of the weight taken, in front, against the capacity
     const track = new THREE.Mesh(new THREE.BoxGeometry(W, 0.05, 0.02), new THREE.MeshStandardMaterial({ color: P.rule }));
@@ -46,11 +47,13 @@ export class KnapsackView {
     this.fill.position.set(0, -0.5, 0.01);
     S.content.add(track, this.fill);
     this.W = W;
+    this.marks = new Marks(S, 0.004);
     if (this.last) this.show(...this.last);
     else this.show(inst.vertices.map(v => ({ id: v, colour: -1, mask: 3 })), new Set());
   }
-  show(board) {
-    this.last = [board, new Set()];
+  // focus: from Replay.focus(), the item the node has just fixed, framed in gold
+  show(board, hot, focus = []) {
+    this.last = [board, new Set(), focus];
     const still = reduced(), P = this.S.colors;
     let wt = 0;
     board.forEach((b, i) => {
@@ -64,10 +67,12 @@ export class KnapsackView {
     this.fill.scale.x = Math.max(0.001, f * this.W);
     this.fill.position.x = -this.W / 2 + f * this.W / 2;
     this.place();
+    this.marks.show(focus, v => { const it = this.items[v]; return it ? [it.x, it.ty, this.u * 0.98, this.u * 0.98, it.tz + it.hgt + 0.004] : null; });
   }
   place() { for (const it of this.items) it.m.position.set(it.x, it.y, it.z); }
   frame(dt) {
     let moving = false;
+    this.marks.frame(dt);
     for (const it of this.items) {
       if (Math.abs(it.y - it.ty) + Math.abs(it.z - it.tz) > 1e-4) {
         const k = Math.min(1, dt * 5);

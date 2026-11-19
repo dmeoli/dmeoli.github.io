@@ -12,7 +12,7 @@ import { TASKS, argmax, PAIRS } from './gnn-tasks.js';
 import { palette, project, createLayout, nodeRadius, drawGraph, drawStrips, stripsHeight, stripRow, drawCurves } from './gnn-views.js';
 import { rng } from './nn.js';
 import { setTex } from './tex.js';
-import { t, onLang } from './i18n.js';
+import { t, onLang, onTheme } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const S = { task: 'community', agg: 'gcn', K: 3, H: 12, lr: 0.01, comm: 2, lab: 2, pair: 'ring', g: 1, seed: 1, k: 3, v: -1 };
@@ -31,7 +31,7 @@ const MAXSTEPS = { community: 300, clauses: 1500, triangles: 2000 };
 // at most this many steps per frame, so that the fast task can be watched
 const PERFRAME = { community: 2, clauses: 50, triangles: 50 };
 const EVERY = { community: 5, clauses: 20, triangles: 20 };
-let T, D, M, r, hist, steps, trainMs, timer = null, L, proj = null, ev, vw, hover = -1, lit = null, drag = -1, raf = 0;
+let T, D, M, r, hist, steps, timer = null, L, proj = null, ev, vw, hover = -1, lit = null, drag = -1, raf = 0;
 
 function reset() {
   stop();
@@ -39,7 +39,7 @@ function reset() {
   D = T.build(S);
   M = createModel({ F: D.F, H: S.H, K: S.K, C: D.C, agg: S.agg, level: T.level, seed: S.seed });
   r = rng(S.seed * 104729 + 1);
-  hist = []; steps = 0; trainMs = 0; proj = null;
+  hist = []; steps = 0; proj = null;
   hover = S.v >= 0 && S.v < D.display.N ? S.v : -1;
   const cv = $('graph');
   cv.height = S.task === 'triangles' ? 320 : 460;
@@ -52,10 +52,8 @@ function record() {
   hist.push({ step: steps, acc: ev.acc, loss: ev.loss, ...(ev.acc2 !== undefined ? { acc2: ev.acc2 } : {}) });
 }
 function step1() {
-  const t0 = performance.now();
   T.step(M, D, r, S.lr);
   steps++;
-  trainMs += performance.now() - t0;
   if (steps % EVERY[S.task] === 0) record();
 }
 
@@ -105,7 +103,8 @@ function draw() {
     const names = S.pair === 'ring' ? ['C6', t('two triangles', 'due triangoli')] : ['K3,3', t('prism', 'prisma')], cv = $('graph');
     vw.parts.forEach((p, i) => notes.push({ x: cv.width * (i ? 0.75 : 0.25), text: `${names[i]}: ${p.y ? t('triangle', 'triangolo') : t('none', 'nessuno')}, p = ${p.p.toFixed(3)}` }));
   }
-  drawGraph($('graph'), { g, L, P: proj[S.k], R, k: S.k, hover, contrib: up ? up.contrib : new Map(), wrong: wrongSet(R), notes }, pal);
+  gArgs = { g, L, P: proj[S.k], Pprev: S.k > 0 ? proj[S.k - 1] : null, R, k: S.k, hover, contrib: up ? up.contrib : new Map(), wrong: wrongSet(R), notes };
+  drawGraph($('graph'), { ...gArgs, pulse }, pal);
   // the strips of the update
   const rows = [];
   if (up) {
@@ -137,7 +136,7 @@ function texts(R, up) {
   for (const e of document.querySelectorAll('.opt-community')) e.hidden = S.task !== 'community';
   for (const e of document.querySelectorAll('.opt-triangles')) e.hidden = S.task !== 'triangles';
   $('regen').hidden = S.task === 'triangles';
-  const time = t(`after ${last.step} steps of Adam (${(trainMs / 1000).toFixed(1)} s of training)`, `dopo ${last.step} passi di Adam (${(trainMs / 1000).toFixed(1)} s di addestramento)`);
+  const time = t(`after ${last.step} steps of Adam`, `dopo ${last.step} passi di Adam`);
   let st = '', cap = '', ccap = '', leg = '';
   if (S.task === 'community') {
     st = t(`Accuracy ${pct(last.acc)} on the ${g.test.length} unlabeled nodes of the graph drawn, ${time}; the graph drawn is never trained on, only its ${g.lab.length} labels are used.`,
@@ -224,7 +223,24 @@ $('regen').onclick = () => { S.g++; S.v = -1; reset(); save(); };
 $('reset').onclick = () => { S.seed++; reset(); save(); };
 $('step').onclick = step;
 $('train').onclick = train;
-const setK = v => { S.k = Math.max(0, Math.min(S.K, v)); save(); draw(); };
+// a step forward of one round plays, for 0.8 s, the messages of that round
+// running along the edges (skipped when the reader asks for less motion)
+let pulse = null, praf = 0, gArgs = null;
+const still = matchMedia('(prefers-reduced-motion: reduce)');
+function playRound() {
+  cancelAnimationFrame(praf);
+  if (still.matches) { pulse = null; draw(); return; }
+  const t0 = performance.now();
+  const pal = palette();
+  pulse = 0; draw();
+  // only the graph is painted again while the messages run
+  const go = () => { pulse = Math.max(0, Math.min(1, (performance.now() - t0) / 800)); drawGraph($('graph'), { ...gArgs, pulse }, pal); if (pulse < 1) praf = requestAnimationFrame(go); else { pulse = null; drawGraph($('graph'), gArgs, pal); } };
+  praf = requestAnimationFrame(go);
+}
+const setK = v => {
+  const k0 = S.k; S.k = Math.max(0, Math.min(S.K, v)); save();
+  if (S.k === k0 + 1) playRound(); else { cancelAnimationFrame(praf); pulse = null; draw(); }
+};
 $('k').oninput = e => setK(+e.target.value);
 $('prev').onclick = () => setK(S.k - 1);
 $('next').onclick = () => setK(S.k + 1);
@@ -264,7 +280,7 @@ $('strips').onmousemove = e => {
   if (part !== lit) { setLit(part); draw(); }
 };
 $('strips').onmouseleave = () => { setLit(hover >= 0 ? 'm' : null); draw(); };
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => draw());
+onTheme(() => draw());
 let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(draw, 100); });
 
 // the texts that are not in the page twice: title, buttons, options

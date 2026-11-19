@@ -9,7 +9,7 @@ import { createRun, DATA } from './depth-run.js';
 const DATA_IT = { circle: 'Cerchio', xor: 'XOR', gauss: 'Gaussiane', spiral: 'Spirale' };
 import { INITS } from './depth-net.js';
 import { drawMap, drawLoss, drawLayers, drawStrip, nice } from './depth-views.js';
-import { t as tr, onLang } from './i18n.js';
+import { t as tr, onLang, onTheme } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const DEF = { data: 'circle', depth: 20, width: 12, act: 'tanh', init: 'naive', norm: 'none', res: 0, opt: 'adam', lr: 0.01, seed: 1 };
@@ -133,7 +133,7 @@ document.addEventListener('keydown', e => {
   if (e.key === ' ') { e.preventDefault(); play(); }
 });
 let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(draw, 100); });
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+onTheme(draw);
 // the texts that the page cannot hold twice: the options, the presets, the title
 const OPTS = { data: DATA_IT, init: { naive: 'ingenua N(0, 1)', small: 'piccola N(0, 0.01²)' }, norm: { none: 'nessuna' }, act: { sigmoid: 'Sigmoide' } };
 const OPTS_EN = {};

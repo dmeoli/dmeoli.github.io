@@ -247,6 +247,20 @@ function legend(ctx, P, x, y, items) {
   });
 }
 
+// the legend in the corner of the box that hides the fewest points of the
+// curves (pts, in pixels), so that it never covers what it explains
+function legendAuto(ctx, P, box, items, pts) {
+  ctx.font = `11px ${MONO}`;
+  const w = 30 + Math.max(...items.map(([, s]) => ctx.measureText(s).width)), h = 15 * items.length + 3;
+  const xs = [box[0] + 8, box[2] - w], ys = [box[1] + 10, box[3] - h + 4];
+  let best = null;
+  for (const y of ys) for (const x of xs) {
+    const n = pts.filter(([px, py]) => px >= x - 10 && px <= x + w + 6 && py >= y - 15 && py <= y + h + 4).length;
+    if (!best || n < best.n) best = { n, x, y };
+  }
+  legend(ctx, P, best.x, best.y, items);
+}
+
 // the three networks, each with its colour token, its dash and its name (the
 // GRU is dashed too, since in the dark theme ink and accent are both light)
 const NETS = [['rnn', 'gold', [], ['plain RNN', 'RNN semplice']], ['gru', 'ink', [6, 3], ['GRU', 'GRU']], ['lstm', 'accent', [], ['LSTM', 'LSTM']]];
@@ -265,8 +279,16 @@ export function drawLoss(cv, hist, chance, epoch) {
     hist[k].forEach((q, i) => i ? ctx.lineTo(X(q.epoch), Y(q.loss)) : ctx.moveTo(X(q.epoch), Y(q.loss))); ctx.stroke(); ctx.setLineDash([]);
   }
   const last = k => hist[k].length ? ` ${(100 * hist[k].at(-1).acc).toFixed(0)}%` : '';
-  legend(ctx, P, Math.max(box[0] + 8, box[2] - 190), box[1] + 0.3 * (box[3] - box[1]), [...shown(P, last),
-    [mix(P['ink-soft'], P.ground, 0.3), tx('uniform guess, ln K', 'risposta uniforme, ln K'), [4, 4]]]);
+  // the curves sampled every few pixels, with the line of the uniform guess
+  const pts = [];
+  for (const k of ['lstm', 'gru', 'rnn']) hist[k].forEach((q, i, a) => {
+    if (!i) return;
+    const x0 = X(a[i - 1].epoch), y0 = Y(a[i - 1].loss), x1 = X(q.epoch), y1 = Y(q.loss), n = Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 4);
+    for (let j = 0; j <= n; j++) pts.push([x0 + (x1 - x0) * j / n, y0 + (y1 - y0) * j / n]);
+  });
+  for (let x = box[0]; x <= box[2]; x += 4) pts.push([x, Y(chance)]);
+  legendAuto(ctx, P, box, [...shown(P, last),
+    [mix(P['ink-soft'], P.ground, 0.3), tx('uniform guess, ln K', 'risposta uniforme, ln K'), [4, 4]]], pts);
 }
 
 // g = { lstm: Float64Array(T), gru: ..., rnn: ... }: the mean of |dL/dh_t| over the test sequences
@@ -289,5 +311,11 @@ export function drawGrad(cv, g0, t) {
     g[k].forEach((v, s) => s ? ctx.lineTo(X(s), Y(v)) : ctx.moveTo(X(s), Y(v))); ctx.stroke(); ctx.setLineDash([]);
     g[k].forEach((v, s) => { ctx.beginPath(); ctx.arc(X(s), Y(v), 2.2, 0, 2 * Math.PI); ctx.fill(); });
   }
-  legend(ctx, P, box[0] + 8, box[1] + 10, shown(P, () => ''));
+  const pts = [];
+  for (const k of ['lstm', 'gru', 'rnn']) g[k].forEach((v, i, a) => {
+    if (!i) return;
+    const x0 = X(i - 1), y0 = Y(a[i - 1]), x1 = X(i), y1 = Y(v), n = Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 4);
+    for (let j = 0; j <= n; j++) pts.push([x0 + (x1 - x0) * j / n, y0 + (y1 - y0) * j / n]);
+  });
+  legendAuto(ctx, P, box, shown(P, () => ''), pts);
 }

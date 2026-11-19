@@ -107,7 +107,8 @@ function play() { if (timer) return stop(); $('play').textContent = t('Pause', '
 // ------------------------------------------------------------------ drawing
 const NS = 'http://www.w3.org/2000/svg';
 const el = (t, a, p) => { const e = document.createElementNS(NS, t); for (const [k, v] of Object.entries(a)) e.setAttribute(k, v); p.appendChild(e); return e; };
-const scenColor = ['#7338a8', '#b59a45', '#047b7d'];
+// the colors of the three scenarios, theme tokens of benders.html
+const scenColor = ['var(--s1)', 'var(--s2)', 'var(--s3)'];
 
 function drawMaster() {
   const svg = $('master'); svg.replaceChildren();
@@ -122,11 +123,24 @@ function drawMaster() {
   const last = iters.at(-1);
   if (tr && last.lo !== undefined) el('rect', { x: X(last.lo), y: 0, width: X(last.hi) - X(last.lo), height: H - pad, class: 'trbox' }, g);
   el('polyline', { points: ys.map((y, i) => `${X(y)},${Yv(fv[i])}`).join(' '), class: 'truef' }, g);
+  // every cut, faint (in multi-cut mode the cuts of one scenario do not bound
+  // the objective alone, so the sum of the cuts of each round is drawn)
+  const rounds = iters.map(it => ({ a: it.subs.reduce((u, r, i) => u + P.scen[i].p * cutOf(P.scen[i], r.k).a, 0), b: P.c + it.subs.reduce((u, r, i) => u + P.scen[i].p * cutOf(P.scen[i], r.k).b, 0) }));
+  rounds.slice(0, -1).forEach(k => el('line', { x1: X(0), y1: Yv(k.a), x2: X(P.Y), y2: Yv(k.a + k.b * P.Y), class: 'oldcut' }, g));
   el('polyline', { points: ys.map(y => `${X(y)},${Yv(model(y))}`).join(' '), class: 'model' }, g);
+  const nk = rounds.at(-1);
+  el('line', { x1: X(0), y1: Yv(nk.a), x2: X(P.Y), y2: Yv(nk.a + nk.b * P.Y), class: 'freshcut' }, g);
+  // the move of the master: from the previous iterate down its model to the new y
+  if (iters.length > 1) {
+    const p0 = iters.at(-2), m = model(last.y);
+    el('line', { x1: X(last.y), y1: Yv(m), x2: X(last.y), y2: Yv(last.f), class: 'gapbar' }, g);
+    el('circle', { cx: X(last.y), cy: Yv(m), r: 4, class: 'lbdot' }, g);
+  }
   iters.forEach((t, i) => {
     el('circle', { cx: X(t.y), cy: Yv(t.f), r: i === iters.length - 1 ? 6 : 4, class: 'col' }, g);
     el('text', { x: X(t.y) + 6, y: Yv(t.f) - 6, class: 'lab' }, g).textContent = i;
   });
+  el('circle', { cx: X(last.y), cy: Yv(last.f), r: 11, class: 'fresh' }, g);
   if (tr) el('circle', { cx: X(center), cy: Yv(F(center)), r: 10, class: 'center' }, g);
 }
 
@@ -146,18 +160,39 @@ function drawDual() {
   V.forEach((u, k) => {
     const used = P.scen.map((_, s) => iters.some(t => t.subs[s].k === k));
     el('circle', { cx: X(u[0]), cy: Y(u[1]), r: 4, class: 'ipt' }, svg);
-    used.forEach((on, s) => { if (on) el('circle', { cx: X(u[0]), cy: Y(u[1]), r: 7 + 4 * s, fill: 'none', stroke: scenColor[s], 'stroke-width': 2.5, opacity: last.subs[s].k === k ? 1 : 0.35 }, svg); });
+    used.forEach((on, s) => { if (on) el('circle', { cx: X(u[0]), cy: Y(u[1]), r: 7 + 4 * s, fill: 'none', style: `stroke: ${scenColor[s]}`, 'stroke-width': 2.5, opacity: last.subs[s].k === k ? 1 : 0.35, class: last.subs[s].k === k ? 'fresh2' : '' }, svg); });
   });
   // the direction h_s - T_s y of each scenario at the last y: the vertex that
   // maximizes it is the one chosen
+  const defs = el('defs', {}, svg);
+  el('rect', { x: X(0), y: Y(span), width: X(span) - X(0), height: Y(0) - Y(span) }, el('clipPath', { id: 'bclip' }, defs));
+  const lv = el('g', { 'clip-path': 'url(#bclip)' }, svg);
   P.scen.forEach((s, i) => {
     const d = rhs(s, last.y), n = Math.hypot(...d) || 1, o = [span * 0.12, span * 0.12];
-    el('line', { x1: X(o[0]), y1: Y(o[1]), x2: X(o[0]) + d[0] / n * 46, y2: Y(o[1]) - d[1] / n * 46, stroke: scenColor[i], 'stroke-width': 2.5 }, svg);
+    const mk = el('marker', { id: 'btip' + i, viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 9, markerHeight: 9, orient: 'auto', markerUnits: 'userSpaceOnUse' }, defs);
+    el('path', { d: 'M0,0 L10,5 L0,10 z', style: `fill: ${scenColor[i]}` }, mk);
+    el('line', { x1: X(o[0]), y1: Y(o[1]), x2: X(o[0]) + d[0] / n * 70, y2: Y(o[1]) - d[1] / n * 70, style: `stroke: ${scenColor[i]}`, 'stroke-width': 2.5, 'marker-end': `url(#btip${i})` }, svg);
+    // the level line of u.(h - T y) through the chosen vertex: the polygon lies
+    // on one side of it, which is why that vertex is the maximum
+    const u = V[last.subs[i].k], e = [-d[1] / n, d[0] / n], L = 2 * span;
+    el('line', { x1: X(u[0] - L * e[0]), y1: Y(u[1] - L * e[1]), x2: X(u[0] + L * e[0]), y2: Y(u[1] + L * e[1]), style: `stroke: ${scenColor[i]}`, class: 'level' }, lv);
   });
+}
+
+// the move of the last iteration in words
+function eventText() {
+  const k = iters.length - 1, it = iters[k], f2 = v => v.toFixed(2);
+  const vx = it.subs.map((r, i) => `${i + 1}: (${f2(V[r.k][0])}, ${f2(V[r.k][1])})`).join(', ');
+  const head = k ? t(`Iteration ${k}: the master puts y = ${f2(it.y)}, the lowest point of its model${tr ? ' inside the trust region' : ''}`, `Iterazione ${k}: il master pone y = ${f2(it.y)}, il punto più basso del suo modello${tr ? ' dentro la regione di fiducia' : ''}`)
+    : t(`Start: y = ${f2(it.y)}`, `Inizio: y = ${f2(it.y)}`);
+  const cut = mode === 'single' ? t('their average is one new cut (gold, dashed)', 'la loro media è un solo taglio nuovo (oro, tratteggiato)') : t('each scenario adds its own cut (their sum in gold, dashed)', 'ogni scenario aggiunge un proprio taglio (la loro somma in oro, tratteggiata)');
+  return head + t(`; each scenario solves its recourse at this y and picks the vertex of the dual polygon farthest along its arrow, scenario ${vx}; ${cut}; the true cost there is ${f2(it.f)}.`,
+    `; ogni scenario risolve il suo ricorso in questo y e sceglie il vertice del poligono duale più avanti lungo la sua freccia, scenario ${vx}; ${cut}; lì il costo vero è ${f2(it.f)}.`);
 }
 
 function draw() {
   drawMaster(); drawDual();
+  $('event').textContent = eventText();
   const fb = Math.min(...iters.map(t => t.f)), lb = master(0, P.Y).value;
   $('it').textContent = iters.length - 1; $('ub').textContent = fb.toFixed(4); $('lb').textContent = lb.toFixed(4);
   $('nc').textContent = mode === 'single' ? cuts.single.length : cuts.multi.map(c => c.length).join(' + ');

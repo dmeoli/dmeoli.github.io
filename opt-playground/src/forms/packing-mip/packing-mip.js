@@ -89,8 +89,11 @@ function build() {
     group.add(obj); pieces.push(obj);
   });
   const span = Math.max(P.w, P.h) * s;
-  controls.target.set(off + cx, off + cy, g.cube ? 12 : 2);
-  camera.position.set(off + cx + span * 0.4, off + cy - span * 1.5, span * (g.cube ? 1.6 : 1.3));
+  // the cube is as tall as it is wide and its pieces rise when drawn apart:
+  // the camera stands farther back and aims higher than for a flat tray
+  controls.target.set(off + cx, off + cy, g.cube ? span * 0.55 : 2);
+  if (g.cube) camera.position.set(off + cx + span * 1.3, off + cy - span * 2.6, span * 2.3);
+  else camera.position.set(off + cx + span * 0.4, off + cy - span * 1.5, span * 1.3);
   apart();
 }
 

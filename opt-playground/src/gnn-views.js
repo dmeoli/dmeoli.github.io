@@ -133,18 +133,33 @@ export function drawGraph(cv, o, pal) {
   const ctx = cv.getContext('2d'), { g, L, P, R, k, hover, contrib, wrong } = o, Hd = R.h[0].length / g.N;
   ctx.fillStyle = pal.ground; ctx.fillRect(0, 0, cv.width, cv.height);
   const rad = nodeRadius(g);
+  // o.pulse in [0, 1]: the round k is being computed from round k - 1, the
+  // edges glow, a dot in the color of each sender runs along every edge in
+  // both directions, and the nodes turn from their old color to the new one
+  const pu = o.pulse != null && k > 0 && o.Pprev ? o.pulse : null, ease = pu === null ? 1 : 0.5 - 0.5 * Math.cos(Math.PI * pu);
+  const old = v => stateColor(o.Pprev, R.h[k - 1].subarray(v * Hd, v * Hd + Hd), pal);
   // the edges, lit by their share of the messages into the hovered node
   for (const [u, v] of g.edges) {
     const on = hover >= 0 && (u === hover || v === hover), s = on ? contrib.get(u === hover ? v : u) || 0 : 0;
-    ctx.strokeStyle = on ? pal.accent : pal.rule;
-    ctx.globalAlpha = on ? 0.25 + 0.75 * Math.min(1, 2.5 * s) : hover >= 0 ? 0.6 : 1;
-    ctx.lineWidth = on ? 1.5 + 9 * s : 1.3;
+    ctx.strokeStyle = on || pu !== null ? pal.accent : pal.rule;
+    ctx.globalAlpha = on ? 0.25 + 0.75 * Math.min(1, 2.5 * s) : pu !== null ? 0.35 + 0.5 * (1 - ease) : hover >= 0 ? 0.6 : 1;
+    ctx.lineWidth = on ? 1.5 + 9 * s : pu !== null ? 2.5 : 1.3;
     ctx.beginPath(); ctx.moveTo(L.x[u], L.y[u]); ctx.lineTo(L.x[v], L.y[v]); ctx.stroke();
   }
   ctx.globalAlpha = 1;
+  if (pu !== null) {
+    const f = Math.min(1, pu / 0.85), e2 = 0.5 - 0.5 * Math.cos(Math.PI * f);
+    ctx.globalAlpha = f < 1 ? 1 : Math.max(0, 1 - (pu - 0.85) / 0.15);
+    for (const [u, v] of g.edges) for (const [a, b] of [[u, v], [v, u]]) {
+      const dx = L.x[b] - L.x[a], dy = L.y[b] - L.y[a], len = Math.hypot(dx, dy) || 1, d = rad + (len - 2 * rad) * e2;
+      ctx.fillStyle = rgb(old(a)); ctx.strokeStyle = pal.ink; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(L.x[a] + dx / len * d, L.y[a] + dy / len * d, 3.5, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   for (let v = 0; v < g.N; v++) {
-    const nd = g.nodes[v], x = L.x[v], y = L.y[v], c = stateColor(P, R.h[k].subarray(v * Hd, v * Hd + Hd), pal);
+    const nd = g.nodes[v], x = L.x[v], y = L.y[v], c0 = stateColor(P, R.h[k].subarray(v * Hd, v * Hd + Hd), pal), c = pu === null ? c0 : lerp(old(v), c0, Math.max(0, (pu - 0.55) / 0.45));
     ctx.fillStyle = rgb(c);
     ctx.beginPath();
     if (nd.kind === 'clause') roundRect(ctx, x - rad, y - rad, 2 * rad, 2 * rad, 3); else ctx.arc(x, y, rad, 0, 2 * Math.PI);

@@ -9,7 +9,7 @@
     "name": "A*",
     "block": "PBeFS",
     "paradigm": "heuristic search",
-    "code": "PBeFS e328929",
+    "code": "PBeFS 4489a8d",
     "config": {
      "algorithm": "astar",
      "heuristic": "gap",
@@ -26,7 +26,7 @@
     "name": "IDA*",
     "block": "PBeFS",
     "paradigm": "heuristic search",
-    "code": "PBeFS e328929",
+    "code": "PBeFS 4489a8d",
     "config": {
      "algorithm": "idastar",
      "heuristic": "gap",
@@ -43,7 +43,7 @@
     "name": "HDA* 4 threads",
     "block": "PBeFS",
     "paradigm": "heuristic search",
-    "code": "PBeFS e328929",
+    "code": "PBeFS 4489a8d",
     "config": {
      "algorithm": "hda",
      "heuristic": "gap",
@@ -60,7 +60,7 @@
     "name": "A*",
     "block": "PBeFS",
     "paradigm": "heuristic search",
-    "code": "PBeFS e328929",
+    "code": "PBeFS 4489a8d",
     "config": {
      "algorithm": "astar",
      "heuristic": "gap",
@@ -77,7 +77,7 @@
     "name": "IDA*",
     "block": "PBeFS",
     "paradigm": "heuristic search",
-    "code": "PBeFS e328929",
+    "code": "PBeFS 4489a8d",
     "config": {
      "algorithm": "idastar",
      "heuristic": "gap",
@@ -94,7 +94,7 @@
     "name": "HDA* 4 threads",
     "block": "PBeFS",
     "paradigm": "heuristic search",
-    "code": "PBeFS e328929",
+    "code": "PBeFS 4489a8d",
     "config": {
      "algorithm": "hda",
      "heuristic": "gap",

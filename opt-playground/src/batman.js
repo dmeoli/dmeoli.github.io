@@ -115,10 +115,14 @@ function draw2d(animate) {
     t0 += dur;
   }
   steps.push([plot.region, 'opacity', t0, 700, 0, 1]);
-  let start = null;
+  // the function being traced is lit in the legend and its formula shown below
+  const spans = steps.filter(st => st[1] === 'strokeDashoffset').map(([, , s0, d]) => [s0, s0 + d]);
+  let start = null, cur;
   const frame = now => {
     if (start === null) start = now;
     const t = now - start;
+    const i = spans.findIndex(([a, b]) => t >= a && t < b), id = i < 0 ? null : ORDER[i];
+    if (t > 0 && id !== cur) { cur = id; hover(id); }
     for (const [e, k, s0, d, a, b] of steps) {
       const u = Math.min(1, Math.max(0, (t - s0) / d)), e2 = u * u * (3 - 2 * u);
       e.style[k] = a + (b - a) * e2;
@@ -368,7 +372,9 @@ function init() {
   $('view').addEventListener('click', () => { controls.reset(); camera.position.set(...HOME); controls.target.set(0, 0, 0); fit(); });
   $('svg').addEventListener('click', svgFile);
   printSetup();
-  onLang(() => { fillSelects(); legend(); hover(null); });
+  const aria = () => $('plot').setAttribute('aria-label', t('The Batman curve, piece by piece', 'La curva di Batman, pezzo per pezzo'));
+  aria();
+  onLang(() => { fillSelects(); legend(); hover(null); aria(); });
   onTheme(() => { recolour(); });
   still.addEventListener('change', () => { controls.enableDamping = !still.matches; if (still.matches) { $('sweep').checked = false; finishDrawing(); } });
 }

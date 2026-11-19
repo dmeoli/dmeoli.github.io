@@ -40,6 +40,8 @@ main.form { grid-template-columns: minmax(0, 1fr); }
 #stats dt { color: var(--ink-soft); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
 #stats dd { margin: 0; }
 .model { font-size: 15px; color: var(--ink-soft); overflow-x: auto; overflow-y: hidden; }
+/* the line that names the move of the last step */
+.event { font-family: 'IBM Plex Mono', monospace; font-size: .85rem; color: var(--ink); border-left: 3px solid var(--gold); padding: 4px 0 4px 10px; margin: 10px 0; min-height: 2.6em; }
 </style>
 </head>
 <body>
@@ -86,13 +88,18 @@ main.form { grid-template-columns: minmax(0, 1fr); }
     for every point of the knapsack that is the cheapest somewhere. In gold, the trial points of the
     method (filled: serious steps, which move the stability center; light: null steps, which only add
     a cut) and, translucent, its model (the minimum of the cuts collected so far), which comes down
-    onto the roof as they accumulate; the purple diamond is the dual optimum. Drag to turn, wheel or
+    onto the roof as they accumulate; the purple diamond is the dual optimum. The last step is marked
+    in gold: a halo around its trial point, the facet of the plane its knapsack solution returned, and
+    a ring at the stability center; the line above the picture names the move. Drag to turn, wheel or
     pinch to zoom.</span><span data-l="it" lang="it">Il tetto \(L(\lambda)\) sul quadrato dei
     moltiplicatori, una faccia per ogni punto dello zaino che è il più economico in qualche regione. In
     oro, i punti di prova del metodo (pieni: passi seri, che spostano il centro di stabilità; chiari:
     passi nulli, che aggiungono solo un taglio) e, trasparente, il suo modello (il minimo dei tagli
     raccolti finora), che scende sul tetto man mano che i tagli si accumulano; il rombo viola è l'ottimo
-    duale. Trascina per ruotare, rotella o pizzico per lo zoom.</span></figcaption>
+    duale. L'ultimo passo è segnato in oro: un alone attorno al suo punto di prova, la faccia del piano
+    restituito dalla soluzione dello zaino e un anello al centro di stabilità; la riga sopra la figura
+    descrive la mossa. Trascina per ruotare, rotella o pizzico per lo zoom.</span></figcaption>
+    <p id="event" class="event" aria-live="polite"></p>
     <div id="stage" class="stage"></div>
     <dl id="stats"></dl>
   </figure>

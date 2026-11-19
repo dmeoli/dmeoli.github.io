@@ -6,6 +6,7 @@
 import * as THREE from 'three';
 import { stage3d, rod, clear, label } from '../stage3d.js';
 import { t, onLang } from '../i18n.js';
+import { Marks } from './cells.js';
 
 export const HUES = { R: '#c2453d', G: '#4f9a5a', B: '#3f6fb5', Y: '#d9b23a' };
 const LOW = 0.05, HIGH = 0.15;
@@ -48,7 +49,7 @@ export class BoardView {
         return m;
       });
       S.content.add(g);
-      return { g, pegs };
+      return { g, pegs, size };
     };
     if (map) {
       const n = Object.keys(map.regions).length, size = n > 30 ? 0.016 : n > 12 ? 0.024 : 0.04;
@@ -99,11 +100,14 @@ export class BoardView {
         this.items.set(v, { body, ...p, h: LOW, target: LOW, hot: false, graph: true });
       }
     }
+    this.marks = new Marks(S);
+    this.ids = inst.vertices;
     if (this.last) this.show(...this.last);
   }
-  // board: from Replay.board(); hot: the vertices of a conflict
-  show(board, hot) {
-    this.last = [board, hot];
+  // board: from Replay.board(); hot: the vertices of a conflict; focus: from
+  // Replay.focus(), a frame around the pegs of each vertex it names
+  show(board, hot, focus = []) {
+    this.last = [board, hot, focus];
     const P = this.S.colors, cols = this.inst.colours, still = reduced();
     for (const b of board) {
       const it = this.items.get(b.id);
@@ -127,6 +131,13 @@ export class BoardView {
     }
     this.flash = hot.size ? 1e-3 : 0;
     this.place();
+    const k = cols.length;
+    this.marks.show(focus, v => {
+      const it = this.items.get(this.ids[v]);
+      if (!it) return null;
+      const s = it.size;
+      return [it.g.position.x, it.g.position.y, s * (1.35 * k + 0.6), s * 2.2, it.target + 0.004];
+    });
   }
   paint() { this.build(); }
   place() {
@@ -139,6 +150,7 @@ export class BoardView {
   frame(dt) {
     const still = reduced();
     let moving = false;
+    if (this.marks) this.marks.frame(dt);
     for (const it of this.items.values()) {
       if (Math.abs(it.h - it.target) > 1e-4) { it.h += (it.target - it.h) * Math.min(1, dt * 6); moving = true; }
       if (it.hot) {

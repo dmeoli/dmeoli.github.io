@@ -45,6 +45,10 @@ export function primal(svg, problem, state, hover) {
     el('circle', { cx: X(p[0]), cy: Y(p[1]), r: h ? 9 : 6, class: h ? 'col hot' : 'col' }, svg);
     el('text', { x: X(p[0]) + 9, y: Y(p[1]) - 7, class: 'lab' }, svg).textContent = i + 1;
   });
+  // the column the last oracle call returned, ringed in gold: the move of the step
+  const last = state.trace.at(-1);
+  if (last && last.column && state.trace.length > 1)
+    el('circle', { cx: X(last.column[0]), cy: Y(last.column[1]), r: 12, class: 'fresh' }, svg);
   // the direction of improvement, -c
   const cx = X(x0 + 0.6), cy = Y(y0 + 0.6), n = Math.hypot(...problem.c);
   el('line', { x1: cx, y1: cy, x2: cx - problem.c[0] / n * 40, y2: cy + problem.c[1] / n * 40, class: 'arrow', 'marker-end': 'url(#tip)' }, svg);
@@ -78,6 +82,12 @@ export function dual(svg, problem, state, hover, onHover, params, algo) {
   svg = el('g', { 'clip-path': 'url(#dframe)' }, svg);
   for (const k of state.cuts)
     el('line', { x1: X(0), y1: Y(k.value), x2: X(problem.lmax), y2: Y(k.value + k.slope * problem.lmax), class: 'cut' }, svg);
+  // the cut of the column returned by the last oracle call, in gold
+  const lo = state.trace.at(-1);
+  if (state.trace.length > 1 && lo.column && problem.cut) {
+    const k = problem.cut(lo.column);
+    el('line', { x1: X(0), y1: Y(k.value), x2: X(problem.lmax), y2: Y(k.value + k.slope * problem.lmax), class: 'freshcut' }, svg);
+  }
   el('polyline', { points: ls.map((l, i) => `${X(l)},${Y(Ls[i])}`).join(' '), class: 'truef' }, svg);
   const mod = ls.map(l => Math.min(...state.cuts.map(k => k.value + k.slope * l)));
   el('polyline', { points: ls.map((l, i) => `${X(l)},${Y(mod[i])}`).join(' '), class: 'model' }, svg);
@@ -93,6 +103,8 @@ export function dual(svg, problem, state, hover, onHover, params, algo) {
     g.addEventListener('mouseenter', () => onHover(i));
     g.addEventListener('mouseleave', () => onHover(null));
   });
+  const lt = state.trace.at(-1);
+  if (state.trace.length > 1) el('circle', { cx: X(lt.lam), cy: Y(lt.value), r: 10, class: 'fresh' }, svg);
   defs(top);
 }
 

@@ -14,7 +14,7 @@
 import { makeNet, forward, trainBatch, accuracy, visualize, receptiveField, classScore, fgsm, argmax, N, P1, P2, NC } from './convnet.js';
 import { makeSet } from './convdata.js';
 import { rng } from './nn.js';
-import { t, onLang } from './i18n.js';
+import { t, onLang, onTheme } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const S = { c1: 6, c2: 8, lr: 0.003, seed: 1, f: 0, salc: -1, salx: 0, tgt: -1, eps: 0.1, iters: 10 };
@@ -435,7 +435,7 @@ document.addEventListener('keydown', e => {
   else if (e.key === 'ArrowRight') { e.preventDefault(); $('step').click(); }
 });
 // a change of the theme on the site, or of the system, recolours the canvases
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { palette(); refresh(); });
+onTheme(() => { palette(); refresh(); });
 
 // the texts of the language: the title, the buttons, the first option of the
 // class and of the target

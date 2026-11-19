@@ -119,8 +119,10 @@ export function dual3d(box, problem, state, hover, params, algo) {
     group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pathPts), new THREE.LineBasicMaterial({ color: ink })));
   const accent = new THREE.Color(css('--accent') || '#7338a8'), gold = new THREE.Color(css('--gold') || '#6c5920');
   state.trace.forEach((o, i) => {
-    const s = new THREE.Mesh(new THREE.SphereGeometry(i === hover ? 0.024 : 0.016, 16, 12),
-      new THREE.MeshStandardMaterial({ color: i === hover ? gold : accent, emissive: o.serious ? accent : 0x000000, emissiveIntensity: 0.25 }));
+    // the hovered iterate and the last one (the point of the step) are larger and gold
+    const big = i === hover || (i > 0 && i === state.trace.length - 1);
+    const s = new THREE.Mesh(new THREE.SphereGeometry(big ? 0.026 : 0.016, 16, 12),
+      new THREE.MeshStandardMaterial({ color: big ? gold : accent, emissive: o.serious ? accent : 0x000000, emissiveIntensity: 0.25 }));
     s.position.copy(P(o));
     group.add(s);
     // a drop line to the floor, so the position in the plane reads

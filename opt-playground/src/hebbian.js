@@ -148,6 +148,8 @@ function drawPlane() {
   for (const [x, y] of D.pts) { ctx.beginPath(); ctx.arc(X(x), Y(y), 3, 0, 2 * Math.PI); ctx.fill(); }
   const slow = S.speed === '1' || S.speed === '10';
   if (slow && last) {
+    ctx.strokeStyle = col(P.gold, 0.9); ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]);   // the input u as a vector
+    ctx.beginPath(); ctx.moveTo(X(0), Y(0)); ctx.lineTo(X(last.u[0]), Y(last.u[1])); ctx.stroke(); ctx.setLineDash([]);
     ctx.strokeStyle = col(P.gold); ctx.lineWidth = 2;
     ctx.beginPath(); ctx.arc(X(last.u[0]), Y(last.u[1]), 7, 0, 2 * Math.PI); ctx.stroke();
   }

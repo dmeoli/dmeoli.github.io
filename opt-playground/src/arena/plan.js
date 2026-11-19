@@ -27,7 +27,7 @@ function face(text, fg, bg) {
 export class PlanView {
   constructor(box, inst) {
     this.inst = inst;
-    this.S = stage3d(box, { camera: [0, -1.2, 1.95], target: [0, 0.06, 0], aspect: 0.8,
+    this.S = stage3d(box, { camera: [0, -1.4, 2.3], target: [0, 0.0, 0], aspect: 0.8,
       onTheme: () => this.build(), onFrame: dt => this.frame(dt) });
     this.S.controls.enableDamping = !reduced();
     this.build();

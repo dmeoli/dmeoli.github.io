@@ -22,6 +22,10 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
 <script src="theme.js"></script>
 <link rel="stylesheet" href="style.css">
+<style>
+/* the face under the pointer and its polar vertex, in words */
+.pointed { font-family: 'IBM Plex Mono', monospace; font-size: .85rem; color: var(--ink); border-left: 3px solid var(--gold); padding: 4px 0 4px 10px; margin: 8px 0; min-height: 3.2em; }
+</style>
 <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
 <script type="importmap">
@@ -61,6 +65,7 @@
     Trascina per ruotare, usa la rotella per lo zoom. Poich&eacute; la polarit&agrave; inverte
     l'inclusione, ingrandendo \(P\) si rimpicciolisce \(P^\circ\).</span></figcaption>
     <div id="stage" class="stage"></div>
+    <p id="pointed" class="pointed" aria-live="polite"></p>
   </figure>
 </main>
 <section id="print" class="print-only">

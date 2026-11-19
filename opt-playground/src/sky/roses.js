@@ -50,6 +50,9 @@ function drawGeo(u) {
   const ev = data.events.filter(e => e.ms <= sm[k].ms).map(e => { const g = S.geoJ2000(data.p, e.ms); return [C + sc * g.x, C - sc * g.y]; });
   if (ev.length > 1) el('path', { d: path(ev), class: 's-accent-l', style: 'stroke-width:1.2;opacity:.8' }, svg);
   for (const [x, y] of ev) el('circle', { cx: x, cy: y, r: 3.5, class: 'r-ev' }, svg);
+  // the conjunction (or opposition) just passed, ringed in gold for a while
+  const j = recent(u);
+  if (j >= 0) el('circle', { cx: ev[j][0], cy: ev[j][1], r: 9, class: 's-gold-l' }, svg);
   el('circle', { cx: C, cy: C, r: 5, class: 's-earth' }, svg);
   el('circle', { cx: X(sm[k]), cy: Y(sm[k]), r: 4.5, class: 's-planet' }, svg);
   el('text', { x: 8, y: W - 10, class: 's-lab' }, svg, t(`rings every ${(rmax / 4).toFixed(2)} AU`, `anelli ogni ${(rmax / 4).toFixed(2)} UA`));
@@ -97,8 +100,18 @@ function tables() {
       return `<tr><td class="num">${i + 1}</td><td>${S.ymdhm(e.ms)}</td><td class="num">${l.toFixed(2)}°</td><td class="num">${l0 === null ? '' : S.norm(l - l0).toFixed(2) + '°'}</td></tr>`; }).join('');
 }
 
+// the index of the event passed within the last 1/40 of the span, or -1
+function recent(u) {
+  const sm = data.samples, now = sm[idx(u)].ms, span = sm.at(-1).ms - sm[0].ms;
+  let j = -1; data.events.forEach((e, i) => { if (e.ms <= now && now - e.ms < span / 40) j = i; });
+  return j;
+}
 let clk;
-function frame(u) { drawGeo(u); drawHelio(u); info(u); }
+function frame(u) {
+  drawGeo(u); drawHelio(u); info(u);
+  const j = recent(u);
+  [...$('events').rows].forEach((r, i) => r.classList.toggle('on', i === j + 1));
+}
 function recompute() { build(); tables(); writeState(state); $('years').value = state.years; $('yearsout').value = state.years; frame(clk.u); }
 function init() {
   if (!state.years) state.years = defaultYears(state.planet);

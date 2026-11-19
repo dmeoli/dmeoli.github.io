@@ -198,41 +198,113 @@ function describeSearch(rep, e) {
       if (GAME === 'planning') return /^backward/.test(rep.tr.header.solver.config.algorithm)
         ? t(`The search regresses a subgoal ${fmt(e.g)} actions before the goal.`, `La ricerca regredisce un sottobiettivo ${fmt(e.g)} azioni prima dell'obiettivo.`)
         : t(`The search expands a state reached in ${fmt(e.g)} actions.`, `La ricerca espande uno stato raggiunto in ${fmt(e.g)} azioni.`);
-      return t(`${W(e.w)} expands a state with g ${fmt(e.g)}, h ${fmt(e.h)}, f ${fmt(e.f)}.`,
-      `${W(e.w)} espande uno stato con g ${fmt(e.g)}, h ${fmt(e.h)}, f ${fmt(e.f)}.`);
+      {
+        // the place expanded, on the boards that are a set of places
+        const at = Object.entries(e.set || {}).find(([, v]) => v[0] === 'e'), wd = rep.tr.header.instance.width;
+        const what = !at ? [t('a state', 'uno stato'), t('uno stato', 'uno stato')]
+          : GAME === 'romania' ? [at[0], at[0]] : [`the cell (${+at[0] % wd}, ${Math.floor(+at[0] / wd)})`, `la cella (${+at[0] % wd}, ${Math.floor(+at[0] / wd)})`];
+        return t(`${W(e.w)} expands ${what[0]}, with g ${fmt(e.g)}, h ${fmt(e.h)}, f ${fmt(e.f)}.`,
+          `${W(e.w)} espande ${what[1]}, con g ${fmt(e.g)}, h ${fmt(e.h)}, f ${fmt(e.f)}.`);
+      }
     case 'level': return t(`Level ${e.g} of the planning graph: ${e.n.propositions} propositions, ${e.n.actions} actions, ${e.n.mutexes} mutexes.`,
       `Livello ${e.g} del grafo di pianificazione: ${e.n.propositions} proposizioni, ${e.n.actions} azioni, ${e.n.mutexes} mutex.`);
     case 'threshold': return t(`A new iteration, with threshold ${fmt(e.g)} on f.`, `Una nuova iterazione, con soglia ${fmt(e.g)} su f.`);
     case 'solution': return t(`${W(e.w)} reaches the goal with cost ${fmt(e.cost)}.`, `${W(e.w)} raggiunge l'obiettivo con costo ${fmt(e.cost)}.`);
     case 'path': return e.i === 0 ? t(`The solution path, ${N} moves: the start.`, `Il cammino soluzione, ${N} mosse: la partenza.`)
-      : t(`The solution path: move ${e.i} of ${N}${e.move ? ', ' + e.move : ''}.`, `Il cammino soluzione: mossa ${e.i} di ${N}${e.move ? ', ' + e.move : ''}.`);
+      : e.flip ? t(`The solution path: move ${e.i} of ${N}, flip the top ${e.flip} pancakes.`, `Il cammino soluzione: mossa ${e.i} di ${N}, ribalta le ${e.flip} frittelle in cima.`)
+      : e.turn !== undefined ? (() => {
+        // the tokens now in the turnstile, and the order they had before
+        const K = rep.tr.header.instance.turnstile || 4, n = e.x.length;
+        const now = Array.from({ length: K }, (_, o) => e.x[(e.turn + o) % n]), was = [...now].reverse().join(' ');
+        return t(`The solution path: move ${e.i} of ${N}, the turnstile reverses ${was} into ${now.join(' ')}.`,
+          `Il cammino soluzione: mossa ${e.i} di ${N}, il tornello rovescia ${was} in ${now.join(' ')}.`);
+      })()
+      : (() => {
+        const m = pathMove(rep, e);
+        return t(`The solution path: move ${e.i} of ${N}${m ? ', ' + m[0] : ''}.`, `Il cammino soluzione: mossa ${e.i} di ${N}${m ? ', ' + m[1] : ''}.`);
+      })();
     default: return e.type;
   }
+}
+// a literal as the value it names, whatever its sign ("WA = R")
+const litVal = (sym, l) => litText(sym, Math.abs(l));
+// a move of the solution path in words, in English and Italian, from the
+// state before it (the previous event of the path) and the state after it
+const FACES = { U: ['top', 'superiore'], D: ['bottom', 'inferiore'], F: ['front', 'frontale'], B: ['back', 'posteriore'], L: ['left', 'sinistra'], R: ['right', 'destra'] };
+function pathMove(rep, e) {
+  const prev = rep.tr.events[rep.pos - 2], a = prev && prev.type === 'path' ? prev.x : null, b = e.x;
+  if (GAME === 'cube' && e.move && FACES[e.move[0]]) {
+    const f = FACES[e.move[0]], q = e.move.slice(1);
+    return [`${e.move}: turn the ${f[0]} face ${q === '2' ? 'by half a turn' : q === "'" ? 'a quarter counterclockwise' : 'a quarter clockwise'}`,
+      `${e.move}: gira la faccia ${f[1]} di ${q === '2' ? 'mezzo giro' : q === "'" ? 'un quarto in senso antiorario' : 'un quarto in senso orario'}`];
+  }
+  if (e.move) return [e.move, e.move];
+  if (GAME === 'hanoi' && a && b) {
+    const d = b.findIndex((p, i) => p !== a[i]);
+    if (d >= 0) return [`move disk ${d + 1} (1 the smallest) from peg ${a[d] + 1} to peg ${b[d] + 1}`, `sposta il disco ${d + 1} (1 il più piccolo) dal piolo ${a[d] + 1} al piolo ${b[d] + 1}`];
+  }
+  if (GAME === 'puzzle' && a && b) {
+    const side = rep.tr.header.instance.side, from = b.indexOf(0), to = a.indexOf(0), tile = a[from];
+    const dir = to === from - 1 ? ['left', 'a sinistra'] : to === from + 1 ? ['right', 'a destra'] : to === from - side ? ['up', 'in su'] : ['down', 'in giù'];
+    if (tile) return [`slide tile ${tile} ${dir[0]}`, `fai scorrere la tessera ${tile} ${dir[1]}`];
+  }
+  if (GAME === 'romania' && e.set) { const c = Object.keys(e.set)[0]; return [`on to ${c}`, `si prosegue verso ${c}`]; }
+  return null;
 }
 function describe(rep, e) {
   if (!e) return t('Before the first event.', 'Prima del primo evento.');
   if (rep instanceof SearchReplay) return describeSearch(rep, e);
   const sym = rep.tr.header.encoding ? rep.tr.header.encoding.symbols : [];
-  const L = ls => { const a = ls.slice(0, 5).map(l => litText(sym, l)).join(', '); return ls.length > 5 ? a + t(` and ${ls.length - 5} more`, ` e altri ${ls.length - 5}`) : a; };
+  const L = ls => { const a = ls.slice(0, 5).map(l => litVal(sym, l)).join(', '); return ls.length > 5 ? a + t(` and ${ls.length - 5} more`, ` e altri ${ls.length - 5}`) : a; };
+  // what a set of literals does: the values it forces and those it rules out
+  const does = (ls = []) => {
+    const P = ls.filter(l => l > 0), N = ls.filter(l => l < 0);
+    return [P.length ? t(`sets ${L(P)}`, `fissa ${L(P)}`) : '', N.length ? t(`rules out ${L(N)}`, `esclude ${L(N)}`) : '']
+      .filter(Boolean).join(t('; it ', '; ')) || t('nothing new', 'niente di nuovo');
+  };
+  const vname = v => rep.verts[v];
   switch (e.type) {
-    case 'decide': return t(`Decision at level ${e.level}: ${litText(sym, e.lit)}.`, `Decisione al livello ${e.level}: ${litText(sym, e.lit)}.`);
+    case 'decide': return e.lit > 0
+      ? t(`Decision at level ${e.level}: try ${litVal(sym, e.lit)} (gold frame).`, `Decisione al livello ${e.level}: si prova ${litVal(sym, e.lit)} (cornice dorata).`)
+      : t(`Decision at level ${e.level}: try without ${litVal(sym, e.lit)} (gold frame).`, `Decisione al livello ${e.level}: si prova senza ${litVal(sym, e.lit)} (cornice dorata).`);
     case 'propagate':
-      if (e.reason === 'given') return t(`The givens of the puzzle: ${L(e.lits || [])}.`, `I dati del problema: ${L(e.lits || [])}.`);
+      if (e.reason === 'given') return t(`The givens of the puzzle: ${L((e.lits || []).filter(l => l > 0))}.`, `I dati del problema: ${L((e.lits || []).filter(l => l > 0))}.`);
       if (e.reason === 'random start') return t('A random assignment of every variable.', 'Un assegnamento casuale di ogni variabile.');
-      if (e.reason === 'pure') return t(`Pure symbol at depth ${e.level}: ${L(e.lits || [])}.`, `Simbolo puro alla profondità ${e.level}: ${L(e.lits || [])}.`);
-      if (e.reason === 'unit') return t(`Unit clause at depth ${e.level}: ${L(e.lits || [])}.`, `Clausola unitaria alla profondità ${e.level}: ${L(e.lits || [])}.`);
-      return t(`Propagation at level ${e.level}: ${L(e.lits || [])}.`, `Propagazione al livello ${e.level}: ${L(e.lits || [])}.`);
-    case 'split': return t(`Split at depth ${e.level}: ${L((e.lits || []).filter(l => l < 0))}.`, `Suddivisione alla profondità ${e.level}: ${L((e.lits || []).filter(l => l < 0))}.`);
-    case 'flip': return t(`Flip: ${L(e.lits || [])}.`, `Inversione: ${L(e.lits || [])}.`);
+      if (e.reason === 'pure') return t(`Pure symbol at depth ${e.level}: it ${does(e.lits)}.`, `Simbolo puro alla profondità ${e.level}: ${does(e.lits)}.`);
+      if (e.reason === 'unit') return t(`Unit clause at depth ${e.level}: it ${does(e.lits)}.`, `Clausola unitaria alla profondità ${e.level}: ${does(e.lits)}.`);
+      return t(`Propagation at level ${e.level}: it ${does(e.lits)}.`, `Propagazione al livello ${e.level}: ${does(e.lits)}.`);
+    case 'split': return t(`Split of a domain at depth ${e.level} (gold frame): it ${does(e.lits)}.`, `Suddivisione di un dominio alla profondità ${e.level} (cornice dorata): ${does(e.lits)}.`);
+    case 'flip': return t(`Flip of one variable: now ${L((e.lits || []).filter(l => l > 0))}.`, `Inversione di una variabile: ora ${L((e.lits || []).filter(l => l > 0))}.`);
     case 'assign': return t(`${e.var} = ${e.value}; ${e.conflicted < 0 ? 'the first assignment is not complete yet' : e.conflicted + ' variables in conflict'}.`,
       `${e.var} = ${e.value}; ${e.conflicted < 0 ? 'il primo assegnamento non è ancora completo' : e.conflicted + ' variabili in conflitto'}.`);
-    case 'conflict':
-      if (e.vars) return t(`Wipeout: no value left for ${e.vars.join(', ')}.`, `Dominio vuoto: nessun valore rimasto per ${e.vars.join(', ')}.`);
-      if (!e.clause) return t(`Conflict at level ${e.level}.`, `Conflitto al livello ${e.level}.`);
-      return t(`Conflict: every literal of (${L(e.clause || [])}) is false.`, `Conflitto: ogni letterale di (${L(e.clause || [])}) è falso.`);
-    case 'backtrack': return e.restart ? t('Restart.', 'Riavvio.') : t(`Backtrack to level ${e.level}.`, `Ritorno al livello ${e.level}.`);
-    case 'node': return t(`Node ${e.id} (depth ${e.depth}): ${e.status}${e.fix && e.fix.length ? ', fixed ' + L(e.fix) : ''}.`,
-      `Nodo ${e.id} (profondità ${e.depth}): ${({ open: 'aperto', branched: 'ramificato', pruned: 'potato', infeasible: 'inammissibile', feasible: 'ammissibile' })[e.status] || e.status}${e.fix && e.fix.length ? ', fissati ' + L(e.fix) : ''}.`);
+    case 'conflict': {
+      if (e.vars) return t(`Wipeout: no value left for ${e.vars.join(', ')} (red).`, `Dominio vuoto: nessun valore rimasto per ${e.vars.join(', ')} (in rosso).`);
+      if (!e.clause) {
+        const f = rep.focus()[0], who = f ? vname(f.v) : '';
+        return who ? t(`Conflict at level ${e.level}: after the decision on ${who} (red) a constraint cannot be met.`, `Conflitto al livello ${e.level}: dopo la decisione su ${who} (in rosso) un vincolo non si può soddisfare.`)
+          : t(`Conflict at level ${e.level}: a constraint cannot be met.`, `Conflitto al livello ${e.level}: un vincolo non si può soddisfare.`);
+      }
+      const c = (e.clause || []).map(l => litText(sym, l)), cs = c.slice(0, 5).join(', ') + (c.length > 5 ? t(` and ${c.length - 5} more`, ` e altri ${c.length - 5}`) : '');
+      return t(`Conflict: every literal of (${cs}) is false (red).`, `Conflitto: ogni letterale di (${cs}) è falso (in rosso).`);
+    }
+    case 'backtrack': {
+      if (e.restart) return t('Restart: every decision is taken back.', 'Riavvio: ogni decisione viene ritirata.');
+      const u = [...(rep.undone || [])].map(vname), us = u.slice(0, 5).join(', ') + (u.length > 5 ? t(` and ${u.length - 5} more`, ` e altri ${u.length - 5}`) : '');
+      return u.length ? t(`Backtrack to level ${e.level}: the values of ${us} are taken back (grey frame).`, `Ritorno al livello ${e.level}: si ritirano i valori di ${us} (cornice grigia).`)
+        : t(`Backtrack to level ${e.level}.`, `Ritorno al livello ${e.level}.`);
+    }
+    case 'node': {
+      const st = { open: ['open', 'aperto'], branched: ['branched', 'ramificato'], pruned: ['pruned', 'potato'], infeasible: ['infeasible', 'inammissibile'], feasible: ['feasible', 'ammissibile'] }[e.status] || [e.status, e.status];
+      const last = e.fix && e.fix.length ? e.fix[e.fix.length - 1] : 0;
+      const ks = last && GAME === 'knapsack' ? /^(.*)_(in|out)$/.exec(sym[Math.abs(last) - 1] || '') : null;
+      const item = !last ? t('fixes nothing (the root)', 'non fissa niente (la radice)')
+        : ks ? (ks[2] === 'in' ? t(`takes the item ${ks[1]}`, `prende l'oggetto ${ks[1]}`) : t(`leaves out the item ${ks[1]}`, `lascia fuori l'oggetto ${ks[1]}`))
+        : t(`fixes ${litText(sym, last)}`, `fissa ${litText(sym, last)}`);
+      const why = e.status === 'pruned' && e.bound !== undefined && e.ub !== null && e.ub !== undefined
+        ? t(`, since its bound ${fmt(e.bound)} does not beat the incumbent ${fmt(e.ub)}`, `, perché il suo bound ${fmt(e.bound)} non supera la miglior soluzione ${fmt(e.ub)}`)
+        : e.bound !== undefined ? t(`, bound ${fmt(e.bound)}`, `, bound ${fmt(e.bound)}`) : '';
+      return t(`Node at depth ${e.depth}: it ${item} (gold frame); ${st[0]}${why}.`, `Nodo alla profondità ${e.depth}: ${item} (cornice dorata); ${st[1]}${why}.`);
+    }
     case 'bound': return t(`Bound ${fmt(e.lb)}, incumbent ${fmt(e.ub)}.`, `Bound ${fmt(e.lb)}, miglior soluzione ${fmt(e.ub)}.`);
     case 'iterate': return t(`Iteration: value ${fmt(e.value)}.`, `Iterazione: valore ${fmt(e.value)}.`);
     default: return e.type;
@@ -279,7 +351,11 @@ function buildSearchLane(file, tr) {
 function updateSearchLane(L, prev) {
   const { rep, art, tr } = L, h = tr.header, e = rep.last;
   const w = e && e.type === 'expand' && h.workers > 1 ? e.w : null;
-  if (SETBOARD.has(h.game)) L.view.show(rep.set);
+  if (SETBOARD.has(h.game)) {
+    // the place being expanded at this event, marked on the board
+    const cur = e && e.type === 'expand' ? Object.entries(e.set || {}).find(([, v]) => v[0] === 'e') : null;
+    L.view.show(rep.set, cur ? cur[0] : null);
+  }
   else if (h.game === 'cube') L.view.show(rep.x || h.instance.facelets, w, e && e.type === 'path' && L.k === prev + 1 ? e.move : null);
   else L.view.show(rep.x || h.instance.board || h.instance.start || h.instance.initial, w);
   if (!NOSTRIP.has(h.game)) {
@@ -326,7 +402,7 @@ function updateLane(L, k) {
   L.art.querySelector('.evline').textContent = describe(L.rep, e) + (k === L.tr.events.length && L.tr.result ? ' ' + t(`End: ${L.tr.result.status}.`, `Fine: ${L.tr.result.status}.`) : '');
   L.art.classList.toggle('conflict', !!e && e.type === 'conflict');
   if (L.search) { updateSearchLane(L, prev); return; }
-  L.view.show(L.rep.board(), L.rep.hot());
+  L.view.show(L.rep.board(), L.rep.hot(), L.rep.focus());
   if (L.hasTree) drawTree(L.art.querySelector('.tree'), L.rep.nodes, L.rep.node);
   const pd = h.solver.paradigm;
   L.art.querySelector('.bounds').textContent = L.hasTree || L.rep.lb !== null || L.rep.ub !== null
@@ -334,9 +410,13 @@ function updateLane(L, k) {
     : GAME === 'zebra' ? t('the pegs in a cell are the attributes of its group that may still stand in that house', 'i pioli in una cella sono gli attributi del suo gruppo che possono ancora stare in quella casa')
     : pd === 'csp' && GAME !== 'queens' ? t('the pegs are the values left in each domain', 'i pioli sono i valori rimasti in ogni dominio')
     : pd === 'local search' ? t('a complete assignment, repaired step by step', 'un assegnamento completo, riparato passo per passo')
-    : GAME === 'queens' ? t('a dark cell is a row ruled out for its column', 'una cella scura è una riga esclusa per la sua colonna')
+    : GAME === 'queens' ? t('a crossed cell is a row ruled out for its column', 'una cella con la croce è una riga esclusa per la sua colonna')
     : GAME === 'coloring' ? t('the pegs are the colors not yet ruled out', 'i pioli sono i colori non ancora esclusi')
     : t('the pegs are the values not yet ruled out', 'i pioli sono i valori non ancora esclusi');
+  // the frames of the current event (Marks in cells.js)
+  if (!L.hasTree && pd !== 'local search') L.art.querySelector('.bounds').textContent += t('; a frame marks what the event acts on: gold the value tried, ink the values propagated, red a conflict, grey the values a backtrack takes back',
+    '; una cornice segna ciò su cui agisce l\'evento: dorata il valore provato, color inchiostro i valori propagati, rossa un conflitto, grigia i valori ritirati da un ritorno indietro');
+  else if (pd === 'local search') L.art.querySelector('.bounds').textContent += t('; a gold frame marks the variable just changed', '; una cornice dorata segna la variabile appena cambiata');
 }
 
 let boardOnly = null;
@@ -385,25 +465,32 @@ async function loadLanes() {
 // default speed of one position a second and the line of the event can be
 // read: by work, SEARCHPOS positions for the expansions (up to those of the
 // lane that expands most) and at most MAXPATH for the solution paths; by
-// event and by time, at most MAXEV; a long trace is sampled evenly.
+// event, at most MAXEV for the events of the search and again one position
+// for each move of the solution paths, up to MAXPATH; by time, at most
+// MAXEV; a long trace is sampled evenly.
 const SEARCHPOS = 50, MAXPATH = 40, MAXEV = 80;
 // a search with few expansions takes one position for each
 const searchPos = () => Math.min(SEARCHPOS, Math.max(1, ...lanes.map(L => L.rep.work)));
-const pathLen = L => L.tr.events.length - L.rep.nsearch;
+const nsearch = L => (L.rep.nsearch === undefined ? L.tr.events.length : L.rep.nsearch);
+const pathLen = L => L.tr.events.length - nsearch(L);
 const longest = f => Math.max(0, ...lanes.map(f));
 const pathStride = () => Math.max(1, longest(pathLen) / MAXPATH);
-const evStride = () => Math.max(1, longest(L => L.tr.events.length) / MAXEV);
+const evStride = () => Math.max(1, longest(nsearch) / MAXEV);
+const evPos = () => Math.ceil(longest(nsearch) / evStride());
 function maxPos() {
   if (STATE.align === 'work') return searchPos() + Math.ceil(longest(pathLen) / pathStride());
-  return STATE.align === 'time' ? MAXEV : Math.ceil(longest(L => L.tr.events.length) / evStride());
+  return STATE.align === 'time' ? MAXEV : evPos() + Math.ceil(longest(pathLen) / pathStride());
 }
 const maxWork = () => Math.max(1, ...lanes.map(L => L.rep.work));
 function laneK(L, p) {
   if (STATE.align === 'work') {
-    if (p > searchPos()) return L.rep.nsearch + Math.min(Math.round((p - searchPos()) * pathStride()), pathLen(L));
+    if (p > searchPos()) return nsearch(L) + Math.min(Math.round((p - searchPos()) * pathStride()), pathLen(L));
     return L.rep.atWork(maxWork() * p / searchPos());
   }
-  if (STATE.align !== 'time') return Math.min(Math.round(p * evStride()), L.tr.events.length);
+  if (STATE.align !== 'time') {
+    if (p > evPos()) return nsearch(L) + Math.min(Math.round((p - evPos()) * pathStride()), pathLen(L));
+    return Math.min(Math.round(p * evStride()), nsearch(L));
+  }
   const T = Math.max(...lanes.map(L => L.tr.events.at(-1).t)) * p / MAXEV, ev = L.tr.events;
   let lo = 0, hi = ev.length;
   while (lo < hi) { const m = (lo + hi) >> 1; if (ev[m].t <= T) lo = m + 1; else hi = m; }

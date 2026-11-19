@@ -30,7 +30,8 @@ function readHash() {
 const flat = () => ({ preset: state.preset, rule: state.rule, c1: state.c[0], c2: state.c[1], c3: state.c[2], style: state.style, preview: state.preview });
 const writeHash = () => writeState(SPEC, flat());
 
-let renderer, scene, camera, controls, group, dirty = true, L;
+let renderer, scene, camera, controls, group, dirty = true, L, walk = null, shownK = -1;
+const still = matchMedia('(prefers-reduced-motion: reduce)');
 function setup() {
   const stage = $('stage');
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -52,7 +53,19 @@ function setup() {
     renderer.setSize(w, h, false); camera.aspect = w / h; if (FRAME) camera.zoom = 1.1; camera.updateProjectionMatrix(); dirty = true;
   };
   new ResizeObserver(resize).observe(stage); resize();
-  const loop = () => { if (controls.update()) dirty = true; if (dirty) { renderer.render(scene, camera); dirty = false; } requestAnimationFrame(loop); };
+  const loop = () => {
+    if (controls.update()) dirty = true;
+    // the pivot just made: the point runs along its edge in 0.6 s, the gold rod behind it
+    if (walk) {
+      const u = Math.min(1, (performance.now() - walk.t0) / 600), e = u * u * (3 - 2 * u);
+      const p = walk.a.clone().lerp(walk.b, e);
+      walk.ball.position.copy(p);
+      walk.rod.scale.set(1, Math.max(1e-3, e), 1);
+      walk.rod.position.copy(walk.a).lerp(walk.b, e / 2);
+      if (u >= 1) walk = null;
+      dirty = true;
+    }
+    if (dirty) { renderer.render(scene, camera); dirty = false; } requestAnimationFrame(loop); };
   requestAnimationFrame(loop);
 }
 
@@ -117,11 +130,20 @@ function draw() {
     for (const p of P) { const s = new THREE.Mesh(vg, em); s.position.set(...p); group.add(s); }
     // the path up to step k
     const gm = mat(gold, { roughness: 0.35, metalness: 0.2 });
-    for (let s = 1; s <= k; s++) group.add(cylinderBetween(P[idx[s - 1]], P[idx[s]], 1.6, gm));
+    let last = null;
+    for (let s = 1; s <= k; s++) { last = cylinderBetween(P[idx[s - 1]], P[idx[s]], 1.6, gm); group.add(last); }
     const pg = new THREE.SphereGeometry(2.0, 20, 14);
     for (let s = 0; s <= k; s++) { const b = new THREE.Mesh(pg, gm); b.position.set(...P[idx[s]]); group.add(b); }
     const cur = new THREE.Mesh(new THREE.SphereGeometry(3.2, 24, 16), gm); cur.position.set(...P[idx[k]]); group.add(cur);
+    // a ring around the current vertex, so that the eye finds the point that moved
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(5.2, 0.5, 10, 40), mat(gold, { roughness: 0.35 }));
+    ring.position.set(...P[idx[k]]); ring.lookAt(camera.position); group.add(ring);
+    if (k === shownK + 1 && k > 0 && last && !still.matches) {
+      walk = { t0: performance.now(), a: V3(P[idx[k - 1]]), b: V3(P[idx[k]]), ball: cur, rod: last };
+      cur.position.copy(walk.a); last.scale.set(1, 1e-3, 1);
+    }
   }
+  shownK = k;
   // the optimum, the arrow of c and the optimal level plane
   const opt = P[idx.at(-1)], dir = V3(L.dir);
   const om = new THREE.Mesh(new THREE.OctahedronGeometry(3.4), mat(accent)); om.position.set(...opt); group.add(om);
@@ -153,6 +175,22 @@ function table() {
     `${nv} of ${L.poly.V.length} vertices visited, ${steps.length - 1} pivots, ${status} at z = ${fmt(z)}.`,
     `${nv} vertici visitati su ${L.poly.V.length}, ${steps.length - 1} pivot, ${status} con z = ${fmt(z)}.`);
   $('kout').textContent = `${k}/${nv - 1}`;
+  // the move to vertex k in words: the pivots that brought the point there
+  // (vis[i] is the vertex reached by pivot i; degenerate pivots do not move)
+  const vis = [];
+  steps.forEach((st, i) => vis.push(i === 0 ? 0 : vis[i - 1] + (st.degenerate ? 0 : 1)));
+  const here = steps.filter((_, i) => i > 0 && vis[i] === k), from = steps[vis.lastIndexOf(k - 1)];
+  let ev;
+  if (k === 0) ev = t('Start at the origin, where every slack is in the basis and z = 0. Press Step: each step is one pivot to an adjacent vertex.',
+    "Si parte dall'origine, dove tutte le variabili di scarto sono in base e z = 0. Premi Passo: ogni passo è un pivot verso un vertice adiacente.");
+  else {
+    const mv = here[0], n = steps.indexOf(mv), at = `(${mv.x.map(fmt).join(', ')})`;
+    ev = t(`Pivot ${n}: ${varName(mv.enter)} enters the basis and ${varName(mv.leave)} leaves, so the point runs along the gold edge to ${at} and z rises from ${fmt(from.z)} to ${fmt(mv.z)}`,
+      `Pivot ${n}: ${varName(mv.enter)} entra in base ed esce ${varName(mv.leave)}, quindi il punto corre lungo lo spigolo dorato fino a ${at} e z sale da ${fmt(from.z)} a ${fmt(mv.z)}`);
+    if (here.length > 1) ev += t(`; then ${here.length - 1} degenerate pivot${here.length > 2 ? 's' : ''} change the basis without moving`, `; poi ${here.length - 1} pivot degeneri cambiano la base senza spostare il punto`);
+    ev += k === nv - 1 ? t(`; no edge rises any more: ${status}.`, `; nessuno spigolo sale più: ${status}.`) : '.';
+  }
+  $('event').textContent = ev;
 }
 
 function recompute() {

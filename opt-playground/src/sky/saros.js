@@ -80,6 +80,8 @@ function drawPanel(cut) {
     el('text', { x: L - 5, y: Y(s) + 3.5, class: 's-lab end' }, svg, s);
   for (const e of list) el('circle', { cx: X(e.ms), cy: Y(e.saros), r: e.ms <= cut ? 2.6 : 1.4, style: `fill:var(${KIND[e.kind][2]})`, opacity: e.ms <= cut ? 1 : 0.45 }, svg);
   el('line', { x1: X(cut), y1: T, x2: X(cut), y2: B, class: 'd-now' }, svg);
+  const m = lastMember(cut);
+  if (m) el('circle', { cx: X(m.ms), cy: Y(state.series), r: 6, class: 's-gold-l' }, svg);
   el('text', { x: L - 5, y: T - 4, class: 's-lab end' }, svg, 'Saros');
 }
 
@@ -98,6 +100,8 @@ function drawMap(cut) {
     el('circle', { cx: X(e.mx), cy: Y(e.my), r: inRange ? 4 : 2, style: `fill:var(${KIND[e.kind][2]})`, opacity: inRange ? (past ? 1 : 0.5) : 0.35, class: 'm-pt' }, svg);
     if (inRange) el('text', { x: X(e.mx), y: Y(e.my) - 7, class: 's-lab mid s-halo', style: 'font-size:10px' }, svg, new Date(e.ms).getUTCFullYear());
   }
+  const m = lastMember(cut);
+  if (m && Number.isFinite(m.mx)) el('circle', { cx: X(m.mx), cy: Y(m.my), r: 8, class: 's-gold-l' }, svg);
   el('text', { x: 4, y: T - 8, class: 's-lab' }, svg, state.kind === 'solar' ? t('point of greatest eclipse', 'punto di massima eclissi') : t('point with the Moon at the zenith', 'punto con la Luna allo zenit'));
   el('text', { x: 4, y: T + H + 16, class: 's-lab' }, svg, t('Natural Earth, 1:110m', 'Natural Earth, 1:110m'));
 }
@@ -116,6 +120,8 @@ function drawLife(cut) {
     const inRange = e.ms >= MS0 && e.ms < MS1;
     el('circle', { cx: X(i), cy: Y(e.mlat), r: inRange ? 4 : 2.6, style: `fill:var(${KIND[e.kind][2]})`, opacity: inRange && e.ms > cut ? 0.5 : 1, class: inRange ? 'm-pt' : '' }, svg);
   });
+  const m = lastMember(cut);
+  if (m) el('circle', { cx: X(life.indexOf(m)), cy: Y(m.mlat), r: 8, class: 's-gold-l' }, svg);
   const y0 = new Date(life[0].ms).getUTCFullYear(), y1 = new Date(life[n - 1].ms).getUTCFullYear();
   el('text', { x: L, y: B + 18, class: 's-lab' }, svg, String(y0));
   el('text', { x: R, y: B + 18, class: 's-lab end' }, svg, String(y1));
@@ -148,7 +154,18 @@ function tables() {
 /* ------------------------------------------------------------ shell ---- */
 
 const cutOf = u => MS0 + u * (MS1 - MS0 - 1);
-function frame(u) { const c = cutOf(u); drawPanel(c); drawMap(c); drawLife(c); info(c); }
+// the last eclipse of the chosen series in 1901-2100 before the cursor, ringed
+// in gold in the three views and shaded in the table of the members
+function lastMember(cut) {
+  let m = null;
+  for (const e of life) if (e.ms >= MS0 && e.ms < MS1 && e.ms <= cut) m = e;
+  return m;
+}
+function frame(u) {
+  const c = cutOf(u); drawPanel(c); drawMap(c); drawLife(c); info(c);
+  const m = lastMember(c), inRange = life.filter(e => e.ms >= MS0 && e.ms < MS1);
+  [...$('members').rows].forEach((r, i) => r.classList.toggle('on', !!m && inRange[i - 1] === m));
+}
 const clk = clock({ seconds: 30, step: 0.05, onFrame: frame, home: (Date.UTC(2026, 10, 18) - MS0) / (MS1 - MS0) });
 function recompute() { select(); tables(); frame(clk.u); }
 $('kind').value = state.kind;

@@ -101,8 +101,24 @@ function drawPath() {
     // the edges walked so far, the last one up to the moving point
     const pts = steps.slice(0, k + 1).map(s => D(s.x));
     if (anim) pts[pts.length - 1] = here;
-    for (let i = 0; i + 1 < pts.length; i++) moving.add(rod(pts[i], pts[i + 1], 0.012, tm));
+    const gm = new THREE.MeshLambertMaterial({ color: col.gold, emissive: col.gold, emissiveIntensity: 0.3 });
+    // the edge of the last pivot in gold, the earlier ones in violet
+    for (let i = 0; i + 1 < pts.length; i++) moving.add(rod(pts[i], pts[i + 1], i + 2 === pts.length ? 0.016 : 0.012, i + 2 === pts.length ? gm : tm));
     pts.forEach(p => moving.add(ball(p, 0.018, tm)));
+    // the face of the constraint that the last pivot made tight (the variable
+    // that left the basis is zero on it): the ratio test stopped the walk there
+    if (k > 0) {
+      const m = P.A.length, lv = steps[k].leave, q = lv < 3 ? m + lv : lv - 3, f = Geo.faces.find(f => f.k === q);
+      if (f) {
+        const p = f.poly.map(i => D(Geo.V[i].x)), pos = [];
+        for (let t = 1; t + 1 < p.length; t++) pos.push(...p[0], ...p[t], ...p[t + 1]);
+        const fg = new THREE.BufferGeometry();
+        fg.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+        fg.computeVertexNormals();
+        moving.add(new THREE.Mesh(fg, new THREE.MeshLambertMaterial({ color: col.accent, transparent: true, opacity: 0.45, side: THREE.DoubleSide, depthWrite: false })));
+        for (let i = 0; i < p.length; i++) moving.add(rod(p[i], p[(i + 1) % p.length], 0.007, gm));
+      }
+    }
   } else {
     const curve = B.dense.map(p => new THREE.Vector3(...D(p.x)));
     moving.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(curve), 200, 0.006, 8, false),
@@ -199,7 +215,13 @@ function show() {
       `La base ${bs} (in viola), i valori di tutte le variabili e i costi ridotti \\(c_j - c_B B^{-1} A_j\\) di quelle fuori base; la variabile di scarto \\(s_i\\) appartiene alla riga \\(i\\). In lilla la variabile che entra al passo successivo, riquadrata quella che esce.`));
     const tight = Geo.V.find(v => Math.hypot(...v.x.map((q, d) => q - s.x[d])) < 1e-7);
     const act = tight ? tight.act.map(q => C.names[q]).join(', ') : '';
-    let txt = t(`Vertex ${vec(s.x)}, c·x = ${fmt(s.z)}, on ${act}. `, `Vertice ${vec(s.x)}, c·x = ${fmt(s.z)}, su ${act}. `);
+    let txt = '';
+    if (k > 0) {
+      const pr = steps[k - 1], q = s.leave < 3 ? m + s.leave : s.leave - 3;
+      txt = t(`Pivot ${k}: ${names[s.enter]} entered the basis and the point walked the gold edge from ${vec(pr.x)}, raising c·x from ${fmt(pr.z)} to ${fmt(s.z)}, until ${C.names[q]} became tight (the face outlined in gold), so ${names[s.leave]} left. `,
+        `Pivot ${k}: ${names[s.enter]} è entrata in base e il punto ha percorso lo spigolo dorato da ${vec(pr.x)}, alzando c·x da ${fmt(pr.z)} a ${fmt(s.z)}, finché ${C.names[q]} è diventato attivo (la faccia bordata d'oro), quindi ${names[s.leave]} è uscita. `);
+    }
+    txt += t(`Vertex ${vec(s.x)}, c·x = ${fmt(s.z)}, on ${act}. `, `Vertice ${vec(s.x)}, c·x = ${fmt(s.z)}, su ${act}. `);
     if (s.optimal) txt += t('No reduced cost is positive: the basis is optimal.', 'Nessun costo ridotto è positivo: la base è ottima.');
     else if (s.unbounded) txt += t('The entering column has no positive entry: unbounded.', 'La colonna entrante non ha elementi positivi: problema illimitato.');
     else txt += t(`Next: ${names[nx.enter]} enters (reduced cost ${fmt(s.r[nx.enter])}, ${rule === 'bland' ? 'the first positive one' : 'the largest'}), ${names[nx.leave]} leaves by the ratio test.`,

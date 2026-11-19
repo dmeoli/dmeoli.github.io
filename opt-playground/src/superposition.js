@@ -86,9 +86,22 @@ function draw2d(norms) {
     const x = Wd / 2 + sc * W[0][i], y = Wd / 2 - sc * W[1][i];
     ctx.strokeStyle = col(i); ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(Wd / 2, Wd / 2); ctx.lineTo(x, y); ctx.stroke();
     ctx.fillStyle = col(i); ctx.beginPath(); ctx.arc(x, y, 5, 0, 2 * Math.PI); ctx.fill();
-    ctx.fillStyle = css('--ink-soft'); ctx.font = '11px IBM Plex Mono, monospace';
-    ctx.fillText(i + 1, x + 7 * Math.sign(W[0][i] || 1), y - 7 * Math.sign(W[1][i] || 1));
   }
+  // each number past the tip of its arrow, along it; the features left near
+  // the origin (no direction of their own) are named together under it
+  ctx.fillStyle = css('--ink-soft'); ctx.font = '12px IBM Plex Mono, monospace';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const near = []; let ux = 0, uy = 0;
+  for (let i = 0; i < n; i++) {
+    const dx = sc * W[0][i], dy = -sc * W[1][i], len = Math.hypot(dx, dy);
+    if (len < 18) { near.push(i + 1); continue; }
+    ux += dx / len; uy += dy / len;
+    ctx.fillText(i + 1, Wd / 2 + dx * (1 + 14 / len), Wd / 2 + dy * (1 + 14 / len));
+  }
+  // on the side of the origin away from the arrows
+  const ul = Math.hypot(ux, uy);
+  if (near.length) ctx.fillText(near.join(' '), Wd / 2 - (ul > 0.3 ? 30 * ux / ul : 0), Wd / 2 - (ul > 0.3 ? 30 * uy / ul : -26));
+  ctx.textAlign = 'start'; ctx.textBaseline = 'alphabetic';
 }
 
 // the columns of W as arrows in the ball of the hidden space, and the hull of

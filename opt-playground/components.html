@@ -20,6 +20,16 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
 <script src="theme.js"></script>
 <link rel="stylesheet" href="style.css">
+<style>
+/* the line that names the moves of the last round, and the marks of the moves */
+.event { font-family: 'IBM Plex Mono', monospace; font-size: .85rem; color: var(--ink); border-left: 3px solid var(--gold); padding: 4px 0 4px 10px; margin: 8px 0 14px; min-height: 2.6em; }
+svg .move { fill: none; stroke-width: 1.8; opacity: .9; animation: cfade .6s ease-out; }
+svg .freshcut { fill: none; stroke-width: 1.6; stroke-dasharray: 6 4; animation: cfade .6s ease-out; }
+svg .ring.fresh { transform-box: fill-box; transform-origin: center; animation: cpop .6s ease-out; }
+@keyframes cpop { from { transform: scale(2); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes cfade { from { opacity: 0; } to { opacity: .9; } }
+@media (prefers-reduced-motion: reduce) { svg .move, svg .freshcut, svg .ring.fresh { animation: none; } }
+</style>
 <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
 </head>
@@ -49,12 +59,17 @@
   </div>
   <div class="transport"><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
 </section>
+<p id="event" class="event" aria-live="polite"></p>
 <main>
-  <figure><figcaption><span data-l="en">The dual function \(L\) (dark), the aggregated model and the
-  disaggregated one of the two runs of Kelley, the point of each method (a ring
-  of its color) and the maximum \(\lambda^*\).</span><span data-l="it" lang="it">La funzione duale \(L\) (scura), il modello aggregato e
-  quello disaggregato delle due esecuzioni di Kelley, il punto di ciascun metodo (un anello
-  del suo colore) e il massimo \(\lambda^*\).</span></figcaption><svg id="dual" viewBox="0 0 460 360"></svg>
+  <figure><figcaption><span data-l="en">The dual function \(L\) (the line in the color of the text) near its
+  maximum \(\lambda^*\), the aggregated model and the disaggregated one of the two runs of
+  Kelley, and the point of each method (a ring of its color, named in the legend); the last
+  round is marked by an arc from the previous point of each method to its new one and, dashed,
+  by the cut that the aggregated run added.</span><span data-l="it" lang="it">La funzione duale \(L\) (la linea del colore del testo)
+  vicino al suo massimo \(\lambda^*\), il modello aggregato e quello disaggregato delle due
+  esecuzioni di Kelley e il punto di ciascun metodo (un anello del suo colore, nominato nella
+  legenda); l'ultimo giro è segnato da un arco dal punto precedente di ciascun metodo a quello
+  nuovo e, tratteggiato, dal taglio aggiunto dall'esecuzione aggregata.</span></figcaption><svg id="dual" viewBox="0 0 460 360"></svg>
   <dl class="stats"><div><dt>\(\max L\)</dt><dd id="lstar"></dd></div></dl></figure>
   <figure><figcaption><span data-l="en">The relative gap of the best value found against the calls
   to the oracle of a component, in log scale. For the incremental method the

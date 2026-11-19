@@ -15,7 +15,7 @@ import { palette, drawPlane, drawGrid, drawImage, drawStrip, drawCurves, toPx, t
 import { makeNormSet, normalize } from './latent-data.js';
 import { N } from './convnet.js';
 import { rng } from './nn.js';
-import { t, onLang } from './i18n.js';
+import { t, onLang, onTheme } from './i18n.js';
 
 const $ = id => document.getElementById(id);
 const S = { model: 'ae', beta: 1, H: 128, lr: 0.002, seed: 1 };
@@ -364,7 +364,7 @@ document.addEventListener('keydown', e => {
 });
 // a change of the theme on the site, or of the system, recolours the canvases
 addEventListener('resize', () => { if (!running) refresh(); });
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { palette_(); refresh(); });
+onTheme(() => { palette_(); refresh(); });
 
 // the texts that are not in the page twice: title, buttons, options
 function labels() {

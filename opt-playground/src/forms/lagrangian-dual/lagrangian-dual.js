@@ -27,7 +27,8 @@ function readHash() { Object.assign(state, readState(SPEC)); }
 const flat = () => ({ algo: state.algo, t: state.t, k: state.k, model: state.model, preview: state.preview });
 const writeHash = () => writeState(SPEC, flat());
 
-let renderer, scene, camera, controls, group, dirty = true, steps;
+let renderer, scene, camera, controls, group, dirty = true, steps, pulse = null, shownK = -1;
+const still = matchMedia('(prefers-reduced-motion: reduce)');
 function setup() {
   const stage = $('stage');
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -49,7 +50,17 @@ function setup() {
     renderer.setSize(w, h, false); camera.aspect = w / h; if (FRAME) camera.zoom = 0.98; camera.updateProjectionMatrix(); dirty = true;
   };
   new ResizeObserver(resize).observe(stage); resize();
-  const loop = () => { if (controls.update()) dirty = true; if (dirty) { renderer.render(scene, camera); dirty = false; } requestAnimationFrame(loop); };
+  const loop = () => {
+    if (controls.update()) dirty = true;
+    // the marks of the last step grow in over half a second
+    if (pulse) {
+      const u = Math.min(1, (performance.now() - pulse.t0) / 500), e = 1 - (1 - u) ** 3;
+      for (const m of pulse.grow) m.scale.setScalar(Math.max(0.01, e));
+      for (const m of pulse.fade) m.material.opacity = m.userData.op * e;
+      if (u >= 1) pulse = null;
+      dirty = true;
+    }
+    if (dirty) { renderer.render(scene, camera); dirty = false; } requestAnimationFrame(loop); };
   requestAnimationFrame(loop);
 }
 
@@ -140,18 +151,54 @@ function draw() {
       group.add(new THREE.LineSegments(new THREE.EdgesGeometry(mg, 1), new THREE.LineBasicMaterial({ color: gold, transparent: true, opacity: 0.85 })));
     }
   }
+  // the plane the oracle returned at the last trial point: its facet (on the
+  // model if shown, else on the roof) in solid gold, the move of the step
+  const grow = [], fade = [];
+  if (!state.preview) {
+    const B = state.model ? cutsAt(steps, k) : cuts.filter(c => region(c, cuts));
+    const nc = cuts[steps[k].cut], poly = region(nc, B);
+    if (poly) {
+      const fm = new THREE.Mesh((() => {
+        const P = poly.map(p => [p[0] / sc, p[1] / sc, zOf(nc.value + nc.slope[0] * p[0] + nc.slope[1] * p[1]) + (state.model ? 0.14 : 0.1)]);
+        const pos = [];
+        for (let i = 1; i < P.length - 1; i++) pos.push(...P[0], ...P[i], ...P[i + 1]);
+        const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.computeVertexNormals();
+        return g;
+      })(), new THREE.MeshStandardMaterial({ color: gold, transparent: true, opacity: 0.6, roughness: 0.4, side: THREE.DoubleSide, depthWrite: false }));
+      fm.userData.op = 0.6; fade.push(fm); group.add(fm);
+      const P = poly.map(p => new THREE.Vector3(p[0] / sc, p[1] / sc, zOf(nc.value + nc.slope[0] * p[0] + nc.slope[1] * p[1]) + 0.2));
+      const rim = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(P), new THREE.LineBasicMaterial({ color: gold, transparent: true, opacity: 1 }));
+      rim.userData.op = 1; fade.push(rim); group.add(rim);
+    }
+  }
+  // the stability center of the bundle, a gold ring on the roof
+  if (state.algo !== 'kelley') {
+    const c = at(steps[k].center); c[2] += 0.7;
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(3.4, 0.35, 10, 40), new THREE.MeshStandardMaterial({ color: gold, roughness: 0.4 }));
+    ring.position.set(...c); group.add(ring);
+  }
   // the trial points (gold: serious, light: null) and the path between them
   const gm = new THREE.MeshStandardMaterial({ color: gold, roughness: 0.35, metalness: 0.2 });
   const nm = new THREE.MeshStandardMaterial({ color: ground, roughness: 0.5 });
   const pts = [];
   for (let s = 0; s <= k; s++) {
     const p = at(steps[s].lam); p[2] += 0.6; pts.push(new THREE.Vector3(...p));
-    group.add(ball(s === k ? 2.2 : 1.5, steps[s].serious ? gm : nm, p));
+    const b = ball(s === k ? 2.4 : 1.5, steps[s].serious ? gm : nm, p);
+    group.add(b);
+    if (s === k && k > 0) {
+      // the new trial point: a halo, and the segment from the point before it
+      const h = new THREE.Mesh(new THREE.TorusGeometry(2.4, 0.3, 8, 32), new THREE.MeshBasicMaterial({ color: gold }));
+      h.position.set(...p); h.position.z += 0.2; group.add(h);
+      grow.push(b, h);
+    }
   }
   if (pts.length > 1) group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: gold })));
   const o = at(dualOpt.lam); o[2] += 2;
   const om = new THREE.Mesh(new THREE.OctahedronGeometry(2.8), new THREE.MeshStandardMaterial({ color: accent, roughness: 0.4 }));
   om.position.set(...o); group.add(om);
+  // a tween only when the step changed, not when the view is redrawn
+  if (k !== shownK && !still.matches && k > 0) { pulse = { t0: performance.now(), grow, fade }; for (const m of grow) m.scale.setScalar(0.01); for (const m of fade) m.material.opacity = 0; }
+  shownK = k;
   dirty = true;
 }
 
@@ -160,6 +207,7 @@ function stats() {
   const k = Math.min(state.k, steps.length - 1), s = steps[k];
   const best = Math.max(...steps.slice(0, k + 1).map(q => q.value));
   $('kout').textContent = `${k}/${steps.length - 1}`;
+  $('event').textContent = eventText(k);
   $('stats').innerHTML = [
     [t('trial point', 'punto di prova'), `(${f2(s.lam[0])}, ${f2(s.lam[1])})`],
     ['L', f2(s.value) + (k ? (s.serious ? t(' serious', ' serio') : t(' null', ' nullo')) : '')],
@@ -170,6 +218,26 @@ function stats() {
   ].map(([a, b]) => `<div><dt>${a}</dt><dd>${b}</dd></div>`).join('');
 }
 
+// the move of step k in words: where the knapsack is solved, which items it
+// takes, whether its plane is a new cut, and what the stability center does
+function eventText(k) {
+  const s = steps[k], c = cuts[s.cut], items = c.x.map((v, j) => v ? j + 1 : 0).filter(Boolean).join(', ');
+  const lam = `(${f2(s.lam[0])}, ${f2(s.lam[1])})`, again = steps.slice(0, k).some(q => q.cut === s.cut);
+  const sup = `a₁·x = ${8 - c.slope[0]}, a₂·x = ${7 - c.slope[1]}`;
+  let en = k ? `Step ${k}: the knapsack is solved at the new trial point λ = ${lam} (gold halo)` : `Start: the knapsack is solved at λ = ${lam}`;
+  let it = k ? `Passo ${k}: lo zaino si risolve nel nuovo punto di prova λ = ${lam} (alone dorato)` : `Inizio: lo zaino si risolve in λ = ${lam}`;
+  en += `; the cheapest choice takes items {${items}} (cost ${c.value}, ${sup}), so L = ${f2(s.value)}`;
+  it += `; la scelta più economica prende gli oggetti {${items}} (costo ${c.value}, ${sup}), quindi L = ${f2(s.value)}`;
+  if (again) { en += '; its plane is already in the model'; it += '; il suo piano è già nel modello'; }
+  else { en += '; its plane (the gold facet) is a new cut of the model'; it += '; il suo piano (la faccia dorata) è un nuovo taglio del modello'; }
+  if (k && state.algo !== 'kelley') {
+    if (s.serious) { en += '; serious step: the stability center (the gold ring) moves here'; it += '; passo serio: il centro di stabilità (l\'anello dorato) si sposta qui'; }
+    else { en += '; null step: L did not grow enough, the stability center stays'; it += '; passo nullo: L non è cresciuta abbastanza, il centro di stabilità resta fermo'; }
+  }
+  if (k === steps.length - 1) { en += '. The method stops: the model cannot promise more.'; it += '. Il metodo si ferma: il modello non promette di più.'; }
+  else { en += '.'; it += '.'; }
+  return t(en, it);
+}
 function recompute() {
   steps = bundle({ algo: state.algo, t: state.t, gamma: state.gamma });
   state.k = Math.min(state.k, steps.length - 1);

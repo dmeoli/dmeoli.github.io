@@ -48,6 +48,10 @@ export function primal2(svg, problem, state, hover) {
     el('circle', { cx: X(p[0]), cy: Y(p[1]), r: h ? 9 : 5.5, class: h ? 'col hot' : 'col' }, g);
     el('text', { x: X(p[0]) + 8, y: Y(p[1]) - 6, class: 'lab' }, g).textContent = i + 1;
   });
+  // the column the last oracle call returned, ringed in gold: the move of the step
+  const last = state.trace.at(-1);
+  if (last && last.column && state.trace.length > 1)
+    el('circle', { cx: X(last.column[0]), cy: Y(last.column[1]), r: 11, class: 'fresh' }, g);
   // the continuous relaxation (its feasible region and optimum) and the
   // integer optimum
   if (problem.lp) {
@@ -92,6 +96,10 @@ export function dualMap(box, problem, state, hover, onHover, params, algo) {
   const m = problem.lmax, ctx = canvas.getContext('2d'), img = ctx.createImageData(N, N);
   const cuts = state.cuts, colors = cuts.map((_, i) => tint(i, cuts.length));
   const rgb = colors.map(c => { ctx.fillStyle = c; ctx.fillRect(0, 0, 1, 1); return ctx.getImageData(0, 0, 1, 1).data.slice(0, 3); });
+  // the cut of the column returned by the last oracle call: its region gets a gold seam
+  const lastO = state.trace.at(-1), lc = state.trace.length > 1 && lastO.column && problem.cut ? problem.cut(lastO.column) : null;
+  const fresh = lc ? cuts.findIndex(k => Math.abs(k.value - lc.value) < 1e-9 && Math.abs(k.slope[0] - lc.slope[0]) < 1e-9 && Math.abs(k.slope[1] - lc.slope[1]) < 1e-9) : -1;
+  const goldRgb = (() => { ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--gold').trim() || '#c9a640'; ctx.fillRect(0, 0, 1, 1); return ctx.getImageData(0, 0, 1, 1).data.slice(0, 3); })();
   const vals = new Float64Array(N * N), arg = new Int32Array(N * N);
   let vmin = Infinity, vmax = -Infinity;
   for (let j = 0; j < N; j++)
@@ -107,11 +115,16 @@ export function dualMap(box, problem, state, hover, onHover, params, algo) {
     const i = q % N, j = (q / N) | 0, s = 0.55 + 0.45 * (vals[q] - vmin) / ((vmax - vmin) || 1);
     const border = (i + 1 < N && arg[q + 1] !== arg[q]) || (j + 1 < N && arg[q + N] !== arg[q]);
     const c = rgb[arg[q]];
-    img.data.set(border ? [60, 40, 90, 255] : [c[0] * s, c[1] * s, c[2] * s, 255], q * 4);
+    // a pixel of the new cut's region with a neighbour outside it
+    const seam = fresh >= 0 && arg[q] === fresh && ((i + 1 < N && arg[q + 1] !== fresh) || (j + 1 < N && arg[q + N] !== fresh) || (i > 0 && arg[q - 1] !== fresh) || (j > 0 && arg[q - N] !== fresh));
+    img.data.set(seam ? [goldRgb[0], goldRgb[1], goldRgb[2], 255] : border ? [60, 40, 90, 255] : [c[0] * s, c[1] * s, c[2] * s, 255], q * 4);
   }
   ctx.putImageData(img, 0, 0);
 
   svg.replaceChildren();
+  if (!svg.id) svg.id = box.id + '-marks';
+  const mk = el('marker', { id: svg.id + '-tip', viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 6, markerHeight: 6, orient: 'auto-start-reverse' }, el('defs', {}, svg));
+  el('path', { d: 'M0,0 L10,5 L0,10 z', class: 'tipgold' }, mk);
   const X = scale(0, m, pad, W - 14), Y = scale(0, m, H - pad, 14);
   el('rect', { x: pad, y: 14, width: W - pad - 14, height: H - pad - 14, class: 'mapframe' }, svg);
   for (let t = 0; t <= m + 1e-9; t += 0.5) {
@@ -127,6 +140,15 @@ export function dualMap(box, problem, state, hover, onHover, params, algo) {
   if (algo === 'bundle' || algo === 'level') {
     const c = state.center, r = Math.sqrt(2 * params.t) / m * (W - pad - 14) * 0.35;
     el('circle', { cx: X(c[0]), cy: Y(c[1]), r: Math.max(8, r), class: 'center' }, svg);
+  }
+  // the last iterate: a gold ring, and the subgradient there (the slope of its
+  // cut, i.e., the violation of the coupling rows by its column) as an arrow
+  if (tr.length > 1) {
+    const o = tr.at(-1), prev = tr.at(-2);
+    el('line', { x1: X(prev.lam[0]), y1: Y(prev.lam[1]), x2: X(o.lam[0]), y2: Y(o.lam[1]), class: 'freshmove', 'marker-end': 'url(#' + svg.id + '-tip)' }, svg);
+    const gx = o.subgradient && o.subgradient[0], gy = o.subgradient && o.subgradient[1], gn = Math.hypot(gx || 0, gy || 0);
+    if (gn > 1e-12) el('line', { x1: X(o.lam[0]), y1: Y(o.lam[1]), x2: X(o.lam[0]) + 38 * gx / gn, y2: Y(o.lam[1]) - 38 * gy / gn, class: 'subgrad', 'marker-end': 'url(#' + svg.id + '-tip)' }, svg);
+    el('circle', { cx: X(o.lam[0]), cy: Y(o.lam[1]), r: 10, class: 'fresh' }, svg);
   }
   tr.forEach((o, i) => {
     const g = el('g', { class: 'iter' + (i === hover ? ' hot' : '') + (o.serious ? '' : ' null') }, svg);

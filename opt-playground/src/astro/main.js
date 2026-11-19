@@ -244,6 +244,15 @@ $('copy').addEventListener('click', async () => {
 $('proj').addEventListener('input', () => { if (anim) { cancelAnimationFrame(anim); anim = null; } setU(+$('proj').value); });
 $('play').addEventListener('click', play);
 onLang(relang);
+// the labels for screen readers follow the language (aria-label / data-aria-it)
+function relangAria() {
+  for (const e of document.querySelectorAll('[data-aria-it]')) {
+    if (!e.dataset.ariaEn) e.dataset.ariaEn = e.getAttribute('aria-label');
+    e.setAttribute('aria-label', lang() === 'it' ? e.dataset.ariaIt : e.dataset.ariaEn);
+  }
+}
+relangAria();
+onLang(relangAria);
 onTheme(() => { sphere.colours(); });
 relang();
 compute();

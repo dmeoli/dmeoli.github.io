@@ -181,6 +181,8 @@ function drawScope() {
     // the spikes, marked above the potential
     ctx.strokeStyle = col(P.gold); ctx.lineWidth = 2;
     for (const q of run.spikes) { const x = X(run.t[q]); ctx.beginPath(); ctx.moveTo(x, 6); ctx.lineTo(x, 17); ctx.stroke(); }
+    const ls = run.spikes.at(-1);   // the spike just fired, ringed for 0.6 s of the clock
+    if (ls != null && run.k && run.t[run.k - 1] - run.t[ls] < 0.6 * S.speed) { ctx.beginPath(); ctx.arc(X(run.t[ls]), 11, 7, 0, 2 * Math.PI); ctx.stroke(); }
     const x = X(run.t[run.k - 1]);
     ctx.strokeStyle = col(P.ink, 0.35); ctx.lineWidth = 1; ctx.setLineDash([2, 3]);
     ctx.beginPath(); ctx.moveTo(x, bands[0][0]); ctx.lineTo(x, bands[1][1]); ctx.stroke(); ctx.setLineDash([]);
@@ -236,6 +238,12 @@ function drawPhase() {
     for (const q of run.spikes) { ctx.moveTo(X(run.v[q]), Y(run.u[q])); ctx.lineTo(X(run.vr[q]), Y(run.ur[q])); }
     ctx.stroke(); ctx.setLineDash([]);
     const q = run.k - 1;
+    // the spike just fired (within the last 0.6 s of the clock): its reset in gold
+    const ls = run.spikes.at(-1), fresh = ls != null && run.t[q] - run.t[ls] < 0.6 * S.speed;
+    if (fresh) {
+      ctx.strokeStyle = col(P.gold); ctx.lineWidth = 2.5; ctx.setLineDash([5, 3]); ctx.beginPath();
+      ctx.moveTo(X(run.v[ls]), Y(run.u[ls])); ctx.lineTo(X(run.vr[ls]), Y(run.ur[ls])); ctx.stroke(); ctx.setLineDash([]);
+    }
     ctx.fillStyle = col(P.ink); ctx.strokeStyle = col(P.panel); ctx.lineWidth = 2;
     ctx.beginPath(); ctx.arc(X(run.vr[q]), Y(run.ur[q]), 4.5, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
   }

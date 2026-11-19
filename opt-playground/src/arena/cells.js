@@ -22,13 +22,81 @@ function digit(text, fg, bg) {
   return tex;
 }
 
+// The marks of the current event on a board of a CSP (Replay.focus()): a
+// flat frame around each cell the event acts on, gold for the value tried
+// (a decision, the item a node branches on), ink for a value that
+// propagation forces or rules out, red for a conflict and the soft ink for
+// a value that a backtrack takes back; the frames of an event fade in over
+// about 0.35 s. rect(v, j) gives the [x, y, w, h] of the cell of value j of
+// variable v (j -1: the whole variable), or null; a fifth number is the
+// height of that frame.
+export const MARKS = ['decide', 'prop', 'hot', 'undo'];
+export class Marks {
+  constructor(S, z = 0.004) { this.S = S; this.z = z; this.reset(); }
+  // after a clear of the scene, with the colours of the theme
+  reset() {
+    const P = this.S.colors;
+    const col = { decide: P.gold, prop: P.ink, hot: P.red, undo: P.soft };
+    this.mats = {};
+    for (const k of MARKS) this.mats[k] = new THREE.MeshBasicMaterial({ color: col[k], transparent: true, opacity: 1, depthWrite: false });
+    this.pool = []; this.a = 1; this.geo = new THREE.BoxGeometry(1, 1, 1);
+  }
+  frameMesh(i) {
+    if (!this.pool[i]) {
+      const g = new THREE.Group();
+      for (let s = 0; s < 4; s++) g.add(new THREE.Mesh(this.geo, this.mats.decide));
+      this.S.content.add(g);
+      this.pool[i] = g;
+    }
+    return this.pool[i];
+  }
+  // focus: from Replay.focus(); the decisions drawn over the propagations
+  show(focus, rect) {
+    const seen = new Set(), list = [];
+    const rank = { hot: 0, decide: 1, undo: 2, prop: 3 };
+    for (const f of [...focus].sort((a, b) => rank[a.kind] - rank[b.kind])) {
+      const r = rect(f.v, f.j);
+      if (!r) continue;
+      const key = r.slice(0, 4).map(v => v.toFixed(4)).join(',');
+      if (seen.has(key)) continue;
+      seen.add(key); list.push([r, f.kind]);
+    }
+    list.forEach(([[x, y, w, h, z = this.z], kind], i) => {
+      const g = this.frameMesh(i), t = Math.min(w, h) * (kind === 'prop' || kind === 'undo' ? 0.07 : 0.12);
+      const sides = [[x, y + h / 2 - t / 2, w, t], [x, y - h / 2 + t / 2, w, t], [x - w / 2 + t / 2, y, t, h], [x + w / 2 - t / 2, y, t, h]];
+      g.children.forEach((m, s) => { const [cx, cy, sw, sh] = sides[s]; m.position.set(cx, cy, z); m.scale.set(sw, sh, t * 0.5); m.material = this.mats[kind]; });
+      g.visible = true;
+    });
+    for (let i = list.length; i < this.pool.length; i++) this.pool[i].visible = false;
+    this.a = reduced() ? 1 : 0;
+    this.fade();
+  }
+  fade() { for (const k of MARKS) this.mats[k].opacity = this.a; }
+  frame(dt) { if (this.a < 1) { this.a = Math.min(1, this.a + dt / 0.35); this.fade(); } }
+}
+
+// a cross on a cell, for a value ruled out (the colour of the material
+// tints the white)
+let CROSS = null;
+function cross() {
+  if (CROSS) return CROSS;
+  const cv = document.createElement('canvas'); cv.width = cv.height = 64;
+  const g = cv.getContext('2d');
+  g.fillStyle = '#ffffff'; g.fillRect(0, 0, 64, 64);
+  g.strokeStyle = '#6a6a6a'; g.lineWidth = 7; g.lineCap = 'round';
+  g.beginPath(); g.moveTo(16, 16); g.lineTo(48, 48); g.moveTo(48, 16); g.lineTo(16, 48); g.stroke();
+  CROSS = new THREE.CanvasTexture(cv); CROSS.colorSpace = THREE.SRGBColorSpace;
+  return CROSS;
+}
+
 // the n queens: column i is the variable, row j its value; a queen stands on
 // the cell of the value set, a cell whose value has been excluded sinks and
-// darkens, and the columns of a conflict glow red
+// takes a cross, and the columns of a conflict glow red; the frames of Marks
+// show what the current event acts on
 export class QueensView {
   constructor(box, inst) {
     this.inst = inst; this.n = inst.vertices.length;
-    this.S = stage3d(box, { camera: [0, -1.2, 2.2], target: [0, 0.1, 0], aspect: 0.8,
+    this.S = stage3d(box, { camera: [0, -1.4, 2.45], target: [0, 0.0, 0], aspect: 0.8,
       onTheme: () => this.build(), onFrame: dt => this.frame(dt) });
     this.S.controls.enableDamping = !reduced();
     this.build();
@@ -39,7 +107,8 @@ export class QueensView {
     this.u = u;
     const at = (i, j) => [(i - (n - 1) / 2) * u, ((n - 1) / 2 - j) * u];
     const light = P.lilac.clone().lerp(P.ground, 0.55), dark = P.lilac.clone().lerp(P.accent2, 0.25);
-    this.cols = { light, dark, off: P.rule.clone().lerp(P.soft, 0.35) };
+    // a cell ruled out: the colour of its square, greyed, under a cross
+    this.cols = { light, dark };
     const tgeo = new THREE.BoxGeometry(u * 0.98, u * 0.98, u * 0.2);
     this.tiles = [];
     for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
@@ -47,9 +116,11 @@ export class QueensView {
       const [x, y] = at(i, j);
       m.position.set(x, y, 0);
       m.userData.base = (i + j) % 2 ? dark : light;
+      m.userData.off = m.userData.base.clone().lerp(P.rule, 0.5);
       S.content.add(m);
       this.tiles.push(m);
     }
+    this.marks = new Marks(S, u * 0.11);
     // a queen per column, shown on the row of its value
     const qmat = () => new THREE.MeshStandardMaterial({ color: P.accent, roughness: 0.45, emissive: new THREE.Color(0, 0, 0) });
     this.queens = [];
@@ -67,14 +138,16 @@ export class QueensView {
     this.at = at;
     if (this.last) this.show(...this.last);
   }
-  // board: from Replay.board(); hot: the variables of a conflict
-  show(board, hot) {
-    this.last = [board, hot];
+  // board: from Replay.board(); hot: the variables of a conflict; focus:
+  // from Replay.focus()
+  show(board, hot, focus = []) {
+    this.last = [board, hot, focus];
     const { n } = this, P = this.S.colors, still = reduced();
     board.forEach((b, i) => {
       for (let j = 0; j < n; j++) {
         const m = this.tiles[j * n + i], on = (b.mask >> j) & 1;
-        m.material.color.copy(on ? m.userData.base : this.cols.off);
+        if (!!m.material.map === !!on) { m.material.map = on ? null : cross(); m.material.needsUpdate = true; }
+        m.material.color.copy(on ? m.userData.base : m.userData.off);
         m.position.z = on ? 0 : -this.u * 0.08;
       }
       const q = this.queens[i];
@@ -90,6 +163,11 @@ export class QueensView {
       q.mat.emissive.copy(hot.has(b.id) ? RED : new THREE.Color(0, 0, 0)).multiplyScalar(0.6);
       q.mat.color.copy(b.colour >= 0 ? P.accent : P.accent2);
     });
+    const u = this.u;
+    this.marks.show(focus, (v, j) => {
+      const [x, y] = this.at(v, Math.max(0, j));
+      return j >= 0 ? [x, y, u, u] : [x, 0, u, u * n];
+    });
     this.place();
   }
   place() {
@@ -97,6 +175,7 @@ export class QueensView {
   }
   frame(dt) {
     let moving = false;
+    this.marks.frame(dt);
     for (const q of this.queens) {
       if (Math.abs(q.s - q.target) > 1e-3) { q.s += (q.target - q.s) * Math.min(1, dt * 6); moving = true; }
       if (q.p && q.to && Math.abs(q.p[0] - q.to[0]) + Math.abs(q.p[1] - q.to[1]) > 1e-4) {
@@ -153,12 +232,13 @@ export class SudokuView {
         S.content.add(p);
         pegs.push(p);
       }
-      this.cells.push({ m, side, top, pegs, h: 0.02, target: 0.02, given: inst.givens && /[1-9]/.test(inst.givens.replace(/[^\d.]/g, '')[i]) });
+      this.cells.push({ m, side, top, pegs, h: 0.02, target: 0.02, given: inst.givens && /[1-9]/.test(inst.givens.replace(/[^\d.]/g, '')[i]), x, y });
     }
+    this.marks = new Marks(S, 0.003);
     if (this.last) this.show(...this.last);
   }
-  show(board, hot) {
-    this.last = [board, hot];
+  show(board, hot, focus = []) {
+    this.last = [board, hot, focus];
     const P = this.S.colors, still = reduced(), u = this.u;
     board.forEach((b, i) => {
       const it = this.cells[i];
@@ -170,6 +250,8 @@ export class SudokuView {
       it.side.emissive.copy(hot.has(b.id) ? RED : new THREE.Color(0, 0, 0)).multiplyScalar(0.6);
       it.pegs.forEach((p, d) => { const on = (b.mask >> d) & 1; p.visible = !set; p.scale.setScalar(on ? 1 : 0.35); });
     });
+    // a frame on top of the cell, risen or not
+    this.marks.show(focus, v => { const c = this.cells[v]; return c ? [c.x, c.y, u, u, c.target + 0.003] : null; });
     this.place();
   }
   place() {
@@ -180,6 +262,7 @@ export class SudokuView {
   }
   frame(dt) {
     let moving = false;
+    this.marks.frame(dt);
     for (const it of this.cells) if (Math.abs(it.h - it.target) > 1e-4) { it.h += (it.target - it.h) * Math.min(1, dt * 6); moving = true; }
     if (moving) this.place();
   }

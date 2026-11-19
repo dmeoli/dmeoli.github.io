@@ -30,12 +30,12 @@ const scenes = {
   a2: {
     get label() { return t('Two multipliers', 'Due moltiplicatori'); }, problems: p2, algorithms: a2, preset: 'ring',
     get dualCaption() {
-      return t('Dual: the space of the two multipliers, split into the regions where each column found so far is the lowest in the model (a polyhedral complex, colored per column, darker where the model is lower); the star is the maximum of \\(L\\), the line the path of the iterates (hollow: null steps), the circle the stability center.',
-        "Duale: lo spazio dei due moltiplicatori, diviso nelle regioni in cui ciascuna colonna trovata finora è la più bassa nel modello (un complesso poliedrale, colorato per colonna, più scuro dove il modello è più basso); la stella è il massimo di \\(L\\), la linea il cammino degli iterati (vuoti: passi nulli), il cerchio il centro di stabilità.");
+      return t('Dual: the space of the two multipliers, split into the regions where each column found so far is the lowest in the model (a polyhedral complex, colored per column, darker where the model is lower); the star is the maximum of \\(L\\), the line the path of the iterates (hollow: null steps), the circle the stability center; the gold marks are the last step: the ring the new iterate, the dashed arrow its subgradient (the direction in which \\(L\\) grows there), the gold seam the region of the cut just added.',
+        "Duale: lo spazio dei due moltiplicatori, diviso nelle regioni in cui ciascuna colonna trovata finora è la più bassa nel modello (un complesso poliedrale, colorato per colonna, più scuro dove il modello è più basso); la stella è il massimo di \\(L\\), la linea il cammino degli iterati (vuoti: passi nulli), il cerchio il centro di stabilità; i segni dorati sono l'ultimo passo: l'anello il nuovo iterato, la freccia tratteggiata il suo subgradiente (la direzione in cui lì \\(L\\) cresce), il bordo dorato la regione del taglio appena aggiunto.");
     },
     get caption3d() {
-      return t('Dual in 3D (drag to turn, wheel to zoom): the Lagrangian function is a concave roof of flat faces, one per column (the faint wire); the model is the roof of the cuts found so far, colored per column, which comes down onto the true one as cuts are added. The iterates sit on the true roof, with a line down to the plane of the multipliers; the gold octahedron is the maximum, the ring the stability center.',
-        "Duale in 3D (trascina per ruotare, rotella per lo zoom): la funzione lagrangiana è un tetto concavo di facce piane, una per colonna (il reticolo tenue); il modello è il tetto dei tagli trovati finora, colorato per colonna, che scende sul tetto vero man mano che si aggiungono tagli. Gli iterati stanno sul tetto vero, con una linea che scende al piano dei moltiplicatori; l'ottaedro dorato è il massimo, l'anello il centro di stabilità.");
+      return t('Dual in 3D (drag to turn, wheel to zoom): the Lagrangian function is a concave roof of flat faces, one per column (the faint wire); the model is the roof of the cuts found so far, colored per column, which comes down onto the true one as cuts are added. The iterates sit on the true roof, with a line down to the plane of the multipliers; the gold octahedron is the maximum, the ring the stability center, the larger gold sphere the iterate of the last step.',
+        "Duale in 3D (trascina per ruotare, rotella per lo zoom): la funzione lagrangiana è un tetto concavo di facce piane, una per colonna (il reticolo tenue); il modello è il tetto dei tagli trovati finora, colorato per colonna, che scende sul tetto vero man mano che si aggiungono tagli. Gli iterati stanno sul tetto vero, con una linea che scende al piano dei moltiplicatori; l'ottaedro dorato è il massimo, l'anello il centro di stabilità, la sfera dorata più grande l'iterato dell'ultimo passo.");
     },
     drawOne(run, k, ctx) {
       primal2($('primal' + k), ctx.problem, run.state, ctx.hover);
@@ -48,8 +48,8 @@ const scenes = {
   a1: {
     get label() { return t('One multiplier', 'Un moltiplicatore'); }, problems: p1, algorithms: a1, preset: 'disc',
     get dualCaption() {
-      return t('Dual: the Lagrangian function (dashed), the cuts, the model (their minimum), the iterates (hollow: null steps) and, for the bundle, the stability center and the proximal term.',
-        'Duale: la funzione lagrangiana (tratteggiata), i tagli, il modello (il loro minimo), gli iterati (vuoti: passi nulli) e, per il bundle, il centro di stabilità e il termine prossimale.');
+      return t('Dual: the Lagrangian function (dashed), the cuts, the model (their minimum), the iterates (hollow: null steps) and, for the bundle, the stability center and the proximal term; in gold, the iterate and the cut of the last step.',
+        'Duale: la funzione lagrangiana (tratteggiata), i tagli, il modello (il loro minimo), gli iterati (vuoti: passi nulli) e, per il bundle, il centro di stabilità e il termine prossimale; in oro, l\'iterato e il taglio dell\'ultimo passo.');
     },
     drawOne(run, k, ctx) {
       primal($('primal' + k), ctx.problem, run.state, ctx.hover);
@@ -147,6 +147,27 @@ function save() {
   history.replaceState(null, '', '#' + new URLSearchParams(s));
 }
 
+// the line under the controls names the move of the last step in words
+const f2 = v => Array.isArray(v) ? '(' + v.map(x => (+x).toFixed(2)).join(', ') + ')' : (+v).toFixed(2);
+function eventText(run) {
+  const st = run.state, tr = st.trace, o = tr.at(-1), k = tr.length - 1;
+  if (!o) return '';
+  const same = c => c && o.column && c[0] === o.column[0] && c[1] === o.column[1];
+  const idx = st.columns.findIndex(same) + 1, again = tr.slice(0, -1).some(p => same(p.column));
+  const col = o.column ? f2(o.column) : '';
+  if (k === 0)
+    return t(`Start: the subproblem is solved at λ = ${f2(o.lam)}, where L = ${f2(o.value)}; it returns column 1 = ${col}, the first cut of the model. Press Step.`,
+      `Inizio: il sottoproblema si risolve in λ = ${f2(o.lam)}, dove L = ${f2(o.value)}; restituisce la colonna 1 = ${col}, il primo taglio del modello. Premi Passo.`);
+  let en = `Step ${k}: the subproblem is solved at the new λ = ${f2(o.lam)} (gold ring), where L = ${f2(o.value)}; it returns column ${idx} = ${col}`;
+  let it = `Passo ${k}: il sottoproblema si risolve nel nuovo λ = ${f2(o.lam)} (anello dorato), dove L = ${f2(o.value)}; restituisce la colonna ${idx} = ${col}`;
+  if (again) { en += ', already in the model, so no cut is added'; it += ", già nel modello, quindi non si aggiunge alcun taglio"; }
+  else { en += ', whose cut (gold) is added to the model'; it += ', il cui taglio (in oro) si aggiunge al modello'; }
+  if (o.serious === false) { en += '; null step: L did not grow enough, the stability center stays'; it += '; passo nullo: L non è cresciuta abbastanza, il centro di stabilità resta fermo'; }
+  else if (!['subgradient', 'kelley'].includes(run.algo)) { en += '; serious step: the stability center moves there'; it += '; passo serio: il centro di stabilità si sposta lì'; }
+  if (st.done) { en += '. Converged.'; it += '. Convergenza raggiunta.'; } else { en += '.'; it += '.'; }
+  return t(en, it);
+}
+
 function draw() {
   const ctx = { problem, hover, view, onHover: h => { hover = h; draw(); } };
   const active = race ? runs : [runs[0]];
@@ -158,6 +179,7 @@ function draw() {
   $('target').textContent = problem.optimum.value.toFixed(4);
   $('zlp').textContent = problem.lp ? problem.lp.value.toFixed(4) : '–';
   $('zip').textContent = problem.ip ? problem.ip.value.toFixed(4) : '–';
+  $('event').textContent = race ? runs.map(r => scene.algorithms[r.algo].name + ': ' + eventText(r)).join('\n') : eventText(runs[0]);
   $('status').textContent = st.done ? t('converged', 'convergenza raggiunta') : (last.serious ? t('serious step', 'passo serio') : t('null step', 'passo nullo'));
 }
 

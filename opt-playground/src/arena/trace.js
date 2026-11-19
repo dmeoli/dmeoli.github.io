@@ -71,6 +71,7 @@ export class Replay {
     this.nodes = new Map();
     this.node = null; this.lb = null; this.ub = null;
     this.x = null; this.n = {}; this.last = null; this.value = null;
+    this.decs = []; this.undone = null;          // the decisions open, by level; the variables a backtrack undid
   }
   assign(lit, level) {
     const v = Math.abs(lit);
@@ -80,13 +81,21 @@ export class Replay {
   apply(e) {
     if (e.n) this.n = e.n;
     this.last = e;
+    this.undone = null;
     switch (e.type) {
-      case 'decide': this.assign(e.lit, e.level); break;
+      case 'decide':
+        this.assign(e.lit, e.level);
+        this.decs = this.decs.filter(d => d.level < e.level).concat([{ level: e.level, lit: e.lit }]);
+        break;
       case 'propagate': case 'split': for (const l of e.lits || []) this.assign(l, e.level); break;
       case 'flip': for (const l of e.lits || []) this.assign(l, 0); break;   // WalkSAT
-      case 'backtrack':
-        for (let v = 1; v <= this.nvars; v++) if (this.val[v] && this.lev[v] > e.level) this.val[v] = 0;
+      case 'backtrack': {
+        const und = new Set();
+        for (let v = 1; v <= this.nvars; v++) if (this.val[v] && this.lev[v] > e.level) { this.val[v] = 0; und.add(Math.floor((v - 1) / this.k)); }
+        this.undone = und;
+        this.decs = this.decs.filter(d => d.level <= e.level);
         break;
+      }
       case 'node': {
         const old = this.nodes.get(e.id);
         this.nodes.set(e.id, { ...old, ...e });
@@ -116,7 +125,7 @@ export class Replay {
   snapshot() {
     return { pos: this.pos, val: this.val.slice(), lev: this.lev.slice(), set: new Map(this.set),
       nodes: new Map(this.nodes), node: this.node, lb: this.lb, ub: this.ub, x: this.x, n: this.n,
-      last: this.last, value: this.value };
+      last: this.last, value: this.value, decs: this.decs, undone: this.undone };
   }
   // moves to the state after the first k events (snapshots every 256 events
   // make a step back cheap)
@@ -160,6 +169,39 @@ export class Replay {
       }
       out.push({ id: v, colour, mask, frac });
     });
+    return out;
+  }
+  // what the current event acts on, for the board to mark: a list of
+  // { v, j, kind }, v the index of a variable, j that of its value (-1 for
+  // the whole variable) and kind 'decide' (the value tried, or the item a
+  // node of the branch-and-bound branches on), 'prop' (a value propagation
+  // forces or rules out), 'hot' (a variable of a conflict) or 'undo' (a
+  // variable whose value a backtrack takes back)
+  focus() {
+    const e = this.last, out = [], k = this.k;
+    if (!e) return out;
+    const lit = (l, kind) => { const a = Math.abs(l) - 1; if (a >= 0 && a < this.nvars) out.push({ v: Math.floor(a / k), j: a % k, kind }); };
+    switch (e.type) {
+      case 'decide': lit(e.lit, 'decide'); break;
+      case 'split': case 'flip': for (const l of e.lits || []) lit(l, 'decide'); break;
+      case 'propagate': if (e.reason !== 'random start') for (const l of e.lits || []) lit(l, 'prop'); break;
+      case 'assign': {
+        const v = this.verts.indexOf(e.var);
+        if (v >= 0) out.push({ v, j: this.tr.header.instance.colours.indexOf(String(e.value)), kind: 'decide' });
+        break;
+      }
+      case 'node': if (e.fix && e.fix.length) lit(e.fix[e.fix.length - 1], 'decide'); break;
+      case 'backtrack': for (const v of this.undone || []) out.push({ v, j: -1, kind: 'undo' }); break;
+      case 'conflict': {
+        const hot = this.hot();
+        if (hot.size) this.verts.forEach((id, v) => { if (hot.has(id)) out.push({ v, j: -1, kind: 'hot' }); });
+        else {       // no clause in the trace: the last decision taken, which fails
+          const d = this.decs[this.decs.length - 1];
+          if (d) { const a = Math.abs(d.lit) - 1; out.push({ v: Math.floor(a / k), j: -1, kind: 'hot' }); }
+        }
+        break;
+      }
+    }
     return out;
   }
   // the vertices of the clause of a conflict at the current event

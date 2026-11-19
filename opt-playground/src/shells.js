@@ -327,7 +327,12 @@ function init() {
   const sp = $('space');
   sp.addEventListener('pointerdown', e => { sp.setPointerCapture(e.pointerId); spacePointer(e); });
   sp.addEventListener('pointermove', e => { if (sp.hasPointerCapture(e.pointerId)) spacePointer(e); });
-  onLang(() => { fillPresets(); drawFib(); drawSpace(); });
+  const aria = () => {
+    $('fib').setAttribute('aria-label', t('Fibonacci spiral and the spiral of the shell', 'Spirale di Fibonacci e spirale della conchiglia'));
+    $('space').setAttribute('aria-label', t('Shell space, D against W', 'Spazio delle conchiglie, D contro W'));
+  };
+  aria();
+  onLang(() => { fillPresets(); drawFib(); drawSpace(); aria(); });
   onTheme(colours);
   still.addEventListener('change', () => { controls.enableDamping = !still.matches; if (still.matches) $('spin').checked = false; });
   redraw();

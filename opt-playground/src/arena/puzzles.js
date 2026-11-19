@@ -15,6 +15,7 @@
 
 import * as THREE from 'three';
 import { stage3d, clear } from '../stage3d.js';
+import { Marks } from './cells.js';
 
 const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const RED = new THREE.Color('#c0281e');
@@ -97,7 +98,7 @@ export class CellGridView {
           S.content.add(p);
           pegs.push(p);
         }
-        this.vars[what].push({ m, side, top, pegs, h: 0.02, target: 0.02 });
+        this.vars[what].push({ m, side, top, pegs, h: 0.02, target: 0.02, x, y });
       } else if (Array.isArray(what)) {
         const m = new THREE.Mesh(new THREE.BoxGeometry(u * 0.96, u * 0.96, u * 0.12),
           [0, 1, 2, 3, 4, 5].map(f => new THREE.MeshStandardMaterial(f === 4 ? { map: clue(what[0], what[1], '#ffffff', '#' + P.accent2.getHexString()) } : { color: P.accent2 })));
@@ -109,6 +110,7 @@ export class CellGridView {
         S.content.add(m);
       }
     }
+    this.marks = new Marks(S, 0.003);
     // the blocked cells of a grid; the rule over the sum of a cryptarithm
     if (inst.kind !== 'crypto') {
       // darker than the ground in both themes (the soft ink is light in the dark one)
@@ -128,8 +130,8 @@ export class CellGridView {
     }
     if (this.last) this.show(...this.last);
   }
-  show(board, hot) {
-    this.last = [board, hot];
+  show(board, hot, focus = []) {
+    this.last = [board, hot, focus];
     const still = reduced(), u = this.u, P = this.S.colors;
     board.forEach((b, i) => {
       const set = b.colour >= 0;
@@ -142,6 +144,10 @@ export class CellGridView {
         it.pegs.forEach((p, d) => { const on = (b.mask >> d) & 1; p.visible = !set && !!on; });
       }
     });
+    // a variable in several cells (a letter of a cryptarithm) is marked in
+    // each, on top of the cell, risen or not
+    this.marks.show(focus.flatMap(f => (this.vars[f.v] || []).map((_, c) => ({ ...f, j: c }))),
+      (v, c) => { const it = this.vars[v][c]; return [it.x, it.y, u, u, it.target + 0.003]; });
     this.place();
   }
   place() {
@@ -149,6 +155,7 @@ export class CellGridView {
   }
   frame(dt) {
     let moving = false;
+    this.marks.frame(dt);
     for (const cells of this.vars) for (const it of cells) if (Math.abs(it.h - it.target) > 1e-4) { it.h += (it.target - it.h) * Math.min(1, dt * 6); moving = true; }
     if (moving) this.place();
   }
@@ -198,16 +205,20 @@ export class ZebraView {
         m.position.set(x, y, 0);
         m.visible = false;
         S.content.add(m);
-        row.push({ pegs, m, side, top, who: -1, h: 0.02, target: 0.02 });
+        row.push({ pegs, m, side, top, who: -1, h: 0.02, target: 0.02, x, y });
       }
       this.cells.push(row);
     });
     this.tex = inst.vertices.map(a => label(a, ink, paper, 256, 128));
+    this.v = v;
+    this.marks = new Marks(S, 0.003);
     if (this.last) this.show(...this.last);
   }
-  show(board, hot) {
-    this.last = [board, hot];
+  show(board, hot, focus = []) {
+    this.last = [board, hot, focus];
     const still = reduced(), u = this.u, P = this.S.colors;
+    // a value is the cell of the group of the attribute in that house; a
+    // whole variable, the row of its group
     for (const row of this.cells) for (const c of row) { c.who = -1; c.pegs.forEach(p => { p.visible = false; }); c.hot = false; }
     board.forEach((b, i) => {
       const [g, j] = this.where[i];
@@ -223,6 +234,11 @@ export class ZebraView {
       c.side.color.copy(P.lilac);
       c.side.emissive.copy(c.hot ? RED : new THREE.Color(0, 0, 0)).multiplyScalar(0.6);
     }
+    this.marks.show(focus, (i, h) => {
+      const [g] = this.where[i], row = this.cells[g];
+      if (h >= 0) return [row[h].x, row[h].y, u, this.v * 0.9, row[h].target + 0.003];
+      return [0, row[0].y, u * row.length, this.v * 0.9];
+    });
     this.place();
   }
   place() {
@@ -230,6 +246,7 @@ export class ZebraView {
   }
   frame(dt) {
     let moving = false;
+    this.marks.frame(dt);
     for (const row of this.cells) for (const c of row) if (Math.abs(c.h - c.target) > 1e-4) { c.h += (c.target - c.h) * Math.min(1, dt * 6); moving = true; }
     if (moving) this.place();
   }

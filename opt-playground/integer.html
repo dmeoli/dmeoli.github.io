@@ -20,6 +20,25 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
 <script src="theme.js"></script>
 <link rel="stylesheet" href="style.css">
+<style>
+/* the move of the last step: the line that names it and the gold marks */
+.event { font-family: 'IBM Plex Mono', monospace; font-size: .85rem; color: var(--ink); border-left: 3px solid var(--gold); padding: 4px 0 4px 10px; margin: 8px 0 14px; min-height: 2.6em; }
+svg .strip { fill: var(--gold); opacity: .45; animation: ifade .6s ease-out; }
+svg .branchline { stroke: var(--gold); stroke-width: 2; stroke-dasharray: 6 4; }
+svg .coupling.oldcut { stroke: var(--ink-soft); stroke-width: 1.5; }
+svg .coupling.newcut { stroke: var(--gold); stroke-width: 3; animation: ifade .6s ease-out; }
+svg .cutoff { stroke: var(--gold); stroke-width: 2.5; fill: none; }
+/* the bound inside a node, readable on every fill in both themes */
+.tval { fill: var(--ground); font-weight: 500; }
+.tnode.pruned circle, .tnode.infeasible circle { fill: var(--ink-soft); fill-opacity: .35; opacity: 1; stroke: var(--ink-soft); stroke-width: 1.5; }
+.tnode.pruned .tval, .tnode.infeasible .tval { fill: var(--ink); }
+/* a node with an empty piece also carries the class of the shaded half-planes */
+g.tnode.infeasible { opacity: 1; }
+.tnode.fresh circle { stroke: var(--gold); stroke-width: 3; transform-box: fill-box; transform-origin: center; animation: ipop .6s ease-out; }
+@keyframes ipop { from { transform: scale(.2); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes ifade { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { svg .strip, svg .coupling.newcut, .tnode.fresh circle { animation: none; } }
+</style>
 <script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
 </head>
@@ -47,11 +66,14 @@
   <div class="transport"><button id="reset" type="button">Reset</button><button id="step" type="button">Step</button><button id="play" type="button">Play</button></div>
 </section>
 <p id="node" class="explain"></p>
+<p id="event" class="event" aria-live="polite"></p>
 <main>
   <figure><figcaption><span data-l="en">The plane: polygon, integer hull, the open nodes (light) and
   the selected one, its continuous optimum</span><span data-l="it" lang="it">Il piano: poligono, inviluppo intero, i nodi aperti (chiari) e
   quello selezionato, il suo ottimo continuo</span> <span class="k lpk"></span>, <span data-l="en">the best
-  integer point found</span><span data-l="it" lang="it">il miglior punto intero trovato</span> <span class="k ipk"></span>.</figcaption>
+  integer point found</span><span data-l="it" lang="it">il miglior punto intero trovato</span> <span class="k ipk"></span><span data-l="en">; in gold, the last move: the strip that a branch drops (between its two dashed lines), or the last
+  cut with the continuous optimum it removed, crossed out.</span><span data-l="it" lang="it">; in oro, l'ultima mossa: la striscia
+  che un branch scarta (fra le sue due linee tratteggiate), o l'ultimo taglio con l'ottimo continuo che ha rimosso, barrato.</span></figcaption>
   <svg id="plane" viewBox="0 0 460 460"></svg></figure>
   <figure><figcaption><span data-l="en">The tree: each node shows its bound; violet open, gold
   integer, gray pruned or infeasible, ringed the one selected.</span><span data-l="it" lang="it">L'albero: ogni nodo mostra il suo bound; in viola gli aperti, in oro
