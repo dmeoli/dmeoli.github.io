@@ -134,8 +134,13 @@ export class PuzzleView {
       const m = new THREE.Mesh(geo, [side_, side_, side_, side_, topMat, side_]);
       m.position.z = u * 0.16;
       S.content.add(m);
-      this.tiles.set(k, { m, side: side_, topMat, top, at: null, to: null, home: false });
+      // the term of the heuristic of this tile, on a badge at its corner
+      const badge = new THREE.Sprite(new THREE.SpriteMaterial({ depthTest: false, transparent: true }));
+      badge.scale.set(u * 0.36, u * 0.36, 1); badge.renderOrder = 10; badge.visible = false;
+      S.content.add(badge);
+      this.tiles.set(k, { m, side: side_, topMat, top, at: null, to: null, home: false, badge, bv: null });
     }
+    this.badges = new Map();
     if (this.lastShow) this.show(...this.lastShow);
     else this.show(this.inst.board, null);
   }
@@ -157,10 +162,43 @@ export class PuzzleView {
       }
     });
     this.frameMat.color.set(w === null || w === undefined ? '#' + P.soft.getHexString() : WORKERS[w % WORKERS.length]);
+    this.terms();
     this.place();
   }
+  // the option "show h / g / f": mode 'manhattan' or 'misplaced', or null
+  setHeur(mode) { this.hmode = mode; this.terms(); this.place(); }
+  terms() {
+    const x = this.lastShow && this.lastShow[0];
+    if (!x || !this.tiles) return;
+    const v = this.hmode ? tileTerms(x, this.inst.goal, this.side, this.hmode === 'misplaced') : null;
+    x.forEach((k, c) => {
+      if (!k) return;
+      const it = this.tiles.get(k);
+      it.badge.visible = !!v;
+      if (v && it.bv !== v[c]) { it.bv = v[c]; it.badge.material.map = this.badgeTex(v[c]); it.badge.material.needsUpdate = true; }
+    });
+  }
+  // a round badge with a number, in the colors of the theme
+  badgeTex(n) {
+    if (this.badges.has(n)) return this.badges.get(n);
+    const P = this.S.colors, cv = document.createElement('canvas'); cv.width = cv.height = 96;
+    const g = cv.getContext('2d');
+    g.beginPath(); g.arc(48, 48, 42, 0, 2 * Math.PI);
+    g.fillStyle = n ? '#' + P.ink.getHexString() : '#' + P.ground.getHexString(); g.fill();
+    g.lineWidth = 5; g.strokeStyle = '#' + P.accent2.getHexString(); g.stroke();
+    g.fillStyle = n ? '#' + P.ground.getHexString() : '#' + P.soft.getHexString();
+    g.font = '600 54px "IBM Plex Mono", monospace'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText(String(n), 48, 52);
+    const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
+    this.badges.set(n, tex);
+    return tex;
+  }
   place() {
-    for (const it of this.tiles.values()) if (it.at) it.m.position.set(it.at[0], it.at[1], it.m.position.z);
+    const u = 1.6 / this.side;
+    for (const it of this.tiles.values()) if (it.at) {
+      it.m.position.set(it.at[0], it.at[1], it.m.position.z);
+      it.badge.position.set(it.at[0] + u * 0.3, it.at[1] + u * 0.3, u * 0.5);
+    }
   }
   frame(dt) {
     let moving = false;
@@ -198,6 +236,7 @@ export class GridView {
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) this.blocked[y * W + x] = inst.rows[y][x] === '@' ? 1 : 0;
     this.cols = { free: P.ground.clone().lerp(P.rule, 0.5), wall: P.soft.clone().lerp(P.ground, 0.45), open: P.lilac.clone(), path: new THREE.Color('#d9b23a') };
     this.cur = new Array(n).fill('');
+    this.heurColors();
     // the height of each cell, and the height it rises or sinks to
     this.h = new Float32Array(n); this.th = new Float32Array(n); this.moving = new Set();
     for (let c = 0; c < n; c++) this.paint(c, '', true);
@@ -234,8 +273,53 @@ export class GridView {
     else if (v === 'o') { h = u * 0.6; col = this.cols.open; }
     this.th[c] = h;
     if (force || reduced()) { this.h[c] = h; this.moving.delete(c); this.lift(c); } else this.moving.add(c);
-    this.mesh.setColorAt(c, col);
+    this.mesh.setColorAt(c, this.hon ? this.heurColor(c, v, col) : col);
     return true;
+  }
+  // the option "show h / g / f": the free cells not yet expanded shaded by
+  // h, the octile distance to the goal as PBeFS defines it (zero for a lane
+  // with no heuristic), the expanded cells by the band of their f as the
+  // trace records it (fmap: cell -> f; bands of step from lo), grey where
+  // the trace does not give it
+  heurColors() {
+    const css = n => new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue(n).trim() || '#888888');
+    this.hc = { hlo: css('--heur-lo'), hhi: css('--heur-hi'), flo: css('--fband-lo'), fhi: css('--fband-hi'), none: css('--heur-none') };
+    const { inst } = this, W = inst.width, gx = inst.goal % W, gy = Math.floor(inst.goal / W), n = W * inst.height;
+    this.hv = new Float32Array(n); this.hmax = 0;
+    for (let c = 0; c < n; c++) {
+      const dx = Math.abs(c % W - gx), dy = Math.abs(Math.floor(c / W) - gy);
+      this.hv[c] = octile(dx, dy);
+      if (!this.blocked[c]) this.hmax = Math.max(this.hmax, this.hv[c]);
+    }
+  }
+  heurColor(c, v, col) {
+    const H = this.heur || {};
+    if (this.blocked[c] || v === 'p') return col;
+    if (v && v[0] === 'e') {
+      const f = H.fmap && H.fmap.get(String(c));
+      if (f === undefined) return this.hc.none;
+      const nb = Math.max(1, Math.floor((H.hi - H.lo) / H.step) + 1), b = Math.min(nb - 1, Math.max(0, Math.floor((f - H.lo) / H.step + 1e-9)));
+      return this.hc.flo.clone().lerp(this.hc.fhi, nb > 1 ? b / (nb - 1) : 0);
+    }
+    if (H.zero) return col;
+    return this.hc.hlo.clone().lerp(this.hc.hhi, this.hmax ? this.hv[c] / this.hmax : 0);
+  }
+  setHeur(on, heur) {
+    this.hon = on; this.heur = heur;
+    if (this.lastSet) this.recolor();
+  }
+  recolor() {
+    const n = this.inst.width * this.inst.height;
+    for (let c = 0; c < n; c++) {
+      const v = this.cur[c];
+      let col = this.cols.free;
+      if (this.blocked[c]) col = this.cols.wall;
+      else if (v === 'p') col = this.cols.path;
+      else if (v && v[0] === 'e') col = new THREE.Color(WORKERS[+v.slice(1) % WORKERS.length]);
+      else if (v === 'o') col = this.cols.open;
+      this.mesh.setColorAt(c, this.hon ? this.heurColor(c, v, col) : col);
+    }
+    if (this.mesh.instanceColor) this.mesh.instanceColor.needsUpdate = true;
   }
   lift(c) {
     const { inst, u } = this, W = inst.width, H = inst.height, x = c % W, y = Math.floor(c / W);
@@ -265,7 +349,61 @@ export class GridView {
     let changed = false;
     for (let c = 0; c < n; c++) changed = this.paint(c, set.get(String(c)) || '', force) || changed;
     if (changed) { this.mesh.instanceMatrix.needsUpdate = true; if (this.mesh.instanceColor) this.mesh.instanceColor.needsUpdate = true; }
+    // the f of a cell can change when the search expands it again
+    if (this.hon) this.recolor();
   }
+}
+
+// the octile distance of PBeFS (Grid.h): 8 moves, the diagonal costing the
+// square root of 2
+export const octile = (dx, dy) => Math.max(dx, dy) + (Math.SQRT2 - 1) * Math.min(dx, dy);
+
+// the heuristic of a lane as its trace header names it, and whether the
+// lane searches with none (h = 0: breadth-first, uniform cost, GraphPlan)
+export function heurOf(tr) {
+  const c = tr.header.solver.config || {};
+  return { name: c.heuristic || '', alg: c.algorithm || '', zero: !c.heuristic };
+}
+// the places (cells of a grid, cities of a map) of the expand events of a
+// trace with their f, in the order of the events: one per event, the one
+// the event expands; in a trace of a parallel search, whose events carry
+// several cells, the cell of the worker of the event whose h equals the h
+// of the event, when it is the only one
+export function placesF(tr) {
+  const h = tr.header, out = [], W = h.instance.width;
+  const gx = W ? h.instance.goal % W : 0, gy = W ? Math.floor(h.instance.goal / W) : 0;
+  tr.events.forEach((e, i) => {
+    if (e.type !== 'expand' || !e.set) return;
+    let at = Object.entries(e.set).filter(([, v]) => v[0] === 'e').map(([k]) => k);
+    if (at.length > 1 && h.game === 'grid') at = at.filter(k => e.set[k] === 'e' + e.w && Math.abs(octile(Math.abs(+k % W - gx), Math.abs(Math.floor(+k / W) - gy)) - e.h) < 1e-6);
+    if (at.length === 1) out.push({ i, place: at[0], f: e.f, g: e.g });
+  });
+  return out;
+}
+// the f of each place after the first k events (the last expansion wins)
+export function fAt(list, k) {
+  const m = new Map();
+  for (const x of list) { if (x.i >= k) break; m.set(x.place, x.f); }
+  return m;
+}
+// a round step that cuts [lo, hi] into about n bands
+export function niceStep(span, n = 6) {
+  const raw = Math.max(span, 1e-9) / n, p = 10 ** Math.floor(Math.log10(raw));
+  return [1, 2, 2.5, 5, 10].map(m => m * p).find(s => s >= raw);
+}
+
+// the per-tile terms of the heuristic of a sliding puzzle: the Manhattan
+// distance of each tile to its goal cell (h2 of PBeFS), or 1 for each cell
+// whose content differs from the goal, the blank included (the misplaced
+// tiles of aima-python, EightPuzzle.h)
+export function tileTerms(x, goal, side, misplaced) {
+  const pos = new Map(goal.map((t, i) => [t, i]));
+  return x.map((t, i) => {
+    if (misplaced) return t !== goal[i] ? 1 : 0;
+    if (!t) return 0;
+    const j = pos.get(t);
+    return Math.abs(Math.floor(i / side) - Math.floor(j / side)) + Math.abs(i % side - j % side);
+  });
 }
 
 // the strip of the frontier: the states in OPEN by f, darker where more; the

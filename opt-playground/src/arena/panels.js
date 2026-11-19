@@ -11,6 +11,7 @@ import { t } from '../i18n.js';
 import { renderTree } from './treeview.js';
 import { decisionModel, searchModel, localSeries } from './models.js';
 import { WORKERS } from './search.js';
+import { withGraph } from './graphs.js';
 
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const fmt = v => (v === null || v === undefined ? '–' : +(+v).toPrecision(5));
@@ -385,6 +386,8 @@ export function makePanel(panel, tr, rep) {
   else if (pd === 'milp') p = boundPanel(panel, tr);
   else if (pd === 'csp' && cfg === 'ac3') p = domainsPanel(panel, tr, rep);
   else if (pd === 'csp' || pd === 'sat') p = decisionPanel(panel, tr);
+  // a CSP or SAT lane may also show its constraint or implication graph (graphs.js)
+  if (p && (pd === 'csp' || pd === 'sat')) p = withGraph(panel, p, tr, rep);
   if (p) {
     LIVE.add(p);
     // a lane that changes width (the window, the number of lanes) draws again

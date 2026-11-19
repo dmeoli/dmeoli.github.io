@@ -14,7 +14,8 @@ import { openTrace, Replay, timed } from './trace.js';
 import { BoardView } from './view3d.js';
 import { drawTree } from './tree.js';
 import { makePanel } from './panels.js';
-import { SearchReplay, PuzzleView, GridView, drawStrip, WORKERS } from './search.js';
+import { SearchReplay, PuzzleView, GridView, drawStrip, WORKERS, heurOf, placesF, fAt, niceStep, tileTerms } from './search.js';
+import { drawCharts } from './charts.js';
 import { CubeView } from './cube.js';
 import { QueensView, SudokuView } from './cells.js';
 import { HanoiView } from './hanoi.js';
@@ -362,12 +363,102 @@ function buildSearchLane(file, tr) {
     : h.game === 'topspin' ? new TopSpinView(box, h.instance) : new PuzzleView(box, h.instance);
   art.querySelector('.stripbox').hidden = NOSTRIP.has(h.game);
   const panel = makePanel(art.querySelector('.panel'), tr, null);
-  return { file, tr, rep: new SearchReplay(tr), view, art, search: true, k: -1, panel };
+  const L = { file, tr, rep: new SearchReplay(tr), view, art, search: true, k: -1, panel, hon: false };
+  heurOption(L);
+  return L;
+}
+// ---------------------------------------------------------------- the option "show h / g / f"
+// A box in the header of each search lane (off by default) draws the
+// heuristic of the lane on its board, computed in the page as the solver
+// defines it, and the f that the trace records for the places expanded; a
+// caption under the box says what the marks are and which heuristic the
+// trace header names.
+function heurOption(L) {
+  const h = L.tr.header, H = heurOf(L.tr);
+  if (h.solver.config && h.solver.config.algorithm === 'graphplan') return;
+  const hd = L.art.querySelector('header');
+  const p = document.createElement('p');
+  p.className = 'hopt';
+  p.innerHTML = `<label><input type="checkbox"><span></span></label>${h.game === 'grid' ? ' <button type="button" class="htop" hidden></button>' : ''}`;
+  const cap = document.createElement('p');
+  cap.className = 'hcap'; cap.hidden = true;
+  hd.append(p, cap);
+  L.hinfo = H;
+  if (SETBOARD.has(h.game)) {
+    L.hplaces = placesF(L.tr);
+    const fs = L.hplaces.map(x => x.f);
+    // the bands run up to the cost of the solution: A* expands no state of
+    // larger f, a parallel search a few, which fall in the last band
+    const C = L.tr.result && typeof L.tr.result.cost === 'number' ? L.tr.result.cost : Infinity;
+    L.hlo = fs.length ? Math.min(...fs) : 0; L.hhi = fs.length ? Math.min(C, Math.max(...fs)) : 1;
+    L.hstep = niceStep(L.hhi - L.hlo);
+  }
+  const top = p.querySelector('.htop');
+  p.querySelector('input').onchange = e => { L.hon = e.target.checked; cap.hidden = !L.hon; if (top) top.hidden = !L.hon; applyHeur(L); };
+  // the grid seen from straight above, where the bands of f read as a map
+  // (Reset view of the board goes back to the default camera)
+  if (top) top.onclick = () => { const S = L.view.S; S.camera.position.set(0, -0.08, 2.85); S.controls.target.set(0, 0, 0); S.controls.update(); };
+  heurTexts(L);
+}
+function heurTexts(L) {
+  const sp = L.art.querySelector('.hopt span');
+  if (sp) sp.textContent = t('show h / g / f', 'mostra h / g / f');
+  const top = L.art.querySelector('.htop');
+  if (top) top.textContent = t('view from above', 'vista dall\'alto');
+}
+const SQ = (a, b) => Math.trunc(Math.hypot(a[0] - b[0], a[1] - b[1]));
+function applyHeur(L) {
+  const h = L.tr.header, H = L.hinfo, I = h.instance;
+  if (!H) return;
+  const fmap = L.hplaces ? fAt(L.hplaces, L.k) : null;
+  if (h.game === 'grid') L.view.setHeur(L.hon, { zero: H.zero, fmap, lo: L.hlo, hi: L.hhi, step: L.hstep });
+  else if (h.game === 'romania') L.view.setHeur(L.hon, H.zero ? null : c => SQ(I.nodes[c], I.nodes[I.goal]), fmap);
+  else if (h.game === 'puzzle') L.view.setHeur(L.hon ? (H.name === 'misplaced tiles' ? 'misplaced' : 'manhattan') : null);
+  if (L.hon) heurCaption(L, fmap);
+}
+// the caption of the option, for the state of the current event
+function heurCaption(L, fmap) {
+  const h = L.tr.header, H = L.hinfo, e = L.rep.last, cap = L.art.querySelector('.hcap');
+  const ex = e && e.type === 'expand' ? e : null;
+  const ghf = ex ? t(` For the state of this event the trace gives g ${fmt(ex.g)}, h ${fmt(ex.h)}, f ${fmt(ex.f)}.`, ` Per lo stato di questo evento la traccia dà g ${fmt(ex.g)}, h ${fmt(ex.h)}, f ${fmt(ex.f)}.`) : '';
+  const named = H.zero ? t('no heuristic', 'nessuna euristica') : `"${esc(H.name)}"`;
+  const zero = t(`This lane searches with ${named} (${esc(H.alg)} in its trace header): h = 0, so f = g.`, (H.zero ? `Questa corsia cerca senza euristica (${esc(H.alg)} nell'intestazione della sua traccia): h = 0, quindi f = g.` : `Questa corsia cerca con ${named} (${esc(H.alg)} nell'intestazione della sua traccia): h = 0, quindi f = g.`));
+  const ramp = (a, b, lo, hi) => `<span class="hkey"><span>${lo}</span><span class="hbar" style="background:linear-gradient(90deg,var(${a}),var(${b}))"></span><span>${hi}</span></span>`;
+  let s = '';
+  if (h.game === 'grid') {
+    const nb = Math.floor((L.hhi - L.hlo) / L.hstep) + 1, known = fmap ? fmap.size : 0;
+    const bands = t(`an expanded cell takes the band of its f = g + h, in steps of ${fmt(L.hstep)} ${ramp('--fband-lo', '--fband-hi', fmt(L.hlo), (L.hhi < Infinity ? '≥ ' : '') + fmt(L.hlo + (nb - 1) * L.hstep))}, the last band holding also any f beyond the cost of the solution, so that the bands draw the contours of f: A* stretches them from the start toward the goal, while uniform cost would spread them in circles.`,
+      `una cella espansa prende la fascia del suo f = g + h, a passi di ${fmt(L.hstep)} ${ramp('--fband-lo', '--fband-hi', fmt(L.hlo), '≥ ' + fmt(L.hlo + (nb - 1) * L.hstep))}, l'ultima fascia comprendendo anche ogni f oltre il costo della soluzione, così che le fasce disegnano le curve di livello di f: A* le allunga dalla partenza verso l'obiettivo, mentre il costo uniforme le allargherebbe in cerchi.`);
+    s = H.zero ? zero + ' ' + t('The free cells keep their color; ', 'Le celle libere restano del loro colore; ') + bands
+      : t(`The free cells not yet expanded are shaded by h, the octile distance to the goal that the lane uses ("${esc(H.name)}" in its trace header: max(dx, dy) + (√2 − 1) min(dx, dy)) ${ramp('--heur-lo', '--heur-hi', 0, L.view.hmax.toFixed(1))}; `,
+        `Le celle libere non ancora espanse sono sfumate secondo h, la distanza ottile dall'obiettivo che la corsia usa ("${esc(H.name)}" nell'intestazione della sua traccia: max(dx, dy) + (√2 − 1) min(dx, dy)) ${ramp('--heur-lo', '--heur-hi', 0, L.view.hmax.toFixed(1))}; `) + bands;
+    if (L.hplaces.length < (L.tr.result && L.tr.result.stats ? L.tr.result.stats.expanded : 0))
+      s += t(` The trace of this parallel search records the f of ${L.hplaces.length} of its ${L.tr.result.stats.expanded} expansions, so the expanded cells whose f it does not give are grey (${known} cells with their f at this event).`,
+        ` La traccia di questa ricerca parallela registra f per ${L.hplaces.length} delle sue ${L.tr.result.stats.expanded} espansioni, quindi le celle espanse di cui non dà f sono grigie (${known} celle con il loro f a questo evento).`);
+  } else if (h.game === 'romania') {
+    s = H.zero ? zero + ' ' + t('The card of each city expanded gives its f as the trace records it, the km driven from Arad.', 'La scheda di ogni città espansa dà il suo f come lo registra la traccia, i km percorsi da Arad.')
+      : t(`The card of every city gives h, the straight-line distance to Bucharest of the heuristic "${esc(H.name)}" of this lane, as aima-python computes it from the coordinates of the map (the Euclidean distance truncated to an integer, which differs from the table of the book), and for each city expanded its f as the trace records it${H.alg === 'greedy' ? ' (greedy best-first ranks by h alone, so its f is h)' : ', g + h'}.`,
+        `La scheda di ogni città dà h, la distanza in linea d'aria da Bucarest dell'euristica "${esc(H.name)}" di questa corsia, come la calcola aima-python dalle coordinate della mappa (la distanza euclidea troncata a un intero, che differisce dalla tabella del libro), e per ogni città espansa il suo f come lo registra la traccia${H.alg === 'greedy' ? ' (la ricerca golosa ordina per sola h, quindi il suo f è h)' : ', g + h'}.`);
+  } else if (h.game === 'puzzle') {
+    const x = L.rep.x || h.instance.board, I = h.instance;
+    const man = tileTerms(x, I.goal, I.side, false).reduce((a, b) => a + b, 0), mis = tileTerms(x, I.goal, I.side, true).reduce((a, b) => a + b, 0);
+    s = H.name === 'misplaced tiles' ? t(`On each tile a badge says 1 if the tile is out of its goal cell: the heuristic "misplaced tiles" of this lane counts them, the blank included when it is out of place, as aima-python does; here ${mis}.`,
+        `Su ogni tessera un bollino dice 1 se la tessera è fuori dalla sua cella obiettivo: l'euristica "misplaced tiles" di questa corsia le conta, compreso lo spazio vuoto quando è fuori posto, come fa aima-python; qui ${mis}.`)
+      : H.name === 'h2' ? t(`On each tile a badge gives its Manhattan distance to its goal cell (rows plus columns): the heuristic h2 of this lane is their sum, here ${man}.`, `Su ogni tessera un bollino dà la sua distanza di Manhattan dalla cella obiettivo (righe più colonne): l'euristica h2 di questa corsia è la loro somma, qui ${man}.`)
+      : H.zero ? zero + ' ' + t(`The badges give the Manhattan distance of each tile to its goal cell for reference (sum ${man}), which the lanes with h2 use.`, `I bollini danno per confronto la distanza di Manhattan di ogni tessera dalla sua cella obiettivo (somma ${man}), che usano le corsie con h2.`)
+      : t(`This lane uses "${esc(H.name)}", the additive pattern databases 5-5-5: tables that the page does not recompute. The badges give the Manhattan distance of each tile, whose sum (${man}) never exceeds the h of the databases.`, `Questa corsia usa "${esc(H.name)}", i database di pattern additivi 5-5-5: tabelle che la pagina non ricalcola. I bollini danno la distanza di Manhattan di ogni tessera, la cui somma (${man}) non supera mai la h dei database.`);
+  } else if (h.game === 'pancake') s = t('The gold ticks on the board already show the heuristic: they mark the gaps, the neighbors whose sizes are not consecutive (the plate counting as the largest), and the gap heuristic of this lane is their number.', 'Le tacche dorate sul tabellone mostrano già l\'euristica: segnano i buchi, i vicini le cui misure non sono consecutive (il piatto conta come la più grande), e l\'euristica gap di questa corsia è il loro numero.');
+  else if (h.game === 'topspin') s = t('The gold bars on the board already show the heuristic: they mark the breakpoints, the neighbors that are not consecutive (11 and 0 are), from which the heuristic "breakpoints" of this lane is computed.', 'Le barre dorate sul tabellone mostrano già l\'euristica: segnano i punti di rottura, i vicini non consecutivi (11 e 0 lo sono), da cui si calcola l\'euristica "breakpoints" di questa corsia.');
+  else if (h.game === 'cube') s = t(`This lane uses "${esc(H.name)}": the maximum of Korf's three pattern databases (the 8 corners and two sets of 6 edges), tables that the page does not load, so h is not drawn on the cube.`, `Questa corsia usa "${esc(H.name)}": il massimo dei tre database di pattern di Korf (gli 8 angoli e due insiemi di 6 spigoli), tabelle che la pagina non carica, quindi h non è disegnata sul cubo.`);
+  else if (h.game === 'hanoi') s = t(`This lane uses "${esc(H.name)}", an additive pattern database over ranges of disks, a table that the page does not recompute, so h is not drawn on the pegs.`, `Questa corsia usa "${esc(H.name)}", un database di pattern additivo su intervalli di dischi, una tabella che la pagina non ricalcola, quindi h non è disegnata sui pioli.`);
+  else s = H.zero ? zero : t(`This lane uses "${esc(H.name)}", which the page does not draw on the board.`, `Questa corsia usa "${esc(H.name)}", che la pagina non disegna sul tabellone.`);
+  cap.innerHTML = s + ghf;
 }
 function updateSearchLane(L, prev) {
   const { rep, art, tr } = L, h = tr.header, e = rep.last;
   if (L.panel) L.panel.draw(L.k);
   const w = e && e.type === 'expand' && h.workers > 1 ? e.w : null;
+  if (L.hon) applyHeur(L);
   if (SETBOARD.has(h.game)) {
     // the place being expanded at this event, marked on the board
     const cur = e && e.type === 'expand' ? Object.entries(e.set || {}).find(([, v]) => v[0] === 'e') : null;
@@ -503,7 +594,14 @@ async function loadLanes() {
   const files = STATE.lanes.filter(Boolean);
   const trs = await Promise.all(files.map(f => openTrace({ url: BASE + f }).catch(err => { info.errors.push(f + ': ' + err.message); return null; })));
   if (req !== loadReq) return;
-  files.forEach((f, i) => { if (trs[i]) lanes.push(buildLane(f, trs[i])); });
+  files.forEach((f, i) => {
+    if (!trs[i]) return;
+    const L = buildLane(f, trs[i]);
+    // the color of the lane, by the select it comes from (charts.js)
+    L.slot = Math.max(0, STATE.lanes.indexOf(f));
+    L.art.classList.add('lc'); L.art.style.setProperty('--lane', `var(--lane-${L.slot + 1})`);
+    lanes.push(L);
+  });
   // the pseudocode under each lane and the box of its questions (pseudocode.js, predict.js)
   if (PRED) PRED.pend.clear();
   for (const L of lanes) { const pn = L.art.querySelector('.panel'); L.code = attachCode(pn, L.tr.header); if (PRED) PRED.attach(L, pn, arenaNote(L.tr)); }
@@ -615,7 +713,22 @@ function scoreboard() {
   const hasCost = real.some(L => L.tr.result.cost !== undefined);
   box.querySelector('table').innerHTML = `<tr><th>${t('solver', 'solutore')}</th><th>${t('status', 'esito')}</th>${hasCost ? `<th>${t('cost', 'costo')}</th>` : ''}<th>${t('events', 'eventi')}</th>${keys.map(k => `<th>${esc(k)}</th>`).join('')}</tr>` +
     real.map(L => { const r = L.tr.result;
-      return `<tr><td>${esc(laneName(L.file, L.tr.header.solver.name))}</td><td>${esc(r.status)}</td>${hasCost ? `<td>${fmt(r.cost)}</td>` : ''}<td>${r.events ?? L.tr.events.length}${r.capped ? t(' (capped)', ' (troncati)') : ''}</td>${keys.map(k => `<td>${cell(r.stats[k])}</td>`).join('')}</tr>`; }).join('');
+      return `<tr><td><span class="lchip" style="--lane:var(--lane-${L.slot + 1})">${esc(laneName(L.file, L.tr.header.solver.name))}</span></td><td>${esc(r.status)}</td>${hasCost ? `<td>${fmt(r.cost)}</td>` : ''}<td>${r.events ?? L.tr.events.length}${r.capped ? t(' (capped)', ' (troncati)') : ''}</td>${keys.map(k => `<td>${cell(r.stats[k])}</td>`).join('')}</tr>`; }).join('');
+  charts(real);
+}
+// the section "charts" under the scoreboard (charts.js), closed by default
+function charts(real) {
+  let det = $('charts');
+  if (!det) {
+    det = document.createElement('details');
+    det.id = 'charts'; det.className = 'charts';
+    det.innerHTML = '<summary></summary><div class="cbody"></div>';
+    $('score').append(det);
+    det.addEventListener('toggle', () => { if (det.open) charts(lanes.filter(L => !L.tr.header.sample && L.tr.result)); });
+  }
+  det.querySelector('summary').textContent = t('Charts: the lanes compared', 'Grafici: le corsie a confronto');
+  if (!det.open) return;
+  drawCharts(det.querySelector('.cbody'), real.map(L => ({ name: laneName(L.file, L.tr.header.solver.name), slot: L.slot, tr: L.tr })), GAME);
 }
 
 // ---------------------------------------------------------------- wiring
@@ -629,7 +742,7 @@ function texts() {
   if (LISTED) showInstControls();
   laneSelects();
   stop();
-  for (const L of lanes) { L.k = -1; }
+  for (const L of lanes) { L.k = -1; heurTexts(L); }
   setPos(STATE.pos, 'keep');
   scoreboard();
   if (you) you.texts();
