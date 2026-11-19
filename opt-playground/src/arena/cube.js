@@ -36,6 +36,7 @@ export class CubeView {
     this.build();
   }
   build() {
+    this.shown = false;     // new stickers take their colors at once
     const { S } = this, P = S.colors, u = 0.36;
     clear(S.content);
     this.u = u;
@@ -80,7 +81,17 @@ export class CubeView {
     this.lastShow = [x, w];
     if (!x) return;
     this.finish();
-    for (let k = 0; k < 54; k++) this.stickers[k].material.color.set(FACE[x[k]] || '#888');
+    // a turn of the path recolors at once (the layer turns into place);
+    // between two states expanded, which are in general several moves
+    // apart, the stickers that change fade to their new color in 0.4 s
+    const fade = !move && !reduced() && this.shown;
+    this.fades = [];
+    for (let k = 0; k < 54; k++) {
+      const mat = this.stickers[k].material, to = new THREE.Color(FACE[x[k]] || '#888');
+      if (fade && !mat.color.equals(to)) this.fades.push({ mat, from: mat.color.clone(), to, t: 0 });
+      else mat.color.copy(to);
+    }
+    this.shown = true;
     const P = this.S.colors;
     this.plateMat.color.set(w === null || w === undefined ? '#' + P.rule.getHexString() : WORKERS[w % WORKERS.length]);
     if (!move || reduced()) return;
@@ -106,6 +117,10 @@ export class CubeView {
     this.anim = null;
   }
   frame(dt) {
+    if (this.fades && this.fades.length) {
+      for (const f of this.fades) { f.t = Math.min(1, f.t + dt / 0.4); f.mat.color.copy(f.from).lerp(f.to, f.t); }
+      if (this.fades.every(f => f.t >= 1)) this.fades = [];
+    }
     const A = this.anim;
     if (!A) return;
     A.t = Math.min(1, A.t + dt * 2);

@@ -9,7 +9,7 @@
     "name": "IDA* Korf",
     "block": "PBeFS",
     "paradigm": "heuristic search",
-    "code": "PBeFS 30d49e3",
+    "code": "PBeFS a8070c0",
     "config": {
      "algorithm": "idastar",
      "heuristic": "korf",
@@ -26,7 +26,7 @@
     "name": "A* Korf",
     "block": "PBeFS",
     "paradigm": "heuristic search",
-    "code": "PBeFS 30d49e3",
+    "code": "PBeFS a8070c0",
     "config": {
      "algorithm": "astar",
      "heuristic": "korf",
@@ -43,7 +43,7 @@
     "name": "HDA* Korf 4 threads",
     "block": "PBeFS",
     "paradigm": "heuristic search",
-    "code": "PBeFS 30d49e3",
+    "code": "PBeFS a8070c0",
     "config": {
      "algorithm": "hda",
      "heuristic": "korf",
@@ -60,7 +60,7 @@
     "name": "IDA* Korf",
     "block": "PBeFS",
     "paradigm": "heuristic search",
-    "code": "PBeFS 30d49e3",
+    "code": "PBeFS a8070c0",
     "config": {
      "algorithm": "idastar",
      "heuristic": "korf",
@@ -77,7 +77,7 @@
     "name": "A* Korf",
     "block": "PBeFS",
     "paradigm": "heuristic search",
-    "code": "PBeFS 30d49e3",
+    "code": "PBeFS a8070c0",
     "config": {
      "algorithm": "astar",
      "heuristic": "korf",
@@ -94,7 +94,7 @@
     "name": "HDA* Korf 4 threads",
     "block": "PBeFS",
     "paradigm": "heuristic search",
-    "code": "PBeFS 30d49e3",
+    "code": "PBeFS a8070c0",
     "config": {
      "algorithm": "hda",
      "heuristic": "korf",
@@ -111,7 +111,7 @@
     "name": "IDA* Korf",
     "block": "PBeFS",
     "paradigm": "heuristic search",
-    "code": "PBeFS 30d49e3",
+    "code": "PBeFS a8070c0",
     "config": {
      "algorithm": "idastar",
      "heuristic": "korf",
@@ -128,7 +128,7 @@
     "name": "A* Korf",
     "block": "PBeFS",
     "paradigm": "heuristic search",
-    "code": "PBeFS 30d49e3",
+    "code": "PBeFS a8070c0",
     "config": {
      "algorithm": "astar",
      "heuristic": "korf",
@@ -145,7 +145,7 @@
     "name": "HDA* Korf 4 threads",
     "block": "PBeFS",
     "paradigm": "heuristic search",
-    "code": "PBeFS 30d49e3",
+    "code": "PBeFS a8070c0",
     "config": {
      "algorithm": "hda",
      "heuristic": "korf",

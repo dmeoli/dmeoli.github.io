@@ -242,3 +242,5 @@ mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: h
 .controls button span { text-transform: none; letter-spacing: normal; font-size: inherit; color: inherit; }
 /* the print panel of a scene that is a form only when opened with ?print (theme.js) */
 html:not(.print-mode) .print-only { display: none !important; }
+html.print-mode .scene-only { display: none !important; }
+.formlink { color: var(--ink-soft); }
