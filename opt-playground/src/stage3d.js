@@ -145,7 +145,7 @@ export function stage3d(box, opts = {}) {
 
   // render only while on screen
   let visible = true, last = performance.now();
-  new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(box);
+  new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; }).observe(box);
   const loop = now => {
     const dt = Math.min(0.1, (now - last) / 1000); last = now;
     if (visible) { if (opts.onFrame) opts.onFrame(dt); controls.update(); renderer.render(scene, camera); }

@@ -22,6 +22,7 @@ import { PlanView } from './plan.js';
 import { CellGridView, ZebraView } from './puzzles.js';
 import { KnapsackView } from './knapsack.js';
 import { PancakeView, TopSpinView } from './stacks.js';
+import { PlayLane } from './play.js';
 
 const $ = id => document.getElementById(id);
 const GAME = document.body.dataset.game;
@@ -75,11 +76,22 @@ const INSTNAMES = {
   'pancake-14': ['14 pancakes, a random stack (seed 1)', '14 frittelle, una pila casuale (seme 1)'],
   'topspin-walk20': ['12 tokens, 20 random moves from the goal (seed 1)', '12 gettoni, 20 mosse casuali dall\'obiettivo (seme 1)'],
   'topspin-random': ['12 tokens, a random ring (seed 1)', '12 gettoni, un anello casuale (seme 1)'] };
+// the games that the reader can play in the lane "You" (play.js), first in the row
+// (module, class), loaded only on the page of that game
+const PLAY = {
+  queens: ['./play-cells.js', 'QueensPlay'], coloring: ['./play-cells.js', 'ColoringPlay'], sudoku: ['./play-cells.js', 'SudokuPlay'],
+  zebra: ['./play-zebra.js', 'ZebraPlay'],
+  kakuro: ['./play-puzzles.js', 'KakuroPlay'], crypto: ['./play-puzzles.js', 'CryptoPlay'], crossword: ['./play-puzzles.js', 'CrosswordPlay'],
+  knapsack: ['./play-knapsack.js', 'KnapsackPlay'],
+  pancake: ['./play-stacks.js', 'PancakePlay'], topspin: ['./play-stacks.js', 'TopSpinPlay'],
+  hanoi: ['./play-hanoi.js', 'HanoiPlay'], cube: ['./play-cube.js', 'CubePlay'],
+  puzzle: ['./play-search.js', 'PuzzlePlay'], grid: ['./play-search.js', 'GridPlay'], romania: ['./play-search.js', 'RomaniaPlay'],
+  planning: ['./play-plan.js', 'PlanningPlay'] };
 const info = window.__arena = { errors: [], pyodide: null, modelSeconds: null, game: GAME, lanes: () => lanes };
 window.addEventListener('error', e => { if (!/ResizeObserver loop/.test(e.message)) info.errors.push(String(e.message)); });
 window.addEventListener('unhandledrejection', e => info.errors.push(String(e.reason && e.reason.message || e.reason)));
 
-let INDEX = [], MAPS = {}, lanes = [];
+let INDEX = [], MAPS = {}, lanes = [], you = null, loadReq = 0;
 
 // ---------------------------------------------------------------- the address
 function readHash() {
@@ -437,15 +449,37 @@ function dispose(v) {
   v.S.renderer.dispose();
   v.S.renderer.forceContextLoss();
 }
+// the lane "You", on the instance of the lanes (or, with no lane chosen, of
+// the first trace of the instance), before them
+async function buildPlay(trs, req) {
+  const m = PLAY[GAME];
+  const Game = m && await import(m[0]).then(x => x[m[1]], err => { info.errors.push(m[0] + ': ' + err.message); return null; });
+  if (!Game || req !== loadReq) return;
+  let tr = trs.find(Boolean);
+  if (!tr) {
+    const x = tracesFor(STATE.inst)[0];
+    tr = x ? await openTrace({ url: BASE + x.file }).catch(() => null) : null;
+    if (!tr || req !== loadReq) return;
+    trs = [tr];
+  }
+  const art = laneShell('', '');
+  $('lanes').prepend(art);
+  const results = () => (lanes.length ? lanes.map(L => L.tr) : trs.filter(Boolean)).filter(r => !r.header.sample && r.result)
+    .map(r => ({ name: r.header.solver.name, result: r.result, header: r.header }));
+  you = info.play = new PlayLane(art, Game, tr.header.instance, { results });
+}
 async function loadLanes() {
   stop();
-  lanes.forEach(L => dispose(L.view)); dispose(boardOnly);
-  lanes = []; boardOnly = null;
+  const req = ++loadReq;
+  lanes.forEach(L => dispose(L.view)); dispose(boardOnly); if (you) dispose(you.game.view);
+  lanes = []; boardOnly = null; you = null;
   $('lanes').innerHTML = '';
   const files = STATE.lanes.filter(Boolean);
   const trs = await Promise.all(files.map(f => openTrace({ url: BASE + f }).catch(err => { info.errors.push(f + ': ' + err.message); return null; })));
+  if (req !== loadReq) return;
   files.forEach((f, i) => { if (trs[i]) lanes.push(buildLane(f, trs[i])); });
-  $('lanes').dataset.n = lanes.length;
+  await buildPlay(trs, req);
+  $('lanes').dataset.n = lanes.length + (you ? 1 : 0);
   if (!lanes.length && GAME === 'coloring' && lastModel && lastModel.instance.id === STATE.inst) emptyBoard(lastModel.instance);
   // the seconds of runs on shared machines are not compared: no alignment by time
   const canTime = false;
@@ -555,6 +589,7 @@ function texts() {
   for (const L of lanes) { L.k = -1; }
   setPos(STATE.pos);
   scoreboard();
+  if (you) you.texts();
   if (lastModel) renderModel(lastModel);
 }
 

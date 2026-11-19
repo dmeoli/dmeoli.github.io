@@ -77,3 +77,12 @@ ul.scenes { list-style: none; padding: 0; margin: 0 0 18px; display: grid; grid-
 ul.scenes li { background: var(--panel); border: 1px solid var(--rule); border-radius: 8px; padding: 12px 14px; }
 ul.scenes a { font: 500 14px 'IBM Plex Mono', monospace; color: var(--accent); }
 ul.scenes p { margin: 6px 0 0; font-size: 15px; color: var(--ink-soft); }
+/* the lane "You" (play.js): the board answers the pointer, the event line is
+   red on a mistake and in the accent when the game is solved */
+.lane.play .board canvas { cursor: pointer; }
+.lane.play .board canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.lane.play.solved .evline { color: var(--accent); }
+.lane.play .howto { font-size: 13px; line-height: 1.4; color: var(--ink-soft); margin: 0; }
+.playbar { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.playbar label { display: inline-flex; gap: 4px; align-items: center; }
+.lane.play .evline { font-size: 13px; height: 6.5em; }
