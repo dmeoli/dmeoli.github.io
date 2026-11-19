@@ -12,6 +12,7 @@ import { label } from '../stage3d.js';
 import { t } from '../i18n.js';
 import { KnapsackView } from './knapsack.js';
 import { names } from './play.js';
+import { solutionOf } from './play-cells.js';
 
 const plural = (k, one, many) => (k === 1 ? one : many);
 
@@ -179,11 +180,66 @@ export class KnapsackPlay {
     this.show();
     return r;
   }
+  // undo, hint and replay (play.js)
+  snap() { return { inn: this.inn.slice(), prevKey: this.prevKey }; }
+  restore(s) { this.inn = s.inn.slice(); this.prevKey = s.prevKey; this.err = []; this.over = null; this.show(); }
+  label(s0, s1) {
+    const i = s1.inn.findIndex((b, k) => b !== s0.inn[k]), name = this.inst.vertices[i];
+    return s1.inn[i] ? [`take ${name}`, `prendi ${name}`] : [`take ${name} out`, `togli ${name}`];
+  }
+  // the items of an optimum that a lane recorded (as x, items, a solution
+  // or a model), or null: the traces of now record its value only
+  optSet() {
+    for (const L of this.ctx.results()) {
+      const r = L.result;
+      if (!r || r.status !== 'optimal') continue;
+      let take = null;
+      if (Array.isArray(r.x) && r.x.length === this.n) take = r.x.map(Boolean);
+      else if (Array.isArray(r.items)) take = this.inst.vertices.map((v, i) => r.items.includes(v) || r.items.includes(i));
+      else { const s = solutionOf(L, this.inst.colours); if (s && Object.keys(s).length) take = this.inst.vertices.map(v => s[v] === 'in'); }
+      if (take) return { by: L.name, take };
+    }
+    return null;
+  }
+  hint() {
+    const O = this.optSet(), { inst } = this, opt = this.optimum();
+    if (!O) {
+      const v = opt ? [` (${opt.cost})`, ` (${opt.cost})`] : ['', ''];
+      return { say: [`The traces record the value of the optimum${v[0]}, not the items it takes, so there is no item of it to suggest; the option "frame the items that still fit" shows which can still go in.`,
+        `Le tracce registrano il valore dell'ottimo${v[1]}, non gli oggetti che prende, quindi non c'è un suo oggetto da suggerire; l'opzione "incornicia gli oggetti che entrano ancora" mostra quali possono ancora entrare.`] };
+    }
+    const extra = this.inn.map((b, i) => (b && !O.take[i] ? i : -1)).filter(i => i >= 0);
+    if (extra.length) {
+      this.hl = extra.map(i => ({ v: i, j: -1, kind: 'hot' }));
+      this.show();
+      const ns = extra.map(i => inst.vertices[i]);
+      return { say: [`Your knapsack holds ${names(ns, 'and')}, which the optimum of ${O.by} leaves out (red): take ${extra.length > 1 ? 'them' : 'it'} out first.`,
+        `Il tuo zaino contiene ${names(ns, 'e')}, che l'ottimo di ${O.by} lascia fuori (in rosso): prima ${extra.length > 1 ? 'toglili' : 'toglilo'}.`] };
+    }
+    const i = O.take.findIndex((b, k) => b && !this.inn[k] && inst.w[k] <= this.free());
+    if (i < 0) return { say: ['Every item of the optimum is in: close the knapsack.', 'Ogni oggetto dell\'ottimo è dentro: chiudi lo zaino.'] };
+    this.hl = [{ v: i, j: -1, kind: 'decide' }];
+    this.show();
+    return { shown: true, say: [`Hint (gold): take ${inst.vertices[i]} (profit ${inst.p[i]}, weight ${inst.w[i]}), an item of the optimum of ${O.by} that is not in yet and fits.`,
+      `Suggerimento (in oro): prendi ${inst.vertices[i]} (profitto ${inst.p[i]}, peso ${inst.w[i]}), un oggetto dell'ottimo di ${O.by} che non è ancora dentro ed entra.`] };
+  }
+  unhint() { if (this.hl) { this.hl = null; this.show(); } }
+  replay(states) {
+    const O = this.optSet();
+    if (!O) return { by: null, rows: [], first: 0, note: ['The traces record the value of the optimum, not its items, so no lane move can stand beside yours.', 'Le tracce registrano il valore dell\'ottimo, non i suoi oggetti, quindi nessuna mossa di una corsia può stare accanto alle tue.'] };
+    let first = 0;
+    const rows = states.slice(1).map((s, k) => {
+      const i = s.inn.findIndex((b, j) => b !== states[k].inn[j]), name = this.inst.vertices[i];
+      if (!first && s.inn[i] && !O.take[i]) first = k + 1;
+      return O.take[i] ? [`${name} is in the optimum`, `${name} è nell'ottimo`] : [`${name} is not`, `${name} non c'è`];
+    });
+    return { by: [O.by, O.by], rows, first };
+  }
   // what a would do: its item framed in gold and named, the bar extended
   // by its weight (red beyond the capacity) or shortened by it
   hover(a) { this.over = a; this.show(); }
   show(seg = null) {
-    const { inst } = this, focus = [...this.err], a = this.over || (this.cur !== null ? { i: this.cur } : null), wt = this.weight();
+    const { inst } = this, focus = [...this.err, ...(this.hl || [])], a = this.over || (this.cur !== null ? { i: this.cur } : null), wt = this.weight();
     if (this.opt && this.opt.fits) for (const i of this.fitting()) focus.push({ v: i, j: -1, kind: 'undo' });
     let named = null;
     if (a && a.i !== undefined) {

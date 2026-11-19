@@ -13,6 +13,8 @@ import { GameBoard, cellName } from './board.js';
 import { parseTrace, fmt, same } from './replay.js';
 import { TreePanel } from './gametree.js';
 import * as E from './engine.js';
+import { attachCode } from '../arena/pseudocode.js';
+import { Predict, gameQuestion, gameNote } from '../arena/predict.js';
 
 const $ = id => document.getElementById(id);
 const GAME = document.body.dataset.game, C4 = GAME === 'connect4';
@@ -35,7 +37,7 @@ window.addEventListener('error', e => { if (!/ResizeObserver loop/.test(e.messag
 window.addEventListener('unhandledrejection', e => info.errors.push(String(e.reason && e.reason.message || e.reason)));
 
 const STATE = { inst: 'opening', pos: 0, playing: false, speed: 1 };
-let INDEX = [], lanes = [], you = null, timer = null, req = 0;
+let INDEX = [], lanes = [], you = null, timer = null, req = 0, PRED = null;
 const cache = new Map();
 const fetchTrace = file => {
   if (!cache.has(file)) cache.set(file, fetch(BASE + file).then(r => { if (!r.ok) throw new Error(file + ': ' + r.status); return r.text(); }).then(parseTrace));
@@ -60,10 +62,14 @@ class TraceLane {
     this.art.querySelector('.panel').innerHTML = `<figure class="gtpanel"><figcaption class="scap"></figcaption><div class="sbox"></div><p class="sstat"></p></figure>`;
     this.tree = new TreePanel(this.art.querySelector('.sbox'));
     this.k = -1;
+    // the pseudocode under the lane and the box of its questions (arena/pseudocode.js, arena/predict.js)
+    this.code = attachCode(this.art.querySelector('.panel'), R.head);
+    if (PRED) PRED.attach(this, this.art.querySelector('.panel'), gameNote(R));
   }
   at(k) {
-    const R = this.R;
+    const R = this.R, prev = this.k;
     this.k = k;
+    if (this.code) this.code.show(R.events, k + 1, prev + 1, { R });
     const e = R.events[k];
     const names = R.head.counters, a = ALGO[R.head.solver.id];
     this.art.querySelector('h3').textContent = t(a[0], a[1]);
@@ -289,12 +295,27 @@ function laneStep(L, p) {
   const n = L.R.length, T = total();
   return n <= T ? Math.min(p, n - 1) : Math.round(p * (n - 1) / Math.max(1, T - 1));
 }
-function render() {
+// mode 'ask': a step of the reader, which in the mode "predict" halts a lane
+// before its event to ask about it; 'keep': a redraw that keeps the questions
+function render(mode) {
   const T = total();
   $('time').max = T - 1;
   $('time').value = STATE.pos;
   $('iter').textContent = `${STATE.pos + 1} / ${T}`;
-  for (const L of lanes) L.at(laneStep(L, STATE.pos));
+  let asked = false;
+  for (const L of lanes) {
+    const k = laneStep(L, STATE.pos), pd = PRED && PRED.pending(L);
+    if (pd && mode === 'keep') { L.at(pd.k - 1); continue; }
+    if (pd) PRED.drop(L);
+    if (mode === 'ask' && PRED && PRED.on && k > L.k && k > 0) {
+      L.at(k - 1);
+      const q = gameQuestion(L.R, k, cellName, C4);
+      if (q) { PRED.pose(L, q, k, () => L.at(k)); asked = true; continue; }
+    }
+    if (PRED) PRED.clear(L);
+    L.at(k);
+  }
+  return asked;
 }
 function setPlaying(on) {
   STATE.playing = on;
@@ -302,7 +323,8 @@ function setPlaying(on) {
   $('play').innerHTML = on ? bi('Pause', 'Pausa') : bi('Play', 'Avvia');
   if (on) timer = setInterval(() => {
     if (STATE.pos >= total() - 1) { setPlaying(false); return; }
-    STATE.pos++; render();
+    STATE.pos++;
+    if (render('ask')) setPlaying(false);
   }, 1000 / STATE.speed);
 }
 
@@ -313,6 +335,7 @@ async function load() {
   const Rs = await Promise.all(files.map(x => fetchTrace(x.file)));
   if (r !== req) return;
   for (const L of lanes) { L.art.remove(); L.dispose(); }
+  if (PRED) PRED.pend.clear();
   lanes = Rs.map(R => new TraceLane(R));
   const box = $('lanes');
   box.replaceChildren(you.art, ...lanes.map(L => L.art));
@@ -345,13 +368,14 @@ async function main() {
   };
   names();
   you = new YouLane();
+  PRED = info.predict = new Predict(document.querySelector('.controls .settings'));
   $('inst').onchange = () => { STATE.inst = $('inst').value; load(); };
   $('speed').onchange = () => { STATE.speed = parseFloat($('speed').value); if (STATE.playing) setPlaying(true); };
   $('reset').onclick = () => { setPlaying(false); STATE.pos = 0; render(); };
-  $('step').onclick = () => { setPlaying(false); STATE.pos = Math.min(total() - 1, STATE.pos + 1); render(); };
+  $('step').onclick = () => { setPlaying(false); STATE.pos = Math.min(total() - 1, STATE.pos + 1); render('ask'); };
   $('play').onclick = () => { if (!STATE.playing && STATE.pos >= total() - 1) STATE.pos = 0; setPlaying(!STATE.playing); };
   $('time').oninput = () => { setPlaying(false); STATE.pos = parseInt($('time').value, 10); render(); };
-  onLang(() => { names(); render(); you.draw(); });
+  onLang(() => { names(); render('keep'); you.draw(); });
   await load();
   info.ready = true;
 }

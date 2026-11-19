@@ -119,3 +119,51 @@ ul.scenes p { margin: 6px 0 0; font-size: 15px; color: var(--ink-soft); }
 .playbar { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font: 12px 'IBM Plex Mono', monospace; color: var(--ink-soft); }
 .playbar label { display: inline-flex; gap: 4px; align-items: center; }
 .lane.play .evline { font-size: 13px; height: 6.5em; }
+/* the pseudocode under a lane (pseudocode.js): the lines of the event of
+   the lane marked in gold, red for a failure, the other events of the step
+   faintly; and the mode "predict" (predict.js): a checkbox in the controls,
+   and in each lane a box with the question, its choices and the score */
+:root { --pc-on: color-mix(in srgb, var(--gold) 26%, transparent); --pc-past: color-mix(in srgb, var(--accent-2) 14%, transparent); }
+.pcode { margin: 2px 0 0; min-width: 0; }
+.pcode summary { cursor: pointer; font: 500 11px 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.pcode .pccap { font-size: 12px; line-height: 1.4; color: var(--ink-soft); margin: 4px 0; }
+.pclines { font: 10.5px/1.5 'IBM Plex Mono', monospace; color: var(--ink); border: 1px solid var(--rule); border-radius: 6px; padding: 4px 0; }
+.pl { padding: 0 6px 0 calc(var(--i) * 1.6ch + 2.6ch); text-indent: -2ch; white-space: pre-wrap; overflow-wrap: anywhere; border-left: 3px solid transparent; transition: background-color .35s, border-color .35s; }
+.pl .pcc { color: var(--ink-soft); }
+.pl.past { background: var(--pc-past); }
+.pl.on { background: var(--pc-on); border-left-color: var(--gold); }
+.pl.bad { background: color-mix(in srgb, var(--tree-bad) 18%, transparent); border-left-color: var(--tree-bad); }
+.predictopt { display: inline-flex; flex-direction: row !important; align-items: center; gap: 5px; cursor: pointer; }
+.predictopt input { margin: 0; accent-color: var(--accent); }
+.pq { display: none; min-width: 0; border: 1px solid var(--rule); border-radius: 6px; padding: 6px 8px; }
+body.predicting .pq { display: block; }
+.pq p { margin: 0; }
+.pq .pqs { font: 11px/1.4 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.pq .pqs b { color: var(--accent); font-weight: 500; }
+.pq .pqq { font-size: 14px; line-height: 1.4; color: var(--ink); margin-top: 4px; }
+.pq .pqq:empty, .pq .pqr:empty, .pq .pqc:empty { display: none; }
+.pq.asking { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold); }
+.pq .pqc { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.pq .pqc button { font: 12px 'IBM Plex Mono', monospace; text-align: left; padding: 4px 8px; min-height: 30px; }
+.pq .pqc button.ok { border-color: var(--gold); box-shadow: inset 0 0 0 1px var(--gold); color: var(--ink); opacity: 1; }
+.pq .pqc button.no { border-color: var(--tree-bad); color: var(--tree-bad); opacity: 1; }
+.pq .pqr { font-size: 13px; line-height: 1.4; margin-top: 5px; color: var(--ink-soft); }
+.pq.right .pqr { color: var(--ink); }
+.pq.wrong .pqr { color: var(--tree-bad); }
+@media (prefers-reduced-motion: reduce) { .pl { transition: none; } }
+/* the lane "You" (play.js): Undo, Hint and Replay. The event line of a hint
+   in gold; the replay, a list of the moves of the reader beside those of the
+   best lane, scrolled inside itself, the step shown in ink and the first move
+   where they differ in red */
+.lane.play.hinted .evline { color: var(--gold); }
+.lane.play .replay { margin-top: 4px; }
+.lane.play .replay .rcap { font-size: 12px; line-height: 1.4; color: var(--ink-soft); margin: 0 0 4px; min-height: 2.8em; }
+.lane.play .replay.differs .rcap { color: var(--tree-bad); }
+.lane.play .rlist { list-style: none; margin: 0; padding: 0; max-height: 11.5em; overflow-y: auto; font: 11.5px/1.45 'IBM Plex Mono', monospace; border-top: 1px solid var(--rule); }
+.lane.play .rlist li { display: grid; grid-template-columns: 3.2ch minmax(0, 1fr) minmax(0, 1fr); gap: 8px; padding: 1px 4px; border-bottom: 1px solid var(--rule); color: var(--ink-soft); }
+.lane.play .rlist li span { overflow-wrap: anywhere; }
+.lane.play .rlist li span:first-child { text-align: right; }
+.lane.play .rlist li.rhead { position: sticky; top: 0; background: var(--panel); color: var(--ink-soft); font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; }
+.lane.play .rlist li.now { color: var(--ink); background: var(--ground); }
+.lane.play .rlist li.first { color: var(--tree-bad); }
+.lane.play .rlist li.first.now { outline: 1px solid var(--tree-bad); outline-offset: -1px; }

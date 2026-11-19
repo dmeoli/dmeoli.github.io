@@ -9,7 +9,7 @@
 
 import { PlanView } from './plan.js';
 import { Marks } from './cells.js';
-import { names } from './play.js';
+import { names, pathHint, pathReplay } from './play.js';
 import { bi } from '../i18n.js';
 
 const plural = (k, one, many) => (k === 1 ? one : many);
@@ -198,6 +198,37 @@ export class PlanningPlay {
     return { moved: true, mistake: back, say };
   }
   hover(a) { this.over = a; this.show(); }
+  // undo, hint and replay (play.js)
+  snap() { return { x: [...this.x], before: this.before ? [...this.before] : null, plan: this.plan.slice() }; }
+  restore(s) {
+    this.x = new Set(s.x); this.before = s.before ? new Set(s.before) : null; this.plan = s.plan.slice();
+    this.err = []; this.over = null;
+    this.view.show([...this.x]);
+    this.show();
+  }
+  label(s0, s1) { const a = s1.plan[s1.plan.length - 1] || '?'; return [a, a]; }
+  // the action that takes the fluents x to the fluents y
+  actionOf(x, y) {
+    const X = new Set(x), key = [...y].sort((a, b) => a - b).join(',');
+    return this.actions.findIndex(a => a.pre.every(i => X.has(i)) && !a.not.some(i => i >= 0 && X.has(i))
+      && (() => { const z = new Set(X); for (const i of a.add) z.add(i); for (const i of a.del) if (!a.add.includes(i)) z.delete(i); return [...z].sort((p, q) => p - q).join(',') === key; })());
+  }
+  paths() {
+    const k = x => [...x].sort((a, b) => a - b).join(',');
+    return { ctx: this.ctx, key: s => k(s.x), pkey: p => k(p),
+      pname: (p, q, L, i) => { const n = L.moves && L.moves[i] ? L.moves[i] : (this.actions[this.actionOf(p, q)] || { name: '?' }).name; return [n, n]; } };
+  }
+  hint(o) {
+    return pathHint({ ...this.paths(), step: (s, p, L, i) => {
+      const n = L.moves && L.moves[i], j = n ? this.actions.findIndex(a => a.name === n) : -1, k = j >= 0 ? j : this.actionOf(s.x, p);
+      this.hl = k >= 0 ? { i: k } : null;
+      this.show();
+      const name = k >= 0 ? this.actions[k].name : n;
+      return Object.assign([`apply ${name} (gold in the list; on the board, gold what it makes true)`, `applica ${name} (in oro nella lista; sulla tavola, in oro ciò che rende vero)`], { acts: k >= 0 ? [{ i: k }] : [] });
+    } }, o);
+  }
+  unhint() { if (this.hl) { this.hl = null; this.show(); } }
+  replay(states) { return pathReplay(this.paths(), states); }
   key(e) {
     if (this.pending && e.key === 'Enter') return this.pending;
     const n = this.actions.length;
@@ -217,7 +248,7 @@ export class PlanningPlay {
   // applicable actions in the accent, the others dimmed (the hint), the
   // action under the cursor outlined
   show() {
-    const focus = [...this.err], a = this.over && this.actions[this.over.i];
+    const focus = [...this.err], a = this.actions[(this.over || this.hl || {}).i];
     if (a) {
       if (this.can(a)) {
         for (const k of a.add) if (!this.x.has(k)) focus.push({ v: k, kind: 'decide' });
@@ -236,7 +267,7 @@ export class PlanningPlay {
     });
     const dim = this.opt && this.opt.hint;
     this.buttons.forEach((b, i) => {
-      const ok = this.can(this.actions[i]), cur = this.cur && this.cur.i === i;
+      const ok = this.can(this.actions[i]), cur = (this.cur && this.cur.i === i) || (this.hl && this.hl.i === i);
       b.style.opacity = dim && !ok ? '0.45' : '1';
       b.style.borderColor = cur ? 'var(--gold)' : dim && ok ? 'var(--accent)' : 'var(--rule)';
       b.style.boxShadow = cur ? '0 0 0 1px var(--gold)' : 'none';

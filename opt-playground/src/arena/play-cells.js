@@ -13,7 +13,7 @@ import * as THREE from 'three';
 import { label } from '../stage3d.js';
 import { QueensView, SudokuView, Marks } from './cells.js';
 import { BoardView } from './view3d.js';
-import { names } from './play.js';
+import { names, cspLabel, cspHint, cspReplay } from './play.js';
 
 // QueensView with the names of the columns (on the far side) and of the rows,
 // so that the event line can be read on it
@@ -140,6 +140,35 @@ export class QueensPlay {
   // and, if asked, a grey one on each cell a queen there would attack (red
   // on a queen it would attack)
   hover(a) { this.over = a; this.show(); }
+  // undo, hint and replay (play.js)
+  snap() { return { q: this.q.slice() }; }
+  restore(s) { this.q = s.q.slice(); this.err = []; this.hot = new Set(); this.show(); }
+  vals(s) { return s.q; }
+  vname(i, j) { return j < 0 ? [`c${i + 1} cleared`, `c${i + 1} svuotata`] : [cell(i, j), cell(i, j)]; }
+  label(s0, s1) { return cspLabel(this, s0, s1); }
+  sols() {
+    const out = [];
+    for (const L of this.ctx.results()) {
+      const s = solutionOf(L, this.inst.colours);
+      if (s) out.push({ by: L.name, x: this.inst.vertices.map(v => this.inst.colours.indexOf(s[v])) });
+    }
+    return out;
+  }
+  // a column with one row left that no queen attacks
+  forced() {
+    for (let c = 0; c < this.n; c++) {
+      if (this.q[c] >= 0) continue;
+      const safe = Array.from({ length: this.n }, (_, r) => r).filter(r => !this.attackers(c, r).length);
+      if (safe.length === 1) return { set: [[c, safe[0]]], say: [`a queen at ${cell(c, safe[0])}, the only row of column c${c + 1} that no queen attacks`,
+        `una regina in ${cell(c, safe[0])}, l'unica riga della colonna c${c + 1} che nessuna regina attacca`] };
+    }
+    return null;
+  }
+  showHint(set, kind) { this.hl = set.map(([i, j]) => ({ v: i, j, kind })); this.show(); }
+  actsFor(set) { return set.map(([i, j]) => ({ i, j })); }
+  hint(o) { return cspHint(this, o); }
+  unhint() { if (this.hl) { this.hl = null; this.show(); } }
+  replay(states) { return cspReplay(this, states); }
   key(e) {
     const n = this.n, c = this.cur || { i: 0, j: 0 };
     const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
@@ -148,7 +177,7 @@ export class QueensPlay {
     return null;
   }
   show() {
-    const { n, q } = this, focus = [...this.err], a = this.over || this.cur;
+    const { n, q } = this, focus = [...this.err, ...(this.hl || [])], a = this.over || this.cur;
     if (a) {
       focus.push({ v: a.i, j: a.j, kind: 'decide' });
       if (this.opt && this.opt.hint && q[a.i] !== a.j) for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
@@ -248,6 +277,7 @@ export class ColoringPlay {
       : ['A click on a vertex gives it the next color that no neighbor has (a click on one of its pegs, that color); the arrow keys move a gold frame, Enter, the digits or R, G, B, Y color its vertex, and Delete clears it.',
         'Un clic su un vertice gli dà il colore seguente che nessun vicino ha (un clic su uno dei suoi pioli, quel colore); le frecce spostano una cornice dorata, Invio, le cifre o R, G, B, Y colorano il suo vertice, e Canc lo svuota.'];
     this.options = [{ id: 'hint', en: 'shrink the colors a neighbor already has', it: 'rimpicciolisci i colori che un vicino ha già', on: true }];
+    this.keepsBackspace = true;
   }
   name(j) { return CNAME[this.inst.colours[j]] || [this.inst.colours[j], this.inst.colours[j]]; }
   reset() { this.col = new Map(this.ids.map(v => [v, -1])); this.before = null; this.err = []; this.hot = new Set(); this.cur = null; this.over = null; this.show(); }
@@ -359,6 +389,35 @@ export class ColoringPlay {
     return [en, it];
   }
   hover(a) { this.over = a; this.show(); }
+  // undo, hint and replay (play.js)
+  snap() { return { col: this.ids.map(v => this.col.get(v)), before: this.before }; }
+  restore(s) { this.col = new Map(this.ids.map((v, i) => [v, s.col[i]])); this.before = s.before; this.err = []; this.hot = new Set(); this.show(); }
+  vals(s) { return s.col; }
+  vname(i, j) { const v = this.ids[i]; return j < 0 ? [`${v} cleared`, `${v} svuotata`] : [`${v} ${this.name(j)[0]}`, `${v} ${this.name(j)[1]}`]; }
+  label(s0, s1) { return cspLabel(this, s0, s1); }
+  sols() {
+    const out = [];
+    for (const L of this.ctx.results()) {
+      const s = solutionOf(L, this.inst.colours);
+      if (s) out.push({ by: L.name, x: this.ids.map(v => this.inst.colours.indexOf(s[v])) });
+    }
+    return out;
+  }
+  // a region with one color left that no neighbor has
+  forced() {
+    for (const v of this.ids) {
+      if (this.col.get(v) >= 0) continue;
+      const f = this.free(v);
+      if (f.length === 1) return { set: [[this.ids.indexOf(v), f[0]]], say: [`${v} ${this.name(f[0])[0]}, the only color that none of its neighbors has`,
+        `${v} ${this.name(f[0])[1]}, l'unico colore che nessuno dei suoi vicini ha`] };
+    }
+    return null;
+  }
+  showHint(set, kind) { this.hl = set.map(([i, j]) => ({ v: i, j: -1, kind, c: j })); this.show(); }
+  actsFor(set) { return set.map(([i, j]) => ({ v: this.ids[i], c: j })); }
+  hint(o) { return cspHint(this, o); }
+  unhint() { if (this.hl) { this.hl = null; this.show(); } }
+  replay(states) { return cspReplay(this, states); }
   key(e) {
     const n = this.ids.length, i = this.cur ? this.ids.indexOf(this.cur.v) : -1;
     const d = { ArrowLeft: -1, ArrowUp: -1, ArrowRight: 1, ArrowDown: 1 }[e.key];
@@ -381,9 +440,11 @@ export class ColoringPlay {
       if (hint) { mask = 0; for (const j of this.free(id)) mask |= 1 << j; }
       return { id, colour: this.col.get(id), mask };
     });
-    const focus = [...this.err], a = this.over || this.cur;
+    const focus = [...this.err, ...(this.hl || [])], a = this.over || this.cur;
     if (a && this.col.has(a.v)) focus.push({ v: this.ids.indexOf(a.v), j: -1, kind: 'decide' });
     this.view.show(board, this.hot, focus);
+    // the peg of the color of a hint raised
+    for (const h of this.hl || []) if (h.kind === 'decide' && h.c >= 0) { const it = this.view.items.get(this.ids[h.v]); if (it && it.pegs[h.c]) it.pegs[h.c].scale.setScalar(1.6); }
     if (a && this.view.items.has(a.v)) {
       const cur = this.col.get(a.v), ok = this.free(a.v).filter(j => j !== cur);
       const to = a.c === 'next' ? (ok.find(j => j > cur) ?? (cur >= 0 ? -1 : ok[0])) : a.c;
@@ -450,6 +511,7 @@ export class SudokuPlay {
     this.help = ['A click on a cell picks it, then a digit typed or clicked under the board fills it (× or Delete clears it); the arrow keys move the pick. The dark cells are the givens and stay as they are.',
       'Un clic su una cella la sceglie, poi una cifra digitata o cliccata sotto la tavola la riempie (× o Canc la svuota); le frecce spostano la scelta. Le celle scure sono i dati del problema e restano come sono.'];
     this.options = [{ id: 'hint', en: 'show the candidates left', it: 'mostra i candidati rimasti', on: true }];
+    this.keepsBackspace = true;
   }
   reset() { this.g = this.given.slice(); this.before = null; this.err = []; this.hot = new Set(); this.sel = null; this.over = null; this.show(); }
   filled() { return this.g.filter(v => v >= 0).length; }
@@ -523,6 +585,52 @@ export class SudokuPlay {
       : [`${head[0]} No solver lane holds a complete solution to compare with.`, `${head[1]} Nessuna corsia dei solutori ha una soluzione completa con cui confrontarla.`];
   }
   hover(a) { this.over = a; this.show(); }
+  // undo, hint and replay (play.js)
+  snap() { return { g: this.g.slice(), before: this.before, sel: this.sel }; }
+  restore(s) { this.g = s.g.slice(); this.before = s.before; this.sel = s.sel; this.err = []; this.hot = new Set(); this.show(); }
+  vals(s) { return s.g; }
+  vname(i, j) { return j < 0 ? [`${rc(i)} cleared`, `${rc(i)} svuotata`] : [`${rc(i)} = ${j + 1}`, `${rc(i)} = ${j + 1}`]; }
+  label(s0, s1) { return cspLabel(this, s0, s1); }
+  open(i) { return this.given[i] < 0; }
+  sols() {
+    const out = [];
+    for (const L of this.ctx.results()) {
+      const s = solutionOf(L, this.inst.colours);
+      if (s) out.push({ by: L.name, x: this.ids.map(id => (s[id] ? +s[id] - 1 : -1)) });
+    }
+    return out;
+  }
+  // a cell with one digit left, or a digit with one cell left in a row,
+  // a column or a box
+  forced() {
+    for (let i = 0; i < 81; i++) {
+      if (this.g[i] >= 0) continue;
+      const u = this.used(i);
+      if (u.size === 8) {
+        const d = [0, 1, 2, 3, 4, 5, 6, 7, 8].find(x => !u.has(x));
+        return { set: [[i, d]], say: [`${rc(i)} = ${d + 1}, the only digit that its row, column and box leave`, `${rc(i)} = ${d + 1}, l'unica cifra che la sua riga, colonna e riquadro lasciano`] };
+      }
+    }
+    const units = [];
+    for (let k = 0; k < 9; k++) {
+      units.push([`row ${k + 1}`, `riga ${k + 1}`, 'la', Array.from({ length: 9 }, (_, c) => k * 9 + c)]);
+      units.push([`column ${k + 1}`, `colonna ${k + 1}`, 'la', Array.from({ length: 9 }, (_, r) => r * 9 + k)]);
+      const br = 3 * Math.floor(k / 3), bc = 3 * (k % 3);
+      units.push([`the box of ${rc(br * 9 + bc)}`, `riquadro di ${rc(br * 9 + bc)}`, 'il', Array.from({ length: 9 }, (_, q) => (br + Math.floor(q / 3)) * 9 + bc + q % 3)]);
+    }
+    for (const [en, it, art, cells] of units) for (let d = 0; d < 9; d++) {
+      if (cells.some(i => this.g[i] === d)) continue;
+      const can = cells.filter(i => this.g[i] < 0 && !this.used(i).has(d));
+      if (can.length === 1) return { set: [[can[0], d]], say: [`${rc(can[0])} = ${d + 1}, the only cell of ${en} where ${d + 1} can go`,
+        `${rc(can[0])} = ${d + 1}, l'unica cella ${art === 'il' ? 'del' : 'della'} ${it} dove può andare il ${d + 1}`] };
+    }
+    return null;
+  }
+  showHint(set, kind) { this.hl = set.map(([i, j]) => ({ v: i, kind, d: j })); this.show(); }
+  actsFor(set) { return set.map(([i, j]) => ({ i, d: j + 1 })); }
+  hint(o) { return cspHint(this, o); }
+  unhint() { if (this.hl) { this.hl = null; this.show(); } }
+  replay(states) { return cspReplay(this, states); }
   key(e) {
     const c = this.sel === null ? 0 : this.sel, r = Math.floor(c / 9), k = c % 9;
     const d = { ArrowLeft: [0, -1], ArrowRight: [0, 1], ArrowUp: [-1, 0], ArrowDown: [1, 0] }[e.key];
@@ -541,9 +649,9 @@ export class SudokuPlay {
       if (hint && this.g[i] < 0) for (const d of this.used(i)) mask &= ~(1 << d);
       return { id, colour: this.g[i], mask };
     });
-    const focus = [...this.err];
+    const focus = [...this.err, ...(this.hl || [])];
     if (this.sel !== null) focus.push({ v: this.sel, kind: 'prop' });
-    const a = this.over, pf = [];
+    const a = this.over, pf = (this.hl || []).filter(h => h.kind === 'decide').map(h => ({ v: h.d, kind: 'decide' }));
     if (a && a.sel !== undefined) focus.push({ v: a.sel, kind: 'decide' });
     if (a && a.d !== undefined) pf.push({ v: (a.d + 9) % 10, kind: 'decide' });
     v.show(board, this.hot, focus);

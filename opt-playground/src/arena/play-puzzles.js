@@ -15,7 +15,7 @@ import * as THREE from 'three';
 import { label } from '../stage3d.js';
 import { CellGridView } from './puzzles.js';
 import { Marks } from './cells.js';
-import { names } from './play.js';
+import { names, cspLabel, cspHint, cspReplay } from './play.js';
 
 // the words of the crossword, which the instance of the traces does not
 // carry: words1 of aima-python, the list of crossword-1
@@ -184,6 +184,36 @@ class GridPlay {
   }
   refuse(cells, say) { for (const v of cells) this.err.push({ v, j: -1, kind: 'hot' }); return { mistake: true, say }; }
   hover(a) { this.over = a; this.show(); }
+  // undo, hint and replay (play.js)
+  snap() { return { x: this.x.slice(), sel: this.sel, prevKey: this.prevKey, dir: this.dir }; }
+  restore(s) {
+    this.x = s.x.slice(); this.sel = s.sel; this.prevKey = s.prevKey; if (s.dir) this.dir = s.dir;
+    this.err = []; this.hot = new Set(); this.over = null;
+    this.show();
+  }
+  vals(s) { return s.x; }
+  label(s0, s1) { return cspLabel(this, s0, s1); }
+  open(v) { return this.selectable(v); }
+  sols() {
+    const out = [], keep = new Set(this.compared());
+    for (const L of this.ctx.results()) {
+      const s = solutionOf(L, this.inst);
+      if (s) out.push({ by: L.name, x: s.map((j, i) => (keep.has(i) ? j : -1)) });
+    }
+    return out;
+  }
+  // the cells of set framed, and for a hint the tile of its value
+  showHint(set, kind) {
+    this.hl = set.map(([v]) => ({ v, j: -1, kind }));
+    const k = kind === 'decide' && set.length ? this.tileFor(set) : -1;
+    this.hlPad = k >= 0 ? [{ v: k, kind: 'decide' }] : [];
+    this.show();
+  }
+  tileFor(set) { return this.tileOf({ j: set[0][1] }); }
+  actsFor(set) { return set.map(([v, j]) => ({ v, j })); }
+  hint(o) { return cspHint(this, o); }
+  unhint() { if (this.hl) { this.hl = null; this.hlPad = null; this.show(); } }
+  replay(states) { return cspReplay(this, states); }
   // the end: the board compared with the solutions of the solver lanes
   verdict(say) {
     const same = [], other = [], keep = this.compared();
@@ -208,7 +238,7 @@ class GridPlay {
     return m;
   }
   show() {
-    const focus = [...this.err], pf = [], a = this.over;
+    const focus = [...this.err, ...(this.hl || [])], pf = [...(this.hlPad || [])], a = this.over;
     if (this.sel !== null) {
       for (const v of this.around(this.sel)) if (v !== this.sel) focus.push({ v, j: -1, kind: 'undo' });
       focus.push({ v: this.sel, j: -1, kind: 'decide' });
@@ -270,6 +300,7 @@ export class KakuroPlay extends GridPlay {
     this.help = ['A click on a white cell selects it and a click on a digit under the grid writes it there (× clears it); the arrow keys move the selection and the digits write.',
       'Un clic su una cella bianca la seleziona e un clic su una cifra sotto la griglia ve la scrive (× la cancella); le frecce spostano la selezione e i tasti numerici scrivono.'];
     this.options = [{ id: 'hint', en: 'show the digits each cell may still take', it: 'mostra le cifre che ogni cella può ancora prendere', on: true }];
+    this.keepsBackspace = true;
     this.solvedText = ['every run adds up to its clue with no digit repeated', 'ogni sequenza dà la sua somma senza cifre ripetute'];
   }
   runName(R) {
@@ -277,6 +308,18 @@ export class KakuroPlay extends GridPlay {
       : [`the down run of sum ${R.sum} in column ${R.c + 1}`, `la sequenza verticale di somma ${R.sum} nella colonna ${R.c + 1}`];
   }
   counters() { return [['cells', 'celle', `${this.x.filter(j => j >= 0).length} / ${this.nv}`]]; }
+  vname(v, j) { const c = this.cellName(v); return j < 0 ? [`${c} cleared`, `${c} svuotata`] : [`${c} = ${j + 1}`, `${c} = ${j + 1}`]; }
+  // a cell with one digit left by its runs (the last empty cell of a run
+  // takes what its sum lacks)
+  forced() {
+    for (let v = 0; v < this.nv; v++) {
+      if (this.x[v] >= 0) continue;
+      const ok = this.inst.colours.map((_, j) => j).filter(j => this.allowed(v, j) && this.runsOf[v].every(R => !R.vars.every(u => u === v || this.x[u] >= 0)
+        || R.vars.reduce((t, u) => t + (u === v ? j + 1 : this.x[u] + 1), 0) === R.sum));
+      if (ok.length === 1) return { set: [[v, ok[0]]], say: [`${this.cellName(v)} = ${ok[0] + 1}, the only digit that its runs leave`, `${this.cellName(v)} = ${ok[0] + 1}, l'unica cifra che le sue sequenze lasciano`] };
+    }
+    return null;
+  }
   around(v) { return this.runsOf[v].flatMap(R => R.vars); }
   allowed(v, j) {
     return this.runsOf[v].every(R => R.vars.every(w => w === v || this.x[w] !== j)
@@ -358,6 +401,7 @@ export class CryptoPlay extends GridPlay {
     this.help = ['A click on a letter selects it and a click on a digit under the sum gives it that digit (× takes it back); a letter key selects that letter, the arrows the next one, and the digits write.',
       'Un clic su una lettera la seleziona e un clic su una cifra sotto la somma le dà quella cifra (× la ritira); il tasto di una lettera seleziona quella lettera, le frecce la successiva, e i tasti numerici scrivono.'];
     this.options = [{ id: 'hint', en: 'show the digits still free for each letter', it: 'mostra le cifre ancora libere per ogni lettera', on: true }];
+    this.keepsBackspace = true;
   }
   get solvedText() {
     const w = this.words, sum = `${w.slice(0, -1).map(x => this.number(x)).join(' + ')} = ${this.number(w[w.length - 1])}`;
@@ -365,6 +409,22 @@ export class CryptoPlay extends GridPlay {
   }
   number(w) { return [...w].map(ch => this.x[this.inst.vertices.indexOf(ch)]).join(''); }
   selectable(v) { return !this.isCarry[v]; }
+  vname(v, j) { const L = this.inst.vertices[v]; return j < 0 ? [`${L} taken back`, `${L} ritirata`] : [`${L} = ${j}`, `${L} = ${j}`]; }
+  // a letter with one digit left: free, not a leading 0, and with the
+  // columns still adding up
+  forced() {
+    for (const v of this.letters) {
+      if (this.x[v] >= 0) continue;
+      const ok = this.inst.colours.map((_, j) => j).filter(j => {
+        if (!this.allowed(v, j)) return false;
+        const y = this.x.slice(); y[v] = j;
+        return !this.carries(y).fail;
+      });
+      if (ok.length === 1) return { set: [[v, ok[0]]], say: [`${this.inst.vertices[v]} = ${ok[0]}, the only digit left to it that keeps every column adding up`,
+        `${this.inst.vertices[v]} = ${ok[0]}, l'unica cifra rimasta che fa tornare ogni colonna`] };
+    }
+    return null;
+  }
   counters() {
     const c = this.carries(this.x);
     return [['letters', 'lettere', `${this.letters.filter(i => this.x[i] >= 0).length} / ${this.letters.length}`],
@@ -484,9 +544,59 @@ export class CrosswordPlay extends GridPlay {
     this.help = ['A click on a cell selects its word (a second click turns it across or down) and a click on a word under the grid writes it there (× clears it); letters can also be typed, and the arrow keys move.',
       'Un clic su una cella seleziona la sua parola (un secondo clic la gira in orizzontale o in verticale) e un clic su una parola sotto la griglia ve la scrive (× la cancella); si possono anche digitare le lettere, e le frecce spostano.'];
     this.options = [{ id: 'hint', en: 'dim the words that do not fit the selected one', it: 'attenua le parole che non entrano in quella selezionata', on: true }];
+    this.keepsBackspace = true;
     this.solvedText = ['every word of the grid is in the list', 'ogni parola della griglia è nell\'elenco'];
   }
   reset() { this.dir = 'across'; super.reset(); }
+  vname(v, j) { const c = this.cellName(v); return j < 0 ? [`${c} cleared`, `${c} svuotata`] : [`${c} = ${this.inst.colours[j].toUpperCase()}`, `${c} = ${this.inst.colours[j].toUpperCase()}`]; }
+  // a word written whole: the word and its slot
+  setName(set) {
+    const vs = set.map(z => z[0]), S = this.slots.find(T => T.vars.length === vs.length && T.vars.every((v, i) => v === vs[i]));
+    if (!S) return null;
+    const W = set.map(z => (z[1] >= 0 ? this.inst.colours[z[1]].toUpperCase() : '·')).join(''), n = this.slotName(S);
+    return [`${W} in ${n[0]}`, `${W} nel${n[1]}`];
+  }
+  label(s0, s1) {
+    const ch = s1.x.map((j, v) => (j !== s0.x[v] ? v : -1)).filter(v => v >= 0);
+    const S = ch.length > 1 && this.slots.find(T => ch.every(v => T.vars.includes(v)));
+    if (S) {
+      const set = S.vars.map(v => [v, s1.x[v]]), nm = this.setName(set);
+      if (ch.every(v => s1.x[v] >= 0)) return nm;
+      const n = this.slotName(S);
+      return [`${n[0]} cleared`, `${n[1]} cancellata`];
+    }
+    return cspLabel(this, s0, s1);
+  }
+  // a slot with one word of the list left that fits it
+  forced() {
+    for (const S of this.slots) {
+      if (this.full(S)) continue;
+      const ok = this.list.filter(w => {
+        if (!this.fits(w, S)) return false;
+        const y = this.x.slice();
+        S.vars.forEach((v, i) => { y[v] = this.inst.colours.indexOf(w[i]); });
+        return !this.broken(S.vars, y);
+      });
+      if (ok.length === 1) {
+        const set = S.vars.map((v, i) => [v, this.inst.colours.indexOf(ok[0][i])]), n = this.slotName(S), W = ok[0].toUpperCase();
+        return { set, say: [`${W} in ${n[0]}, the only word of the list that fits there`, `${W} nel${n[1]}, l'unica parola dell'elenco che vi entra`] };
+      }
+    }
+    return null;
+  }
+  // from a solution, the whole word of a slot of the empty cell v
+  pick(S0, v) {
+    const s = this.slotOf[v], S = s.across || s.down;
+    return S ? S.vars.map(u => [u, S0.x[u]]) : [[v, S0.x[v]]];
+  }
+  actsFor(set) {
+    const vs = set.map(z => z[0]), S = this.slots.find(T => T.vars.length === vs.length && T.vars.every((v, i) => v === vs[i])), k = this.tileFor(set);
+    return S && k >= 0 ? [{ v: S.vars[0], dir: S.dir }, { ...this.view.pad.items[k].play }] : set.map(([v, j]) => ({ v, j }));
+  }
+  tileFor(set) {
+    const w = set.map(z => (z[1] >= 0 ? this.inst.colours[z[1]] : '?')).join(''), k = this.list.indexOf(w);
+    return k >= 0 ? this.tileOf({ w: k }) : -1;
+  }
   padAction(p) { return { ...p }; }
   slot() { if (this.sel === null) return null; const s = this.slotOf[this.sel]; return s[this.dir] || s.across || s.down; }
   slotName(S) {
@@ -522,7 +632,8 @@ export class CrosswordPlay extends GridPlay {
     const { x } = this, col = this.inst.colours;
     if (a.v !== undefined && a.j === undefined) {
       const s = this.slotOf[a.v];
-      if (this.sel === a.v && s.across && s.down) this.dir = this.dir === 'across' ? 'down' : 'across';
+      if (a.dir && s[a.dir]) this.dir = a.dir;
+      else if (this.sel === a.v && s.across && s.down) this.dir = this.dir === 'across' ? 'down' : 'across';
       else if (!s[this.dir]) this.dir = s.across ? 'across' : 'down';
       this.sel = a.v;
       const S = this.slot(), n = this.slotName(S);
@@ -584,7 +695,7 @@ export class CrosswordPlay extends GridPlay {
   placed(say) {
     const k = this.slots.filter(S => this.full(S)).length, m = this.slots.length;
     return { moved: true, solved: k === m && this.x.every(j => j >= 0),
-      say: [`${say[0]} ${k} of ${m} ${plural(k, 'word', 'words')} complete.`, `${say[1]} ${k} ${plural(k, 'parola completa', 'parole complete')} su ${m}.`] };
+      say: [`${say[0]} ${k} of ${m} ${plural(m, 'word', 'words')} complete.`, `${say[1]} ${k} ${plural(k, 'parola completa', 'parole complete')} su ${m}.`] };
   }
   key(e) {
     const d = { ArrowLeft: 'across', ArrowRight: 'across', ArrowUp: 'down', ArrowDown: 'down' }[e.key];

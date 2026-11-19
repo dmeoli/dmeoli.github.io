@@ -24,6 +24,8 @@ import { CellGridView, ZebraView } from './puzzles.js';
 import { KnapsackView } from './knapsack.js';
 import { PancakeView, TopSpinView } from './stacks.js';
 import { PlayLane } from './play.js';
+import { attachCode } from './pseudocode.js';
+import { Predict, arenaQuestion, arenaNote } from './predict.js';
 
 const $ = id => document.getElementById(id);
 const GAME = document.body.dataset.game;
@@ -92,7 +94,7 @@ const info = window.__arena = { errors: [], pyodide: null, modelSeconds: null, g
 window.addEventListener('error', e => { if (!/ResizeObserver loop/.test(e.message)) info.errors.push(String(e.message)); });
 window.addEventListener('unhandledrejection', e => info.errors.push(String(e.reason && e.reason.message || e.reason)));
 
-let INDEX = [], MAPS = {}, lanes = [], you = null, loadReq = 0;
+let INDEX = [], MAPS = {}, lanes = [], you = null, loadReq = 0, PRED = null;
 
 // ---------------------------------------------------------------- the address
 function readHash() {
@@ -422,6 +424,7 @@ function updateLane(L, k) {
   const e = k > 0 ? L.tr.events[k - 1] : null;
   L.art.querySelector('.evline').textContent = describe(L.rep, e) + (k === L.tr.events.length && L.tr.result ? ' ' + endText(L.tr.result.status) : '');
   L.art.classList.toggle('conflict', !!e && e.type === 'conflict');
+  if (L.code) L.code.show(L.tr.events, k, prev, { end: k === L.tr.events.length && L.tr.result ? L.tr.result.status : null });
   if (L.search) { updateSearchLane(L, prev); return; }
   L.view.show(L.rep.board(), L.rep.hot(), L.rep.focus());
   if (L.hasTree) drawTree(L.art.querySelector('.tree'), L.rep.nodes, L.rep.node, h.encoding ? h.encoding.symbols : []);
@@ -486,6 +489,7 @@ async function buildPlay(trs, req) {
   }
   const art = laneShell('', '');
   $('lanes').prepend(art);
+  $('lanes').scrollLeft = 0;    // the row of lanes opens on the lane "You"
   const results = () => (lanes.length ? lanes.map(L => L.tr) : trs.filter(Boolean)).filter(r => !r.header.sample && r.result)
     .map(r => ({ name: r.header.solver.name, result: r.result, header: r.header }));
   you = info.play = new PlayLane(art, Game, tr.header.instance, { results });
@@ -500,6 +504,9 @@ async function loadLanes() {
   const trs = await Promise.all(files.map(f => openTrace({ url: BASE + f }).catch(err => { info.errors.push(f + ': ' + err.message); return null; })));
   if (req !== loadReq) return;
   files.forEach((f, i) => { if (trs[i]) lanes.push(buildLane(f, trs[i])); });
+  // the pseudocode under each lane and the box of its questions (pseudocode.js, predict.js)
+  if (PRED) PRED.pend.clear();
+  for (const L of lanes) { const pn = L.art.querySelector('.panel'); L.code = attachCode(pn, L.tr.header); if (PRED) PRED.attach(L, pn, arenaNote(L.tr)); }
   await buildPlay(trs, req);
   $('lanes').dataset.n = lanes.length + (you ? 1 : 0);
   if (!lanes.length && GAME === 'coloring' && lastModel && lastModel.instance.id === STATE.inst) emptyBoard(lastModel.instance);
@@ -552,7 +559,9 @@ function laneK(L, p) {
   while (lo < hi) { const m = (lo + hi) >> 1; if (ev[m].t <= T) lo = m + 1; else hi = m; }
   return lo;
 }
-function setPos(p) {
+// mode 'ask': a step of the reader, which in the mode "predict" halts a lane
+// before its event to ask about it; 'keep': a redraw that keeps the questions
+function setPos(p, mode) {
   STATE.pos = Math.max(0, Math.min(p, maxPos()));
   $('time').max = maxPos(); $('time').value = STATE.pos;
   if (STATE.align === 'time' && lanes.length) {
@@ -562,15 +571,27 @@ function setPos(p) {
     $('iter').textContent = STATE.pos <= searchPos() ? Math.round(maxWork() * STATE.pos / searchPos()) + t(' expanded', ' espansi')
       : t('path ', 'cammino ') + Math.min(Math.round((STATE.pos - searchPos()) * pathStride()), longest(pathLen));
   } else $('iter').textContent = `${STATE.pos} / ${maxPos()}`;
-  for (const L of lanes) updateLane(L, laneK(L, STATE.pos));
-  if (STATE.pos >= maxPos()) stop();
+  let asked = false;
+  for (const L of lanes) {
+    const k = laneK(L, STATE.pos), pd = PRED && PRED.pending(L);
+    if (pd && mode === 'keep') { updateLane(L, pd.k - 1); continue; }
+    if (pd) PRED.drop(L);
+    if (mode === 'ask' && PRED && PRED.on && k > L.k && k > 0) {
+      updateLane(L, k - 1);
+      const q = arenaQuestion(L, L.tr.events[k - 1], GAME);
+      if (q) { PRED.pose(L, q, k, () => updateLane(L, k)); asked = true; continue; }
+    }
+    if (PRED) PRED.clear(L);
+    updateLane(L, k);
+  }
+  if (asked || STATE.pos >= maxPos()) stop();
 }
 let acc = 0, lastT = 0;
 function tick(now) {
   if (!STATE.playing) return;
   const dt = Math.min(0.25, (now - lastT) / 1000); lastT = now;
   acc += dt * STATE.speed;
-  if (acc >= 1) { const s = Math.floor(acc); acc -= s; setPos(STATE.pos + s); }
+  if (acc >= 1) { const s = Math.floor(acc); acc -= s; setPos(STATE.pos + s, 'ask'); }
   requestAnimationFrame(tick);
 }
 function play() {
@@ -609,7 +630,7 @@ function texts() {
   laneSelects();
   stop();
   for (const L of lanes) { L.k = -1; }
-  setPos(STATE.pos);
+  setPos(STATE.pos, 'keep');
   scoreboard();
   if (you) you.texts();
   if (lastModel) renderModel(lastModel);
@@ -642,7 +663,8 @@ async function main() {
   $('speed').onchange = () => { STATE.speed = +$('speed').value; };
   $('time').oninput = () => { stop(); setPos(+$('time').value); };
   $('reset').onclick = () => { stop(); setPos(0); };
-  $('step').onclick = () => { stop(); setPos(STATE.pos + 1); };
+  $('step').onclick = () => { stop(); setPos(STATE.pos + 1, 'ask'); };
+  PRED = info.predict = new Predict(document.querySelector('.controls .settings'));
   $('play').onclick = () => (STATE.playing ? stop() : play());
   onLang(texts);
   writeHash();

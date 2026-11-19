@@ -10,6 +10,7 @@
 import * as THREE from 'three';
 import { CubeView } from './cube.js';
 import { optimum, against } from './play-stacks.js';
+import { pathHint, pathReplay, lanePaths } from './play.js';
 
 const FACES = 'URFDLB';
 const NORMAL = { U: [0, 0, 1], D: [0, 0, -1], F: [0, -1, 0], B: [0, 1, 0], R: [1, 0, 0], L: [-1, 0, 0] };
@@ -66,9 +67,9 @@ export class CubePlay {
       v.S.content.add(g);
       return g;
     };
-    this.goldF = frame(P.gold); this.redF = frame(P.red);
+    this.goldF = frame(P.gold); this.redF = frame(P.red); this.hintF = frame(P.gold);
     v.stickers.forEach((m, k) => { m.userData.play = k; });
-    if (this.f) { this.hover(this.over); this.mark(this.redF, this.err); }
+    if (this.f) { this.hover(this.over); this.mark(this.redF, this.err); this.mark(this.hintF, this.hl && this.hl.face); }
   }
   mark(g, f) {
     g.visible = !!f;
@@ -83,11 +84,86 @@ export class CubePlay {
     this.mark(this.redF, null);
     this.hover(null);
   }
-  turn(f, q) {
+  turn(f, q) { this.f = this.turned(this.f, f, q); }
+  turned(s, f, q) {
     const p = this.perm[f];
-    let x = this.f.split('');
+    let x = s.split('');
     for (let r = 0; r < q; r++) { const y = x.slice(); p.forEach((to, k) => { y[to] = x[k]; }); x = y; }
-    this.f = x.join('');
+    return x.join('');
+  }
+  // the turn (face and quarters) that takes the facelets a to b, or null
+  turnOf(a, b) {
+    for (const f of FACES) for (const q of [1, 2, 3]) if (this.turned(a, f, q) === b) return { f, q };
+    return null;
+  }
+  turnName(m) {
+    if (!m) return ['several turns', 'più giri'];
+    const [en, it] = NAME[m.f], d = m.q === 2 ? ['twice', 'due volte'] : m.q === 3 ? ['counterclockwise', 'in senso antiorario'] : ['clockwise', 'in senso orario'];
+    return [`${notation(m.f, m.q)}, the ${en} face ${d[0]}`, `${notation(m.f, m.q)}, la faccia ${it} ${d[1]}`];
+  }
+  // undo, hint and replay (play.js)
+  snap() { return { f: this.f, seq: this.seq.map(o => ({ ...o })) }; }
+  // back to s, the layer turning back when one turn takes the cube there
+  restore(s) {
+    const m = s.f === this.f ? null : this.turnOf(this.f, s.f);
+    this.f = s.f; this.seq = s.seq.map(o => ({ ...o })); this.err = null;
+    this.mark(this.redF, null);
+    this.view.show(this.f, null, m ? notation(m.f, m.q) : null);
+    this.hover(null);
+  }
+  label(s0, s1) { return this.turnName(this.turnOf(s0.f, s1.f)); }
+  paths() {
+    return { ctx: this.ctx, key: s => s.f, pkey: p => p,
+      pname: (p, q, L, i) => (L.moves && L.moves[i] ? this.turnName({ f: L.moves[i][0], q: L.moves[i][1] === '2' ? 2 : L.moves[i][1] === "'" ? 3 : 1 }) : this.turnName(this.turnOf(p, q))) };
+  }
+  // in the middle of a move (F of F2): the state before the turns of the
+  // last face lies on a path whose next move turns that face, and the hint
+  // turns it the quarters that are missing
+  partial(s, L) {
+    const last = s.seq[s.seq.length - 1];
+    if (!last) return null;
+    const b = this.turned(s.f, last.f, 4 - last.q), i = L.path.indexOf(b);
+    if (i < 0 || i + 1 >= L.path.length) return null;
+    const q = [1, 2, 3].find(r => this.turned(b, last.f, r) === L.path[i + 1]);
+    return q ? { i, f: last.f, q: (q - last.q + 4) % 4 } : null;
+  }
+  hint(o) {
+    const s = o.states[o.states.length - 1], P = lanePaths(this.ctx);
+    if (!P.some(L => L.path.includes(s.f))) for (const L of P) {
+      const h = this.partial(s, L);
+      if (!h || !h.q) continue;
+      const n = this.turnName(h);
+      this.hl = { face: h.f };
+      this.mark(this.hintF, h.f);
+      return { shown: true, acts: h.q === 2 ? [{ face: h.f, ccw: false }, { face: h.f, ccw: false }] : [{ face: h.f, ccw: h.q === 3 }],
+        say: [`Hint (gold): turn ${n[0]}, which completes move ${h.i + 1} of the ${L.path.length - 1} of the optimal path of ${L.by}.`,
+          `Suggerimento (in oro): gira ${n[1]}, che completa la mossa ${h.i + 1} delle ${L.path.length - 1} del cammino ottimo di ${L.by}.`] };
+    }
+    return pathHint({ ...this.paths(), step: (s, p) => {
+      const m = this.turnOf(s.f, p);
+      this.hl = m ? { face: m.f } : null;
+      this.mark(this.hintF, m && m.f);
+      const n = this.turnName(m), k = m && m.q === 2 ? [' (two clicks)', ' (due clic)'] : m && m.q === 3 ? [' (a click with Shift)', ' (un clic con Maiuscolo)'] : ['', ''];
+      const acts = !m ? [] : m.q === 2 ? [{ face: m.f, ccw: false }, { face: m.f, ccw: false }] : [{ face: m.f, ccw: m.q === 3 }];
+      return Object.assign([`turn ${n[0]}${k[0]}`, `gira ${n[1]}${k[1]}`], { acts });
+    } }, o);
+  }
+  unhint() { if (this.hl) { this.hl = null; this.mark(this.hintF, null); } }
+  // the clicks of the reader against the moves of the half-turn metric of
+  // the path: click k belongs to move m (the length of the reader's
+  // sequence after it), and differs when its state is neither the state m
+  // of the path nor a part of the turn of move m (the same face)
+  replay(states) {
+    const P = lanePaths(this.ctx);
+    if (!P.length) return pathReplay(this.paths(), states);
+    const off = (L, k) => { const s = states[k], m = s.seq.length, h = this.partial(s, L); return !(L.path[m] === s.f || (h && h.i === m - 1)); };
+    const firstOff = L => { for (let k = 1; k < states.length; k++) if (off(L, k)) return k; return 0; };
+    const L = P.reduce((a, b) => { const fa = firstOff(a), fb = firstOff(b); return (fa === 0 ? Infinity : fa) >= (fb === 0 ? Infinity : fb) ? a : b; });
+    const name = (m) => (L.moves && L.moves[m - 1] ? this.turnName({ f: L.moves[m - 1][0], q: L.moves[m - 1][1] === '2' ? 2 : L.moves[m - 1][1] === "'" ? 3 : 1 }) : null);
+    const rows = states.slice(1).map(s => (s.seq.length ? name(s.seq.length) : null));
+    return { by: [L.by, L.by], rows, first: firstOff(L),
+      note: [`Its path is optimal, ${L.path.length - 1} moves of the half-turn metric; beside each of your turns, the move of it that the turn belongs to.`,
+        `Il suo cammino è ottimo, di ${L.path.length - 1} mosse nella metrica dei mezzi giri; accanto a ogni tuo giro, la sua mossa a cui il giro appartiene.`] };
   }
   faces() { let k = 0; for (let i = 0; i < 6; i++) if (/^(.)\1{8}$/.test(this.f.slice(9 * i, 9 * i + 9))) k++; return k; }
   counters() {

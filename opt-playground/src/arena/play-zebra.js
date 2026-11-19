@@ -10,7 +10,7 @@
 import * as THREE from 'three';
 import { label } from '../stage3d.js';
 import { ZebraView } from './puzzles.js';
-import { names } from './play.js';
+import { names, cspLabel, cspHint, cspReplay } from './play.js';
 import { t, onLang } from '../i18n.js';
 import { solutionOf, foundBy } from './play-cells.js';
 
@@ -103,6 +103,7 @@ export class ZebraPlay {
     this.help = ['A click on a cell puts there the next attribute of its row that no rule rules out (a click on one of its pegs, that attribute); the arrow keys move a gold frame, Enter, the digits 1 to 5 or Delete act on its cell. The legend under the grid names the attributes of the row in use.',
       'Un clic su una cella vi mette il prossimo attributo della sua riga che nessuna regola esclude (un clic su uno dei suoi pioli, quell\'attributo); le frecce spostano una cornice dorata, Invio, le cifre da 1 a 5 o Canc agiscono sulla sua cella. La legenda sotto la griglia nomina gli attributi della riga in uso.'];
     this.options = [{ id: 'hint', en: 'show only the attributes no rule rules out', it: 'mostra solo gli attributi che nessuna regola esclude', on: true }];
+    this.keepsBackspace = true;
   }
   reset() { this.house = this.ids.map(() => -1); this.before = null; this.err = []; this.hot = new Set(); this.cur = null; this.over = null; this.show(); }
   placed() { return this.house.filter(h => h >= 0).length; }
@@ -214,6 +215,42 @@ export class ZebraPlay {
     return [en, it];
   }
   hover(a) { this.over = a; this.show(); }
+  // undo, hint and replay (play.js)
+  snap() { return { house: this.house.slice(), before: this.before }; }
+  restore(s) { this.house = s.house.slice(); this.before = s.before; this.err = []; this.hot = new Set(); this.show(); }
+  vals(s) { return s.house; }
+  vname(i, h) { const a = this.ids[i]; return h < 0 ? [`${a} taken back`, `${a} ritirato`] : [`${a} in house ${h + 1}`, `${a} nella casa ${h + 1}`]; }
+  label(s0, s1) { return cspLabel(this, s0, s1); }
+  sols() {
+    const out = [];
+    for (const L of this.ctx.results()) {
+      const s = solutionOf(L, this.inst.colours);
+      if (s) out.push({ by: L.name, x: this.ids.map(a => (s[a] ? +s[a] - 1 : -1)) });
+    }
+    return out;
+  }
+  // a house with one attribute of a row left, or an attribute with one
+  // house left, that no rule rules out
+  forced() {
+    for (let g = 0; g < this.G.length; g++) for (let h = 0; h < this.H; h++) {
+      if (this.occupant(g, h)) continue;
+      const ok = this.allowed(g, h);
+      if (ok.length === 1) return { set: [[this.idx.get(ok[0]), h]], say: [`${ok[0]} in house ${h + 1}, the only one of the ${GROUPS[g][0]} that no rule rules out there`,
+        `${ok[0]} nella casa ${h + 1}, l'unico fra i ${GROUPS[g][1]} che lì nessuna regola esclude`] };
+    }
+    for (const a of this.ids) {
+      if (this.house[this.idx.get(a)] >= 0) continue;
+      const [g] = this.grp.get(a), hs = Array.from({ length: this.H }, (_, h) => h).filter(h => !this.occupant(g, h) && !this.broken(a, h));
+      if (hs.length === 1) return { set: [[this.idx.get(a), hs[0]]], say: [`${a} in house ${hs[0] + 1}, the only house that no rule rules out for it`,
+        `${a} nella casa ${hs[0] + 1}, l'unica casa che nessuna regola gli esclude`] };
+    }
+    return null;
+  }
+  showHint(set, kind) { this.hl = set.map(([i, h]) => ({ v: i, j: h, kind })); this.show(); }
+  actsFor(set) { return set.map(([i, h]) => { const [g, j] = this.grp.get(this.ids[i]); return { g, h, j }; }); }
+  hint(o) { return cspHint(this, o); }
+  unhint() { if (this.hl) { this.hl = null; this.show(); } }
+  replay(states) { return cspReplay(this, states); }
   key(e) {
     const c = this.cur || { g: 0, h: 0 };
     const d = { ArrowLeft: [0, -1], ArrowRight: [0, 1], ArrowUp: [-1, 0], ArrowDown: [1, 0] }[e.key];
@@ -235,14 +272,20 @@ export class ZebraPlay {
       for (let h = 0; h < this.H; h++) if (!hint || (!this.occupant(g, h) && !this.broken(id, h))) mask |= 1 << h;
       return { id, colour: this.house[k], mask };
     });
-    const focus = [...this.err], a = this.over || this.cur;
+    const focus = [...this.err, ...(this.hl || [])], a = this.over || this.cur;
     if (a) focus.push({ v: this.idx.get(this.G[a.g][0]), j: a.h, kind: 'decide' });
     v.show(board, this.hot, focus);
     const lg = a ? a.g : 0;
     v.legend(lg, t(GROUPS[lg][0], GROUPS[lg][1]));
     // ZebraView frames the cell of the group of v: any attribute of the row will do
     while (v.tip.children.length) v.tip.remove(v.tip.children[0]);
-    if (a) {
+    // the attribute of a hint named over its cell, while the pointer is elsewhere
+    const H = (this.hl || []).find(x => x.kind === 'decide');
+    if (H && !this.over) {
+      const [g, ] = this.grp.get(this.ids[H.v]), c = v.cells[g][H.j], l = label(this.ids[H.v], P.gold, 0.075);
+      l.position.set(c.x, c.y + v.v * 0.12, c.target + 0.12);
+      v.tip.add(l);
+    } else if (a) {
       const occ = this.occupant(a.g, a.h);
       let what = a.j === 'next' ? this.next(a.g, a.h) : a.j >= 0 ? this.G[a.g][a.j] : null;
       if (what === occ) what = null;

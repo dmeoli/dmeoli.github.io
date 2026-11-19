@@ -11,7 +11,7 @@ import { label } from '../stage3d.js';
 import { PuzzleView, GridView } from './search.js';
 import { GraphView } from './graph.js';
 import { Marks } from './cells.js';
-import { names } from './play.js';
+import { names, pathHint, pathReplay } from './play.js';
 
 const plural = (k, one, many) => (k === 1 ? one : many);
 const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -153,6 +153,31 @@ export class PuzzlePlay {
     return { moved: true, mistake: back, say };
   }
   hover(a) { this.over = a && a.k ? a : null; this.show(); }
+  // undo, hint and replay (play.js)
+  snap() { return { x: this.x.slice(), walk: this.walk.map(w => w.slice()), prevBlank: this.prevBlank, n: this.n }; }
+  restore(s) {
+    this.x = s.x.slice(); this.walk = s.walk.map(w => w.slice()); this.prevBlank = s.prevBlank; this.n = s.n;
+    this.err = []; this.over = null;
+    this.view.show(this.x, null);
+    this.show();
+  }
+  key0(s) { return s.x.join(','); }
+  pkey(p) { return p.join(','); }
+  // the tile that slides from x to y, and where
+  slide(x, y) {
+    const k = x[y.indexOf(0)], w = WAY[this.step(x.indexOf(k), y.indexOf(k))] || ['', ''];
+    return { k, w };
+  }
+  label(s0, s1) { const { k, w } = this.slide(s0.x, s1.x); return [`tile ${k} ${w[0]}`, `tessera ${k} ${w[1]}`]; }
+  pname(p, q) { const { k, w } = this.slide(p, q); return [`tile ${k} ${w[0]}`, `tessera ${k} ${w[1]}`]; }
+  hint(o) { return pathHint({ ctx: this.ctx, key: s => this.key0(s), pkey: p => this.pkey(p), step: (s, p) => {
+    const { k, w } = this.slide(s.x, p);
+    this.hl = [{ v: s.x.indexOf(k), kind: 'decide' }, { v: s.x.indexOf(0), kind: 'decide' }];
+    this.show();
+    return Object.assign([`slide tile ${k} ${w[0]}`, `fai scorrere la tessera ${k} ${w[1]}`], { acts: [{ k }] });
+  } }, o); }
+  unhint() { if (this.hl) { this.hl = null; this.show(); } }
+  replay(states) { return pathReplay({ ctx: this.ctx, key: s => this.key0(s), pkey: p => this.pkey(p), pname: (p, q) => this.pname(p, q) }, states); }
   key(e) {
     const d = DIRS[e.key];
     if (!d) return null;
@@ -165,7 +190,7 @@ export class PuzzlePlay {
   // with the blank it would slide to (grey if it cannot), ink the tiles that
   // can slide (the hint)
   show() {
-    const focus = [...this.err], b = this.x.indexOf(0);
+    const focus = [...this.err, ...(this.hl || [])], b = this.x.indexOf(0);
     if (this.opt && this.opt.hint) for (const k of this.movable()) focus.push({ v: this.x.indexOf(k), kind: 'prop' });
     if (this.over) {
       const c = this.x.indexOf(this.over.k), ok = this.step(c, b) !== 0;
@@ -302,6 +327,25 @@ export class GridPlay {
     return { moved: true, mistake: back, say };
   }
   hover(a) { this.over = a && a.c !== undefined ? a : null; this.show(); }
+  // undo, hint and replay (play.js)
+  snap() { return { pos: this.pos, walk: this.walk.slice(), cost: this.cost }; }
+  restore(s) { this.pos = s.pos; this.walk = s.walk.slice(); this.cost = s.cost; this.err = []; this.over = null; this.show(); }
+  move(c0, c) {
+    const [x0, y0] = this.xy(c0), [x, y] = this.xy(c), d = x !== x0 && y !== y0;
+    return [`${d ? 'diagonally ' : ''}to ${this.name(c)}`, `${d ? 'in diagonale ' : ''}in ${this.name(c)}`];
+  }
+  label(s0, s1) { return this.move(s0.pos, s1.pos); }
+  paths() { return { ctx: this.ctx, key: s => String(s.pos), pkey: p => String(p), pname: (p, q) => this.move(p, q) }; }
+  hint(o) {
+    return pathHint({ ...this.paths(), step: (s, p) => {
+      this.hl = [{ v: p, kind: 'decide' }];
+      this.show();
+      const m = this.move(s.pos, p);
+      return Object.assign([`step ${m[0]}`, `passa ${m[1]}`], { acts: [{ c: p }] });
+    } }, o);
+  }
+  unhint() { if (this.hl) { this.hl = null; this.show(); } }
+  replay(states) { return pathReplay(this.paths(), states); }
   key(e) {
     const d = GKEYS[e.key];
     if (d) {
@@ -319,7 +363,7 @@ export class GridPlay {
     if (this.opt && this.opt.hint && this.pos !== this.inst.goal) for (const c of this.steps()) set.set(String(c), 'o');
     for (const c of this.walk) set.set(String(c), 'p');
     v.show(set, this.pos, force);
-    const focus = [...this.err];
+    const focus = [...this.err, ...(this.hl || [])];
     if (this.over && this.over.c !== this.pos) focus.push({ v: this.over.c, kind: this.why(this.over.c) ? 'undo' : 'decide' });
     v.marks.show(focus, c => { const [x, y] = v.pos(c); return [x, y, v.u * 0.98, v.u * 0.98, v.th[c] + v.u * 0.05]; });
   }
@@ -419,6 +463,25 @@ export class RomaniaPlay {
     return { moved: true, mistake: back, say };
   }
   hover(a) { this.over = a; this.show(); }
+  // undo, hint and replay (play.js)
+  snap() { return { at: this.at, walk: this.walk.slice(), dist: this.dist }; }
+  restore(s) { this.at = s.at; this.walk = s.walk.slice(); this.dist = s.dist; this.err = []; this.over = null; this.cur = null; this.show(); }
+  drive(a, b) { const d = this.roads.get(a).get(b); return [`to ${b}, ${d} km`, `a ${b}, ${d} km`]; }
+  label(s0, s1) { return this.drive(s0.at, s1.at); }
+  paths() {
+    return { ctx: this.ctx, skip: h => /^(bfs|breadth)/.test((h.solver.config || {}).algorithm || ''), key: s => s.at, pkey: p => p,
+      pname: (p, q) => this.drive(p, q) };
+  }
+  hint(o) {
+    return pathHint({ ...this.paths(), step: (s, p) => {
+      this.hl = [{ v: p, kind: 'decide' }];
+      this.show();
+      const d = this.drive(s.at, p);
+      return Object.assign([`drive ${d[0]}`, `vai ${d[1]}`], { acts: [{ c: p }] });
+    } }, o);
+  }
+  unhint() { if (this.hl) { this.hl = null; this.show(); } }
+  replay(states) { return pathReplay(this.paths(), states); }
   key(e) {
     const ns = this.near();
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
@@ -438,7 +501,7 @@ export class RomaniaPlay {
     if (this.opt && this.opt.hint && this.at !== this.inst.goal) for (const c of this.near()) set.set(c, 'e0');
     for (const c of this.walk) set.set(c, 'p');
     v.show(set, this.at);
-    const focus = [...this.err];
+    const focus = [...this.err, ...(this.hl || [])];
     if (this.over && this.over.c !== this.at) focus.push({ v: this.over.c, kind: this.roads.get(this.at).has(this.over.c) ? 'decide' : 'undo' });
     v.marks.show(focus, c => { const [x, y] = v.at(c), it = v.cities.get(c); return [x, y, 0.13, 0.13, (it ? it.target : 0.02) + 0.004]; });
   }

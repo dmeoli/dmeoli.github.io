@@ -9,6 +9,7 @@
 import * as THREE from 'three';
 import { HanoiView } from './hanoi.js';
 import { optimum, against } from './play-stacks.js';
+import { pathHint, pathReplay } from './play.js';
 
 const plural = (k, one, many) => (k === 1 ? one : many);
 
@@ -129,25 +130,52 @@ export class HanoiPlay {
     const v = this.view, P = v.S.colors;
     this.over = a || null;
     const gold = P.gold.clone().multiplyScalar(0.5), rose = P.red.clone(), none = new THREE.Color(0, 0, 0);
-    const lit = new Set();
+    const lit = new Set(), H = this.hl;
     if (this.held !== null) lit.add(this.top(this.held));
     else if (a) { const d = this.top(a.peg); if (d >= 0) lit.add(d); }
+    // the disk of a hint, and its peg (a ghost), while nothing else is shown
+    else if (H) lit.add(H.d);
     v.disks.forEach((it, d) => it.m.material.emissive.copy(this.err.includes(d) ? rose : lit.has(d) ? gold : none));
     this.cols.forEach((m, p) => {
       const on = a && a.peg === p, fit = this.opt && this.opt.hint && this.held !== null && this.fits(p);
       m.material.opacity = on && this.held === null ? 0.1 : 0;
-      const g = this.ghosts[p], show = this.held !== null && p !== this.held && (on || fit);
+      const g = this.ghosts[p], hinted = !!H && p === H.to && (this.held === null ? !a : this.held === this.x[H.d] && this.top(this.held) === H.d);
+      const show = (this.held !== null && p !== this.held && (on || fit)) || hinted;
       g.visible = show;
       if (show) {
-        const d = this.top(this.held), r = 0.06 + 0.14 * (d + 1) / this.D, n = this.x.filter((q, e) => q === p).length;
+        const d = this.held !== null ? this.top(this.held) : H.d, r = 0.06 + 0.14 * (d + 1) / this.D, n = this.x.filter((q, e) => q === p).length;
         g.scale.set(r, 1, r);
         g.position.set(v.px(p), 0, v.dh * (n + 0.5));
-        g.material.opacity = on ? 0.55 : 0.25;
-        g.material.color.copy(on && !this.fits(p) ? P.red : P.gold);
+        g.material.opacity = on || hinted ? 0.55 : 0.25;
+        g.material.color.copy(on && this.held !== null && !this.fits(p) ? P.red : P.gold);
         g.material.emissive.copy(g.material.color);
       }
     });
   }
+  // undo, hint and replay (play.js)
+  snap() { return { x: this.x.slice(), last: this.last && { ...this.last }, n: this.n }; }
+  restore(s) {
+    this.x = s.x.slice(); this.last = s.last && { ...s.last }; this.n = s.n; this.held = null; this.err = []; this.cur = null;
+    this.view.show(this.x.slice(), null);
+    this.hover(null);
+  }
+  // the disk that moves from x to y, and its pegs
+  moveOf(x, y) { const d = x.findIndex((p, k) => p !== y[k]); return { d, from: x[d], to: y[d] }; }
+  diskMove(x, y) { const m = this.moveOf(x, y); return [`disk ${m.d + 1}, peg ${m.from + 1} to ${m.to + 1}`, `disco ${m.d + 1}, piolo ${m.from + 1} a ${m.to + 1}`]; }
+  label(s0, s1) { return this.diskMove(s0.x, s1.x); }
+  paths() { return { ctx: this.ctx, key: s => s.x.join(','), pkey: p => p.join(','), pname: (p, q) => this.diskMove(p, q) }; }
+  hint(o) {
+    return pathHint({ ...this.paths(), step: (s, p) => {
+      const m = this.moveOf(s.x, p);
+      this.hl = m;
+      this.hover(this.over);
+      const back = this.held !== null && this.held !== m.from ? [` (put back the disk you hold first)`, ` (prima rimetti giù il disco che tieni)`] : ['', ''];
+      const acts = [...(this.held !== null && this.held !== m.from ? [{ peg: this.held }] : []), ...(this.held === m.from ? [] : [{ peg: m.from }]), { peg: m.to }];
+      return Object.assign([`move disk ${m.d + 1} from peg ${m.from + 1} to peg ${m.to + 1}${back[0]}`, `sposta il disco ${m.d + 1} dal piolo ${m.from + 1} al piolo ${m.to + 1}${back[1]}`], { acts });
+    } }, o);
+  }
+  unhint() { if (this.hl) { this.hl = null; if (this.x) this.hover(this.over); } }
+  replay(states) { return pathReplay(this.paths(), states); }
   key(e) {
     if (/^[1-4]$/.test(e.key)) { this.cur = { peg: +e.key - 1 }; this.hover(this.cur); return { ...this.cur }; }
     const c = this.cur || { peg: this.held !== null ? this.held : 0 };

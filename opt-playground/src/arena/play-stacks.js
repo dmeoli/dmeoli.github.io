@@ -11,7 +11,7 @@
 
 import * as THREE from 'three';
 import { PancakeView, TopSpinView } from './stacks.js';
-import { names } from './play.js';
+import { names, pathHint, pathReplay } from './play.js';
 
 const gaps = x => x.reduce((s, v, p) => s + (Math.abs(v - (p + 1 < x.length ? x[p + 1] : x.length)) !== 1 ? 1 : 0), 0);
 const same = (a, b) => a && b && a.length === b.length && a.every((v, i) => v === b[i]);
@@ -106,13 +106,37 @@ export class PancakePlay {
   hover(a) {
     const v = this.view, P = v.S.colors;
     this.over = a && a.k >= 2 ? a : null;
-    const tint = P.gold.clone().multiplyScalar(0.35);
-    this.x.forEach((tok, pos) => v.items[tok].m.material.emissive.copy(this.over && pos < this.over.k ? tint : new THREE.Color(0, 0, 0)));
+    // the flip of a hint, while the pointer shows no other
+    const o = this.over || this.hl;
+    const tint = P.gold.clone().multiplyScalar(this.over ? 0.35 : 0.55);
+    this.x.forEach((tok, pos) => v.items[tok].m.material.emissive.copy(o && pos < o.k ? tint : new THREE.Color(0, 0, 0)));
     if (!v.toolOn) {
-      v.tool.visible = !!this.over;
-      if (this.over) v.tool.position.set(0.34, 0, v.dh * (this.N - this.over.k));
+      v.tool.visible = !!o;
+      if (o) v.tool.position.set(0.34, 0, v.dh * (this.N - o.k));
     }
   }
+  // undo, hint and replay (play.js)
+  snap() { return { x: this.x.slice(), before: this.before && this.before.slice(), flips: this.flips }; }
+  restore(s) {
+    this.x = s.x.slice(); this.before = s.before && s.before.slice(); this.flips = s.flips; this.cur = null;
+    this.hover(null);
+    this.view.show(this.x, null);
+  }
+  // the number of pancakes flipped from x to y
+  flipOf(x, y) { for (let k = 2; k <= x.length; k++) if (same([...x.slice(0, k).reverse(), ...x.slice(k)], y)) return k; return 0; }
+  flipName(k) { return [`flip the top ${k}`, `ribalta le ${k} in cima`]; }
+  label(s0, s1) { return this.flipName(this.flipOf(s0.x, s1.x)); }
+  paths() { return { ctx: this.ctx, key: s => s.x.join(','), pkey: p => p.join(','), pname: (p, q) => this.flipName(this.flipOf(p, q)) }; }
+  hint(o) {
+    return pathHint({ ...this.paths(), step: (s, p) => {
+      const k = this.flipOf(s.x, p);
+      this.hl = { k };
+      this.hover(null);
+      return Object.assign([`flip the top ${k} pancakes, the spatula under the ${k}th from the top`, `ribalta le ${k} frittelle in cima, con la spatola sotto la ${k}ª dall'alto`], { acts: [{ k }] });
+    } }, o);
+  }
+  unhint() { if (this.hl) { this.hl = null; if (this.x) this.hover(this.over); } }
+  replay(states) { return pathReplay(this.paths(), states); }
   key(e) {
     const c = this.cur || { k: 2 }, N = this.N;
     if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
@@ -255,12 +279,51 @@ export class TopSpinPlay {
   hover(a) {
     const v = this.view, P = v.S.colors;
     this.over = a || null;
+    // the move of a hint, while the pointer shows no other
+    if (!a && this.hl) a = this.hl;
     const lit = new Set(a && a.flip !== undefined ? this.window(a.flip) : []), red = new Set(this.err || []);
     const gold = P.gold.clone().multiplyScalar(0.45), rose = P.red.clone(), none = new THREE.Color(0, 0, 0);
     v.items.forEach((it, tok) => it.m.material.forEach(m => m.emissive.copy(lit.has(tok) ? gold : red.has(tok) ? rose : none)));
-    this.ghost.visible = !!(a && a.go !== undefined);
-    if (this.ghost.visible) this.ghost.rotation.z = this.arcAngle(a.go);
+    const go = a && a.go !== undefined ? a.go : a && a === this.hl && a.flip !== this.i ? a.flip : undefined;
+    this.ghost.visible = go !== undefined;
+    if (this.ghost.visible) this.ghost.rotation.z = this.arcAngle(go);
   }
+  // undo, hint and replay (play.js)
+  snap() { return { x: this.x.slice(), before: this.before && this.before.slice(), n: this.n, i: this.i }; }
+  restore(s) {
+    this.x = s.x.slice(); this.before = s.before && s.before.slice(); this.n = s.n; this.err = null; this.cur = null;
+    this.setGate(s.i);
+    this.hover(null);
+    this.view.show(this.x.slice(), null);
+  }
+  // the position of the turnstile whose reversal turns x into y
+  revOf(x, y) {
+    const N = this.N, K = this.K;
+    for (let p = 0; p < N; p++) {
+      const z = x.slice();
+      for (let o = 0; o < K; o++) z[(p + o) % N] = x[(p + K - 1 - o) % N];
+      if (same(z, y)) return p;
+    }
+    return -1;
+  }
+  revName(x, p) {
+    const w = ring(Array.from({ length: this.K }, (_, o) => x[(p + o) % this.N]));
+    return [`reverse ${w}`, `rovescia ${w}`];
+  }
+  label(s0, s1) { return this.revName(s0.x, this.revOf(s0.x, s1.x)); }
+  paths() { return { ctx: this.ctx, key: s => s.x.join(','), pkey: p => p.join(','), pname: (p, q) => this.revName(p, this.revOf(p, q)) }; }
+  hint(o) {
+    return pathHint({ ...this.paths(), step: (s, p) => {
+      const q = this.revOf(s.x, p), w = this.revName(s.x, q);
+      this.hl = { flip: q };
+      this.hover(null);
+      return Object.assign(q === this.i ? [w[0] + ', the tokens in the turnstile', w[1] + ', i gettoni nel tornello']
+        : [`turn the ring to bring ${w[0].slice(8)} into the turnstile (the faint arc), then ${w[0]}`, `gira l'anello per portare ${w[1].slice(10)} nel tornello (l'arco tenue), poi ${w[1]}`],
+      { acts: q === this.i ? [{ flip: q }] : [{ go: q }, { flip: q }] });
+    } }, o);
+  }
+  unhint() { if (this.hl) { this.hl = null; if (this.x) this.hover(this.over); } }
+  replay(states) { return pathReplay(this.paths(), states); }
   key(e) {
     const d = { ArrowRight: 1, ArrowUp: 1, ArrowLeft: -1, ArrowDown: -1 }[e.key];
     if (d) return { go: (this.i + d + this.N) % this.N };

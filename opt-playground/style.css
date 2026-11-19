@@ -46,6 +46,8 @@ h1 { font-weight: 600; margin: 0 0 6px; color: var(--accent); }
 .controls label > output { min-width: 3.5ch; }
 .transport { display: flex; flex-wrap: nowrap; gap: 8px; align-items: end; margin-left: auto; flex: none; }
 .transport #play { min-width: 5.2em; }
+/* on a phone the counter and the buttons wrap instead of widening the page */
+@media (max-width: 480px) { .transport { flex-wrap: wrap; margin-left: 0; } }
 .counter { margin-right: 6px; }
 .counter output { font: 500 18px/1.2 'IBM Plex Mono', monospace; font-variant-numeric: tabular-nums; min-width: 4ch; }
 .controls > .row { flex-basis: 100%; }
