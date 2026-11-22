@@ -61,7 +61,7 @@
 <header>
   <h1><span data-l="en">Turing &amp; Chomsky</span><span data-l="it" lang="it">Turing e Chomsky</span></h1>
   <p class="lede" data-l="en">A Turing machine reads and writes on an endless tape, moving its head one cell at a time by a table of rules, and in doing so it defines what a computer can decide at all. Pick a machine, give it an input, and follow it step by step: the head moves over the tape, the current rule lights up in the table, and the machine halts accepting or rejecting. Three machines come ready, from a binary increment to the languages a^n b^n and a^n b^n c^n, the second of which no context-free grammar can describe; one can also edit the table and build one's own, in the format <code>state read write move next</code>, one rule a line. Below, the Chomsky hierarchy places each of these languages where it belongs, from the regular languages a finite automaton recognises up to the recursively enumerable ones only a Turing machine does. From the course on formal languages and compilers with Giovanni Semeraro at the University of Bari.</p>
-  <p class="lede" data-l="it" lang="it">Una macchina di Turing legge e scrive su un nastro infinito, muovendo la testina di una cella per volta secondo una tabella di regole, e cosi' facendo definisce che cosa un calcolatore puo' decidere. Si sceglie una macchina, le si da' un ingresso e la si segue passo per passo: la testina scorre il nastro, la regola corrente si accende nella tabella, e la macchina si ferma accettando o rifiutando. Tre macchine sono pronte, dall'incremento binario ai linguaggi a^n b^n e a^n b^n c^n, il secondo dei quali nessuna grammatica libera dal contesto sa descrivere; si puo' anche modificare la tabella e costruirne una propria, nel formato <code>stato letto scritto mossa prossimo</code>, una regola per riga. Sotto, la gerarchia di Chomsky colloca ciascuno di questi linguaggi al suo posto, dai linguaggi regolari che un automa a stati finiti riconosce fino a quelli ricorsivamente enumerabili che solo una macchina di Turing riconosce. Dal corso di linguaggi formali e compilatori con Giovanni Semeraro all'Universita' di Bari.</p>
+  <p class="lede" data-l="it" lang="it">Una macchina di Turing legge e scrive su un nastro infinito, muovendo la testina di una cella per volta secondo una tabella di regole, e così facendo definisce che cosa un calcolatore può decidere. Si sceglie una macchina, le si dà un ingresso e la si segue passo per passo: la testina scorre il nastro, la regola corrente si accende nella tabella, e la macchina si ferma accettando o rifiutando. Tre macchine sono pronte, dall'incremento binario ai linguaggi a^n b^n e a^n b^n c^n, il secondo dei quali nessuna grammatica libera dal contesto sa descrivere; si può anche modificare la tabella e costruirne una propria, nel formato <code>stato letto scritto mossa prossimo</code>, una regola per riga. Sotto, la gerarchia di Chomsky colloca ciascuno di questi linguaggi al suo posto, dai linguaggi regolari che un automa a stati finiti riconosce fino a quelli ricorsivamente enumerabili che solo una macchina di Turing riconosce. Dal corso di linguaggi formali e compilatori con Giovanni Semeraro all'Università di Bari.</p>
 </header>
 <section class="controls">
   <div class="settings">
@@ -276,44 +276,59 @@ const disp = s => s === BLANK ? '␣' : s;
 // incoming arrow on the start state, edges labelled read -> write, move ----
 function gesc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
 function drawGraph() {
-  const sts = M.states.slice();
-  const add = s => { if (!sts.includes(s)) sts.push(s); };
-  M.order.forEach(r => add(r.nx)); M.accept.forEach(add);
-  const n = Math.max(1, sts.length), rad = 20;
-  const R = Math.max(66, 12 * n), cx = R + 92, cy = R + 60, W = 2 * cx, H = 2 * cy;
+  // order the states depth-first from the start, so most transitions join
+  // circle neighbours and the arcs stay near the rim instead of crossing
+  const seen = new Set(), sts = [];
+  const dfs = s => { if (!s || seen.has(s)) return; seen.add(s); sts.push(s); M.order.filter(r => r.st === s).forEach(r => dfs(r.nx)); };
+  dfs(M.start);
+  M.states.forEach(s => { if (!seen.has(s)) { seen.add(s); sts.push(s); } });
+  M.order.forEach(r => { if (!seen.has(r.nx)) { seen.add(r.nx); sts.push(r.nx); } });
+  M.accept.forEach(s => { if (!seen.has(s)) { seen.add(s); sts.push(s); } });
+  const n = Math.max(1, sts.length), rad = 19, idx = {};
+  sts.forEach((s, i) => idx[s] = i);
+  const R = Math.max(86, 20 * n), cx = R + 124, cy = R + 88, W = 2 * cx, H = 2 * cy;
   const pos = {};
   sts.forEach((s, i) => { const a = -Math.PI / 2 + 2 * Math.PI * i / n; pos[s] = [cx + R * Math.cos(a), cy + R * Math.sin(a)]; });
   const edges = {};
   M.order.forEach(r => { const k = r.st + '>' + r.nx; (edges[k] || (edges[k] = { st: r.st, nx: r.nx, labs: [] })).labs.push(`${disp(r.rd)}→${disp(r.wr)},${r.mv}`); });
-  const aNx = lastKey && M.rules.get(lastKey) ? M.rules.get(lastKey).nx : null;
-  const aSt = lastKey ? lastKey.split(',')[0] : null;
-  const p = [`<svg viewBox="0 0 ${W.toFixed(0)} ${H.toFixed(0)}" role="img" aria-label="state diagram">`,
+  const aNx = lastKey && M.rules.get(lastKey) ? M.rules.get(lastKey).nx : null, aSt = lastKey ? lastKey.split(',')[0] : null;
+  const f = x => x.toFixed(1);
+  const p = [`<svg viewBox="0 0 ${f(W)} ${f(H)}" role="img" aria-label="state diagram">`,
     '<defs><marker id="arr" markerWidth="9" markerHeight="9" refX="7.5" refY="3" orient="auto"><path d="M0,0 L7.5,3 L0,6 z" fill="var(--rule)"/></marker>',
     '<marker id="arrc" markerWidth="9" markerHeight="9" refX="7.5" refY="3" orient="auto"><path d="M0,0 L7.5,3 L0,6 z" fill="var(--accent)"/></marker></defs>'];
-  const f = x => x.toFixed(1);
+  // a label is stacked, one read->write,move per line, centred on (x, y)
+  const label = (x, y, labs, cl) => {
+    const lh = 12.5, y0 = y - (labs.length - 1) * lh / 2;
+    return `<text class="g-elab${cl}" x="${f(x)}" y="${f(y0)}">` +
+      labs.map((t, i) => `<tspan x="${f(x)}" dy="${i ? lh : 0}">${gesc(t)}</tspan>`).join('') + '</text>';
+  };
   for (const k in edges) {
     const e = edges[k], cur = e.st === aSt && e.nx === aNx, cl = cur ? ' cur' : '', mk = cur ? 'arrc' : 'arr';
-    const [ax, ay] = pos[e.st], [bx, by] = pos[e.nx], lab = gesc(e.labs.join(' '));
+    const [ax, ay] = pos[e.st], [bx, by] = pos[e.nx];
     if (e.st === e.nx) {
       let ox = ax - cx, oy = ay - cy, l = Math.hypot(ox, oy) || 1; ox /= l; oy /= l; const px = -oy, py = ox;
-      const s1x = ax + ox * rad * .3 + px * rad * .8, s1y = ay + oy * rad * .3 + py * rad * .8;
-      const s2x = ax + ox * rad * .3 - px * rad * .8, s2y = ay + oy * rad * .3 - py * rad * .8;
-      const c1x = ax + ox * (rad + 46) + px * rad, c1y = ay + oy * (rad + 46) + py * rad;
-      const c2x = ax + ox * (rad + 46) - px * rad, c2y = ay + oy * (rad + 46) - py * rad;
+      const s1x = ax + ox * rad * .2 + px * rad * .75, s1y = ay + oy * rad * .2 + py * rad * .75;
+      const s2x = ax + ox * rad * .2 - px * rad * .75, s2y = ay + oy * rad * .2 - py * rad * .75;
+      const c1x = ax + ox * (rad + 42) + px * rad * 1.1, c1y = ay + oy * (rad + 42) + py * rad * 1.1;
+      const c2x = ax + ox * (rad + 42) - px * rad * 1.1, c2y = ay + oy * (rad + 42) - py * rad * 1.1;
       p.push(`<path class="g-edge${cl}" d="M${f(s1x)},${f(s1y)} C${f(c1x)},${f(c1y)} ${f(c2x)},${f(c2y)} ${f(s2x)},${f(s2y)}" marker-end="url(#${mk})"/>`);
-      p.push(`<text class="g-elab${cl}" x="${f(ax + ox * (rad + 56))}" y="${f(ay + oy * (rad + 56))}">${lab}</text>`);
+      p.push(label(ax + ox * (rad + 50), ay + oy * (rad + 50 + 6 * e.labs.length), e.labs, cl));
     } else {
       let dx = bx - ax, dy = by - ay, L = Math.hypot(dx, dy) || 1; dx /= L; dy /= L; const px = -dy, py = dx;
-      const bend = 24 * (e.st < e.nx ? 1 : -1);
-      const sx = ax + dx * rad, sy = ay + dy * rad, ex = bx - dx * (rad + 4), ey = by - dy * (rad + 4);
-      const mx = (sx + ex) / 2 + px * bend, my = (sy + ey) / 2 + py * bend;
-      p.push(`<path class="g-edge${cl}" d="M${f(sx)},${f(sy)} Q${f(mx)},${f(my)} ${f(ex)},${f(ey)}" marker-end="url(#${mk})"/>`);
-      p.push(`<text class="g-elab${cl}" x="${f((sx + ex) / 2 + px * bend * 1.6)}" y="${f((sy + ey) / 2 + py * bend * 1.6)}">${lab}</text>`);
+      // bow the arc away from the centre; a reverse edge bows the other way
+      let sign = (px * ((ax + bx) / 2 - cx) + py * ((ay + by) / 2 - cy)) >= 0 ? 1 : -1;
+      if (edges[e.nx + '>' + e.st] && e.st > e.nx) sign = -sign;
+      const sep = Math.min(Math.abs(idx[e.st] - idx[e.nx]), n - Math.abs(idx[e.st] - idx[e.nx]));
+      const bend = sign * (16 + 11 * (sep - 1));
+      const sx = ax + dx * rad, sy = ay + dy * rad, ex = bx - dx * (rad + 5), ey = by - dy * (rad + 5);
+      const cxp = (sx + ex) / 2 + px * bend, cyp = (sy + ey) / 2 + py * bend;
+      p.push(`<path class="g-edge${cl}" d="M${f(sx)},${f(sy)} Q${f(cxp)},${f(cyp)} ${f(ex)},${f(ey)}" marker-end="url(#${mk})"/>`);
+      p.push(label((sx + ex) / 2 + px * (bend + 13 * sign), (sy + ey) / 2 + py * (bend + 13 * sign), e.labs, cl));
     }
   }
   for (const s of sts) {
     const [x, y] = pos[s];
-    if (s === M.start) { p.push(`<path class="g-edge" d="M${f(x - rad - 16)},${f(y)} L${f(x - rad - 1)},${f(y)}" marker-end="url(#arr)"/>`); }
+    if (s === M.start) p.push(`<path class="g-edge" d="M${f(x - rad - 17)},${f(y)} L${f(x - rad - 1)},${f(y)}" marker-end="url(#arr)"/>`);
     p.push(`<circle class="g-node${s === state ? ' cur' : ''}" cx="${f(x)}" cy="${f(y)}" r="${rad}"/>`);
     if (M.accept.has(s)) p.push(`<circle class="g-acc" cx="${f(x)}" cy="${f(y)}" r="${rad - 4}"/>`);
     p.push(`<text class="g-lab-state" x="${f(x)}" y="${f(y)}">${gesc(s)}</text>`);
