@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Turing &amp; Chomsky</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<style>
+  .board { display: grid; gap: 22px; margin: 8px 0 6px; }
+  @media (min-width: 900px) { .board { grid-template-columns: 1fr; } }
+  .tm-state { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 18px; margin: 4px 0 10px;
+              font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: var(--ink-soft); }
+  .tm-state b { color: var(--ink); font-weight: 500; }
+  .tm-state .verdict { font-weight: 500; }
+  .tm-state .verdict.acc { color: var(--accent); }
+  .tm-state .verdict.rej { color: var(--gold); }
+  .tape { display: flex; justify-content: center; gap: 2px; overflow-x: auto; padding: 26px 4px 6px; }
+  .cell { position: relative; flex: 0 0 auto; width: 38px; height: 44px; display: grid; place-items: center;
+          border: 1px solid var(--rule); border-radius: 4px; background: var(--panel);
+          font-family: 'IBM Plex Mono', monospace; font-size: 20px; color: var(--ink); }
+  .cell.head { border-color: var(--accent); border-width: 2px; color: var(--accent); }
+  .cell.head::before { content: '▼'; position: absolute; top: -22px; font-size: 14px; color: var(--accent); }
+  .cell.blank { color: var(--ink-soft); opacity: .5; }
+  table.tt { border-collapse: collapse; font-family: 'IBM Plex Mono', monospace; font-size: 13px; margin: 2px 0; }
+  table.tt th, table.tt td { border: 1px solid var(--rule); padding: 3px 8px; text-align: center; color: var(--ink-soft); }
+  table.tt th { color: var(--ink); font-weight: 500; }
+  table.tt tr.on td { background: var(--lilac); color: var(--ink); }
+  .edit { display: grid; gap: 6px; margin: 10px 0; }
+  .edit textarea { width: 100%; min-height: 150px; resize: vertical; box-sizing: border-box;
+                   font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.5;
+                   color: var(--ink); background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 10px; }
+  .edit .err { color: var(--gold); font-size: 13px; min-height: 1.2em; }
+  .hier { display: grid; gap: 0; margin: 10px 0 4px; max-width: 760px; }
+  .lvl { border: 1px solid var(--rule); border-radius: 8px; padding: 12px 14px; margin: 0 0 -1px;
+         background: color-mix(in srgb, var(--panel) 60%, transparent); }
+  .lvl.cur { border-color: var(--accent); background: color-mix(in srgb, var(--lilac) 40%, transparent); }
+  .lvl h3 { margin: 0 0 4px; font-size: 15px; font-weight: 600; color: var(--ink); }
+  .lvl h3 .aut { color: var(--accent-2); font-weight: 400; font-size: 13px; }
+  .lvl p { margin: 2px 0; font-size: 13px; color: var(--ink-soft); }
+  .lvl code { font-family: 'IBM Plex Mono', monospace; color: var(--ink); }
+  .nest { padding-left: 16px; }
+  .two { display: grid; gap: 22px; }
+  @media (min-width: 820px) { .two { grid-template-columns: 1.1fr .9fr; align-items: start; } }
+</style>
+</head>
+<body class="wide" data-game="turing">
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="lagrangian-dual.html"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="simplex-path.html"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Programmazione intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a> · <a href="packing-mip.html"><span data-l="en">Packing</span><span data-l="it" lang="it">Impaccamento</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attention</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Mixture of experts</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Regola di Hebb</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html"><span data-l="en">Talk</span><span data-l="it" lang="it">Presentazione</span></a><br><span class="group"><span data-l="en">Games</span><span data-l="it" lang="it">Giochi</span></span> <!--games-nav--><a href="games.html"><span data-l="en">All</span><span data-l="it" lang="it">Tutti</span></a> · <a href="games-coloring.html"><span data-l="en">Map coloring</span><span data-l="it" lang="it">Colorazione di mappe</span></a> · <a href="games-queens.html"><span data-l="en">Queens</span><span data-l="it" lang="it">Regine</span></a> · <a href="games-sudoku.html">Sudoku</a> · <a href="games-zebra.html">Zebra</a> · <a href="games-kakuro.html">Kakuro</a> · <a href="games-crypto.html"><span data-l="en">Cryptarithmetic</span><span data-l="it" lang="it">Criptoaritmetica</span></a> · <a href="games-crossword.html"><span data-l="en">Crossword</span><span data-l="it" lang="it">Cruciverba</span></a> · <a href="games-puzzle.html"><span data-l="en">Sliding puzzle</span><span data-l="it" lang="it">Gioco del 15</span></a> · <a href="games-grid.html"><span data-l="en">Grid paths</span><span data-l="it" lang="it">Cammini su griglia</span></a> · <a href="games-romania.html">Romania</a> · <a href="games-planning.html"><span data-l="en">Planning</span><span data-l="it" lang="it">Pianificazione</span></a> · <a href="games-hanoi.html"><span data-l="en">Towers of Hanoi</span><span data-l="it" lang="it">Torri di Hanoi</span></a> · <a href="games-cube.html"><span data-l="en">Cube</span><span data-l="it" lang="it">Cubo</span></a> · <a href="games-pancake.html"><span data-l="en">Pancakes</span><span data-l="it" lang="it">Frittelle</span></a> · <a href="games-topspin.html">TopSpin</a> · <a href="games-knapsack.html"><span data-l="en">0-1 knapsack</span><span data-l="it" lang="it">Zaino 0-1</span></a> · <a href="games-tictactoe.html"><span data-l="en">Tic-tac-toe</span><span data-l="it" lang="it">Tris</span></a> · <a href="games-connect4.html"><span data-l="en">Connect four</span><span data-l="it" lang="it">Forza quattro</span></a> · <a href="games-turing.html" aria-current="page"><span data-l="en">Turing &amp; Chomsky</span><span data-l="it" lang="it">Turing e Chomsky</span></a><!--/games-nav--><br><span class="group"><span data-l="en">Forms</span><span data-l="it" lang="it">Forme</span></span> <!--forms-nav--><a href="simplex-path.html?print"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="lagrangian-dual.html?print"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="loss-landscape.html"><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a> · <a href="packing-mip.html?print"><span data-l="en">Packing by MIP</span><span data-l="it" lang="it">Impaccamento con MIP</span></a> · <a href="lp3d.html?print"><span data-l="en">LP in 3D</span><span data-l="it" lang="it">PL in 3D</span></a> · <a href="polarity.html?print"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a> · <a href="shells.html"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></a> · <a href="phyllotaxis.html"><span data-l="en">Phyllotaxis</span><span data-l="it" lang="it">Fillotassi</span></a> · <a href="radiolarian.html"><span data-l="en">Radiolarians</span><span data-l="it" lang="it">Radiolari</span></a> · <a href="coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a> · <a href="plants.html"><span data-l="en">Plants</span><span data-l="it" lang="it">Piante</span></a> · <a href="snowflakes.html"><span data-l="en">Snowflakes</span><span data-l="it" lang="it">Fiocchi di neve</span></a> · <a href="batman.html">Batman</a> · <a href="minimal-surfaces.html"><span data-l="en">Minimal surfaces</span><span data-l="it" lang="it">Superfici minime</span></a> · <a href="knots.html"><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></a> · <a href="attractors.html"><span data-l="en">Attractors</span><span data-l="it" lang="it">Attrattori</span></a> · <a href="polytopes.html"><span data-l="en">4D polytopes</span><span data-l="it" lang="it">Politopi 4D</span></a> · <a href="chladni.html">Chladni</a> · <a href="equations.html"><span data-l="en">Equations</span><span data-l="it" lang="it">Equazioni</span></a> · <a href="dice.html"><span data-l="en">Fair dice</span><span data-l="it" lang="it">Dadi equi</span></a> · <a href="hat.html"><span data-l="en">The hat</span><span data-l="it" lang="it">Il cappello</span></a> · <a href="fractals.html"><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></a> · <a href="lithophane.html"><span data-l="en">Lithophanes</span><span data-l="it" lang="it">Litofanie</span></a> · <a href="monsters.html"><span data-l="en">Monsters</span><span data-l="it" lang="it">Mostri</span></a> · <a href="monster-cards.html"><span data-l="en">Monster cards</span><span data-l="it" lang="it">Carte dei mostri</span></a> · <a href="dragon-curve.html"><span data-l="en">Dragon curve</span><span data-l="it" lang="it">Curva del drago</span></a> · <a href="robots.html"><span data-l="en">Robots</span><span data-l="it" lang="it">Robot</span></a> · <a href="magic-circles.html"><span data-l="en">Magic circles</span><span data-l="it" lang="it">Cerchi magici</span></a> · <a href="origami.html">Origami</a> · <a href="wagara.html"><span data-l="en">Japanese patterns</span><span data-l="it" lang="it">Motivi giapponesi</span></a> · <a href="twisty.html"><span data-l="en">Twisty puzzles</span><span data-l="it" lang="it">Rompicapi a rotazione</span></a> · <a href="wang-dungeon.html"><span data-l="en">Wang dungeon</span><span data-l="it" lang="it">Dungeon di Wang</span></a> · <a href="mana-crystals.html"><span data-l="en">Wulff crystals</span><span data-l="it" lang="it">Cristalli di Wulff</span></a> · <a href="dragon-eggs.html"><span data-l="en">Dragon eggs</span><span data-l="it" lang="it">Uova di drago</span></a> · <a href="galton-tower.html"><span data-l="en">Galton tower</span><span data-l="it" lang="it">Torre di Galton</span></a> · <a href="escher-monsters.html"><span data-l="en">Escher monsters</span><span data-l="it" lang="it">Mostri alla Escher</span></a> · <a href="minotaur-sphere.html"><span data-l="en">Sphere labyrinth</span><span data-l="it" lang="it">Labirinto sferico</span></a> · <a href="elven-knots.html"><span data-l="en">Elven amulets</span><span data-l="it" lang="it">Amuleti elfici</span></a> · <a href="slime-den.html"><span data-l="en">Slime den</span><span data-l="it" lang="it">Tana degli slime</span></a> · <a href="antigravity-castle.html"><span data-l="en">Antigravity castle</span><span data-l="it" lang="it">Castello antigravità</span></a> · <a href="erosion-island.html"><span data-l="en">Eroded island</span><span data-l="it" lang="it">Isola erosa</span></a> · <a href="damascus-swords.html"><span data-l="en">Damascus swords</span><span data-l="it" lang="it">Spade di Damasco</span></a> · <a href="kraken-tree.html"><span data-l="en">Kraken and tree</span><span data-l="it" lang="it">Kraken e albero</span></a> · <a href="starships.html"><span data-l="en">Starships</span><span data-l="it" lang="it">Astronavi</span></a> · <a href="automaton.html"><span data-l="en">Automaton</span><span data-l="it" lang="it">Automa</span></a> · <a href="puzzle-chest.html"><span data-l="en">Puzzle chest</span><span data-l="it" lang="it">Baule a incastro</span></a> · <a href="biomorphs.html"><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></a><!--/forms-nav--><br><span class="group"><span data-l="en">Sky</span><span data-l="it" lang="it">Cielo</span></span> <!--sky-nav--><a href="astro-chart.html"><span data-l="en">Natal chart</span><span data-l="it" lang="it">Carta natale</span></a> · <a href="sky-retrograde.html"><span data-l="en">Retrograde motion</span><span data-l="it" lang="it">Moto retrogrado</span></a> · <a href="sky-precession.html"><span data-l="en">Precession</span><span data-l="it" lang="it">Precessione</span></a> · <a href="sky-houses.html"><span data-l="en">Houses</span><span data-l="it" lang="it">Case</span></a> · <a href="sky-roses.html"><span data-l="en">Synodic roses</span><span data-l="it" lang="it">Rose sinodiche</span></a> · <a href="sky-analemma.html">Analemma</a> · <a href="sky-saros.html">Saros</a><!--/sky-nav--></nav>
+<header>
+  <h1><span data-l="en">Turing &amp; Chomsky</span><span data-l="it" lang="it">Turing e Chomsky</span></h1>
+  <p class="lede" data-l="en">A Turing machine reads and writes on an endless tape, moving its head one cell at a time by a table of rules, and in doing so it defines what a computer can decide at all. Pick a machine, give it an input, and follow it step by step: the head moves over the tape, the current rule lights up in the table, and the machine halts accepting or rejecting. Three machines come ready, from a binary increment to the languages a^n b^n and a^n b^n c^n, the second of which no context-free grammar can describe; one can also edit the table and build one's own, in the format <code>state read write move next</code>, one rule a line. Below, the Chomsky hierarchy places each of these languages where it belongs, from the regular languages a finite automaton recognises up to the recursively enumerable ones only a Turing machine does. From the course on formal languages and compilers with Giovanni Semeraro at the University of Bari.</p>
+  <p class="lede" data-l="it" lang="it">Una macchina di Turing legge e scrive su un nastro infinito, muovendo la testina di una cella per volta secondo una tabella di regole, e cosi' facendo definisce che cosa un calcolatore puo' decidere. Si sceglie una macchina, le si da' un ingresso e la si segue passo per passo: la testina scorre il nastro, la regola corrente si accende nella tabella, e la macchina si ferma accettando o rifiutando. Tre macchine sono pronte, dall'incremento binario ai linguaggi a^n b^n e a^n b^n c^n, il secondo dei quali nessuna grammatica libera dal contesto sa descrivere; si puo' anche modificare la tabella e costruirne una propria, nel formato <code>stato letto scritto mossa prossimo</code>, una regola per riga. Sotto, la gerarchia di Chomsky colloca ciascuno di questi linguaggi al suo posto, dai linguaggi regolari che un automa a stati finiti riconosce fino a quelli ricorsivamente enumerabili che solo una macchina di Turing riconosce. Dal corso di linguaggi formali e compilatori con Giovanni Semeraro all'Universita' di Bari.</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span data-l="en">machine</span><span data-l="it" lang="it">macchina</span><select id="machine"></select></label>
+    <label><span data-l="en">input</span><span data-l="it" lang="it">ingresso</span><input id="input" type="text" spellcheck="false" style="font-family:'IBM Plex Mono',monospace" size="16"></label>
+    <label><span data-l="en">speed</span><span data-l="it" lang="it">velocità</span><select id="speed"><option value="1">1 / s</option><option value="2">2 / s</option><option value="4" selected>4 / s</option><option value="10">10 / s</option><option value="30">30 / s</option></select></label>
+  </div>
+  <div class="transport"><label class="counter"><span data-l="en">step</span><span data-l="it" lang="it">passo</span><output id="iter">0</output></label><button id="reset" type="button"><span data-l="en">Reset</span><span data-l="it" lang="it">Ricomincia</span></button><button id="step" type="button"><span data-l="en">Step</span><span data-l="it" lang="it">Passo</span></button><button id="run" type="button"><span data-l="en">Run</span><span data-l="it" lang="it">Avvia</span></button></div>
+</section>
+
+<div class="board">
+  <div>
+    <div class="tm-state">
+      <span><span data-l="en">state</span><span data-l="it" lang="it">stato</span>: <b id="st">—</b></span>
+      <span><span data-l="en">rule</span><span data-l="it" lang="it">regola</span>: <b id="rule">—</b></span>
+      <span class="verdict" id="verdict"></span>
+    </div>
+    <div class="tape" id="tape"></div>
+  </div>
+  <div class="two">
+    <div>
+      <h2 class="part"><span data-l="en">Transition table</span><span data-l="it" lang="it">Tabella di transizione</span></h2>
+      <div id="ttwrap"></div>
+    </div>
+    <div class="edit">
+      <h2 class="part"><span data-l="en">Build your own</span><span data-l="it" lang="it">Costruisci la tua</span></h2>
+      <textarea id="src" spellcheck="false" aria-label="machine definition"></textarea>
+      <div class="err" id="err"></div>
+      <button id="load" type="button" style="justify-self:start"><span data-l="en">Load machine</span><span data-l="it" lang="it">Carica macchina</span></button>
+    </div>
+  </div>
+</div>
+
+<section>
+  <h2 class="part" style="margin-top:22px"><span data-l="en">The Chomsky hierarchy</span><span data-l="it" lang="it">La gerarchia di Chomsky</span></h2>
+  <div class="hier" id="hier"></div>
+</section>
+
+<footer><span data-l="en">Reset puts the input back on the tape at the start, Step applies one rule, and Run applies them at the chosen speed until the machine halts or 4000 steps pass (the guard against a machine that never stops, which no procedure can detect in general: the halting problem). The highlighted level of the hierarchy is the tightest class of the language the current machine recognises. Reference: G. Semeraro, Elementi di teoria dei linguaggi formali (ilmiolibro.it, 2017), and J. E. Hopcroft, R. Motwani, J. D. Ullman, Introduction to Automata Theory, Languages, and Computation, chapter 8 for the Turing machines.</span><span data-l="it" lang="it">Ricomincia rimette l'ingresso sul nastro all'inizio, Passo applica una regola, e Avvia le applica alla velocità scelta finché la macchina non si ferma o non passano 4000 passi (la guardia contro una macchina che non si ferma mai, cosa che nessuna procedura sa riconoscere in generale: il problema della fermata). Il livello evidenziato della gerarchia è la classe più stretta del linguaggio che la macchina corrente riconosce. Riferimento: G. Semeraro, Elementi di teoria dei linguaggi formali (ilmiolibro.it, 2017), e J. E. Hopcroft, R. Motwani, J. D. Ullman, Introduction to Automata Theory, Languages, and Computation, capitolo 8 per le macchine di Turing.</span></footer>
+
+<script type="module">
+// ---- the preset machines (format: header lines + "state read write move next") ----
+const MACHINES = {
+  increment: {
+    en: "Binary increment", it: "Incremento binario", input: "1011", level: 3,
+    src: `# add 1 to a binary number (read right to left)
+start q0
+accept acc
+q0 0 0 R q0
+q0 1 1 R q0
+q0 _ _ L q1
+q1 1 0 L q1
+q1 0 1 S acc
+q1 _ 1 S acc`
+  },
+  anbn: {
+    en: "a^n b^n", it: "a^n b^n", input: "aabb", level: 2,
+    src: `# a^n b^n : as many a's as b's, all a's before all b's (context-free)
+start q0
+accept acc
+q0 a X R q1
+q0 Y Y R q3
+q0 _ _ S acc
+q1 a a R q1
+q1 Y Y R q1
+q1 b Y L q2
+q2 a a L q2
+q2 Y Y L q2
+q2 X X R q0
+q3 Y Y R q3
+q3 _ _ S acc`
+  },
+  anbncn: {
+    en: "a^n b^n c^n", it: "a^n b^n c^n", input: "aabbcc", level: 1,
+    src: `# a^n b^n c^n : equal a's, b's, c's in order (context-sensitive, not context-free)
+start q0
+accept acc
+q0 a X R q1
+q0 Y Y R q5
+q0 _ _ S acc
+q1 a a R q1
+q1 Y Y R q1
+q1 b Y R q2
+q2 b b R q2
+q2 Z Z R q2
+q2 c Z L q3
+q3 a a L q3
+q3 b b L q3
+q3 Y Y L q3
+q3 Z Z L q3
+q3 X X R q0
+q5 Y Y R q5
+q5 Z Z R q6
+q6 Z Z R q6
+q6 _ _ S acc`
+  },
+};
+
+const BLANK = '_', CAP = 4000;
+
+function parse(text) {
+  const m = { start: null, accept: new Set(), blank: BLANK, rules: new Map(), states: [], order: [] };
+  const seen = new Set();
+  for (let raw of text.split('\n')) {
+    const line = raw.replace(/#.*/, '').trim();
+    if (!line) continue;
+    const t = line.split(/\s+/);
+    if (t[0] === 'start') { m.start = t[1]; }
+    else if (t[0] === 'accept') { t.slice(1).forEach(s => m.accept.add(s)); }
+    else if (t[0] === 'blank') { m.blank = t[1]; }
+    else {
+      if (t.length !== 5) throw { line: raw };
+      const [st, rd, wr, mv, nx] = t;
+      if (!'LRS'.includes(mv)) throw { line: raw };
+      m.rules.set(st + ',' + rd, { wr, mv, nx });
+      m.order.push({ st, rd, wr, mv, nx });
+      if (!seen.has(st)) { seen.add(st); m.states.push(st); }
+    }
+  }
+  if (!m.start) throw { line: 'start?' };
+  return m;
+}
+
+// ---- state of the run ----
+let M, tape, head, state, steps, status, timer = null, lastKey = null;
+
+function boot(text, input) {
+  M = parse(text);
+  tape = new Map();
+  input = (input || '').replace(/\s/g, '');
+  [...input].forEach((c, i) => tape.set(i, c));
+  head = 0; state = M.start; steps = 0; status = 'run'; lastKey = null;
+  draw();
+}
+const read = () => tape.has(head) ? tape.get(head) : M.blank;
+
+function step() {
+  if (status !== 'run') return;
+  if (M.accept.has(state)) { status = 'accept'; lastKey = null; return draw(); }
+  const key = state + ',' + read();
+  const r = M.rules.get(key);
+  if (!r) { status = 'reject'; lastKey = null; return draw(); }
+  lastKey = key;
+  if (r.wr === M.blank) tape.delete(head); else tape.set(head, r.wr);
+  if (r.mv === 'L') head--; else if (r.mv === 'R') head++;
+  state = r.nx; steps++;
+  if (steps >= CAP) status = 'cap';
+  draw();
+}
+
+function run() {
+  if (timer) { stopRun(); return; }
+  const dt = 1000 / (+$('speed').value || 4);
+  $('run').textContent = '';
+  $('run').append(span('en', 'Pause'), span('it', 'Pausa'));
+  timer = setInterval(() => { step(); if (status !== 'run') stopRun(); }, dt);
+}
+function stopRun() { clearInterval(timer); timer = null; $('run').textContent = ''; $('run').append(span('en', 'Run'), span('it', 'Avvia')); }
+
+// ---- rendering ----
+function $(id) { return document.getElementById(id); }
+function span(l, t) { const s = document.createElement('span'); s.setAttribute('data-l', l); if (l === 'it') s.lang = 'it'; s.textContent = t; return s; }
+
+function draw() {
+  // tape window around the head, padded
+  const idx = [...tape.keys()];
+  let lo = Math.min(head - 6, idx.length ? Math.min(...idx) : 0);
+  let hi = Math.max(head + 6, idx.length ? Math.max(...idx) : 0);
+  const tp = $('tape'); tp.textContent = '';
+  for (let i = lo; i <= hi; i++) {
+    const v = tape.has(i) ? tape.get(i) : M.blank;
+    const c = document.createElement('div');
+    c.className = 'cell' + (i === head ? ' head' : '') + (v === M.blank ? ' blank' : '');
+    c.textContent = v === M.blank ? '␣' : v;
+    tp.append(c);
+  }
+  $('st').textContent = state;
+  $('iter').textContent = steps;
+  const rl = M.rules.get(lastKey);
+  $('rule').textContent = rl ? `${lastKey.split(',')[0]},${lastKey.split(',')[1]} → ${rl.wr},${rl.mv},${rl.nx}` : '—';
+  const v = $('verdict'); v.className = 'verdict';
+  v.textContent = '';
+  if (status === 'accept') { v.classList.add('acc'); v.append(span('en', '✓ accepted'), span('it', '✓ accettato')); }
+  else if (status === 'reject') { v.classList.add('rej'); v.append(span('en', '✗ rejected'), span('it', '✗ rifiutato')); }
+  else if (status === 'cap') { v.classList.add('rej'); v.append(span('en', 'halted at ' + CAP + ' steps'), span('it', 'fermata a ' + CAP + ' passi')); }
+  drawTable();
+}
+
+function drawTable() {
+  const w = $('ttwrap'); w.textContent = '';
+  const t = document.createElement('table'); t.className = 'tt';
+  const hd = document.createElement('tr');
+  ['state', 'read', '→ write', 'move', 'next'].forEach(h => { const th = document.createElement('th'); th.textContent = h; hd.append(th); });
+  t.append(hd);
+  for (const r of M.order) {
+    const tr = document.createElement('tr');
+    if (lastKey === r.st + ',' + r.rd) tr.className = 'on';
+    [r.st, disp(r.rd), disp(r.wr), r.mv, r.nx].forEach(x => { const td = document.createElement('td'); td.textContent = x; tr.append(td); });
+    t.append(tr);
+  }
+  w.append(t);
+}
+const disp = s => s === BLANK ? '␣' : s;
+
+// ---- the Chomsky hierarchy ----
+const HIER = [
+  { lvl: 0, en: 'Type 0 — recursively enumerable', it: 'Tipo 0 — ricorsivamente enumerabili', aut: 'Turing machine',
+    fen: 'any production α → β, α non-empty', fit: 'produzioni α → β qualunque, α non vuota',
+    exen: 'every language a program can accept', exit: 'ogni linguaggio che un programma può accettare' },
+  { lvl: 1, en: 'Type 1 — context-sensitive', it: 'Tipo 1 — dipendenti dal contesto', aut: 'linear bounded automaton',
+    fen: 'α A β → α γ β, with |γ| ≥ 1', fit: 'α A β → α γ β, con |γ| ≥ 1',
+    exen: 'a^n b^n c^n', exit: 'a^n b^n c^n' },
+  { lvl: 2, en: 'Type 2 — context-free', it: 'Tipo 2 — libere dal contesto', aut: 'pushdown automaton',
+    fen: 'A → γ, a single non-terminal on the left', fit: 'A → γ, un solo non terminale a sinistra',
+    exen: 'a^n b^n, balanced brackets', exit: 'a^n b^n, parentesi bilanciate' },
+  { lvl: 3, en: 'Type 3 — regular', it: 'Tipo 3 — regolari', aut: 'finite automaton',
+    fen: 'A → a B or A → a', fit: 'A → a B oppure A → a',
+    exen: 'a binary number, identifiers', exit: 'un numero binario, gli identificatori' },
+];
+function drawHier(cur) {
+  const h = $('hier'); h.textContent = '';
+  let node = h;
+  for (const L of HIER) {
+    const d = document.createElement('div');
+    d.className = 'lvl' + (L.lvl === cur ? ' cur' : '');
+    const t = document.createElement('h3');
+    t.append(span('en', L.en), span('it', L.it));
+    const a = document.createElement('span'); a.className = 'aut'; a.append(span('en', ' · ' + L.aut), span('it', ' · ' + autIt(L.aut))); t.append(a);
+    d.append(t);
+    const p1 = document.createElement('p');
+    p1.append(span('en', 'productions: '), span('it', 'produzioni: '));
+    const cf = document.createElement('code'); cf.append(span('en', L.fen), span('it', L.fit)); p1.append(cf); d.append(p1);
+    const p2 = document.createElement('p');
+    p2.append(span('en', 'e.g. ' + L.exen), span('it', 'es. ' + L.exit)); d.append(p2);
+    node.append(d);
+    const nest = document.createElement('div'); nest.className = 'nest'; node.append(nest); node = nest;
+  }
+}
+const autIt = s => ({ 'Turing machine': 'macchina di Turing', 'linear bounded automaton': 'automa a spazio lineare',
+  'pushdown automaton': 'automa a pila', 'finite automaton': 'automa a stati finiti' }[s] || s);
+
+// ---- wiring ----
+const sel = $('machine');
+for (const k in MACHINES) { const o = document.createElement('option'); o.value = k; o.textContent = MACHINES[k].en; sel.append(o); }
+function load(k) {
+  const m = MACHINES[k];
+  sel.value = k;
+  $('src').value = m.src; $('input').value = m.input;
+  boot(m.src, m.input); drawHier(m.level);
+}
+function reboot() {
+  stopRun();
+  try { boot($('src').value, $('input').value); $('err').textContent = ''; }
+  catch (e) { $('err').textContent = (document.documentElement.lang === 'it' ? 'riga non valida: ' : 'bad line: ') + (e.line || e.message || e); }
+}
+sel.addEventListener('change', () => load(sel.value));
+$('load').addEventListener('click', () => { reboot(); const k = sel.value; drawHier(MACHINES[k] ? MACHINES[k].level : 0); });
+$('input').addEventListener('change', reboot);
+$('reset').addEventListener('click', reboot);
+$('step').addEventListener('click', () => { stopRun(); step(); });
+$('run').addEventListener('click', run);
+window.addEventListener('langchange', () => { if (M) draw(); drawHier(curLevel()); });
+function curLevel() { const k = sel.value; return MACHINES[k] ? MACHINES[k].level : 0; }
+
+load('anbncn');
+</script>
+</body>
+</html>
