@@ -733,8 +733,13 @@ footer {
 .subnav button:hover, .subnav button:focus-visible { color: var(--accent); border-color: var(--accent); }
 .subnav button[aria-selected="true"] { color: var(--ground); background: var(--accent); box-shadow: 0 0 0 1px var(--gold-2); }
 .subnav button[aria-selected="true"] .count { color: inherit; background: color-mix(in srgb, currentColor 8%, transparent); }
+/* a root division of a subnav into named groups (the art section: painters vs themed shows) */
+.subnav .group { flex-basis: 100%; margin: var(--f13) 0 calc(-1 * var(--f3)); font-family: var(--mono);
+  font-size: var(--s-075); letter-spacing: .146em; text-transform: uppercase; color: var(--ink-soft); }
+.subnav .group:first-child { margin-top: 0; }
 @media (max-width: 46rem) {
   .subnav { justify-content: center; gap: var(--f5); }
+  .subnav .group { text-align: center; }
   .subnav button { padding: var(--f3) var(--f8); letter-spacing: .06em; white-space: nowrap; }
   .subnav .long { display: none; }
 }
@@ -2722,11 +2727,12 @@ Decomposition methods and solvers for large-scale
   <div class="grid">
     <h2><a href="/art" data-l="en" data-section="art">Art</a><a href="/arte" data-l="it" lang="it" data-section="art">Arte</a></h2>
     <div class="body">
-      <p data-l="en">Paintings and music made with generative models that I train and guide, grouped in exhibitions each of which is devoted to one painter and to the way of seeing of that painter.</p>
-      <p data-l="it" lang="it">Quadri e musica fatti con modelli generativi che addestro e guido, raccolti in mostre dedicate ciascuna a un pittore e al suo modo di vedere.</p>
+      <p data-l="en">Paintings and music made with generative models that I train and guide, grouped in exhibitions: some devoted to a single painter and his way of seeing, others built around a theme.</p>
+      <p data-l="it" lang="it">Quadri e musica fatti con modelli generativi che addestro e guido, raccolti in mostre: alcune dedicate a un singolo pittore e al suo modo di vedere, altre costruite attorno a un tema.</p>
       <p class="materico" data-l="en">Each work on this page, as well as a work made to measure, can be ordered as a textured 3D print that reproduces the relief of the brushstrokes, made in collaboration with <a href="https://materico.it/">Materico</a>; to order one, write to me at <a href="mailto:donato.meoli@outlook.com?subject=Stampa%203D%20Materico">donato.meoli@outlook.com</a> or use the link shown under a work when it is open.</p>
       <p class="materico" data-l="it" lang="it">Puoi ordinare ogni opera di questa pagina, e anche un'opera su misura, come stampa 3D materica che riproduce il rilievo delle pennellate, realizzata in collaborazione con <a href="https://materico.it/">Materico</a>; per ordinarla scrivimi a <a href="mailto:donato.meoli@outlook.com?subject=Stampa%203D%20Materico">donato.meoli@outlook.com</a> oppure usa il link che compare sotto un'opera quando è aperta.</p>
       <div class="subnav" role="tablist">
+        <span class="group"><span data-l="en">By painter</span><span data-l="it" lang="it">Per autore</span></span>
         <button type="button" role="tab" data-sub="modigliani">Modigliani <span class="count">12</span></button>
         <button type="button" role="tab" data-sub="van_gogh">Van Gogh <span class="count">11</span></button>
         <button type="button" role="tab" data-sub="munch">Munch <span class="count">11</span></button>
@@ -2736,11 +2742,14 @@ Decomposition methods and solvers for large-scale
         <button type="button" role="tab" data-sub="josephson">Josephson <span class="count">9</span></button>
         <button type="button" role="tab" data-sub="monet">Monet <span class="count">9</span></button>
         <button type="button" role="tab" data-sub="cezanne">Cézanne <span class="count">11</span></button>
+        <span class="group"><span data-l="en">Themed shows</span><span data-l="it" lang="it">Mostre a tema</span></span>
         <button type="button" role="tab" data-sub="concetti"><span data-l="en">Concepts</span><span data-l="it" lang="it">Concetti</span> <span class="count">13</span></button>
         <button type="button" role="tab" data-sub="emozioni"><span data-l="en">Emotions</span><span data-l="it" lang="it">Emozioni</span> <span class="count">16</span></button>
       </div>
       <div class="sub" data-sub="modigliani" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Amedeo Modigliani</span><span data-l="it" lang="it">Da Amedeo Modigliani</span></p>
+      <p class="lede" data-l="en">Modigliani sees the face as a gentle elongated mask, the neck as a stem, the eyes often without a pupil, in a continuous line that comes from sculpture. These works come from a model I trained on his portraits and look for the same suspended grace; each can be had as a textured relief print.</p>
+      <p class="lede" data-l="it" lang="it">Modigliani guarda il volto come una maschera dolce e allungata, il collo come uno stelo, gli occhi spesso senza pupilla, in una linea continua che viene dalla scultura. Queste opere nascono da un modello che ho addestrato sui suoi ritratti e ne cercano la stessa grazia sospesa; ognuna si può avere come stampa materica in rilievo.</p>
       <div class="gallery">
         <figure><button type="button" data-full="/assets/art/modigliani/modigliani_cappello_s1.webp" data-hd="/assets/art/modigliani/hd/modigliani_cappello_s1.jpg" data-buy><img src="/assets/art/modigliani/modigliani_cappello_s1.webp" width="639" height="900" alt="Man with a Hat, after Amedeo Modigliani" data-alt-it="Uomo con cappello, da Amedeo Modigliani" loading="lazy"></button><figcaption><span data-l="en">Man with a Hat</span><span data-l="it" lang="it">Uomo con cappello</span></figcaption></figure>
         <figure><button type="button" data-full="/assets/art/modigliani/modigliani_treccia_s1.webp" data-hd="/assets/art/modigliani/hd/modigliani_treccia_s1.jpg" data-buy><img src="/assets/art/modigliani/modigliani_treccia_s1.webp" width="639" height="900" alt="Young Woman with a Braid, after Amedeo Modigliani" data-alt-it="Giovane donna con treccia, da Amedeo Modigliani" loading="lazy"></button><figcaption><span data-l="en">Young Woman with a Braid</span><span data-l="it" lang="it">Giovane donna con treccia</span></figcaption></figure>
@@ -2758,6 +2767,8 @@ Decomposition methods and solvers for large-scale
       </div>
       <div class="sub" data-sub="van_gogh" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Vincent van Gogh</span><span data-l="it" lang="it">Da Vincent van Gogh</span></p>
+      <p class="lede" data-l="en">Van Gogh presses pure color in thick swirling strokes and makes a field or a sky vibrate as if it were breathing. The works come from a model trained on his paintings and keep that impasto and movement; each can be reproduced as a textured print that follows the relief of the brushwork.</p>
+      <p class="lede" data-l="it" lang="it">Van Gogh preme il colore puro in pennellate spesse e vorticose e fa vibrare un campo o un cielo come se respirassero. Le opere vengono da un modello addestrato sui suoi quadri e ne tengono l'impasto e il movimento; ognuna è riproducibile come stampa materica che segue il rilievo delle pennellate.</p>
       <div class="gallery">
         <figure><button type="button" data-full="/assets/art/van_gogh/van_gogh_mietitura_s1.webp" data-hd="/assets/art/van_gogh/hd/van_gogh_mietitura_s1.jpg" data-buy><img src="/assets/art/van_gogh/van_gogh_mietitura_s1.webp" width="900" height="639" alt="Harvest at Noon, after Vincent van Gogh" data-alt-it="Mietitura a mezzogiorno, da Vincent van Gogh" loading="lazy"></button><figcaption><span data-l="en">Harvest at Noon</span><span data-l="it" lang="it">Mietitura a mezzogiorno</span></figcaption></figure>
         <figure><button type="button" data-full="/assets/art/van_gogh/van_gogh_ulivi_s1.webp" data-hd="/assets/art/van_gogh/hd/van_gogh_ulivi_s1.jpg" data-buy><img src="/assets/art/van_gogh/van_gogh_ulivi_s1.webp" width="900" height="639" alt="Olive Grove in the Wind, after Vincent van Gogh" data-alt-it="Uliveto nel vento, da Vincent van Gogh" loading="lazy"></button><figcaption><span data-l="en">Olive Grove in the Wind</span><span data-l="it" lang="it">Uliveto nel vento</span></figcaption></figure>
@@ -2774,6 +2785,8 @@ Decomposition methods and solvers for large-scale
       </div>
       <div class="sub" data-sub="munch" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Edvard Munch</span><span data-l="it" lang="it">Da Edvard Munch</span></p>
+      <p class="lede" data-l="en">Munch paints the emotion before the scene: anxiety, jealousy, the scream become wavering lines and pressing colors. Trained on his works, the model looks for that inner tension; each piece can be ordered as a textured relief print.</p>
+      <p class="lede" data-l="it" lang="it">Munch dipinge l'emozione prima della scena: l'ansia, la gelosia, il grido diventano linee che ondeggiano e colori che premono. Addestrato sulle sue opere, il modello cerca quella tensione interiore; ogni pezzo si può ordinare come stampa materica in rilievo.</p>
       <div class="gallery">
         <figure><button type="button" data-full="/assets/art/munch/munch_operai_s2.webp" data-hd="/assets/art/munch/hd/munch_operai_s2.jpg" data-buy><img src="/assets/art/munch/munch_operai_s2.webp" width="900" height="639" alt="Workers Returning Home, after Edvard Munch" data-alt-it="Operai che tornano a casa, da Edvard Munch" loading="lazy"></button><figcaption><span data-l="en">Workers Returning Home</span><span data-l="it" lang="it">Operai che tornano a casa</span></figcaption></figure>
         <figure><button type="button" data-full="/assets/art/munch/munch_aratura_s2.webp" data-hd="/assets/art/munch/hd/munch_aratura_s2.jpg" data-buy><img src="/assets/art/munch/munch_aratura_s2.webp" width="900" height="639" alt="Horses Ploughing, after Edvard Munch" data-alt-it="Cavalli all&#x27;aratro, da Edvard Munch" loading="lazy"></button><figcaption><span data-l="en">Horses Ploughing</span><span data-l="it" lang="it">Cavalli all&#x27;aratro</span></figcaption></figure>
@@ -2790,6 +2803,8 @@ Decomposition methods and solvers for large-scale
       </div>
       <div class="sub" data-sub="kirchner" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Ernst Ludwig Kirchner</span><span data-l="it" lang="it">Da Ernst Ludwig Kirchner</span></p>
+      <p class="lede" data-l="en">Kirchner, among the founders of Die Brücke, cuts the figure with nervous angles and acid colors and brings the fever of the city onto the canvas. The model trained on his works takes up that expressionist edge; each is available as a textured relief print.</p>
+      <p class="lede" data-l="it" lang="it">Kirchner, fra i fondatori di Die Brücke, taglia la figura con angoli nervosi e colori acidi e porta in tela la febbre della città. Il modello addestrato sulle sue opere ne riprende lo spigolo espressionista; ognuna è disponibile come stampa materica in rilievo.</p>
       <div class="gallery">
         <figure><button type="button" data-full="/assets/art/kirchner/kirchner_neve_s3.webp" data-hd="/assets/art/kirchner/hd/kirchner_neve_s3.jpg" data-buy><img src="/assets/art/kirchner/kirchner_neve_s3.webp" width="900" height="639" alt="Snow in the Valley, after Ernst Ludwig Kirchner" data-alt-it="Neve nella valle, da Ernst Ludwig Kirchner" loading="lazy"></button><figcaption><span data-l="en">Snow in the Valley</span><span data-l="it" lang="it">Neve nella valle</span></figcaption></figure>
         <figure><button type="button" data-full="/assets/art/kirchner/kirchner_contadino_s3.webp" data-hd="/assets/art/kirchner/hd/kirchner_contadino_s3.jpg" data-buy><img src="/assets/art/kirchner/kirchner_contadino_s3.webp" width="639" height="900" alt="Mountain Farmer, after Ernst Ludwig Kirchner" data-alt-it="Contadino di montagna, da Ernst Ludwig Kirchner" loading="lazy"></button><figcaption><span data-l="en">Mountain Farmer</span><span data-l="it" lang="it">Contadino di montagna</span></figcaption></figure>
@@ -2806,6 +2821,8 @@ Decomposition methods and solvers for large-scale
       </div>
       <div class="sub" data-sub="leonardo" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Leonardo da Vinci</span><span data-l="it" lang="it">Da Leonardo da Vinci</span></p>
+      <p class="lede" data-l="en">Leonardo dissolves outlines into sfumato and holds together the eye of the anatomist and that of the poet. The model trained on his drawings and paintings looks for that softness and precision; each work can be had as a textured print.</p>
+      <p class="lede" data-l="it" lang="it">Leonardo scioglie i contorni nello sfumato e tiene insieme lo sguardo dell'anatomista e quello del poeta. Il modello addestrato sui suoi disegni e dipinti ne cerca la morbidezza e la precisione; ogni opera si può avere come stampa materica.</p>
       <div class="gallery">
         <figure><button type="button" data-full="/assets/art/leonardo/leonardo_vecchio_s2.webp" data-hd="/assets/art/leonardo/hd/leonardo_vecchio_s2.jpg" data-buy><img src="/assets/art/leonardo/leonardo_vecchio_s2.webp" width="639" height="900" alt="Head of an Old Man in Profile, after Leonardo da Vinci" data-alt-it="Testa di vecchio di profilo, da Leonardo da Vinci" loading="lazy"></button><figcaption><span data-l="en">Head of an Old Man in Profile</span><span data-l="it" lang="it">Testa di vecchio di profilo</span></figcaption></figure>
         <figure><button type="button" data-full="/assets/art/leonardo/leonardo_cavallo_s2.webp" data-hd="/assets/art/leonardo/hd/leonardo_cavallo_s2.jpg" data-buy><img src="/assets/art/leonardo/leonardo_cavallo_s2.webp" width="639" height="900" alt="Study of a Standing Horse, after Leonardo da Vinci" data-alt-it="Studio di cavallo in piedi, da Leonardo da Vinci" loading="lazy"></button><figcaption><span data-l="en">Study of a Standing Horse</span><span data-l="it" lang="it">Studio di cavallo in piedi</span></figcaption></figure>
@@ -2820,6 +2837,8 @@ Decomposition methods and solvers for large-scale
       </div>
       <div class="sub" data-sub="hill" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Carl Fredrik Hill</span><span data-l="it" lang="it">Da Carl Fredrik Hill</span></p>
+      <p class="lede" data-l="en">Carl Fredrik Hill painted clear landscapes first and then, after his illness, dense visions in crayon and chalk, full of dreamed animals and architecture. The model trained on his works keeps that obsessive intensity; each can be reproduced as a textured print.</p>
+      <p class="lede" data-l="it" lang="it">Carl Fredrik Hill dipinge prima paesaggi limpidi e poi, dopo la malattia, visioni fittissime a matita e gessetto, piene di animali e architetture sognate. Il modello addestrato sulle sue opere ne tiene l'intensità ossessiva; ognuna è riproducibile come stampa materica.</p>
       <div class="gallery">
         <figure><button type="button" data-full="/assets/art/hill/hill_bassa_marea_s1.webp" data-hd="/assets/art/hill/hd/hill_bassa_marea_s1.jpg" data-buy><img src="/assets/art/hill/hill_bassa_marea_s1.webp" width="900" height="639" alt="Low Tide in Normandy, after Carl Fredrik Hill" data-alt-it="Bassa marea in Normandia, da Carl Fredrik Hill" loading="lazy"></button><figcaption><span data-l="en">Low Tide in Normandy</span><span data-l="it" lang="it">Bassa marea in Normandia</span></figcaption></figure>
         <figure><button type="button" data-full="/assets/art/hill/hill_massi_s2.webp" data-hd="/assets/art/hill/hd/hill_massi_s2.jpg" data-buy><img src="/assets/art/hill/hill_massi_s2.webp" width="900" height="639" alt="Boulders in the Forest of Fontainebleau, after Carl Fredrik Hill" data-alt-it="Massi nella foresta di Fontainebleau, da Carl Fredrik Hill" loading="lazy"></button><figcaption><span data-l="en">Boulders in the Forest of Fontainebleau</span><span data-l="it" lang="it">Massi nella foresta di Fontainebleau</span></figcaption></figure>
@@ -2834,6 +2853,8 @@ Decomposition methods and solvers for large-scale
       </div>
       <div class="sub" data-sub="josephson" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Ernst Josephson</span><span data-l="it" lang="it">Da Ernst Josephson</span></p>
+      <p class="lede" data-l="en">Ernst Josephson, a portraitist and teller of Nordic folklore, in his last years of illness drew floating figures and enchanted lines. Trained on his works, the model looks for that restless grace; each piece can be ordered as a textured relief print.</p>
+      <p class="lede" data-l="it" lang="it">Ernst Josephson, ritrattista e narratore del folklore nordico, negli ultimi anni di malattia disegna figure fluttuanti e linee incantate. Addestrato sulle sue opere, il modello cerca quella grazia inquieta; ogni pezzo si può ordinare come stampa materica in rilievo.</p>
       <div class="gallery">
         <figure><button type="button" data-full="/assets/art/josephson/josephson_seta_nera_s3.webp" data-hd="/assets/art/josephson/hd/josephson_seta_nera_s3.jpg" data-buy><img src="/assets/art/josephson/josephson_seta_nera_s3.webp" width="639" height="900" alt="Lady in Black Silk, after Ernst Josephson" data-alt-it="Signora in seta nera, da Ernst Josephson" loading="lazy"></button><figcaption><span data-l="en">Lady in Black Silk</span><span data-l="it" lang="it">Signora in seta nera</span></figcaption></figure>
         <figure><button type="button" data-full="/assets/art/josephson/josephson_chitarrista_s3.webp" data-hd="/assets/art/josephson/hd/josephson_chitarrista_s3.jpg" data-buy><img src="/assets/art/josephson/josephson_chitarrista_s3.webp" width="639" height="900" alt="Spanish Guitar Player, after Ernst Josephson" data-alt-it="Chitarrista spagnolo, da Ernst Josephson" loading="lazy"></button><figcaption><span data-l="en">Spanish Guitar Player</span><span data-l="it" lang="it">Chitarrista spagnolo</span></figcaption></figure>
@@ -2848,6 +2869,8 @@ Decomposition methods and solvers for large-scale
       </div>
       <div class="sub" data-sub="monet" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Claude Monet</span><span data-l="it" lang="it">Da Claude Monet</span></p>
+      <p class="lede" data-l="en">Monet chases the light more than the thing, painting the same subject at different hours until only the color of the air remains. The model trained on his canvases looks for that moving light; each work is available as a textured print.</p>
+      <p class="lede" data-l="it" lang="it">Monet insegue la luce più che la cosa e dipinge lo stesso soggetto a ore diverse finché resta solo il colore dell'aria. Il modello addestrato sulle sue tele ne cerca la luce mobile; ogni opera è disponibile come stampa materica.</p>
       <div class="gallery">
         <figure><button type="button" data-full="/assets/art/monet/monet_nebbia_s3.webp" data-hd="/assets/art/monet/hd/monet_nebbia_s3.jpg" data-buy><img src="/assets/art/monet/monet_nebbia_s3.webp" width="900" height="639" alt="Morning Mist on the River, after Claude Monet" data-alt-it="Nebbia mattutina sul fiume, da Claude Monet" loading="lazy"></button><figcaption><span data-l="en">Morning Mist on the River</span><span data-l="it" lang="it">Nebbia mattutina sul fiume</span></figcaption></figure>
         <figure><button type="button" data-full="/assets/art/monet/monet_neve_s3.webp" data-hd="/assets/art/monet/hd/monet_neve_s3.jpg" data-buy><img src="/assets/art/monet/monet_neve_s3.webp" width="900" height="639" alt="Snow at the Farm, after Claude Monet" data-alt-it="Neve alla fattoria, da Claude Monet" loading="lazy"></button><figcaption><span data-l="en">Snow at the Farm</span><span data-l="it" lang="it">Neve alla fattoria</span></figcaption></figure>
@@ -2862,6 +2885,8 @@ Decomposition methods and solvers for large-scale
       </div>
       <div class="sub" data-sub="cezanne" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Paul Cézanne</span><span data-l="it" lang="it">Da Paul Cézanne</span></p>
+      <p class="lede" data-l="en">Cézanne builds the world in planes and volumes, seeking the structure beneath appearance and opening the way to the twentieth century. The model trained on his paintings takes up that constructed order; each can be had as a textured relief print.</p>
+      <p class="lede" data-l="it" lang="it">Cézanne costruisce il mondo per piani e volumi e cerca la struttura sotto l'apparenza, aprendo la strada al Novecento. Il modello addestrato sui suoi quadri ne riprende l'ordine costruito; ognuna si può avere come stampa materica in rilievo.</p>
       <div class="gallery">
         <figure><button type="button" data-full="/assets/art/cezanne/cezanne_cava_s1.webp" data-hd="/assets/art/cezanne/hd/cezanne_cava_s1.jpg" data-buy><img src="/assets/art/cezanne/cezanne_cava_s1.webp" width="900" height="639" alt="The Quarry, after Paul Cézanne" data-alt-it="La cava, da Paul Cézanne" loading="lazy"></button><figcaption><span data-l="en">The Quarry</span><span data-l="it" lang="it">La cava</span></figcaption></figure>
         <figure><button type="button" data-full="/assets/art/cezanne/cezanne_castagni_s1.webp" data-hd="/assets/art/cezanne/hd/cezanne_castagni_s1.jpg" data-buy><img src="/assets/art/cezanne/cezanne_castagni_s1.webp" width="900" height="639" alt="Avenue of Chestnut Trees, after Paul Cézanne" data-alt-it="Viale di castagni, da Paul Cézanne" loading="lazy"></button><figcaption><span data-l="en">Avenue of Chestnut Trees</span><span data-l="it" lang="it">Viale di castagni</span></figcaption></figure>
