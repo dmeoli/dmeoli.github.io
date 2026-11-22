@@ -44,6 +44,16 @@
   .nest { padding-left: 16px; }
   .two { display: grid; gap: 22px; }
   @media (min-width: 820px) { .two { grid-template-columns: 1.1fr .9fr; align-items: start; } }
+  .graph { overflow-x: auto; margin: 6px 0 2px; }
+  .graph svg { width: 100%; max-width: 520px; height: auto; display: block; }
+  .g-node { fill: var(--panel); stroke: var(--rule); stroke-width: 1.5; }
+  .g-node.cur { stroke: var(--accent); stroke-width: 2.6; }
+  .g-acc { fill: none; stroke: var(--ink-soft); stroke-width: 1.1; }
+  .g-lab-state { fill: var(--ink); font: 500 13px 'IBM Plex Mono', monospace; text-anchor: middle; dominant-baseline: central; }
+  .g-edge { fill: none; stroke: var(--rule); stroke-width: 1.4; }
+  .g-edge.cur { stroke: var(--accent); stroke-width: 2.4; }
+  .g-elab { fill: var(--ink-soft); font: 11px 'IBM Plex Mono', monospace; text-anchor: middle; }
+  .g-elab.cur { fill: var(--accent); }
 </style>
 </head>
 <body class="wide" data-game="turing">
@@ -70,6 +80,10 @@
       <span class="verdict" id="verdict"></span>
     </div>
     <div class="tape" id="tape"></div>
+  </div>
+  <div>
+    <h2 class="part"><span data-l="en">State diagram</span><span data-l="it" lang="it">Grafo degli stati</span></h2>
+    <div class="graph" id="graph"></div>
   </div>
   <div class="two">
     <div>
@@ -231,13 +245,14 @@ function draw() {
   $('st').textContent = state;
   $('iter').textContent = steps;
   const rl = M.rules.get(lastKey);
-  $('rule').textContent = rl ? `${lastKey.split(',')[0]},${lastKey.split(',')[1]} → ${rl.wr},${rl.mv},${rl.nx}` : '—';
+  $('rule').textContent = rl && lastKey ? `${lastKey.split(',')[0]},${lastKey.split(',')[1]} → ${rl.wr},${rl.mv},${rl.nx}` : '—';
   const v = $('verdict'); v.className = 'verdict';
   v.textContent = '';
   if (status === 'accept') { v.classList.add('acc'); v.append(span('en', '✓ accepted'), span('it', '✓ accettato')); }
   else if (status === 'reject') { v.classList.add('rej'); v.append(span('en', '✗ rejected'), span('it', '✗ rifiutato')); }
   else if (status === 'cap') { v.classList.add('rej'); v.append(span('en', 'halted at ' + CAP + ' steps'), span('it', 'fermata a ' + CAP + ' passi')); }
   drawTable();
+  drawGraph();
 }
 
 function drawTable() {
@@ -255,6 +270,57 @@ function drawTable() {
   w.append(t);
 }
 const disp = s => s === BLANK ? '␣' : s;
+
+// ---- the state diagram (nodes = states, edges = transitions), after the
+// convention of Semeraro's book: a double circle on an accepting state, an
+// incoming arrow on the start state, edges labelled read -> write, move ----
+function gesc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+function drawGraph() {
+  const sts = M.states.slice();
+  const add = s => { if (!sts.includes(s)) sts.push(s); };
+  M.order.forEach(r => add(r.nx)); M.accept.forEach(add);
+  const n = Math.max(1, sts.length), rad = 20;
+  const R = Math.max(66, 12 * n), cx = R + 92, cy = R + 60, W = 2 * cx, H = 2 * cy;
+  const pos = {};
+  sts.forEach((s, i) => { const a = -Math.PI / 2 + 2 * Math.PI * i / n; pos[s] = [cx + R * Math.cos(a), cy + R * Math.sin(a)]; });
+  const edges = {};
+  M.order.forEach(r => { const k = r.st + '>' + r.nx; (edges[k] || (edges[k] = { st: r.st, nx: r.nx, labs: [] })).labs.push(`${disp(r.rd)}→${disp(r.wr)},${r.mv}`); });
+  const aNx = lastKey && M.rules.get(lastKey) ? M.rules.get(lastKey).nx : null;
+  const aSt = lastKey ? lastKey.split(',')[0] : null;
+  const p = [`<svg viewBox="0 0 ${W.toFixed(0)} ${H.toFixed(0)}" role="img" aria-label="state diagram">`,
+    '<defs><marker id="arr" markerWidth="9" markerHeight="9" refX="7.5" refY="3" orient="auto"><path d="M0,0 L7.5,3 L0,6 z" fill="var(--rule)"/></marker>',
+    '<marker id="arrc" markerWidth="9" markerHeight="9" refX="7.5" refY="3" orient="auto"><path d="M0,0 L7.5,3 L0,6 z" fill="var(--accent)"/></marker></defs>'];
+  const f = x => x.toFixed(1);
+  for (const k in edges) {
+    const e = edges[k], cur = e.st === aSt && e.nx === aNx, cl = cur ? ' cur' : '', mk = cur ? 'arrc' : 'arr';
+    const [ax, ay] = pos[e.st], [bx, by] = pos[e.nx], lab = gesc(e.labs.join(' '));
+    if (e.st === e.nx) {
+      let ox = ax - cx, oy = ay - cy, l = Math.hypot(ox, oy) || 1; ox /= l; oy /= l; const px = -oy, py = ox;
+      const s1x = ax + ox * rad * .3 + px * rad * .8, s1y = ay + oy * rad * .3 + py * rad * .8;
+      const s2x = ax + ox * rad * .3 - px * rad * .8, s2y = ay + oy * rad * .3 - py * rad * .8;
+      const c1x = ax + ox * (rad + 46) + px * rad, c1y = ay + oy * (rad + 46) + py * rad;
+      const c2x = ax + ox * (rad + 46) - px * rad, c2y = ay + oy * (rad + 46) - py * rad;
+      p.push(`<path class="g-edge${cl}" d="M${f(s1x)},${f(s1y)} C${f(c1x)},${f(c1y)} ${f(c2x)},${f(c2y)} ${f(s2x)},${f(s2y)}" marker-end="url(#${mk})"/>`);
+      p.push(`<text class="g-elab${cl}" x="${f(ax + ox * (rad + 56))}" y="${f(ay + oy * (rad + 56))}">${lab}</text>`);
+    } else {
+      let dx = bx - ax, dy = by - ay, L = Math.hypot(dx, dy) || 1; dx /= L; dy /= L; const px = -dy, py = dx;
+      const bend = 24 * (e.st < e.nx ? 1 : -1);
+      const sx = ax + dx * rad, sy = ay + dy * rad, ex = bx - dx * (rad + 4), ey = by - dy * (rad + 4);
+      const mx = (sx + ex) / 2 + px * bend, my = (sy + ey) / 2 + py * bend;
+      p.push(`<path class="g-edge${cl}" d="M${f(sx)},${f(sy)} Q${f(mx)},${f(my)} ${f(ex)},${f(ey)}" marker-end="url(#${mk})"/>`);
+      p.push(`<text class="g-elab${cl}" x="${f((sx + ex) / 2 + px * bend * 1.6)}" y="${f((sy + ey) / 2 + py * bend * 1.6)}">${lab}</text>`);
+    }
+  }
+  for (const s of sts) {
+    const [x, y] = pos[s];
+    if (s === M.start) { p.push(`<path class="g-edge" d="M${f(x - rad - 16)},${f(y)} L${f(x - rad - 1)},${f(y)}" marker-end="url(#arr)"/>`); }
+    p.push(`<circle class="g-node${s === state ? ' cur' : ''}" cx="${f(x)}" cy="${f(y)}" r="${rad}"/>`);
+    if (M.accept.has(s)) p.push(`<circle class="g-acc" cx="${f(x)}" cy="${f(y)}" r="${rad - 4}"/>`);
+    p.push(`<text class="g-lab-state" x="${f(x)}" y="${f(y)}">${gesc(s)}</text>`);
+  }
+  p.push('</svg>');
+  $('graph').innerHTML = p.join('');
+}
 
 // ---- the Chomsky hierarchy ----
 const HIER = [
