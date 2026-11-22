@@ -867,5 +867,261 @@
    "it": "comunicando (Iconclass 11Q732451)",
    "en": "first communicant (Iconclass 11Q732451)"
   }
+ },
+ "gioia": {
+  "series": {
+   "it": "Emozioni",
+   "en": "Emotions"
+  },
+  "polarity": {
+   "it": "positiva",
+   "en": "positive"
+  },
+  "it": "La gioia è una leggerezza senza difese, un calore che sale e si allarga senza trovare resistenza. Sulla tela diventa giallo cadmio saturo, arancio caldo e una luce bianca, con pennellate aperte che si irradiano verso l'alto.",
+  "en": "Joy is an unguarded lightness, a warmth that rises and spreads without meeting resistance. On the canvas it becomes saturated cadmium yellow, warm orange and a white light, with open strokes that radiate upward.",
+  "plutchik": {
+   "it": "Gioia, si scontra con Tristezza",
+   "en": "Joy, it clashes with Sadness"
+  }
+ },
+ "amore": {
+  "series": {
+   "it": "Emozioni",
+   "en": "Emotions"
+  },
+  "polarity": {
+   "it": "positiva",
+   "en": "positive"
+  },
+  "it": "L'amore è l'essere attratti verso un altro e tenuti, un calore che avvolge. Qui prende il cremisi profondo, il rosa e l'oro caldo, in curve morbide che si avvolgono l'una nell'altra.",
+  "en": "Love is being drawn toward another and held, a warmth that encloses. Here it takes deep crimson, rose pink and warm gold, in soft curves that wrap around one another.",
+  "plutchik": {
+   "it": "Gioia e Fiducia, si scontra con Disgusto, Tristezza",
+   "en": "Joy and Trust, it clashes with Disgust, Sadness"
+  }
+ },
+ "tenerezza": {
+  "series": {
+   "it": "Emozioni",
+   "en": "Emotions"
+  },
+  "polarity": {
+   "it": "positiva",
+   "en": "positive"
+  },
+  "it": "La tenerezza è una cura protettiva e lieve, il desiderio di tenere con delicatezza qualcosa di fragile. La tela la rende in viola tenue, grigio caldo e rosa polveroso, con tocchi che si inclinano l'uno verso l'altro.",
+  "en": "Tenderness is a soft protective care, the wish to hold something fragile gently. The canvas renders it in soft violet, warm gray and dusty rose, with strokes that lean toward each other.",
+  "plutchik": {
+   "it": "Fiducia, si scontra con Disgusto",
+   "en": "Trust, it clashes with Disgust"
+  }
+ },
+ "gratitudine": {
+  "series": {
+   "it": "Emozioni",
+   "en": "Emotions"
+  },
+  "polarity": {
+   "it": "positiva",
+   "en": "positive"
+  },
+  "it": "La gratitudine è una pienezza quieta, un calore dovuto e restituito. Sulla tela si posa in oro miele e verde tenue, con pennellate calme che si aprono verso l'esterno.",
+  "en": "Gratitude is a quiet fullness, a warmth owed and given back. On the canvas it settles into honey gold and soft green, with calm strokes that open outward.",
+  "plutchik": {
+   "it": "Gioia e Fiducia, si scontra con Disgusto, Tristezza",
+   "en": "Joy and Trust, it clashes with Disgust, Sadness"
+  }
+ },
+ "serenita": {
+  "series": {
+   "it": "Emozioni",
+   "en": "Emotions"
+  },
+  "polarity": {
+   "it": "positiva",
+   "en": "positive"
+  },
+  "it": "La serenità è una calma ampia, in cui nulla tira e il respiro va lento e uguale. Qui diventa azzurro pallido, verde salvia e bianco morbido, in pennellate lunghe e orizzontali, lente e regolari.",
+  "en": "Serenity is a wide calm, where nothing pulls and the breath runs slow and even. Here it becomes pale blue, sage green and soft white, in long horizontal strokes, slow and even.",
+  "plutchik": {
+   "it": "Serenità, si scontra con Tristezza",
+   "en": "Serenity, it clashes with Sadness"
+  }
+ },
+ "entusiasmo": {
+  "series": {
+   "it": "Emozioni",
+   "en": "Emotions"
+  },
+  "polarity": {
+   "it": "positiva",
+   "en": "positive"
+  },
+  "it": "L'entusiasmo è uno slancio in avanti, un'energia che salta verso ciò che sta davanti. La tela lo porta in arancio vivo, magenta e giallo limone, con pennellate rapide che scattano in avanti.",
+  "en": "Enthusiasm is an eager forward rush, an energy that leaps toward what lies ahead. The canvas carries it in vivid orange, magenta and lemon yellow, with fast strokes that spring forward.",
+  "plutchik": {
+   "it": "Estasi e Vigilanza, si scontra con Tristezza, Sorpresa",
+   "en": "Ecstasy and Vigilance, it clashes with Sadness, Surprise"
+  }
+ },
+ "tristezza": {
+  "series": {
+   "it": "Emozioni",
+   "en": "Emotions"
+  },
+  "polarity": {
+   "it": "negativa",
+   "en": "negative"
+  },
+  "it": "La tristezza è una pesantezza che tira verso il basso, con il colore che si scarica e tutto che affonda piano. Qui è grigio, azzurro spento e viola slavato, con colature pesanti verso il basso e la materia che cola.",
+  "en": "Sadness is a heaviness that pulls downward, the color draining and everything sinking slowly. Here it is gray, faded blue and washed-out violet, with heavy drips running down and the paint sagging.",
+  "plutchik": {
+   "it": "Tristezza, si scontra con Gioia",
+   "en": "Sadness, it clashes with Joy"
+  }
+ },
+ "malinconia": {
+  "series": {
+   "it": "Emozioni",
+   "en": "Emotions"
+  },
+  "polarity": {
+   "it": "negativa",
+   "en": "negative"
+  },
+  "it": "La malinconia è una tristezza che indugia, velata, sopra una perdita goduta a metà. Sulla tela diventa azzurro fumoso, lavanda e rosa sbiadito, in veli sottili che derivano lenti.",
+  "en": "Melancholy is a lingering sorrow, veiled, over a loss half enjoyed. On the canvas it becomes dusky blue, lavender and faded rose, in thin veils that drift slowly.",
+  "plutchik": {
+   "it": "Pensosità, si scontra con Gioia",
+   "en": "Pensiveness, it clashes with Joy"
+  }
+ },
+ "angoscia": {
+  "series": {
+   "it": "Emozioni",
+   "en": "Emotions"
+  },
+  "polarity": {
+   "it": "negativa",
+   "en": "negative"
+  },
+  "it": "L'angoscia è un timore stretto e nervoso, con la mente che vibra senza trovare pace. La tela la rende in verde acido, viola elettrico e grigio nervoso, in scarabocchi aggrovigliati e linee spezzate che tremano.",
+  "en": "Anguish is a tight nervous dread, the mind vibrating with no way to settle. The canvas renders it in acid green, electric violet and nervous gray, in tangled scribbles and broken lines that jitter.",
+  "plutchik": {
+   "it": "Terrore, si scontra con Rabbia",
+   "en": "Terror, it clashes with Anger"
+  }
+ },
+ "paura": {
+  "series": {
+   "it": "Emozioni",
+   "en": "Emotions"
+  },
+  "polarity": {
+   "it": "negativa",
+   "en": "negative"
+  },
+  "it": "La paura è un ritrarsi freddo, con il corpo che si prepara contro il buio. Qui è nero, blu freddo e grigio malato, con segni che si rimpiccioliscono e arretrano nell'ombra, i bordi frastagliati.",
+  "en": "Fear is a cold shrinking back, the body bracing against the dark. Here it is black, cold dark blue and sickly gray, with marks that shrink and retreat into shadow, the edges jagged.",
+  "plutchik": {
+   "it": "Paura, si scontra con Rabbia",
+   "en": "Fear, it clashes with Anger"
+  }
+ },
+ "ira": {
+  "series": {
+   "it": "Emozioni",
+   "en": "Emotions"
+  },
+  "polarity": {
+   "it": "negativa",
+   "en": "negative"
+  },
+  "it": "L'ira è una scarica calda e violenta, la spinta a colpire e lacerare. La tela la porta in rosso sangue, nero e arancio bruciato, con sciabolate diagonali e la materia raschiata e incisa.",
+  "en": "Anger is a hot violent surge, the urge to strike and tear. The canvas carries it in blood red, black and burnt orange, with violent diagonal slashes and the paint scraped and gouged.",
+  "plutchik": {
+   "it": "Rabbia, si scontra con Paura",
+   "en": "Anger, it clashes with Fear"
+  }
+ },
+ "disperazione": {
+  "series": {
+   "it": "Emozioni",
+   "en": "Emotions"
+  },
+  "polarity": {
+   "it": "negativa",
+   "en": "negative"
+  },
+  "it": "La disperazione è un crollo senza fondo, con tutto che cede verso l'interno e verso il basso. Qui diventa quasi nero, indaco profondo e cenere, con pennellate che collassano verso il fondo e l'impasto schiacciato.",
+  "en": "Despair is a collapse with no bottom, everything caving inward and down. Here it becomes near black, deep indigo and ash, with strokes that collapse toward the bottom and the impasto crushed.",
+  "plutchik": {
+   "it": "Dolore, si scontra con Gioia",
+   "en": "Grief, it clashes with Joy"
+  }
+ },
+ "vergogna": {
+  "series": {
+   "it": "Emozioni",
+   "en": "Emotions"
+  },
+  "polarity": {
+   "it": "negativa",
+   "en": "negative"
+  },
+  "it": "La vergogna è il desiderio di sparire e non essere visti, con il calore di un volto che si gira. La tela la rende in rosa fangoso e terra d'ombra, con segni che si nascondono sotto veli di materia, cancellati a metà.",
+  "en": "Shame is the wish to hide and go unseen, the heat of a face that turns away. The canvas renders it in muddy rose and dark umber, with marks hiding under veils of paint, half erased.",
+  "plutchik": {
+   "it": "Paura e Disgusto, si scontra con Rabbia, Fiducia",
+   "en": "Fear and Disgust, it clashes with Anger, Trust"
+  }
+ },
+ "gelosia": {
+  "series": {
+   "it": "Emozioni",
+   "en": "Emotions"
+  },
+  "polarity": {
+   "it": "negativa",
+   "en": "negative"
+  },
+  "it": "La gelosia è una morsa aspra che corrode, un calore cupo e possessivo rivolto a un altro. Qui è nero, rosso scuro e viola livido, con segni duri e pesanti premuti dentro la superficie.",
+  "en": "Jealousy is a sour corroding grip, a dark possessive heat turned on another. Here it is black, dark red and bruised purple, with hard heavy marks pressed into the surface.",
+  "plutchik": {
+   "it": "Rabbia e Paura, un conflitto interno di emozioni opposte",
+   "en": "Anger and Fear, an inner conflict of opposing emotions"
+  }
+ },
+ "colpa": {
+  "series": {
+   "it": "Emozioni",
+   "en": "Emotions"
+  },
+  "polarity": {
+   "it": "negativa",
+   "en": "negative"
+  },
+  "it": "La colpa è un rimuginare stretto, con i segni grattati e strofinati come per disfarli. La tela la porta in ocra sporca, marrone livido e grigio, con tratti angusti ripassati più volte.",
+  "en": "Guilt is a cramped turning-over, the marks scratched and rubbed as if to undo them. The canvas carries it in dirty ochre, bruised brown and gray, with cramped marks gone over again and again.",
+  "plutchik": {
+   "it": "Disgusto e Paura, si scontra con Rabbia, Fiducia",
+   "en": "Disgust and Fear, it clashes with Anger, Trust"
+  }
+ },
+ "stupore": {
+  "series": {
+   "it": "Emozioni",
+   "en": "Emotions"
+  },
+  "polarity": {
+   "it": "ambigua",
+   "en": "ambiguous"
+  },
+  "it": "Lo stupore è un'apertura improvvisa, con tutto che esplode luminoso da un solo punto. Qui diventa un bianco acceso e lampi di ciano, in un'esplosione di segni che parte da un centro.",
+  "en": "Wonder is a sudden opening, everything bursting bright from one point. Here it becomes a vivid white and flashes of cyan, in an explosion of marks that springs from one center.",
+  "plutchik": {
+   "it": "Stupore, si scontra con Attesa",
+   "en": "Amazement, it clashes with Anticipation"
+  }
  }
 }
