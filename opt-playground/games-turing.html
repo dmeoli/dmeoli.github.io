@@ -339,16 +339,16 @@ function drawGraph() {
 
 // ---- the Chomsky hierarchy ----
 const HIER = [
-  { lvl: 0, en: 'Type 0 — recursively enumerable', it: 'Tipo 0 — ricorsivamente enumerabili', aut: 'Turing machine',
+  { lvl: 0, en: 'Type 0, recursively enumerable', it: 'Tipo 0, ricorsivamente enumerabili', aut: 'Turing machine',
     fen: 'any production α → β, α non-empty', fit: 'produzioni α → β qualunque, α non vuota',
     exen: 'every language a program can accept', exit: 'ogni linguaggio che un programma può accettare' },
-  { lvl: 1, en: 'Type 1 — context-sensitive', it: 'Tipo 1 — dipendenti dal contesto', aut: 'linear bounded automaton',
+  { lvl: 1, en: 'Type 1, context-sensitive', it: 'Tipo 1, dipendenti dal contesto', aut: 'linear bounded automaton',
     fen: 'α A β → α γ β, with |γ| ≥ 1', fit: 'α A β → α γ β, con |γ| ≥ 1',
     exen: 'a^n b^n c^n', exit: 'a^n b^n c^n' },
-  { lvl: 2, en: 'Type 2 — context-free', it: 'Tipo 2 — libere dal contesto', aut: 'pushdown automaton',
+  { lvl: 2, en: 'Type 2, context-free', it: 'Tipo 2, libere dal contesto', aut: 'pushdown automaton',
     fen: 'A → γ, a single non-terminal on the left', fit: 'A → γ, un solo non terminale a sinistra',
     exen: 'a^n b^n, balanced brackets', exit: 'a^n b^n, parentesi bilanciate' },
-  { lvl: 3, en: 'Type 3 — regular', it: 'Tipo 3 — regolari', aut: 'finite automaton',
+  { lvl: 3, en: 'Type 3, regular', it: 'Tipo 3, regolari', aut: 'finite automaton',
     fen: 'A → a B or A → a', fit: 'A → a B oppure A → a',
     exen: 'a binary number, identifiers', exit: 'un numero binario, gli identificatori' },
 ];
