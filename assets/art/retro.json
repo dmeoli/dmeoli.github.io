@@ -570,6 +570,10 @@
   "grade": {
    "en": "B, a later hypothesis or a biography without a diagnosis",
    "it": "B, ipotesi a posteriori o biografia senza diagnosi"
+  },
+  "iconography": {
+   "it": "Saturno divora i suoi figli (Iconclass 91B11141)",
+   "en": "Saturn devouring his children (Iconclass 91B11141)"
   }
  },
  "love_bombing_klimt": {
@@ -591,6 +595,10 @@
   "grade": {
    "en": "T, a link of theme or technique only",
    "it": "T, legame solo tematico o tecnico"
+  },
+  "iconography": {
+   "it": "tipologie specifiche di Madonna seduta o in trono (senza altri) (Iconclass 11F423)",
+   "en": "specific types of Madonna's sitting or enthroned (without others) (Iconclass 11F423)"
   }
  },
  "panico_munch": {
@@ -612,6 +620,10 @@
   "grade": {
    "en": "B, a later hypothesis or a biography without a diagnosis",
    "it": "B, ipotesi a posteriori o biografia senza diagnosi"
+  },
+  "iconography": {
+   "it": "'ex voto', oggetto o immagine votiva (Iconclass 11Q611)",
+   "en": "'ex voto', votive image or object (Iconclass 11Q611)"
   }
  },
  "adhd_leonardo": {
@@ -633,6 +645,10 @@
   "grade": {
    "en": "B, a later hypothesis or a biography without a diagnosis",
    "it": "B, ipotesi a posteriori o biografia senza diagnosi"
+  },
+  "iconography": {
+   "it": "l'Annunciazione: Maria, generalmente raffigurata mentre legge, è visitata dall'angelo (talora è presente una donna che origlia) (Iconclass 73A52)",
+   "en": "the Annunciation: Mary, usually reading, is visited by the angel (sometimes a woman overhears the conversation) (Iconclass 73A52)"
   }
  },
  "anoressia_zurbaran": {
@@ -654,6 +670,10 @@
   "grade": {
    "en": "T, a link of theme or technique only",
    "it": "T, legame solo tematico o tecnico"
+  },
+  "iconography": {
+   "it": "reliquie (e reliquiari) (Iconclass 11Q652)",
+   "en": "relics (and reliquaries) (Iconclass 11Q652)"
   }
  },
  "dissociativo_josephson": {
@@ -675,6 +695,10 @@
   "grade": {
    "en": "B, a later hypothesis or a biography without a diagnosis",
    "it": "B, ipotesi a posteriori o biografia senza diagnosi"
+  },
+  "iconography": {
+   "it": "la Trasfigurazione: Mosè ed Elia appaiono ai lati di Cristo sul monte Tabor (Mt. 7, 1-13, Mc. 9, 2-13, Lc. 9, 28-36) (Iconclass 73C713)",
+   "en": "the Transfiguration: Moses and Elijah appear on either side of Christ on Mount Tabor (Matthew 17:1-13; Mark 9:2-13; Luke 9:28-36) (Iconclass 73C713)"
   }
  },
  "doc_hammershoi": {
@@ -696,6 +720,10 @@
   "grade": {
    "en": "T, a link of theme or technique only",
    "it": "T, legame solo tematico o tecnico"
+  },
+  "iconography": {
+   "it": "mani giunte con le dita intrecciate (Iconclass 31A25221)",
+   "en": "hands folded with fingers knit (Iconclass 31A25221)"
   }
  },
  "fobia_sociale_gwen_john": {
@@ -759,6 +787,10 @@
   "grade": {
    "en": "T, a link of theme or technique only",
    "it": "T, legame solo tematico o tecnico"
+  },
+  "iconography": {
+   "it": "(storia di) Narciso (Iconclass 95A(NARCISSUS))",
+   "en": "(story of) Narcissus (Iconclass 95A(NARCISSUS))"
   }
  },
  "bipolare_van_gogh": {
@@ -780,6 +812,10 @@
   "grade": {
    "en": "B, a later hypothesis or a biography without a diagnosis",
    "it": "B, ipotesi a posteriori o biografia senza diagnosi"
+  },
+  "iconography": {
+   "it": "assunzione di Maria ('assumptio corporis'): viene portata in cielo dagli angeli (Iconclass 73E77)",
+   "en": "the assumption of Mary ('assumptio corporis'): she is borne into heaven by angels (Iconclass 73E77)"
   }
  },
  "dipendenza_toulouse_lautrec": {
@@ -801,6 +837,10 @@
   "grade": {
    "en": "A, documented by sources of the time or clinical ones",
    "it": "A, documentato da fonti dell'epoca o cliniche"
+  },
+  "iconography": {
+   "it": "comunicando (Iconclass 11Q732451)",
+   "en": "first communicant (Iconclass 11Q732451)"
   }
  },
  "dipendenza_affettiva_kollwitz": {
@@ -822,6 +862,10 @@
   "grade": {
    "en": "T, a link of theme or technique only",
    "it": "T, legame solo tematico o tecnico"
+  },
+  "iconography": {
+   "it": "comunicando (Iconclass 11Q732451)",
+   "en": "first communicant (Iconclass 11Q732451)"
   }
  }
 }
