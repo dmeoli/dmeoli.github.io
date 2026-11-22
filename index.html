@@ -1178,7 +1178,7 @@ footer {
       <p data-l="en">
         I came to <a class="jump" href="#r-opt" data-to="r-opt"><i>numerical optimization</i></a> from <a class="jump" href="#r-sym" data-to="r-sym"><i>symbolic AI</i></a>, and more precisely from Knowledge
         Representation and Reasoning (KR&amp;R), i.e., expert systems, logic programming,
-        constraint satisfaction and SAT. In my view, the two fields share one premise:
+        constraint programming (CP) and Boolean satisfiability (SAT). In my view, the two fields share one premise:
         the difficulty of a problem depends (often to a large extent) on how it is
         written. Hence, the useful move is frequently to rewrite it, either as a set of
         smaller problems coordinated by a master or in a different formalism for which an
@@ -1187,8 +1187,8 @@ footer {
       <p data-l="it" lang="it">
         Sono arrivato all&rsquo;<a class="jump" href="#r-opt-it" data-to="r-opt-it"><i>ottimizzazione numerica</i></a> dall&rsquo;<a class="jump" href="#r-sym-it" data-to="r-sym-it"><i>intelligenza
         artificiale simbolica</i></a>, e più precisamente dalla rappresentazione della conoscenza e dal ragionamento
-        automatico (KR&amp;R), ossia dai sistemi esperti, dalla programmazione logica, dal
-        soddisfacimento di vincoli e da SAT. A mio avviso i due campi condividono una
+        automatico (KR&amp;R), ossia dai sistemi esperti, dalla programmazione logica, dalla
+        programmazione a vincoli (CP) e dalla soddisfacibilità booleana (SAT). A mio avviso i due campi condividono una
         premessa: la difficoltà di un problema dipende (spesso in larga misura) da come è
         scritto. Per questo conviene, il più delle volte, riscriverlo, come un insieme di problemi più piccoli coordinati da un problema master oppure in un formalismo diverso per
         il quale sia disponibile un algoritmo efficiente.
@@ -1200,16 +1200,16 @@ footer {
         worked on heuristic search, in which the efficiency of an algorithm such as A*
         depends (often almost entirely) on the heuristic that guides it. Of these, I have
         pursued further the translation between formalisms: a planning
-        problem can be stated as a Constraint Satisfaction Problem and, from there, as a
+        problem can be stated as a constraint satisfaction problem (CSP) and, from there, as a
         propositional formula, at which point the machinery of logical reasoning applies
         to it. I implemented that chain of translators in
         <a href="https://github.com/aimacode/aima-python">aima-python</a>, together with
         the SAT solver at its end. The same question now comes back in the opposite
         direction: whether a satisfiability problem can be decomposed along its structure
-        in the way one would decompose a mixed-integer program.
+        in the way one would decompose a mixed-integer linear program (MILP).
       </p>
       <p data-l="it" lang="it" id="r-sym-it">
-        <b>IA Simbolica.</b> Ho iniziato con i sistemi esperti e la programmazione logica,
+        <b>IA simbolica.</b> Ho iniziato con i sistemi esperti e la programmazione logica,
         per domini in cui la conoscenza è codificata e il ragionamento deve restare
         ispezionabile, e con le ontologie come rappresentazione della conoscenza lessicale; mi sono
         occupato anche di ricerca euristica, in cui l&rsquo;efficienza di un algoritmo come
@@ -1221,7 +1221,7 @@ footer {
         traduttori in <a href="https://github.com/aimacode/aima-python">aima-python</a>,
         insieme al SAT solver che la conclude. La stessa domanda si ripresenta ora nella
         direzione opposta: se un problema di soddisfacibilità possa essere decomposto
-        lungo la sua struttura, così come si decompone un problema di programmazione lineare intera mista.
+        lungo la sua struttura, così come si decompone un problema di programmazione lineare intera mista (MILP).
       </p>
       <p data-l="en" id="r-opt">
         <b>Mathematical Optimization.</b> Decomposition performs the same operation on the
@@ -1243,7 +1243,7 @@ footer {
         efficiently.
       </p>
       <p data-l="it" lang="it" id="r-opt-it">
-        <b>Ottimizzazione Matematica.</b> La decomposizione compie la stessa operazione
+        <b>Ottimizzazione matematica.</b> La decomposizione compie la stessa operazione
         sulla struttura di un modello anziché sul suo formalismo. Vi rientrano il Rilassamento Lagrangiano e la corrispondente
         Decomposizione di Dantzig-Wolfe, la Decomposizione di Benders, i Metodi Bundle che risolvono i duali non differenziabili che ne
         derivano, e la risoluzione in parallelo dei sottoproblemi, che sono tipicamente
