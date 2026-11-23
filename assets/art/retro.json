@@ -1273,318 +1273,476 @@
  },
  "van_gogh_modella_s1": {
   "after": "Vincent van Gogh",
-  "series": "Van Gogh"
+  "series": "Van Gogh",
+  "en": "A woman model seated nude on a stool in a small Paris studio, a rug and a stove behind her, thick brushstrokes.",
+  "it": "Una modella seduta nuda su uno sgabello in un piccolo studio a Parigi, un tappeto e una stufa alle spalle, pennellate spesse."
  },
  "dadd_nilo_s1": {
   "after": "Richard Dadd",
-  "series": "Dadd"
+  "series": "Dadd",
+  "en": "Sailing boats on the Nile at evening, palm trees and a distant temple, the water perfectly still and glassy, every ripple and leaf set down with obsessive patience.",
+  "it": "Barche a vela sul Nilo di sera, palme e un tempio lontano, l'acqua immobile e vitrea, ogni increspatura e ogni foglia posate con pazienza ossessiva."
  },
  "dadd_brigantino_s2": {
   "after": "Richard Dadd",
-  "series": "Dadd"
+  "series": "Dadd",
+  "en": "A brig at anchor in a calm bay, its rigging drawn line by line, a rowing boat beneath a pale lemon sky.",
+  "it": "Un brigantino all'ancora in una baia calma, il sartiame disegnato filo per filo, una barca a remi sotto un cielo giallo limone."
  },
  "dadd_nido_s1": {
   "after": "Richard Dadd",
-  "series": "Dadd"
+  "series": "Dadd",
+  "en": "A bird's nest with three speckled eggs, hazelnuts and blackberries on a mossy bank, counted leaf by leaf.",
+  "it": "Un nido con tre uova screziate, nocciole e more su una sponda di muschio, contato foglia per foglia."
  },
  "dadd_carovana_s1": {
   "after": "Richard Dadd",
-  "series": "Dadd"
+  "series": "Dadd",
+  "en": "A caravan of camels and robed travellers resting by a well in a stony Syrian landscape, every pebble outlined under a hazy amber light.",
+  "it": "Una carovana di cammelli e viaggiatori in veste alla sosta di un pozzo in un paesaggio sassoso di Siria, ogni ciottolo profilato in una luce ambrata e velata."
  },
  "dadd_sognatore_s1": {
   "after": "Richard Dadd",
-  "series": "Dadd"
+  "series": "Dadd",
+  "en": "An old man in a long coat asleep under a giant foxglove, beetles and snails around him, every blade of grass picked out.",
+  "it": "Un vecchio in cappotto addormentato sotto una digitale gigante, scarabei e lumache intorno a lui, ogni filo d'erba messo in risalto."
  },
  "dadd_danza_s1": {
   "after": "Richard Dadd",
-  "series": "Dadd"
+  "series": "Dadd",
+  "en": "Villagers dancing in a ring on a moonlit green, a fiddler on a barrel, the small stiff figures caught in an airless stillness.",
+  "it": "Paesani che danzano in cerchio su un prato al chiaro di luna, un violinista su una botte, le figure piccole e rigide in una quiete senz'aria."
  },
  "dadd_medico_s1": {
   "after": "Richard Dadd",
-  "series": "Dadd"
+  "series": "Dadd",
+  "en": "A Victorian doctor in a black coat seated by a window, a book on his knee, every hair of his whiskers drawn.",
+  "it": "Un medico vittoriano in cappotto nero seduto alla finestra, un libro sul ginocchio, ogni pelo dei favoriti disegnato."
  },
  "dadd_rochester_s1": {
   "after": "Richard Dadd",
-  "series": "Dadd"
+  "series": "Dadd",
+  "en": "A Norman castle keep above a river in Kent, barges with red sails under a mild grey sky.",
+  "it": "Un mastio normanno sopra un fiume del Kent, chiatte dalle vele rosse sotto un cielo grigio mite."
  },
  "dadd_bazar_s2": {
   "after": "Richard Dadd",
-  "series": "Dadd"
+  "series": "Dadd",
+  "en": "A covered bazaar in Constantinople with merchants in turbans, hanging carpets and brass lamps, crowds of tiny figures counted one by one.",
+  "it": "Un bazar coperto a Costantinopoli con mercanti in turbante, tappeti appesi e lampade di ottone, folle di figurine contate a una a una."
  },
  "klimt_abito_bianco_s1": {
   "after": "Gustav Klimt",
-  "series": "Klimt"
+  "series": "Klimt",
+  "en": "A woman in a white gown standing full-length against flat ornamental squares and golden flowers.",
+  "it": "Una donna in abito bianco in piedi a figura intera su quadri ornamentali piatti e fiori d'oro."
  },
  "klimt_veste_fiori_s2": {
   "after": "Gustav Klimt",
-  "series": "Klimt"
+  "series": "Klimt",
+  "en": "A seated woman in a robe of large floral patterns, a background of small painted figures and birds in gold.",
+  "it": "Una donna seduta in una veste a grandi motivi floreali, uno sfondo di piccole figure dipinte e uccelli in oro."
  },
  "klimt_faggi_s1": {
   "after": "Gustav Klimt",
-  "series": "Klimt"
+  "series": "Klimt",
+  "en": "A beech forest in autumn, slender grey trunks in rows over a carpet of copper leaves rendered as a mosaic of dabs.",
+  "it": "Una faggeta d'autunno, esili tronchi grigi in fila su un tappeto di foglie ramate reso come un mosaico di tocchi."
  },
  "klimt_piume_s1": {
   "after": "Gustav Klimt",
-  "series": "Klimt"
+  "series": "Klimt",
+  "en": "A woman in a black feathered hat and a fur stole, her pale face against a warm ground of golden pattern.",
+  "it": "Una donna con cappello nero piumato e stola di pelliccia, il volto pallido su un fondo caldo di motivi dorati."
  },
  "klimt_giardino_s1": {
   "after": "Gustav Klimt",
-  "series": "Klimt"
+  "series": "Klimt",
+  "en": "A cottage garden dense with poppies, daisies and phlox seen close up, with no sky, a mosaic of color.",
+  "it": "Un giardino di campagna fitto di papaveri, margherite e phlox visto da vicino, senza cielo, un mosaico di colore."
  },
  "klimt_mazzo_s1": {
   "after": "Gustav Klimt",
-  "series": "Klimt"
+  "series": "Klimt",
+  "en": "A young woman holding a bunch of flowers against a gold ornamental ground.",
+  "it": "Una giovane donna con un mazzo di fiori su un fondo ornamentale d'oro."
  },
  "klimt_anziana_s1": {
   "after": "Gustav Klimt",
-  "series": "Klimt"
+  "series": "Klimt",
+  "en": "An old woman in a dark shawl, her lined face against flat golden spirals.",
+  "it": "Un'anziana in uno scialle scuro, il volto segnato su spirali d'oro piatte."
  },
  "klimt_lago_s2": {
   "after": "Gustav Klimt",
-  "series": "Klimt"
+  "series": "Klimt",
+  "en": "The shore of an Austrian lake in summer, dense blue-green water and a strip of houses on the far bank under a high horizon.",
+  "it": "La riva di un lago austriaco d'estate, acqua fitta blu-verde e una striscia di case sulla sponda opposta sotto un orizzonte alto."
  },
  "klimt_frutteto_s1": {
   "after": "Gustav Klimt",
-  "series": "Klimt"
+  "series": "Klimt",
+  "en": "An orchard of apple trees heavy with fruit, rose bushes in front, the foliage a mosaic of small dabs.",
+  "it": "Un frutteto di meli carichi di frutti, cespugli di rose davanti, il fogliame un mosaico di piccoli tocchi."
  },
  "klimt_velo_oro_s1": {
   "after": "Gustav Klimt",
-  "series": "Klimt"
+  "series": "Klimt",
+  "en": "A woman standing wrapped in a transparent veil of golden spirals against a flat ornamental ground.",
+  "it": "Una donna in piedi avvolta in un velo trasparente a spirali d'oro su un fondo ornamentale piatto."
  },
  "schiele_mani_giunte_s3": {
   "after": "Egon Schiele",
-  "series": "Schiele"
+  "series": "Schiele",
+  "en": "A seated woman in a dark dress with a white collar, hands folded and head slightly tilted against a bare ground.",
+  "it": "Una donna seduta in abito scuro dal collo bianco, le mani giunte e la testa un poco inclinata su un fondo spoglio."
  },
  "schiele_anziana_s3": {
   "after": "Egon Schiele",
-  "series": "Schiele"
+  "series": "Schiele",
+  "en": "An old woman wrapped in a dark shawl in an armchair, drawn in angular, contorted contour lines.",
+  "it": "Un'anziana avvolta in uno scialle scuro in poltrona, resa in linee di contorno spigolose e contorte."
  },
  "schiele_tetti_s1": {
   "after": "Egon Schiele",
-  "series": "Schiele"
+  "series": "Schiele",
+  "en": "A tight cluster of old town houses with crooked roofs and small windows seen from above, by a river bend.",
+  "it": "Un grappolo serrato di case della città vecchia dai tetti storti e dalle piccole finestre visto dall'alto, presso un'ansa del fiume."
  },
  "schiele_albero_s1": {
   "after": "Egon Schiele",
-  "series": "Schiele"
+  "series": "Schiele",
+  "en": "A single thin tree with a few last leaves against a pale sky on a bare hill.",
+  "it": "Un alberello esile con qualche ultima foglia contro un cielo pallido su una collina spoglia."
  },
  "schiele_girasoli_s3": {
   "after": "Egon Schiele",
-  "series": "Schiele"
+  "series": "Schiele",
+  "en": "Tall withered sunflowers with drooping heads against a dark ground.",
+  "it": "Alti girasoli appassiti dalle teste reclinate su un fondo scuro."
  },
  "schiele_collezionista_s1": {
   "after": "Egon Schiele",
-  "series": "Schiele"
+  "series": "Schiele",
+  "en": "A seated man in a dark suit with long thin hands in an angular pose against a bare ground.",
+  "it": "Un uomo seduto in abito scuro dalle mani lunghe e sottili in una posa spigolosa su un fondo spoglio."
  },
  "schiele_stanza_s1": {
   "after": "Egon Schiele",
-  "series": "Schiele"
+  "series": "Schiele",
+  "en": "A narrow room with a wooden bed, a chair and a jug, seen slightly from above in sparse lines.",
+  "it": "Una stanza stretta con un letto di legno, una sedia e una brocca, vista un poco dall'alto in linee scarne."
  },
  "schiele_villaggio_s1": {
   "after": "Egon Schiele",
-  "series": "Schiele"
+  "series": "Schiele",
+  "en": "A small village on a steep hillside, houses as flat interlocking shapes around a church tower.",
+  "it": "Un piccolo villaggio su un ripido pendio, le case come forme piatte incastrate attorno a un campanile."
  },
  "schiele_cappotto_s1": {
   "after": "Egon Schiele",
-  "series": "Schiele"
+  "series": "Schiele",
+  "en": "A young man in a long coat standing, his angular hands crossed, against a blank ground.",
+  "it": "Un giovane in un lungo cappotto in piedi, le mani spigolose incrociate, su un fondo vuoto."
  },
  "schiele_uomo_seduto_s2": {
   "after": "Egon Schiele",
-  "series": "Schiele"
+  "series": "Schiele",
+  "en": "A seated male nude, gaunt angular limbs and contorted hands against a bare ground.",
+  "it": "Un nudo maschile seduto, membra spigolose e scarne e mani contorte su un fondo spoglio."
  },
  "schiele_coperta_s3": {
   "after": "Egon Schiele",
-  "series": "Schiele"
+  "series": "Schiele",
+  "en": "A woman reclining on a striped blanket, angular limbs and a nervous contour line in washes of ochre and red.",
+  "it": "Una donna distesa su una coperta a righe, membra spigolose e una linea di contorno nervosa in velature di ocra e rosso."
  },
  "rembrandt_lettore_s1": {
   "after": "Rembrandt",
-  "series": "Rembrandt"
+  "series": "Rembrandt",
+  "en": "An old man with a white beard reading a heavy book by a small window, the light falling on the page and his hands.",
+  "it": "Un vecchio dalla barba bianca che legge un grosso libro a una piccola finestra, la luce sulla pagina e sulle mani."
  },
  "rembrandt_mercante_s1": {
   "after": "Rembrandt",
-  "series": "Rembrandt"
+  "series": "Rembrandt",
+  "en": "An Amsterdam cloth merchant in a black coat and white collar, one hand on a ledger.",
+  "it": "Un mercante di stoffe di Amsterdam in cappotto nero e collare bianco, una mano sul registro."
  },
  "rembrandt_cuffia_s1": {
   "after": "Rembrandt",
-  "series": "Rembrandt"
+  "series": "Rembrandt",
+  "en": "An old woman in a white linen cap and a dark shawl, her wrinkled hands folded against a warm brown ground.",
+  "it": "Un'anziana con cuffia di lino bianco e scialle scuro, le mani rugose giunte su un fondo bruno caldo."
  },
  "rembrandt_tobia_s3": {
   "after": "Rembrandt",
-  "series": "Rembrandt"
+  "series": "Rembrandt",
+  "en": "An old blind man and his wife waiting by the hearth in a poor room, a spinning wheel and a goat, a single shaft of light.",
+  "it": "Un vecchio cieco e la moglie in attesa accanto al focolare in una stanza povera, un filatoio e una capra, un solo raggio di luce."
  },
  "rembrandt_libri_s3": {
   "after": "Rembrandt",
-  "series": "Rembrandt"
+  "series": "Rembrandt",
+  "en": "A pile of old leather-bound books, a snuffed candle and an hourglass on a table under a dark Turkish rug.",
+  "it": "Una pila di vecchi libri rilegati in pelle, una candela spenta e una clessidra su un tavolo coperto da un tappeto turco scuro."
  },
  "rembrandt_studioso_s1": {
   "after": "Rembrandt",
-  "series": "Rembrandt"
+  "series": "Rembrandt",
+  "en": "A scholar writing at a desk in a vaulted room, a globe and books, a window throwing a pool of golden light.",
+  "it": "Uno studioso che scrive a un tavolo in una stanza a volta, un globo e libri, una finestra che getta una pozza di luce dorata."
  },
  "rembrandt_turbante_s1": {
   "after": "Rembrandt",
-  "series": "Rembrandt"
+  "series": "Rembrandt",
+  "en": "The head of a middle-aged man in an embroidered turban and a fur-trimmed cloak, a gold chain on his chest.",
+  "it": "La testa di un uomo di mezza età con turbante ricamato e mantello bordato di pelliccia, una catena d'oro sul petto."
  },
  "rembrandt_canale_s1": {
   "after": "Rembrandt",
-  "series": "Rembrandt"
+  "series": "Rembrandt",
+  "en": "A Dutch farmhouse by a canal and a wooden bridge, a stormy sky with a burst of light on the flat fields.",
+  "it": "Una cascina olandese su un canale e un ponte di legno, un cielo di tempesta con uno squarcio di luce sui campi piatti."
  },
  "rembrandt_ufficiale_s1": {
   "after": "Rembrandt",
-  "series": "Rembrandt"
+  "series": "Rembrandt",
+  "en": "A young officer in a steel gorget and a plumed hat, one hand on his hip against a dark ground.",
+  "it": "Un giovane ufficiale in gorgiera d'acciaio e cappello piumato, una mano sul fianco su un fondo scuro."
  },
  "rembrandt_studio_uomo_s1": {
   "after": "Rembrandt",
-  "series": "Rembrandt"
+  "series": "Rembrandt",
+  "en": "A man posing nude in the studio, seated on a draped bench in a warm single light from the left.",
+  "it": "Un uomo in posa di nudo nello studio, seduto su una panca drappeggiata in una calda luce sola da sinistra."
  },
  "rembrandt_toeletta_s1": {
   "after": "Rembrandt",
-  "series": "Rembrandt"
+  "series": "Rembrandt",
+  "en": "A woman seated at the edge of a bed while an old servant dries her feet with a white cloth, golden light in a dark room.",
+  "it": "Una donna seduta sul bordo del letto mentre una vecchia serva le asciuga i piedi con un panno bianco, luce dorata in una stanza buia."
  },
  "toulouse_lautrec_sarte_s1": {
   "after": "Henri de Toulouse-Lautrec",
-  "series": "Toulouse-Lautrec"
+  "series": "Toulouse-Lautrec",
+  "en": "Two seamstresses bent over their work at a table in a small workshop, bolts of cloth and the grey Paris light from a window.",
+  "it": "Due sarte chine sul lavoro a un tavolo in una piccola bottega, rotoli di stoffa e la luce grigia di Parigi dalla finestra."
  },
  "toulouse_lautrec_bombetta_s1": {
   "after": "Henri de Toulouse-Lautrec",
-  "series": "Toulouse-Lautrec"
+  "series": "Toulouse-Lautrec",
+  "en": "A man in a bowler hat and a thin moustache leaning on a cane against a plain cardboard ground.",
+  "it": "Un uomo con la bombetta e i baffi sottili appoggiato a un bastone su un fondo di cartone nudo."
  },
  "toulouse_lautrec_palco_s2": {
   "after": "Henri de Toulouse-Lautrec",
-  "series": "Toulouse-Lautrec"
+  "series": "Toulouse-Lautrec",
+  "en": "Two women in evening dress and a man in a top hat in a theatre box, opera glasses, the stage lights below.",
+  "it": "Due donne in abito da sera e un uomo in cilindro in un palco a teatro, un binocolo, le luci del palcoscenico in basso."
  },
  "toulouse_lautrec_cocchiere_s3": {
   "after": "Henri de Toulouse-Lautrec",
-  "series": "Toulouse-Lautrec"
+  "series": "Toulouse-Lautrec",
+  "en": "An old cab driver in a caped coat and a top hat on his box, a horse's head in the corner on a rainy street.",
+  "it": "Un vecchio cocchiere in mantello e cilindro a cassetta, la testa di un cavallo nell'angolo su una strada piovosa."
  },
  "toulouse_lautrec_ballerina_s3": {
   "after": "Henri de Toulouse-Lautrec",
-  "series": "Toulouse-Lautrec"
+  "series": "Toulouse-Lautrec",
+  "en": "A dancer in a yellow costume resting on a wooden bench backstage, rubbing her ankle, painted flats behind her.",
+  "it": "Una ballerina in costume giallo che riposa su una panca di legno dietro le quinte, massaggiandosi la caviglia, scenari dipinti alle spalle."
  },
  "toulouse_lautrec_assenzio_s1": {
   "after": "Henri de Toulouse-Lautrec",
-  "series": "Toulouse-Lautrec"
+  "series": "Toulouse-Lautrec",
+  "en": "A tired woman in a dark coat alone at a cafe table with a glass of absinthe, a mirror behind her.",
+  "it": "Una donna stanca in cappotto scuro sola al tavolino di un caffè con un bicchiere d'assenzio, uno specchio alle spalle."
  },
  "toulouse_lautrec_calesse_s1": {
   "after": "Henri de Toulouse-Lautrec",
-  "series": "Toulouse-Lautrec"
+  "series": "Toulouse-Lautrec",
+  "en": "A horse pulling a light trap along an alley of the Bois de Boulogne, a gentleman in a bowler holding the reins.",
+  "it": "Un cavallo che tira un calesse leggero lungo un viale del Bois de Boulogne, un signore in bombetta alle redini."
  },
  "toulouse_lautrec_pianista_s1": {
   "after": "Henri de Toulouse-Lautrec",
-  "series": "Toulouse-Lautrec"
+  "series": "Toulouse-Lautrec",
+  "en": "A bearded pianist at an upright in a smoky cafe-concert, seen from the side in green gaslight.",
+  "it": "Un pianista barbuto a un pianoforte verticale in un caffè-concerto fumoso, visto di lato nella luce verde del gas."
  },
  "toulouse_lautrec_clown_s3": {
   "after": "Henri de Toulouse-Lautrec",
-  "series": "Toulouse-Lautrec"
+  "series": "Toulouse-Lautrec",
+  "en": "A clown and a trained dog rehearsing in an empty circus ring, a ringmaster with a whip by the red barrier.",
+  "it": "Un clown e un cane ammaestrato alla prova in una pista di circo vuota, un domatore con la frusta presso la barriera rossa."
  },
  "toulouse_lautrec_divano_s2": {
   "after": "Henri de Toulouse-Lautrec",
-  "series": "Toulouse-Lautrec"
+  "series": "Toulouse-Lautrec",
+  "en": "A woman reclining on a red plush sofa in a salon, her hair pinned up, a tired gaze, mirrors and gilt behind.",
+  "it": "Una donna distesa su un divano di felpa rossa in un salone, i capelli raccolti, lo sguardo stanco, specchi e dorature alle spalle."
  },
  "turner_tamigi_s1": {
   "after": "J. M. W. Turner",
-  "series": "Turner"
+  "series": "Turner",
+  "en": "The Thames at dawn, barges and a distant bridge dissolving in golden haze, the mud of low tide shining.",
+  "it": "Il Tamigi all'alba, chiatte e un ponte lontano che si dissolvono in una foschia dorata, il fango della bassa marea che luccica."
  },
  "turner_giudecca_s1": {
   "after": "J. M. W. Turner",
-  "series": "Turner"
+  "series": "Turner",
+  "en": "A view across the Giudecca at evening, domes and campaniles melting into pink and gold, gondolas as small dark notes.",
+  "it": "Una veduta sulla Giudecca di sera, cupole e campanili che si sciolgono nel rosa e nell'oro, le gondole come piccole note scure."
  },
  "turner_burrasca_s1": {
   "after": "J. M. W. Turner",
-  "series": "Turner"
+  "series": "Turner",
+  "en": "Fishing boats heeling in a squall off the coast, a dark wall of rain and a gap of white light over a churning green sea.",
+  "it": "Barche da pesca sbandate nella burrasca al largo, una parete scura di pioggia e uno squarcio di luce bianca su un mare verde in tumulto."
  },
  "turner_lucerna_s1": {
   "after": "J. M. W. Turner",
-  "series": "Turner"
+  "series": "Turner",
+  "en": "A Swiss lake in early morning, the mountains reduced to veils of blue and pink, a tiny boat, mist rising from the water.",
+  "it": "Un lago svizzero al primo mattino, i monti ridotti a veli di azzurro e rosa, una barchetta, la foschia che sale dall'acqua."
  },
  "turner_castello_s2": {
   "after": "J. M. W. Turner",
-  "series": "Turner"
+  "series": "Turner",
+  "en": "A ruined castle on a crag above a winding river in Wales, cattle drinking below a golden evening sky.",
+  "it": "Un castello in rovina su uno sperone sopra un fiume sinuoso nel Galles, bestiame che si abbevera sotto un cielo dorato della sera."
  },
  "turner_faro_s1": {
   "after": "J. M. W. Turner",
-  "series": "Turner"
+  "series": "Turner",
+  "en": "A lighthouse on a rocky headland at sunset, waves breaking in spray, the sun a white disc in a sea of orange.",
+  "it": "Un faro su un promontorio roccioso al tramonto, onde che si frangono in spruzzi, il sole un disco bianco in un mare d'arancio."
  },
  "turner_valico_s1": {
   "after": "J. M. W. Turner",
-  "series": "Turner"
+  "series": "Turner",
+  "en": "A narrow alpine pass under a storm, a vortex of cloud and snow, a wooden bridge over a torrent, travellers as tiny figures.",
+  "it": "Uno stretto valico alpino sotto la tempesta, un vortice di nubi e neve, un ponte di legno su un torrente, viaggiatori come figurine."
  },
  "turner_fonderia_s3": {
   "after": "J. M. W. Turner",
-  "series": "Turner"
+  "series": "Turner",
+  "en": "The inside of an iron foundry at night, molten metal pouring in a blaze of orange, workers as silhouettes in the smoke.",
+  "it": "L'interno di una fonderia di notte, il metallo fuso che cola in una vampa d'arancio, operai come sagome nel fumo."
  },
  "turner_mietitura_s3": {
   "after": "J. M. W. Turner",
-  "series": "Turner"
+  "series": "Turner",
+  "en": "Reapers loading sheaves onto a cart in a wide English valley, a river and a distant town in warm hazy light.",
+  "it": "Mietitori che caricano i covoni su un carro in un'ampia valle inglese, un fiume e una città lontana in una calda luce velata."
  },
  "friedrich_dolmen_s1": {
   "after": "Caspar David Friedrich",
-  "series": "Friedrich"
+  "series": "Friedrich",
+  "en": "A megalithic stone grave among bare oaks on a Baltic heath, ravens on the branches in the autumn evening.",
+  "it": "Una tomba megalitica tra querce spoglie su una brughiera baltica, corvi sui rami nella sera d'autunno."
  },
  "friedrich_finestra_s2": {
   "after": "Caspar David Friedrich",
-  "series": "Friedrich"
+  "series": "Friedrich",
+  "en": "A bare studio room with a single open window, the masts of boats on the river and a pale sky beyond.",
+  "it": "Una stanza spoglia da studio con una sola finestra aperta, gli alberi delle barche sul fiume e un cielo pallido oltre."
  },
  "friedrich_quercia_s1": {
   "after": "Caspar David Friedrich",
-  "series": "Friedrich"
+  "series": "Friedrich",
+  "en": "A gnarled old oak with broken branches by a still pond in a flat marsh, under a low red evening light.",
+  "it": "Una vecchia quercia nodosa dai rami spezzati su uno stagno immobile in una palude piatta, sotto una bassa luce rossa della sera."
  },
  "friedrich_luna_s2": {
   "after": "Caspar David Friedrich",
-  "series": "Friedrich"
+  "series": "Friedrich",
+  "en": "The full moon rising over the calm Baltic, two fishing boats with dark sails, rocks in the foreground.",
+  "it": "La luna piena che sorge sul Baltico calmo, due barche da pesca dalle vele scure, scogli in primo piano."
  },
  "friedrich_arenarie_s1": {
   "after": "Caspar David Friedrich",
-  "series": "Friedrich"
+  "series": "Friedrich",
+  "en": "Sandstone cliffs and a narrow gorge with firs, morning fog filling the depth in a cool light.",
+  "it": "Rupi di arenaria e una gola stretta con abeti, la nebbia del mattino che riempie la profondità in una luce fredda."
  },
  "friedrich_giganti_s1": {
   "after": "Caspar David Friedrich",
-  "series": "Friedrich"
+  "series": "Friedrich",
+  "en": "Layers of blue mountain ridges in the morning, mist in the valleys and a few pines against a pale yellow sky.",
+  "it": "Strati di creste azzurre al mattino, foschia nelle valli e pochi pini contro un cielo giallo pallido."
  },
  "friedrich_rada_s1": {
   "after": "Caspar David Friedrich",
-  "series": "Friedrich"
+  "series": "Friedrich",
+  "en": "Sailing ships at anchor off the Baltic coast at dusk, masts as dark verticals against a violet sky over perfectly still water.",
+  "it": "Velieri all'ancora al largo della costa baltica al crepuscolo, gli alberi come verticali scure contro un cielo viola su acqua immobile."
  },
  "friedrich_abeti_s1": {
   "after": "Caspar David Friedrich",
-  "series": "Friedrich"
+  "series": "Friedrich",
+  "en": "Young spruces in deep snow at the edge of a forest under a grey winter sky, in absolute stillness.",
+  "it": "Giovani abeti nella neve alta al margine del bosco sotto un cielo grigio d'inverno, in una quiete assoluta."
  },
  "friedrich_elba_s1": {
   "after": "Caspar David Friedrich",
-  "series": "Friedrich"
+  "series": "Friedrich",
+  "en": "The Elbe valley near Dresden at evening, a flat meadow and a line of poplars, the city towers small on the horizon.",
+  "it": "La valle dell'Elba presso Dresda di sera, un prato piatto e una fila di pioppi, le torri della città piccole all'orizzonte."
  },
  "kollwitz_operaia_s3": {
   "after": "Käthe Kollwitz",
-  "series": "Kollwitz"
+  "series": "Kollwitz",
+  "en": "The head and shoulders of a tired working woman in a headscarf, her face half in deep shadow.",
+  "it": "Testa e spalle di una stanca operaia col fazzoletto, il volto a metà in un'ombra profonda."
  },
  "kollwitz_cancello_s3": {
   "after": "Käthe Kollwitz",
-  "series": "Kollwitz"
+  "series": "Kollwitz",
+  "en": "Workers in caps waiting at a factory gate at dawn, their faces drawn and grey against a high brick wall.",
+  "it": "Operai in berretto in attesa al cancello della fabbrica all'alba, i volti tirati e grigi contro un alto muro di mattoni."
  },
  "kollwitz_calzolaio_s2": {
   "after": "Käthe Kollwitz",
-  "series": "Kollwitz"
+  "series": "Kollwitz",
+  "en": "A cobbler working at a low bench in a cramped room, a lamp over his hands, worn shoes on the floor.",
+  "it": "Un calzolaio al lavoro su un basso deschetto in una stanza angusta, una lampada sulle mani, scarpe consumate per terra."
  },
  "kollwitz_madre_s2": {
   "after": "Käthe Kollwitz",
-  "series": "Kollwitz"
+  "series": "Kollwitz",
+  "en": "A working-class mother in a dark shawl holding her swaddled infant, her cheek against the wrapped bundle.",
+  "it": "Una madre di estrazione operaia in uno scialle scuro che stringe il neonato in fasce, la guancia contro il fagotto."
  },
  "kollwitz_vedova_s3": {
   "after": "Käthe Kollwitz",
-  "series": "Kollwitz"
+  "series": "Kollwitz",
+  "en": "A woman in black at a window, her hand on the frame, looking down at an empty street.",
+  "it": "Una donna in nero alla finestra, la mano sul telaio, lo sguardo su una strada vuota."
  },
  "kollwitz_ambulatorio_s2": {
   "after": "Käthe Kollwitz",
-  "series": "Kollwitz"
+  "series": "Kollwitz",
+  "en": "Women in shawls waiting on a wooden bench in a poor district clinic, a nurse at a half-open door.",
+  "it": "Donne in scialle in attesa su una panca di legno nell'ambulatorio di un quartiere povero, un'infermiera a una porta socchiusa."
  },
  "kollwitz_anziani_s2": {
   "after": "Käthe Kollwitz",
-  "series": "Kollwitz"
+  "series": "Kollwitz",
+  "en": "An old man and an old woman sitting close on a bench, their hands joined, in heavy black lines.",
+  "it": "Un vecchio e una vecchia seduti vicini su una panca, le mani unite, in pesanti linee nere."
  },
  "kollwitz_fila_s1": {
   "after": "Käthe Kollwitz",
-  "series": "Kollwitz"
+  "series": "Kollwitz",
+  "en": "A long queue of women and old men in shawls waiting outside a bakery in winter, heads bowed under a single gas lamp.",
+  "it": "Una lunga fila di donne e vecchi in scialle in attesa davanti al forno d'inverno, le teste chine sotto un solo lampione a gas."
  },
  "kollwitz_falce_s1": {
   "after": "Käthe Kollwitz",
-  "series": "Kollwitz"
+  "series": "Kollwitz",
+  "en": "An old peasant resting on his scythe at the edge of a field, his face deeply lined.",
+  "it": "Un vecchio contadino appoggiato alla falce al margine del campo, il volto profondamente segnato."
  }
 }
