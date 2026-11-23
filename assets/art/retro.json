@@ -1123,5 +1123,152 @@
    "it": "Stupore, si scontra con Attesa",
    "en": "Amazement, it clashes with Anticipation"
   }
+ },
+ "superbia_klimt": {
+  "after": "Gustav Klimt",
+  "series": {
+   "it": "Peccati capitali",
+   "en": "The Seven Deadly Sins"
+  },
+  "vice": {
+   "it": "Superbia",
+   "en": "Pride"
+  },
+  "iconography": {
+   "it": "Superbia, personificazione (Ripa, Iconclass 11N31)",
+   "en": "Pride personified (Ripa, Iconclass 11N31)"
+  },
+  "why": {
+   "it": "Klimt per l'oro e l'ornamento che espongono il sé; legame tematico (grado T), non biografico.",
+   "en": "Klimt for the gold and the ornament that put the self on show; a thematic link (grade T), not a biographical one."
+  },
+  "it": "La superbia mette il proprio io al centro di tutto e smette di vedere chiunque altro. Una figura in trono d'oro si specchia, ma il vetro non le rende un volto: solo una cornice dorata vuota, e l'ornamento si moltiplica fuori finché non divora la stanza.",
+  "en": "Pride puts one's own self at the center of everything and stops seeing anyone else. A figure enthroned in gold looks into a mirror, but the glass gives back no face, only an empty golden frame, and the ornament multiplies outward until it swallows the room."
+ },
+ "avarizia_rembrandt": {
+  "after": "Rembrandt van Rijn",
+  "series": {
+   "it": "Peccati capitali",
+   "en": "The Seven Deadly Sins"
+  },
+  "vice": {
+   "it": "Avarizia",
+   "en": "Greed"
+  },
+  "iconography": {
+   "it": "Avarizia, personificazione (Ripa, Iconclass 11N34)",
+   "en": "Greed personified (Ripa, Iconclass 11N34)"
+  },
+  "why": {
+   "it": "Rembrandt per la luce di candela sul volto chino e sulle monete, sul tema del ricco stolto che conta l'oro; legame tematico (grado T).",
+   "en": "Rembrandt for the candlelight on the bowed face and the coins, on the theme of the rich fool counting his gold; a thematic link (grade T)."
+  },
+  "it": "L'avarizia misura ogni cosa in denaro e accumula senza mai godere. Un uomo conta le monete al lume di una candela e le pesa su una bilancia che sull'altro piatto regge la sua stessa ombra, mentre dietro di lui l'oro è salito in un muro che lo chiude fuori dal mondo.",
+  "en": "Greed measures everything in money and hoards without ever enjoying. A man counts coins by a single candle and weighs them on a scale whose other pan holds his own shadow, while behind him the gold has risen into a wall that shuts him out of the world."
+ },
+ "lussuria_toulouse_lautrec": {
+  "after": "Henri de Toulouse-Lautrec",
+  "series": {
+   "it": "Peccati capitali",
+   "en": "The Seven Deadly Sins"
+  },
+  "vice": {
+   "it": "Lussuria",
+   "en": "Lust"
+  },
+  "iconography": {
+   "it": "Lussuria, personificazione (Ripa, Iconclass 11N36)",
+   "en": "Lust personified (Ripa, Iconclass 11N36)"
+  },
+  "why": {
+   "it": "Toulouse-Lautrec per il demi-monde notturno del desiderio, i locali e le maschere, senza nudo; legame tematico (grado T).",
+   "en": "Toulouse-Lautrec for the nocturnal demi-monde of desire, the halls and the masks, with no nude; a thematic link (grade T)."
+  },
+  "it": "La lussuria insegue il desiderio come se fosse l'altro, e stringe soltanto la propria fame. In un ballo notturno di maschere che si premono addosso i volti dietro le maschere sono vuoti, e una rosa rossa appassisce nell'istante stesso in cui si apre, i petali già a terra.",
+  "en": "Lust chases desire as if it were the other, and grasps only its own hunger. In a nocturnal dance of masks pressing close the faces behind the masks are hollow, and a red rose wilts at the very moment it opens, its petals already on the floor."
+ },
+ "invidia_munch": {
+  "after": "Edvard Munch",
+  "series": {
+   "it": "Peccati capitali",
+   "en": "The Seven Deadly Sins"
+  },
+  "vice": {
+   "it": "Invidia",
+   "en": "Envy"
+  },
+  "iconography": {
+   "it": "Invidia, personificazione (Ripa, Iconclass 11N32)",
+   "en": "Envy personified (Ripa, Iconclass 11N32)"
+  },
+  "why": {
+   "it": "Munch ha dipinto più volte la Gelosia, il volto verdastro in primo piano e la coppia sullo sfondo; legame tematico forte (grado T).",
+   "en": "Munch painted Jealousy more than once, the green face in the foreground and the couple behind; a strong thematic link (grade T)."
+  },
+  "it": "L'invidia non desidera avere ciò che l'altro ha, desidera che l'altro non l'abbia, e intanto corrode chi la prova. Un volto verdastro in primo piano guarda, e lo sguardo diventa un serpente che torna indietro e gli morde gli occhi, mentre in lontananza una coppia risplende irraggiungibile.",
+  "en": "Envy does not wish to have what another has, it wishes the other not to have it, and meanwhile it corrodes the one who feels it. A green face in the foreground stares, and the stare becomes a serpent that curves back and bites its own eyes, while in the distance a couple glows out of reach."
+ },
+ "gola_heda": {
+  "after": "Willem Claesz. Heda",
+  "series": {
+   "it": "Peccati capitali",
+   "en": "The Seven Deadly Sins"
+  },
+  "vice": {
+   "it": "Gola",
+   "en": "Gluttony"
+  },
+  "iconography": {
+   "it": "Gola, personificazione (Ripa, Iconclass 11N35)",
+   "en": "Gluttony personified (Ripa, Iconclass 11N35)"
+  },
+  "why": {
+   "it": "Heda per il banchetto fiammingo, la tavola imbandita e il lusso del cibo; legame tematico (grado T).",
+   "en": "Heda for the Flemish banquet, the laden table and the luxury of food; a thematic link (grade T)."
+  },
+  "it": "La gola riempie senza mai essere sazia, e il piacere del troppo lascia solo il bisogno di ancora. Una tavola fiamminga trabocca oltre il bordo, pasticci e carni e vino che colano a terra, la sedia a capotavola vuota e un imbuto piantato nel sugo.",
+  "en": "Gluttony fills without ever being sated, and the pleasure of too much leaves only the need for more. A Flemish table overflows past its edge, pies and meats and wine spilling to the floor, the chair at its head empty and a funnel standing upright in the gravy."
+ },
+ "ira_goya": {
+  "after": "Francisco de Goya",
+  "series": {
+   "it": "Peccati capitali",
+   "en": "The Seven Deadly Sins"
+  },
+  "vice": {
+   "it": "Ira",
+   "en": "Wrath"
+  },
+  "iconography": {
+   "it": "Ira, personificazione (Ripa, Iconclass 11N33)",
+   "en": "Wrath personified (Ripa, Iconclass 11N33)"
+  },
+  "why": {
+   "it": "Goya per la violenza delle Pitture nere e dei Disastri, e per il Duello a bastonate dei due uomini impantanati; legame tematico (grado T).",
+   "en": "Goya for the violence of the Black Paintings and the Disasters, and for the Fight with Cudgels of the two men mired in the ground; a thematic link (grade T)."
+  },
+  "it": "L'ira esplode e vuole colpire subito, e nel colpire lega chi odia a chi è odiato. Due figure sono prese in una lotta, affondate fino alle ginocchia nello stesso terreno che le trattiene, il colpo alzato e fermo, mentre il rosso della ferita si è allargato fino a diventare tutto il cielo.",
+  "en": "Wrath explodes and wants to strike at once, and in striking it binds the hater to the hated. Two figures are locked in a fight, sunk to their knees in the same ground that holds them fast, the raised blow frozen, while the red of the wound has spread until it is the whole sky."
+ },
+ "accidia_spilliaert": {
+  "after": "Léon Spilliaert",
+  "series": {
+   "it": "Peccati capitali",
+   "en": "The Seven Deadly Sins"
+  },
+  "vice": {
+   "it": "Accidia",
+   "en": "Sloth"
+  },
+  "iconography": {
+   "it": "Accidia, personificazione (Ripa, Iconclass 11N37)",
+   "en": "Sloth personified (Ripa, Iconclass 11N37)"
+  },
+  "why": {
+   "it": "Spilliaert per la solitudine immobile e le rive deserte, al posto della Melencolia di Dürer qui non addestrabile; legame tematico (grado T).",
+   "en": "Spilliaert for the still solitude and the deserted shores, in place of Dürer's Melencolia, not trainable here; a thematic link (grade T)."
+  },
+  "it": "L'accidia non è riposo ma un torpore che spegne il desiderio stesso di muoversi, e lascia il tempo scorrere a vuoto. Una figura sola è accasciata su una riva deserta al crepuscolo, gli arnesi e un libro aperto abbandonati accanto a raccogliere polvere, una clessidra con tutta la sabbia caduta e una campana senza corda.",
+  "en": "Sloth is not rest but a torpor that puts out the very wish to move, and lets time run empty. A lone figure is slumped on a deserted shore at dusk, tools and an open book abandoned beside it gathering dust, an hourglass with all its sand run out and a bell with no rope."
  }
 }
