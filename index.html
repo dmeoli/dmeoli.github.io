@@ -3733,25 +3733,49 @@ Decomposition methods and solvers for large-scale
   })();
 </script>
 <script>
-  /* the tabs of the subsections: the one chosen goes in the hash of the
-     address (/art#table), so that it can be shared */
+  /* the tabs of the subsections: the chosen one goes in the hash of the
+     address, in the language in use (/art#deadly-sins, /arte#peccati-capitali),
+     and the hash switches when the language does. The old single-language
+     hashes (/art#peccati) still resolve, as a fallback, so shared links keep
+     working. The slug of each tab is taken from its own label in each language. */
   (function () {
+    var root = document.documentElement;
+    function curLang() { return root.getAttribute('data-lang') === 'it' ? 'it' : 'en'; }
+    function slug(s) {
+      return (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+        .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    }
     var navs = document.querySelectorAll('.subnav');
     for (var n = 0; n < navs.length; n++) (function (nav) {
       var body = nav.parentNode, bs = nav.querySelectorAll('button'),
           subs = body.querySelectorAll(':scope > .sub');
       body.classList.add('tabs');
+      // for each tab: its key (data-sub) and its slug in each language, from the
+      // label spans; a tab with a plain text label keeps the key as its slug
+      var slugs = {};
+      for (var s = 0; s < bs.length; s++) {
+        var key = bs[s].getAttribute('data-sub'),
+            en = bs[s].querySelector('[data-l="en"]'), it = bs[s].querySelector('[data-l="it"]');
+        slugs[key] = { en: slug(en ? en.textContent : key) || key,
+                       it: slug(it ? it.textContent : key) || key };
+      }
+      function hashOf(k) { return slugs[k] ? slugs[k][curLang()] : k; }
+      function keyOf(h) {                       // a hash back to a tab key, either language or the old key
+        if (!h) return null;
+        for (var k in slugs) if (k === h || slugs[k].en === h || slugs[k].it === h) return k;
+        return null;
+      }
       function pick(k, keep) {
         for (var i = 0; i < bs.length; i++)
           bs[i].setAttribute('aria-selected', bs[i].getAttribute('data-sub') === k);
         for (var j = 0; j < subs.length; j++)
           subs[j].classList.toggle('on', subs[j].getAttribute('data-sub') === k);
-        if (!keep) history.replaceState(history.state, '', location.pathname + '#' + k);
+        if (!keep) history.replaceState(history.state, '', location.pathname + '#' + hashOf(k));
       }
-      var h = location.hash.slice(1);
       // by default the first tab with something in it
       var first = nav.querySelector('button:not([data-empty])') || bs[0];
-      pick(body.querySelector(':scope > .sub[data-sub="' + h + '"]') ? h : first.getAttribute('data-sub'), true);
+      var want = keyOf(location.hash.slice(1));
+      pick(want || first.getAttribute('data-sub'), true);
       for (var i = 0; i < bs.length; i++)
         bs[i].addEventListener('click', function () { pick(this.getAttribute('data-sub')); });
       nav.addEventListener('keydown', function (e) {
@@ -3767,6 +3791,17 @@ Decomposition methods and solvers for large-scale
         nx[j].addEventListener('click', function () {
           pick(this.getAttribute('data-goto'));
           nav.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+      // when the language changes, if this subnav is the one on screen, rewrite
+      // the hash to the active tab's slug in the new language
+      var langButtons = document.querySelectorAll('.lang button[data-set]');
+      for (var i = 0; i < langButtons.length; i++)
+        langButtons[i].addEventListener('click', function () {
+          if (nav.offsetParent === null) return;              // this section is not the one shown
+          var active = nav.querySelector('button[aria-selected="true"]');
+          if (active)
+            history.replaceState(history.state, '',
+                                 location.pathname + '#' + hashOf(active.getAttribute('data-sub')));
         });
     })(navs[n]);
   })();
