@@ -282,6 +282,7 @@ body::before {
 #artbox .lb-back dt { font-family: var(--mono); font-size: var(--s-075); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); align-self: baseline; }
 #artbox .lb-back dd { margin: 0; }
 #artbox .lb-back p { margin: 0 0 var(--f8); font-size: var(--s-025); line-height: 1.5; }
+#artbox .lb-back p.lb-rights { font-style: italic; color: var(--gold); border-top: 1px solid rgb(244 238 252 / .25); padding-top: var(--f8); }
 .lightbox .lb-bar button { font-family: var(--mono); font-size: var(--s-075); letter-spacing: .1em; text-transform: uppercase; color: #f4eefc; background: none; border: 1px solid rgb(244 238 252 / .45); border-radius: 999px; padding: var(--f3, .2rem) var(--f13); cursor: pointer; }
 .lightbox .lb-bar button:hover, .lightbox .lb-bar button:focus-visible { background: rgb(244 238 252 / .16); }
 .lightbox .lb-bar button[aria-expanded="true"] { border-color: var(--gold); background: rgb(244 238 252 / .16); }
@@ -3637,6 +3638,8 @@ Decomposition methods and solvers for large-scale
       back.appendChild(dl);
       if (r.why) back.appendChild(both('p', r.why, 'lb-why'));
       if (r.en) back.appendChild(both('p', r));
+      /* a painter still in copyright: the work is shown but not for sale */
+      if (r.rights) back.appendChild(both('p', r.rights, 'lb-rights'));
     }
     function turn(on, now) {
       if (now || matchMedia('(prefers-reduced-motion: reduce)').matches) {
