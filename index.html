@@ -785,16 +785,17 @@ footer {
   font-family: var(--mono); font-size: var(--s-075); letter-spacing: .06em; color: var(--heading);
   background: var(--tone-3); border-radius: 999px; padding: 2px var(--f8);
 }
-.scene .go, .scenes .next {
+.scene .go, .scenes .next, .gallery + .next {
   display: inline-flex; align-items: center; gap: var(--f5); font-family: var(--mono); font-size: var(--s-075);
   letter-spacing: .12em; text-transform: uppercase; text-decoration: none; color: var(--accent);
   border: 1px solid var(--accent); border-radius: 999px; padding: var(--f5) var(--f13); background: none; cursor: pointer;
   transition: color .2s, background .2s;
 }
-.scene .go:hover, .scene .go:focus-visible, .scenes .next:hover, .scenes .next:focus-visible { color: var(--ground); background: var(--accent); }
-.scene .arrow, .scenes .next .arrow { display: inline-block; transition: transform .2s ease-out; }
-.scene .go:hover .arrow, .scenes .next:hover .arrow { transform: translateX(4px); }
+.scene .go:hover, .scene .go:focus-visible, .scenes .next:hover, .scenes .next:focus-visible, .gallery + .next:hover, .gallery + .next:focus-visible { color: var(--ground); background: var(--accent); }
+.scene .arrow, .scenes .next .arrow, .gallery + .next .arrow { display: inline-block; transition: transform .2s ease-out; }
+.scene .go:hover .arrow, .scenes .next:hover .arrow, .gallery + .next:hover .arrow { transform: translateX(4px); }
 .scenes .next { align-self: flex-end; }
+.gallery + .next { margin-top: var(--f13); }
 /* Forms: the line that says the scene gives a file to print, the
    introduction of a group, and a group still empty */
 .scene .print { margin: 0 0 var(--f13); font-family: var(--mono); font-size: var(--s-075); letter-spacing: .08em; color: var(--gold); }
@@ -1545,7 +1546,6 @@ footer {
             <a class="go" href="https://dmeoli.github.io/opt-playground/packing-mip.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
-        <a class="next" href="/ml" data-section="ml"><span data-l="en">Next: Machine Learning</span><span data-l="it" lang="it">Avanti: Machine learning</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
       </div>
     </div>
   </div>
@@ -2096,7 +2096,6 @@ Decomposition methods and solvers for large-scale
             <a class="go" href="https://dmeoli.github.io/opt-playground/games-turing.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
-        <a class="next" href="/sky" data-section="sky"><span data-l="en">Next: Sky</span><span data-l="it" lang="it">Avanti: Cielo</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
       </div>
     </div>
   </div>
@@ -2186,7 +2185,6 @@ Decomposition methods and solvers for large-scale
             <a class="go" href="https://dmeoli.github.io/opt-playground/astro-chart.html"><span data-l="en">Open the scene</span><span data-l="it" lang="it">Apri la scena</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
           </div>
         </article>
-        <a class="next" href="/forms" data-section="forms"><span data-l="en">Next: Forms</span><span data-l="it" lang="it">Avanti: Forme</span> <span class="arrow" aria-hidden="true">&rarr;</span></a>
       </div>
     </div>
   </div>
@@ -2847,6 +2845,7 @@ Decomposition methods and solvers for large-scale
         <figure class="explicit"><button type="button" data-full="/assets/art/modigliani/modigliani_nudo_disteso_s1.webp" data-buy><img src="/assets/art/modigliani/modigliani_nudo_disteso_s1.webp" width="900" height="639" alt="Reclining Nude on a Red Divan, after Amedeo Modigliani" data-alt-it="Nudo disteso sul divano rosso, da Amedeo Modigliani" loading="lazy"><span class="veil"><b>18+</b><span data-l="en">Nudity</span><span data-l="it" lang="it">Nudo</span><span class="show"><span data-l="en">Show</span><span data-l="it" lang="it">Mostra</span></span></span></button><figcaption><span data-l="en">Reclining Nude on a Red Divan</span><span data-l="it" lang="it">Nudo disteso sul divano rosso</span></figcaption></figure>
         <figure class="explicit"><button type="button" data-full="/assets/art/modigliani/modigliani_nudo_seduto_s1.webp" data-buy><img src="/assets/art/modigliani/modigliani_nudo_seduto_s1.webp" width="639" height="900" alt="Seated Nude, after Amedeo Modigliani" data-alt-it="Nudo seduto, da Amedeo Modigliani" loading="lazy"><span class="veil"><b>18+</b><span data-l="en">Nudity</span><span data-l="it" lang="it">Nudo</span><span class="show"><span data-l="en">Show</span><span data-l="it" lang="it">Mostra</span></span></span></button><figcaption><span data-l="en">Seated Nude</span><span data-l="it" lang="it">Nudo seduto</span></figcaption></figure>
       </div>
+      <button type="button" class="next" data-goto="van_gogh"><span data-l="en">Next: Van Gogh</span><span data-l="it" lang="it">Avanti: Van Gogh</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
       </div>
       <div class="sub" data-sub="van_gogh" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Vincent van Gogh</span><span data-l="it" lang="it">Da Vincent van Gogh</span></p>
@@ -2865,6 +2864,7 @@ Decomposition methods and solvers for large-scale
         <figure class="explicit"><button type="button" data-full="/assets/art/van_gogh/van_gogh_modella_s1.webp" data-buy><img src="/assets/art/van_gogh/van_gogh_modella_s1.webp" width="639" height="900" alt="Model in the Studio in Paris, after Vincent van Gogh" data-alt-it="Modella nello studio a Parigi, da Vincent van Gogh" loading="lazy"><span class="veil"><b>18+</b><span data-l="en">Nudity</span><span data-l="it" lang="it">Nudo</span><span class="show"><span data-l="en">Show</span><span data-l="it" lang="it">Mostra</span></span></span></button><figcaption><span data-l="en">Model in the Studio in Paris</span><span data-l="it" lang="it">Modella nello studio a Parigi</span></figcaption></figure>
         <figure class="explicit"><button type="button" data-full="/assets/art/van_gogh/van_gogh_uomo_studio_s1.webp" data-buy><img src="/assets/art/van_gogh/van_gogh_uomo_studio_s1.webp" width="639" height="900" alt="Male Model in the Studio, after Vincent van Gogh" data-alt-it="Modello nello studio, da Vincent van Gogh" loading="lazy"><span class="veil"><b>18+</b><span data-l="en">Nudity</span><span data-l="it" lang="it">Nudo</span><span class="show"><span data-l="en">Show</span><span data-l="it" lang="it">Mostra</span></span></span></button><figcaption><span data-l="en">Male Model in the Studio</span><span data-l="it" lang="it">Modello nello studio</span></figcaption></figure>
       </div>
+      <button type="button" class="next" data-goto="munch"><span data-l="en">Next: Munch</span><span data-l="it" lang="it">Avanti: Munch</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
       </div>
       <div class="sub" data-sub="munch" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Edvard Munch</span><span data-l="it" lang="it">Da Edvard Munch</span></p>
@@ -2883,6 +2883,7 @@ Decomposition methods and solvers for large-scale
         <figure class="explicit"><button type="button" data-full="/assets/art/munch/munch_bagnanti_uomini_s1.webp" data-buy><img src="/assets/art/munch/munch_bagnanti_uomini_s1.webp" width="900" height="639" alt="Men Bathing on the Shore, after Edvard Munch" data-alt-it="Uomini che fanno il bagno sulla riva, da Edvard Munch" loading="lazy"><span class="veil"><b>18+</b><span data-l="en">Nudity</span><span data-l="it" lang="it">Nudo</span><span class="show"><span data-l="en">Show</span><span data-l="it" lang="it">Mostra</span></span></span></button><figcaption><span data-l="en">Men Bathing on the Shore</span><span data-l="it" lang="it">Uomini che fanno il bagno sulla riva</span></figcaption></figure>
         <figure class="explicit"><button type="button" data-full="/assets/art/munch/munch_nudo_letto_s2.webp" data-buy><img src="/assets/art/munch/munch_nudo_letto_s2.webp" width="639" height="900" alt="Woman on the Edge of the Bed, after Edvard Munch" data-alt-it="Donna sul bordo del letto, da Edvard Munch" loading="lazy"><span class="veil"><b>18+</b><span data-l="en">Nudity</span><span data-l="it" lang="it">Nudo</span><span class="show"><span data-l="en">Show</span><span data-l="it" lang="it">Mostra</span></span></span></button><figcaption><span data-l="en">Woman on the Edge of the Bed</span><span data-l="it" lang="it">Donna sul bordo del letto</span></figcaption></figure>
       </div>
+      <button type="button" class="next" data-goto="kirchner"><span data-l="en">Next: Kirchner</span><span data-l="it" lang="it">Avanti: Kirchner</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
       </div>
       <div class="sub" data-sub="kirchner" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Ernst Ludwig Kirchner</span><span data-l="it" lang="it">Da Ernst Ludwig Kirchner</span></p>
@@ -2901,6 +2902,7 @@ Decomposition methods and solvers for large-scale
         <figure class="explicit"><button type="button" data-full="/assets/art/kirchner/kirchner_bagnanti_fehmarn_s2.webp" data-buy><img src="/assets/art/kirchner/kirchner_bagnanti_fehmarn_s2.webp" width="900" height="639" alt="Bathers on Fehmarn, after Ernst Ludwig Kirchner" data-alt-it="Bagnanti a Fehmarn, da Ernst Ludwig Kirchner" loading="lazy"><span class="veil"><b>18+</b><span data-l="en">Nudity</span><span data-l="it" lang="it">Nudo</span><span class="show"><span data-l="en">Show</span><span data-l="it" lang="it">Mostra</span></span></span></button><figcaption><span data-l="en">Bathers on Fehmarn</span><span data-l="it" lang="it">Bagnanti a Fehmarn</span></figcaption></figure>
         <figure class="explicit"><button type="button" data-full="/assets/art/kirchner/kirchner_nudo_atelier_s1.webp" data-buy><img src="/assets/art/kirchner/kirchner_nudo_atelier_s1.webp" width="639" height="900" alt="Nude in the Studio, after Ernst Ludwig Kirchner" data-alt-it="Nudo nello studio, da Ernst Ludwig Kirchner" loading="lazy"><span class="veil"><b>18+</b><span data-l="en">Nudity</span><span data-l="it" lang="it">Nudo</span><span class="show"><span data-l="en">Show</span><span data-l="it" lang="it">Mostra</span></span></span></button><figcaption><span data-l="en">Nude in the Studio</span><span data-l="it" lang="it">Nudo nello studio</span></figcaption></figure>
       </div>
+      <button type="button" class="next" data-goto="leonardo"><span data-l="en">Next: Leonardo</span><span data-l="it" lang="it">Avanti: Leonardo</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
       </div>
       <div class="sub" data-sub="leonardo" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Leonardo da Vinci</span><span data-l="it" lang="it">Da Leonardo da Vinci</span></p>
@@ -2917,6 +2919,7 @@ Decomposition methods and solvers for large-scale
         <figure><button type="button" data-full="/assets/art/leonardo/leonardo_tempesta_s1.webp" data-buy><img src="/assets/art/leonardo/leonardo_tempesta_s1.webp" width="900" height="639" alt="Storm over an Alpine Town, after Leonardo da Vinci" data-alt-it="Tempesta su un paese alpino, da Leonardo da Vinci" loading="lazy"></button><figcaption><span data-l="en">Storm over an Alpine Town</span><span data-l="it" lang="it">Tempesta su un paese alpino</span></figcaption></figure>
         <figure><button type="button" data-full="/assets/art/leonardo/leonardo_ingranaggi_s2.webp" data-buy><img src="/assets/art/leonardo/leonardo_ingranaggi_s2.webp" width="639" height="900" alt="Study of Gears and a Pulley, after Leonardo da Vinci" data-alt-it="Studio di ingranaggi e carrucola, da Leonardo da Vinci" loading="lazy"></button><figcaption><span data-l="en">Study of Gears and a Pulley</span><span data-l="it" lang="it">Studio di ingranaggi e carrucola</span></figcaption></figure>
       </div>
+      <button type="button" class="next" data-goto="dadd"><span data-l="en">Next: Dadd</span><span data-l="it" lang="it">Avanti: Dadd</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
       </div>
       <div class="sub" data-sub="dadd" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Richard Dadd</span><span data-l="it" lang="it">Da Richard Dadd</span></p>
@@ -2933,6 +2936,7 @@ Decomposition methods and solvers for large-scale
         <figure><button type="button" data-full="/assets/art/dadd/dadd_rochester_s1.webp" data-buy><img src="/assets/art/dadd/dadd_rochester_s1.webp" width="900" height="639" alt="Castle above the Medway, after Richard Dadd" data-alt-it="Castello sul Medway, da Richard Dadd" loading="lazy"></button><figcaption><span data-l="en">Castle above the Medway</span><span data-l="it" lang="it">Castello sul Medway</span></figcaption></figure>
         <figure><button type="button" data-full="/assets/art/dadd/dadd_bazar_s2.webp" data-buy><img src="/assets/art/dadd/dadd_bazar_s2.webp" width="900" height="639" alt="Bazaar in Constantinople, after Richard Dadd" data-alt-it="Bazar a Costantinopoli, da Richard Dadd" loading="lazy"></button><figcaption><span data-l="en">Bazaar in Constantinople</span><span data-l="it" lang="it">Bazar a Costantinopoli</span></figcaption></figure>
       </div>
+      <button type="button" class="next" data-goto="hill"><span data-l="en">Next: Hill</span><span data-l="it" lang="it">Avanti: Hill</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
       </div>
       <div class="sub" data-sub="hill" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Carl Fredrik Hill</span><span data-l="it" lang="it">Da Carl Fredrik Hill</span></p>
@@ -2949,6 +2953,7 @@ Decomposition methods and solvers for large-scale
         <figure><button type="button" data-full="/assets/art/hill/hill_ventaglio_s1.webp" data-buy><img src="/assets/art/hill/hill_ventaglio_s1.webp" width="639" height="900" alt="Woman with a Fan, after Carl Fredrik Hill" data-alt-it="Donna col ventaglio, da Carl Fredrik Hill" loading="lazy"></button><figcaption><span data-l="en">Woman with a Fan</span><span data-l="it" lang="it">Donna col ventaglio</span></figcaption></figure>
         <figure><button type="button" data-full="/assets/art/hill/hill_navi_s2.webp" data-buy><img src="/assets/art/hill/hill_navi_s2.webp" width="900" height="639" alt="Ships above the City, after Carl Fredrik Hill" data-alt-it="Navi sopra la citta&#x27;, da Carl Fredrik Hill" loading="lazy"></button><figcaption><span data-l="en">Ships above the City</span><span data-l="it" lang="it">Navi sopra la citta&#x27;</span></figcaption></figure>
       </div>
+      <button type="button" class="next" data-goto="josephson"><span data-l="en">Next: Josephson</span><span data-l="it" lang="it">Avanti: Josephson</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
       </div>
       <div class="sub" data-sub="josephson" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Ernst Josephson</span><span data-l="it" lang="it">Da Ernst Josephson</span></p>
@@ -2965,6 +2970,7 @@ Decomposition methods and solvers for large-scale
         <figure><button type="button" data-full="/assets/art/josephson/josephson_betulle_s1.webp" data-buy><img src="/assets/art/josephson/josephson_betulle_s1.webp" width="900" height="639" alt="Birch Forest at Dusk, after Ernst Josephson" data-alt-it="Betulle al crepuscolo, da Ernst Josephson" loading="lazy"></button><figcaption><span data-l="en">Birch Forest at Dusk</span><span data-l="it" lang="it">Betulle al crepuscolo</span></figcaption></figure>
         <figure><button type="button" data-full="/assets/art/josephson/josephson_osteria_s1.webp" data-buy><img src="/assets/art/josephson/josephson_osteria_s1.webp" width="900" height="639" alt="Tavern in Paris, after Ernst Josephson" data-alt-it="Osteria a Parigi, da Ernst Josephson" loading="lazy"></button><figcaption><span data-l="en">Tavern in Paris</span><span data-l="it" lang="it">Osteria a Parigi</span></figcaption></figure>
       </div>
+      <button type="button" class="next" data-goto="monet"><span data-l="en">Next: Monet</span><span data-l="it" lang="it">Avanti: Monet</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
       </div>
       <div class="sub" data-sub="monet" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Claude Monet</span><span data-l="it" lang="it">Da Claude Monet</span></p>
@@ -2981,6 +2987,7 @@ Decomposition methods and solvers for large-scale
         <figure><button type="button" data-full="/assets/art/monet/monet_ghiaccio_s1.webp" data-buy><img src="/assets/art/monet/monet_ghiaccio_s1.webp" width="900" height="639" alt="Village Church in Winter, after Claude Monet" data-alt-it="Chiesa di paese d&#x27;inverno, da Claude Monet" loading="lazy"></button><figcaption><span data-l="en">Village Church in Winter</span><span data-l="it" lang="it">Chiesa di paese d&#x27;inverno</span></figcaption></figure>
         <figure><button type="button" data-full="/assets/art/monet/monet_lettrice_s1.webp" data-buy><img src="/assets/art/monet/monet_lettrice_s1.webp" width="639" height="900" alt="Woman Reading in the Shade, after Claude Monet" data-alt-it="Donna che legge all&#x27;ombra, da Claude Monet" loading="lazy"></button><figcaption><span data-l="en">Woman Reading in the Shade</span><span data-l="it" lang="it">Donna che legge all&#x27;ombra</span></figcaption></figure>
       </div>
+      <button type="button" class="next" data-goto="cezanne"><span data-l="en">Next: Cézanne</span><span data-l="it" lang="it">Avanti: Cézanne</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
       </div>
       <div class="sub" data-sub="cezanne" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Paul Cézanne</span><span data-l="it" lang="it">Da Paul Cézanne</span></p>
@@ -2999,6 +3006,7 @@ Decomposition methods and solvers for large-scale
         <figure class="explicit"><button type="button" data-full="/assets/art/cezanne/cezanne_bagnanti_s1.webp" data-buy><img src="/assets/art/cezanne/cezanne_bagnanti_s1.webp" width="900" height="639" alt="Bathers by the River, after Paul Cézanne" data-alt-it="Bagnanti sul fiume, da Paul Cézanne" loading="lazy"><span class="veil"><b>18+</b><span data-l="en">Nudity</span><span data-l="it" lang="it">Nudo</span><span class="show"><span data-l="en">Show</span><span data-l="it" lang="it">Mostra</span></span></span></button><figcaption><span data-l="en">Bathers by the River</span><span data-l="it" lang="it">Bagnanti sul fiume</span></figcaption></figure>
         <figure class="explicit"><button type="button" data-full="/assets/art/cezanne/cezanne_bagnante_s1.webp" data-buy><img src="/assets/art/cezanne/cezanne_bagnante_s1.webp" width="639" height="900" alt="Male Bather, after Paul Cézanne" data-alt-it="Bagnante, da Paul Cézanne" loading="lazy"><span class="veil"><b>18+</b><span data-l="en">Nudity</span><span data-l="it" lang="it">Nudo</span><span class="show"><span data-l="en">Show</span><span data-l="it" lang="it">Mostra</span></span></span></button><figcaption><span data-l="en">Male Bather</span><span data-l="it" lang="it">Bagnante</span></figcaption></figure>
       </div>
+      <button type="button" class="next" data-goto="klimt"><span data-l="en">Next: Klimt</span><span data-l="it" lang="it">Avanti: Klimt</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
       </div>
       <div class="sub" data-sub="klimt" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Gustav Klimt</span><span data-l="it" lang="it">Da Gustav Klimt</span></p>
@@ -3016,6 +3024,7 @@ Decomposition methods and solvers for large-scale
         <figure><button type="button" data-full="/assets/art/klimt/klimt_frutteto_s1.webp" data-buy><img src="/assets/art/klimt/klimt_frutteto_s1.webp" width="900" height="639" alt="Orchard with Roses, after Gustav Klimt" data-alt-it="Frutteto con rose, da Gustav Klimt" loading="lazy"></button><figcaption><span data-l="en">Orchard with Roses</span><span data-l="it" lang="it">Frutteto con rose</span></figcaption></figure>
         <figure class="explicit"><button type="button" data-full="/assets/art/klimt/klimt_velo_oro_s1.webp" data-buy><img src="/assets/art/klimt/klimt_velo_oro_s1.webp" width="639" height="900" alt="Woman in a Golden Veil, after Gustav Klimt" data-alt-it="Donna nel velo d&#x27;oro, da Gustav Klimt" loading="lazy"><span class="veil"><b>18+</b><span data-l="en">Nudity</span><span data-l="it" lang="it">Nudo</span><span class="show"><span data-l="en">Show</span><span data-l="it" lang="it">Mostra</span></span></span></button><figcaption><span data-l="en">Woman in a Golden Veil</span><span data-l="it" lang="it">Donna nel velo d&#x27;oro</span></figcaption></figure>
       </div>
+      <button type="button" class="next" data-goto="schiele"><span data-l="en">Next: Schiele</span><span data-l="it" lang="it">Avanti: Schiele</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
       </div>
       <div class="sub" data-sub="schiele" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Egon Schiele</span><span data-l="it" lang="it">Da Egon Schiele</span></p>
@@ -3034,6 +3043,7 @@ Decomposition methods and solvers for large-scale
         <figure class="explicit"><button type="button" data-full="/assets/art/schiele/schiele_uomo_seduto_s2.webp" data-buy><img src="/assets/art/schiele/schiele_uomo_seduto_s2.webp" width="639" height="900" alt="Seated Male Nude, after Egon Schiele" data-alt-it="Nudo maschile seduto, da Egon Schiele" loading="lazy"><span class="veil"><b>18+</b><span data-l="en">Nudity</span><span data-l="it" lang="it">Nudo</span><span class="show"><span data-l="en">Show</span><span data-l="it" lang="it">Mostra</span></span></span></button><figcaption><span data-l="en">Seated Male Nude</span><span data-l="it" lang="it">Nudo maschile seduto</span></figcaption></figure>
         <figure class="explicit"><button type="button" data-full="/assets/art/schiele/schiele_coperta_s3.webp" data-buy><img src="/assets/art/schiele/schiele_coperta_s3.webp" width="900" height="639" alt="Reclining Woman on a Striped Blanket, after Egon Schiele" data-alt-it="Donna distesa sulla coperta a righe, da Egon Schiele" loading="lazy"><span class="veil"><b>18+</b><span data-l="en">Nudity</span><span data-l="it" lang="it">Nudo</span><span class="show"><span data-l="en">Show</span><span data-l="it" lang="it">Mostra</span></span></span></button><figcaption><span data-l="en">Reclining Woman on a Striped Blanket</span><span data-l="it" lang="it">Donna distesa sulla coperta a righe</span></figcaption></figure>
       </div>
+      <button type="button" class="next" data-goto="rembrandt"><span data-l="en">Next: Rembrandt</span><span data-l="it" lang="it">Avanti: Rembrandt</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
       </div>
       <div class="sub" data-sub="rembrandt" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Rembrandt</span><span data-l="it" lang="it">Da Rembrandt</span></p>
@@ -3052,6 +3062,7 @@ Decomposition methods and solvers for large-scale
         <figure class="explicit"><button type="button" data-full="/assets/art/rembrandt/rembrandt_studio_uomo_s1.webp" data-buy><img src="/assets/art/rembrandt/rembrandt_studio_uomo_s1.webp" width="639" height="900" alt="Study of a Male Nude, after Rembrandt" data-alt-it="Studio di nudo maschile, da Rembrandt" loading="lazy"><span class="veil"><b>18+</b><span data-l="en">Nudity</span><span data-l="it" lang="it">Nudo</span><span class="show"><span data-l="en">Show</span><span data-l="it" lang="it">Mostra</span></span></span></button><figcaption><span data-l="en">Study of a Male Nude</span><span data-l="it" lang="it">Studio di nudo maschile</span></figcaption></figure>
         <figure class="explicit"><button type="button" data-full="/assets/art/rembrandt/rembrandt_toeletta_s1.webp" data-buy><img src="/assets/art/rembrandt/rembrandt_toeletta_s1.webp" width="639" height="900" alt="Woman at Her Toilet, after Rembrandt" data-alt-it="Donna alla toeletta, da Rembrandt" loading="lazy"><span class="veil"><b>18+</b><span data-l="en">Nudity</span><span data-l="it" lang="it">Nudo</span><span class="show"><span data-l="en">Show</span><span data-l="it" lang="it">Mostra</span></span></span></button><figcaption><span data-l="en">Woman at Her Toilet</span><span data-l="it" lang="it">Donna alla toeletta</span></figcaption></figure>
       </div>
+      <button type="button" class="next" data-goto="toulouse_lautrec"><span data-l="en">Next: Toulouse-Lautrec</span><span data-l="it" lang="it">Avanti: Toulouse-Lautrec</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
       </div>
       <div class="sub" data-sub="toulouse_lautrec" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Henri de Toulouse-Lautrec</span><span data-l="it" lang="it">Da Henri de Toulouse-Lautrec</span></p>
@@ -3069,6 +3080,7 @@ Decomposition methods and solvers for large-scale
         <figure><button type="button" data-full="/assets/art/toulouse_lautrec/toulouse_lautrec_clown_s3.webp" data-buy><img src="/assets/art/toulouse_lautrec/toulouse_lautrec_clown_s3.webp" width="900" height="639" alt="Rehearsal at the Circus, after Henri de Toulouse-Lautrec" data-alt-it="Prova al circo, da Henri de Toulouse-Lautrec" loading="lazy"></button><figcaption><span data-l="en">Rehearsal at the Circus</span><span data-l="it" lang="it">Prova al circo</span></figcaption></figure>
         <figure class="explicit"><button type="button" data-full="/assets/art/toulouse_lautrec/toulouse_lautrec_divano_s2.webp" data-buy><img src="/assets/art/toulouse_lautrec/toulouse_lautrec_divano_s2.webp" width="900" height="639" alt="Resting on the Sofa, after Henri de Toulouse-Lautrec" data-alt-it="Riposo sul divano, da Henri de Toulouse-Lautrec" loading="lazy"><span class="veil"><b>18+</b><span data-l="en">Nudity</span><span data-l="it" lang="it">Nudo</span><span class="show"><span data-l="en">Show</span><span data-l="it" lang="it">Mostra</span></span></span></button><figcaption><span data-l="en">Resting on the Sofa</span><span data-l="it" lang="it">Riposo sul divano</span></figcaption></figure>
       </div>
+      <button type="button" class="next" data-goto="turner"><span data-l="en">Next: Turner</span><span data-l="it" lang="it">Avanti: Turner</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
       </div>
       <div class="sub" data-sub="turner" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After J. M. W. Turner</span><span data-l="it" lang="it">Da J. M. W. Turner</span></p>
@@ -3085,6 +3097,7 @@ Decomposition methods and solvers for large-scale
         <figure><button type="button" data-full="/assets/art/turner/turner_fonderia_s3.webp" data-buy><img src="/assets/art/turner/turner_fonderia_s3.webp" width="639" height="900" alt="Iron Foundry at Night, after J. M. W. Turner" data-alt-it="Fonderia di notte, da J. M. W. Turner" loading="lazy"></button><figcaption><span data-l="en">Iron Foundry at Night</span><span data-l="it" lang="it">Fonderia di notte</span></figcaption></figure>
         <figure><button type="button" data-full="/assets/art/turner/turner_mietitura_s3.webp" data-buy><img src="/assets/art/turner/turner_mietitura_s3.webp" width="900" height="639" alt="Harvest Home, after J. M. W. Turner" data-alt-it="Fine della mietitura, da J. M. W. Turner" loading="lazy"></button><figcaption><span data-l="en">Harvest Home</span><span data-l="it" lang="it">Fine della mietitura</span></figcaption></figure>
       </div>
+      <button type="button" class="next" data-goto="friedrich"><span data-l="en">Next: Friedrich</span><span data-l="it" lang="it">Avanti: Friedrich</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
       </div>
       <div class="sub" data-sub="friedrich" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Caspar David Friedrich</span><span data-l="it" lang="it">Da Caspar David Friedrich</span></p>
@@ -3101,6 +3114,7 @@ Decomposition methods and solvers for large-scale
         <figure><button type="button" data-full="/assets/art/friedrich/friedrich_abeti_s1.webp" data-buy><img src="/assets/art/friedrich/friedrich_abeti_s1.webp" width="900" height="639" alt="Spruces in Snow, after Caspar David Friedrich" data-alt-it="Abeti nella neve, da Caspar David Friedrich" loading="lazy"></button><figcaption><span data-l="en">Spruces in Snow</span><span data-l="it" lang="it">Abeti nella neve</span></figcaption></figure>
         <figure><button type="button" data-full="/assets/art/friedrich/friedrich_elba_s1.webp" data-buy><img src="/assets/art/friedrich/friedrich_elba_s1.webp" width="900" height="639" alt="Elbe Valley at Evening, after Caspar David Friedrich" data-alt-it="Valle dell&#x27;Elba di sera, da Caspar David Friedrich" loading="lazy"></button><figcaption><span data-l="en">Elbe Valley at Evening</span><span data-l="it" lang="it">Valle dell&#x27;Elba di sera</span></figcaption></figure>
       </div>
+      <button type="button" class="next" data-goto="kollwitz"><span data-l="en">Next: Kollwitz</span><span data-l="it" lang="it">Avanti: Kollwitz</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
       </div>
       <div class="sub" data-sub="kollwitz" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">After Käthe Kollwitz</span><span data-l="it" lang="it">Da Käthe Kollwitz</span></p>
@@ -3117,6 +3131,7 @@ Decomposition methods and solvers for large-scale
         <figure><button type="button" data-full="/assets/art/kollwitz/kollwitz_fila_s1.webp" data-buy><img src="/assets/art/kollwitz/kollwitz_fila_s1.webp" width="900" height="639" alt="Waiting outside the Bakery, after Käthe Kollwitz" data-alt-it="In attesa davanti al forno, da Käthe Kollwitz" loading="lazy"></button><figcaption><span data-l="en">Waiting outside the Bakery</span><span data-l="it" lang="it">In attesa davanti al forno</span></figcaption></figure>
         <figure><button type="button" data-full="/assets/art/kollwitz/kollwitz_falce_s1.webp" data-buy><img src="/assets/art/kollwitz/kollwitz_falce_s1.webp" width="639" height="900" alt="Old Peasant with a Scythe, after Käthe Kollwitz" data-alt-it="Vecchio contadino con la falce, da Käthe Kollwitz" loading="lazy"></button><figcaption><span data-l="en">Old Peasant with a Scythe</span><span data-l="it" lang="it">Vecchio contadino con la falce</span></figcaption></figure>
       </div>
+      <button type="button" class="next" data-goto="concetti"><span data-l="en">Next: Concepts</span><span data-l="it" lang="it">Avanti: Concetti</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
       </div>
       <div class="sub" data-sub="concetti" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">Concept paintings of mental disorders</span><span data-l="it" lang="it">Quadri-concetto dei disturbi</span></p>
@@ -3137,6 +3152,7 @@ Decomposition methods and solvers for large-scale
         <figure><button type="button" data-full="/assets/art/concetti/dipendenza_toulouse_lautrec.webp" data-buy><img src="/assets/art/concetti/dipendenza_toulouse_lautrec.webp" width="639" height="900" alt="Substance Dependence, after Henri de Toulouse-Lautrec" data-alt-it="Dipendenza da sostanze, da Henri de Toulouse-Lautrec" loading="lazy"></button><figcaption><span data-l="en">Substance Dependence</span><span data-l="it" lang="it">Dipendenza da sostanze</span></figcaption></figure>
         <figure><button type="button" data-full="/assets/art/concetti/dipendenza_affettiva_kollwitz.webp" data-buy><img src="/assets/art/concetti/dipendenza_affettiva_kollwitz.webp" width="639" height="900" alt="Emotional Dependence, after Käthe Kollwitz" data-alt-it="Dipendenza affettiva, da Käthe Kollwitz" loading="lazy"></button><figcaption><span data-l="en">Emotional Dependence</span><span data-l="it" lang="it">Dipendenza affettiva</span></figcaption></figure>
       </div>
+      <button type="button" class="next" data-goto="emozioni"><span data-l="en">Next: Emotions</span><span data-l="it" lang="it">Avanti: Emozioni</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
       </div>
       <div class="sub" data-sub="emozioni" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">Emotions</span><span data-l="it" lang="it">Emozioni</span></p>
@@ -3160,6 +3176,7 @@ Decomposition methods and solvers for large-scale
         <figure><button type="button" data-full="/assets/art/emozioni/tristezza.webp" data-buy><img src="/assets/art/emozioni/tristezza.webp" width="900" height="900" alt="Sadness" data-alt-it="Tristezza" loading="lazy"></button><figcaption><span data-l="en">Sadness</span><span data-l="it" lang="it">Tristezza</span></figcaption></figure>
         <figure><button type="button" data-full="/assets/art/emozioni/vergogna.webp" data-buy><img src="/assets/art/emozioni/vergogna.webp" width="900" height="900" alt="Shame" data-alt-it="Vergogna" loading="lazy"></button><figcaption><span data-l="en">Shame</span><span data-l="it" lang="it">Vergogna</span></figcaption></figure>
       </div>
+      <button type="button" class="next" data-goto="peccati"><span data-l="en">Next: Deadly sins</span><span data-l="it" lang="it">Avanti: Peccati capitali</span> <span class="arrow" aria-hidden="true">&rarr;</span></button>
       </div>
       <div class="sub" data-sub="peccati" role="tabpanel">
       <p class="eyebrow label"><span data-l="en">The Seven Deadly Sins</span><span data-l="it" lang="it">Peccati capitali</span></p>
