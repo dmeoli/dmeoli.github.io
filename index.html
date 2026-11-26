@@ -413,6 +413,8 @@ a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 2
 /* ---- publications ------------------------------------------------------ */
 .pub { display: grid; grid-template-columns: var(--f34) 1fr; gap: var(--f13); }
 .pub + .pub { margin-top: var(--f21); }
+.pubgroup { margin: var(--f34) 0 var(--f13); font-size: var(--s-025); font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
+.pubgroup:first-of-type { margin-top: 0; }
 .tag {
   font-family: var(--mono); font-size: var(--s-075); color: var(--gold);
   background: var(--gold-5); box-shadow: inset 0 0 0 1px var(--gold-4); border-radius: var(--f3); padding: var(--f3) var(--f5);
@@ -1306,28 +1308,9 @@ footer {
     <h2><a href="/publications" data-l="en" data-section="publications">Publications</a><a href="/pubblicazioni" data-l="it" lang="it" data-section="publications">Pubblicazioni</a></h2>
     <div class="body">
 
+      <h3 class="pubgroup"><span data-l="en">Journal papers</span><span data-l="it" lang="it">Articoli su rivista</span></h3>
       <article class="pub">
-        <span class="tag">P2</span>
-        <div>
-          <h3 lang="en"><a href="/papers/climbing-the-ladder/">Climbing the Ladder:
-              Automating Data Pipelines and Reproducing Baselines in Low-Resource
-              Settings</a></h3>
-          <p class="authors"><b>D. Meoli</b>, E. Wdowiak</p>
-          <p class="venue"><span data-l="en">arXiv preprint 2610.30374, 2026</span><span data-l="it" lang="it">Preprint arXiv 2610.30374, 2026</span></p>
-          <p class="meta">
-            <a href="https://arxiv.org/abs/2610.30374">arXiv:2610.30374</a>
-            <span class="sep">&middot;</span>
-            <a href="https://github.com/dmeoli/SicilianNMT"><span data-l="en">code</span><span data-l="it" lang="it">codice</span></a>
-            <span class="sep">&middot;</span>
-            <a href="/papers/climbing-the-ladder/">abstract</a>
-            <span class="sep">&middot;</span>
-            <a class="cite" href="/papers/climbing-the-ladder/cite.bib">BibTeX</a>
-          </p>
-        </div>
-      </article>
-
-      <article class="pub">
-        <span class="tag">P1</span>
+        <span class="tag">J1</span>
         <div>
           <h3 lang="en">Dynamic Programming for the Single-Unit Commitment Problem with Spinning
               Reserves and Reactive Power</h3>
@@ -1336,6 +1319,7 @@ footer {
         </div>
       </article>
 
+      <h3 class="pubgroup"><span data-l="en">Conference papers</span><span data-l="it" lang="it">Articoli su conferenza</span></h3>
       <article class="pub">
         <span class="tag">C1</span>
         <div>
@@ -1356,6 +1340,27 @@ footer {
             <a href="/papers/coupling-smspp-pypsa/">abstract</a>
             <span class="sep">&middot;</span>
             <a class="cite" href="/papers/coupling-smspp-pypsa/cite.bib">BibTeX</a>
+          </p>
+        </div>
+      </article>
+
+      <h3 class="pubgroup"><span data-l="en">Preprints and technical reports</span><span data-l="it" lang="it">Preprint e technical report</span></h3>
+      <article class="pub">
+        <span class="tag">T1</span>
+        <div>
+          <h3 lang="en"><a href="/papers/climbing-the-ladder/">Climbing the Ladder:
+              Automating Data Pipelines and Reproducing Baselines in Low-Resource
+              Settings</a></h3>
+          <p class="authors"><b>D. Meoli</b>, E. Wdowiak</p>
+          <p class="venue"><span data-l="en">arXiv preprint 2610.30374, 2026</span><span data-l="it" lang="it">Preprint arXiv 2610.30374, 2026</span></p>
+          <p class="meta">
+            <a href="https://arxiv.org/abs/2610.30374">arXiv:2610.30374</a>
+            <span class="sep">&middot;</span>
+            <a href="https://github.com/dmeoli/SicilianNMT"><span data-l="en">code</span><span data-l="it" lang="it">codice</span></a>
+            <span class="sep">&middot;</span>
+            <a href="/papers/climbing-the-ladder/">abstract</a>
+            <span class="sep">&middot;</span>
+            <a class="cite" href="/papers/climbing-the-ladder/cite.bib">BibTeX</a>
           </p>
         </div>
       </article>
