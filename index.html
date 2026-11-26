@@ -795,7 +795,7 @@ footer {
 .scene .arrow, .scenes .next .arrow, .gallery + .next .arrow { display: inline-block; transition: transform .2s ease-out; }
 .scene .go:hover .arrow, .scenes .next:hover .arrow, .gallery + .next:hover .arrow { transform: translateX(4px); }
 .scenes .next { align-self: flex-end; }
-.gallery + .next { margin-top: var(--f13); }
+.gallery + .next { margin-top: var(--f13); display: flex; width: fit-content; margin-left: auto; }
 /* Forms: the line that says the scene gives a file to print, the
    introduction of a group, and a group still empty */
 .scene .print { margin: 0 0 var(--f13); font-family: var(--mono); font-size: var(--s-075); letter-spacing: .08em; color: var(--gold); }
