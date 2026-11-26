@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="forms-group" content="nature">
+<title>The honeycomb and the hexagon</title>
+<!-- scene-meta (tools/scene_meta.py) -->
+<meta name="description" content="The comb of the bees as mathematics: a patch of the plane as the comb, as circles relaxing into hexagons, and as the Voronoi diagram of the lattice; the honeycomb conjecture, that regular hexagons give the least wall for equal-area cells; and the cell in three dimensions with its rhombic base and the Maraldi angle.">
+<link rel="canonical" href="https://dmeoli.github.io/opt-playground/honeycomb.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="The honeycomb and the hexagon">
+<meta property="og:description" content="The comb of the bees as mathematics: a patch of the plane as the comb, as circles relaxing into hexagons, and as the Voronoi diagram of the lattice; the honeycomb conjecture, that regular hexagons give the least wall for equal-area cells; and the cell in three dimensions with its rhombic base and the Maraldi angle.">
+<meta property="og:url" content="https://dmeoli.github.io/opt-playground/honeycomb.html">
+<meta property="og:image" content="https://dmeoli.github.io/assets/forms/honeycomb.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+<script>window.MathJax = { tex: { inlineMath: [['\\(', '\\)']] }, chtml: { scale: 1 }, startup: { typeset: true } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<style>
+main.comb { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: start; }
+@media (max-width: 860px) { main.comb { grid-template-columns: 1fr; } }
+main.comb figcaption { min-height: 0; }
+.side2 { display: grid; gap: 22px; }
+#stage canvas { border-radius: 6px; touch-action: none; }
+.controls input[type=range] { width: 130px; }
+#comb { width: 100%; height: auto; display: block; border-radius: 6px; }
+#comb .comb { fill: var(--lilac); fill-opacity: .5; stroke: var(--accent); stroke-width: 1; stroke-linejoin: round; }
+#comb .drop { fill: var(--lilac); fill-opacity: .35; stroke: var(--accent-2); stroke-width: 1; }
+#comb .vor { fill: none; stroke: var(--accent); stroke-width: 1; }
+#comb .seed { fill: var(--gold); }
+body.thumb > :not(main), body.thumb main > :not(:first-child), body.thumb figcaption, body.thumb .stats { display: none !important; }
+body.thumb main.comb { grid-template-columns: 1fr; }
+table.cmp { border-collapse: collapse; font: 13px 'IBM Plex Mono', monospace; margin-top: 4px; }
+table.cmp th, table.cmp td { text-align: right; padding: 2px 10px; border-bottom: 1px solid var(--rule); }
+table.cmp th:first-child, table.cmp td:first-child { text-align: left; }
+table.cmp tr.best td { color: var(--accent); font-weight: 500; }
+table.cmp tr.bound td { color: var(--ink-soft); }
+#print { margin-top: 28px; }
+#print h2 { font-weight: 600; font-size: 22px; margin: 0 0 6px; color: var(--accent); }
+#print .lede { max-width: 80ch; font-size: 15px; }
+</style>
+</head>
+<body>
+<nav class="pages"><span class="group"><span data-l="en">Optimization</span><span data-l="it" lang="it">Ottimizzazione</span></span> <a href="index.html"><span data-l="en">Decomposition</span><span data-l="it" lang="it">Decomposizione</span></a> · <a href="lagrangian-dual.html"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="components.html"><span data-l="en">Components</span><span data-l="it" lang="it">Componenti</span></a> · <a href="benders.html">Benders</a> · <a href="lp.html">LP</a> · <a href="lp3d.html">LP in 3D</a> · <a href="simplex-path.html"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="integer.html"><span data-l="en">Integer</span><span data-l="it" lang="it">Programmazione intera</span></a> · <a href="polarity.html"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a> · <a href="packing-mip.html"><span data-l="en">Packing</span><span data-l="it" lang="it">Impaccamento</span></a><br><span class="group"><span data-l="en">Machine learning</span><span data-l="it" lang="it">Machine learning</span></span> <a href="learning.html"><span data-l="en">Learning</span><span data-l="it" lang="it">Apprendimento</span></a> · <a href="svm.html">SVM</a> · <a href="network.html"><span data-l="en">Network</span><span data-l="it" lang="it">Rete</span></a> · <a href="depth.html"><span data-l="en">Depth</span><span data-l="it" lang="it">Profondità</span></a> · <a href="manifolds.html"><span data-l="en">Manifolds</span><span data-l="it" lang="it">Varietà</span></a> · <a href="superposition.html"><span data-l="en">Superposition</span><span data-l="it" lang="it">Sovrapposizione</span></a> · <a href="conv.html"><span data-l="en">Convolution</span><span data-l="it" lang="it">Convoluzione</span></a> · <a href="lstm.html">LSTM</a> · <a href="attention.html"><span data-l="en">Attention</span><span data-l="it" lang="it">Attention</span></a> · <a href="ssm.html"><span data-l="en">State space</span><span data-l="it" lang="it">Spazio degli stati</span></a> · <a href="gnn.html"><span data-l="en">Graphs</span><span data-l="it" lang="it">Grafi</span></a> · <a href="moe.html"><span data-l="en">Mixture of experts</span><span data-l="it" lang="it">Mixture of experts</span></a> · <a href="representations.html"><span data-l="en">Representations</span><span data-l="it" lang="it">Rappresentazioni</span></a> · <a href="latent.html"><span data-l="en">Latent space</span><span data-l="it" lang="it">Spazio latente</span></a> · <a href="diffusion.html"><span data-l="en">Diffusion</span><span data-l="it" lang="it">Diffusione</span></a><br><span class="group"><span data-l="en">Bio-inspired</span><span data-l="it" lang="it">Bio-ispirati</span></span> <a href="hebbian.html"><span data-l="en">Hebbian</span><span data-l="it" lang="it">Regola di Hebb</span></a> · <a href="hopfield.html">Hopfield</a> · <a href="izhikevich.html">Izhikevich</a> · <a href="spiking.html">Spiking</a> · <a href="esn.html">Echo state</a> · <a href="present.html"><span data-l="en">Talk</span><span data-l="it" lang="it">Presentazione</span></a><br><span class="group"><span data-l="en">Games</span><span data-l="it" lang="it">Giochi</span></span> <!--games-nav--><a href="games.html"><span data-l="en">All</span><span data-l="it" lang="it">Tutti</span></a> · <a href="games-coloring.html"><span data-l="en">Map coloring</span><span data-l="it" lang="it">Colorazione di mappe</span></a> · <a href="games-queens.html"><span data-l="en">Queens</span><span data-l="it" lang="it">Regine</span></a> · <a href="games-sudoku.html">Sudoku</a> · <a href="games-zebra.html">Zebra</a> · <a href="games-kakuro.html">Kakuro</a> · <a href="games-crypto.html"><span data-l="en">Cryptarithmetic</span><span data-l="it" lang="it">Criptoaritmetica</span></a> · <a href="games-crossword.html"><span data-l="en">Crossword</span><span data-l="it" lang="it">Cruciverba</span></a> · <a href="games-puzzle.html"><span data-l="en">Sliding puzzle</span><span data-l="it" lang="it">Gioco del 15</span></a> · <a href="games-grid.html"><span data-l="en">Grid paths</span><span data-l="it" lang="it">Cammini su griglia</span></a> · <a href="games-romania.html">Romania</a> · <a href="games-planning.html"><span data-l="en">Planning</span><span data-l="it" lang="it">Pianificazione</span></a> · <a href="games-hanoi.html"><span data-l="en">Towers of Hanoi</span><span data-l="it" lang="it">Torri di Hanoi</span></a> · <a href="games-cube.html"><span data-l="en">Cube</span><span data-l="it" lang="it">Cubo</span></a> · <a href="games-pancake.html"><span data-l="en">Pancakes</span><span data-l="it" lang="it">Frittelle</span></a> · <a href="games-topspin.html">TopSpin</a> · <a href="games-knapsack.html"><span data-l="en">0-1 knapsack</span><span data-l="it" lang="it">Zaino 0-1</span></a> · <a href="games-tictactoe.html"><span data-l="en">Tic-tac-toe</span><span data-l="it" lang="it">Tris</span></a> · <a href="games-connect4.html"><span data-l="en">Connect four</span><span data-l="it" lang="it">Forza quattro</span></a> · <a href="games-turing.html"><span data-l="en">Turing &amp; Chomsky</span><span data-l="it" lang="it">Turing e Chomsky</span></a><!--/games-nav--><br><span class="group"><span data-l="en">Forms</span><span data-l="it" lang="it">Forme</span></span> <!--forms-nav--><a href="simplex-path.html?print"><span data-l="en">Simplex path</span><span data-l="it" lang="it">Cammino del simplesso</span></a> · <a href="lagrangian-dual.html?print"><span data-l="en">Lagrangian dual</span><span data-l="it" lang="it">Duale lagrangiano</span></a> · <a href="loss-landscape.html"><span data-l="en">Loss landscapes</span><span data-l="it" lang="it">Paesaggi della loss</span></a> · <a href="packing-mip.html?print"><span data-l="en">Packing by MIP</span><span data-l="it" lang="it">Impaccamento con MIP</span></a> · <a href="lp3d.html?print"><span data-l="en">LP in 3D</span><span data-l="it" lang="it">PL in 3D</span></a> · <a href="polarity.html?print"><span data-l="en">Polarity</span><span data-l="it" lang="it">Polarità</span></a> · <a href="shells.html"><span data-l="en">Shells</span><span data-l="it" lang="it">Conchiglie</span></a> · <a href="phyllotaxis.html"><span data-l="en">Phyllotaxis</span><span data-l="it" lang="it">Fillotassi</span></a> · <a href="radiolarian.html"><span data-l="en">Radiolarians</span><span data-l="it" lang="it">Radiolari</span></a> · <a href="honeycomb.html" aria-current="page"><span data-l="en">Honeycomb</span><span data-l="it" lang="it">Favo</span></a> · <a href="coral.html"><span data-l="en">Coral and Turing</span><span data-l="it" lang="it">Corallo e Turing</span></a> · <a href="plants.html"><span data-l="en">Plants</span><span data-l="it" lang="it">Piante</span></a> · <a href="snowflakes.html"><span data-l="en">Snowflakes</span><span data-l="it" lang="it">Fiocchi di neve</span></a> · <a href="batman.html">Batman</a> · <a href="minimal-surfaces.html"><span data-l="en">Minimal surfaces</span><span data-l="it" lang="it">Superfici minime</span></a> · <a href="knots.html"><span data-l="en">Knots</span><span data-l="it" lang="it">Nodi</span></a> · <a href="attractors.html"><span data-l="en">Attractors</span><span data-l="it" lang="it">Attrattori</span></a> · <a href="polytopes.html"><span data-l="en">4D polytopes</span><span data-l="it" lang="it">Politopi 4D</span></a> · <a href="chladni.html">Chladni</a> · <a href="equations.html"><span data-l="en">Equations</span><span data-l="it" lang="it">Equazioni</span></a> · <a href="dice.html"><span data-l="en">Fair dice</span><span data-l="it" lang="it">Dadi equi</span></a> · <a href="hat.html"><span data-l="en">The hat</span><span data-l="it" lang="it">Il cappello</span></a> · <a href="fractals.html"><span data-l="en">Fractals</span><span data-l="it" lang="it">Frattali</span></a> · <a href="lithophane.html"><span data-l="en">Lithophanes</span><span data-l="it" lang="it">Litofanie</span></a> · <a href="monsters.html"><span data-l="en">Monsters</span><span data-l="it" lang="it">Mostri</span></a> · <a href="monster-cards.html"><span data-l="en">Monster cards</span><span data-l="it" lang="it">Carte dei mostri</span></a> · <a href="dragon-curve.html"><span data-l="en">Dragon curve</span><span data-l="it" lang="it">Curva del drago</span></a> · <a href="robots.html"><span data-l="en">Robots</span><span data-l="it" lang="it">Robot</span></a> · <a href="magic-circles.html"><span data-l="en">Magic circles</span><span data-l="it" lang="it">Cerchi magici</span></a> · <a href="origami.html">Origami</a> · <a href="wagara.html"><span data-l="en">Japanese patterns</span><span data-l="it" lang="it">Motivi giapponesi</span></a> · <a href="twisty.html"><span data-l="en">Twisty puzzles</span><span data-l="it" lang="it">Rompicapi a rotazione</span></a> · <a href="wang-dungeon.html"><span data-l="en">Wang dungeon</span><span data-l="it" lang="it">Dungeon di Wang</span></a> · <a href="mana-crystals.html"><span data-l="en">Wulff crystals</span><span data-l="it" lang="it">Cristalli di Wulff</span></a> · <a href="dragon-eggs.html"><span data-l="en">Dragon eggs</span><span data-l="it" lang="it">Uova di drago</span></a> · <a href="galton-tower.html"><span data-l="en">Galton tower</span><span data-l="it" lang="it">Torre di Galton</span></a> · <a href="escher-monsters.html"><span data-l="en">Escher monsters</span><span data-l="it" lang="it">Mostri alla Escher</span></a> · <a href="minotaur-sphere.html"><span data-l="en">Sphere labyrinth</span><span data-l="it" lang="it">Labirinto sferico</span></a> · <a href="elven-knots.html"><span data-l="en">Elven amulets</span><span data-l="it" lang="it">Amuleti elfici</span></a> · <a href="slime-den.html"><span data-l="en">Slime den</span><span data-l="it" lang="it">Tana degli slime</span></a> · <a href="antigravity-castle.html"><span data-l="en">Antigravity castle</span><span data-l="it" lang="it">Castello antigravità</span></a> · <a href="erosion-island.html"><span data-l="en">Eroded island</span><span data-l="it" lang="it">Isola erosa</span></a> · <a href="damascus-swords.html"><span data-l="en">Damascus swords</span><span data-l="it" lang="it">Spade di Damasco</span></a> · <a href="kraken-tree.html"><span data-l="en">Kraken and tree</span><span data-l="it" lang="it">Kraken e albero</span></a> · <a href="starships.html"><span data-l="en">Starships</span><span data-l="it" lang="it">Astronavi</span></a> · <a href="automaton.html"><span data-l="en">Automaton</span><span data-l="it" lang="it">Automa</span></a> · <a href="puzzle-chest.html"><span data-l="en">Puzzle chest</span><span data-l="it" lang="it">Baule a incastro</span></a> · <a href="biomorphs.html"><span data-l="en">Biomorphs</span><span data-l="it" lang="it">Biomorfi</span></a><!--/forms-nav--><br><span class="group"><span data-l="en">Sky</span><span data-l="it" lang="it">Cielo</span></span> <!--sky-nav--><a href="astro-chart.html"><span data-l="en">Natal chart</span><span data-l="it" lang="it">Carta natale</span></a> · <a href="sky-retrograde.html"><span data-l="en">Retrograde motion</span><span data-l="it" lang="it">Moto retrogrado</span></a> · <a href="sky-precession.html"><span data-l="en">Precession</span><span data-l="it" lang="it">Precessione</span></a> · <a href="sky-houses.html"><span data-l="en">Houses</span><span data-l="it" lang="it">Case</span></a> · <a href="sky-roses.html"><span data-l="en">Synodic roses</span><span data-l="it" lang="it">Rose sinodiche</span></a> · <a href="sky-analemma.html">Analemma</a> · <a href="sky-saros.html">Saros</a><!--/sky-nav--></nav>
+<header>
+  <h1><span data-l="en">The honeycomb and the hexagon</span><span data-l="it" lang="it">Il favo e l'esagono</span></h1>
+  <p class="lede" data-l="en">A bee builds its comb of cells of equal size that leave no gap and share their
+  walls, and it builds them with hexagonal walls. Why the hexagon is the question the honeycomb conjecture
+  answers: among all the ways of cutting the plane into regions of equal area, the grid of regular hexagons
+  is the one of least total wall, so the bee encloses the most cell for the least wax. The claim is old,
+  from Pappus of Alexandria, and was proved only by Hales (2001). The comb is also the Voronoi diagram of
+  the triangular lattice of the cell centers, the region of the plane nearer to one center than to any
+  other, and the hexagons appear when soft disks, packed and pressed, flatten their shared walls until
+  these are straight. The wall per unit area measures the three regular tilings: the hexagon beats the
+  square and the triangle, and comes within five percent of the circle, which encloses the most of all but
+  does not tile. In three dimensions the back of the cell is not flat but three rhombi meeting at a point,
+  the corner of a rhombic dodecahedron, built at the Maraldi angle of about \(109.47^\circ\); Fejes Tóth
+  (1964) showed a slightly more economical closure exists, so the cell is near-optimal, not exactly so.</p>
+  <p class="lede" data-l="it" lang="it">Un'ape costruisce il favo con celle di uguale grandezza che non
+  lasciano spazi vuoti e condividono le pareti, e le costruisce con pareti esagonali. Perché proprio
+  l'esagono è la domanda a cui risponde la congettura del nido d'ape: fra tutti i modi di tagliare il piano
+  in regioni di uguale area, la griglia di esagoni regolari è quella di minima parete totale, sicché l'ape
+  racchiude più cella con meno cera. L'idea è antica, viene da Pappo di Alessandria, e fu dimostrata solo
+  da Hales (2001). Il favo è anche il diagramma di Voronoi del reticolo triangolare dei centri delle celle,
+  la regione del piano più vicina a un centro che a ogni altro, e gli esagoni compaiono quando dischi molli,
+  impaccati e premuti, appiattiscono le pareti comuni finché queste diventano diritte. La parete per unità
+  d'area misura le tre tassellazioni regolari: l'esagono batte il quadrato e il triangolo, e arriva entro il
+  cinque per cento del cerchio, che racchiude più di tutti ma non tassella. In tre dimensioni il fondo della
+  cella non è piatto ma tre rombi che si incontrano in un punto, l'angolo di un dodecaedro rombico, costruito
+  all'angolo di Maraldi di circa \(109.47^\circ\); Fejes Tóth (1964) dimostrò che esiste una chiusura un po'
+  più economica, sicché la cella è quasi ottima, non esattamente.</p>
+  <p class="lede">\(P_{\mathrm{hex}} = \sqrt{8\sqrt3} \approx 3.722\), \(P_{\square} = 4\), \(P_{\triangle} = \sqrt{12\sqrt3} \approx 4.559\), \(P_{\circ} = 2\sqrt{\pi} \approx 3.545\) (per unit area)</p>
+</header>
+<section class="controls">
+  <div class="settings">
+    <label><span data-l="en">view</span><span data-l="it" lang="it">vista</span><select id="preset"></select></label>
+    <label><span data-l="en">tiling</span><span data-l="it" lang="it">tassellazione</span><select id="shape"></select></label>
+    <label><span data-l="en">draw</span><span data-l="it" lang="it">disegna</span><select id="showsel"></select></label>
+    <label><span data-l="en">relax</span><span data-l="it" lang="it">rilassa</span><input id="relax" type="range" min="0" max="1" step="0.01" value="1"><output id="relaxout">1</output></label>
+    <label><span data-l="en">cells</span><span data-l="it" lang="it">celle</span><input id="cells" type="range" min="7" max="169" step="1" value="61"><output id="cellsout">61</output></label>
+    <label><span data-l="en">3D base</span><span data-l="it" lang="it">fondo 3D</span><select id="cell3d"></select></label>
+    <label class="check"><span data-l="en">spin</span><span data-l="it" lang="it">rotazione</span><input id="spin" type="checkbox"></label>
+    <button type="button" id="view"><span data-l="en">Reset view</span><span data-l="it" lang="it">Vista iniziale</span></button>
+  </div>
+</section>
+<main class="comb">
+  <figure>
+    <figcaption><span data-l="en">The plane as the comb, as the Voronoi diagram of the seeds (the gold
+    dots), or as circles that relax into hexagons as the slider goes from 0 to 1: at 0 the inscribed circles
+    leave gaps, at 1 the walls are shared and straight. Switch the tiling to see the square and the
+    triangular combs for the comparison.</span><span data-l="it" lang="it">Il piano come favo, come diagramma
+    di Voronoi dei semi (i punti oro), o come cerchi che si rilassano in esagoni muovendo il cursore da 0 a
+    1: a 0 i cerchi inscritti lasciano spazi vuoti, a 1 le pareti sono condivise e diritte. Cambia la
+    tassellazione per vedere il favo quadrato e quello triangolare per il confronto.</span></figcaption>
+    <svg id="comb" viewBox="0 0 320 320" role="img" aria-label="The honeycomb in the plane"></svg>
+  </figure>
+  <div class="side2">
+    <figure>
+      <figcaption><span data-l="en">One cell in three dimensions: the hexagonal mouth and the back of three
+      rhombi meeting at a point, the base the bee builds. Change the base to the flat back or to the closure
+      of Fejes Tóth. Drag to turn, wheel or pinch to zoom.</span><span data-l="it" lang="it">Una cella in tre
+      dimensioni: la bocca esagonale e il fondo di tre rombi che si incontrano in un punto, il fondo che
+      costruisce l'ape. Cambia il fondo in quello piatto o nella chiusura di Fejes Tóth. Trascina per
+      ruotare, rotella o pizzico per lo zoom.</span></figcaption>
+      <div id="stage" class="stage"></div>
+    </figure>
+    <figure>
+      <figcaption><span data-l="en">Wall per unit area for the three regular tilings, each shared wall
+      counted once, with the circle as the lower bound it cannot reach. The hexagon is the least, which is
+      the honeycomb conjecture.</span><span data-l="it" lang="it">Parete per unità d'area per le tre
+      tassellazioni regolari, ogni parete condivisa contata una volta, col cerchio come limite inferiore
+      irraggiungibile. L'esagono è il minimo, ed è la congettura del nido d'ape.</span></figcaption>
+      <table class="cmp">
+        <tr><th><span data-l="en">tiling</span><span data-l="it" lang="it">tassellazione</span></th><th><span data-l="en">wall/area</span><span data-l="it" lang="it">parete/area</span></th><th><span data-l="en">vs hex</span><span data-l="it" lang="it">vs esag.</span></th></tr>
+        <tr class="best"><td><span data-l="en">hexagon</span><span data-l="it" lang="it">esagono</span></td><td id="wHex">3.722</td><td>&mdash;</td></tr>
+        <tr><td><span data-l="en">square</span><span data-l="it" lang="it">quadrato</span></td><td id="wSquare">4.000</td><td id="eSquare">+7%</td></tr>
+        <tr><td><span data-l="en">triangle</span><span data-l="it" lang="it">triangolo</span></td><td id="wTri">4.559</td><td id="eTri">+22%</td></tr>
+        <tr class="bound"><td><span data-l="en">circle (bound)</span><span data-l="it" lang="it">cerchio (limite)</span></td><td id="wCircle">3.545</td><td>&minus;5%</td></tr>
+      </table>
+    </figure>
+  </div>
+</main>
+<section id="print">
+  <h2><span data-l="en">For 3D printing</span><span data-l="it" lang="it">Per la stampa 3D</span></h2>
+  <p class="lede" data-l="en">A panel of the comb, its walls extruded on a thin floor, or a single cell with
+  its rhombic base; the largest dimension equal to the size. The comb panel lies flat on the bed and prints
+  without supports; the single cell stands on its mouth.</p>
+  <p class="lede" data-l="it" lang="it">Un pannello di favo, con le pareti estruse su un fondo sottile, oppure
+  una singola cella col suo fondo rombico; il lato maggiore uguale alla dimensione. Il pannello di favo sta
+  disteso sul piatto e si stampa senza supporti; la cella singola sta in piedi sulla bocca.</p>
+  <p class="lede public-only" data-l="en">The form of the choices above can be ordered as a 3D print, also with
+  other sizes: the request sends the link to it as it is on the screen, with the fields above.</p>
+  <p class="lede public-only" data-l="it" lang="it">Puoi ordinare la forma delle scelte qui sopra come stampa 3D,
+  anche con altre dimensioni: la richiesta manda il link così com'è sullo schermo, con i campi qui sopra.</p>
+</section>
+<script type="module" src="src/forms/honeycomb/honeycomb.js"></script>
+</body>
+</html>
