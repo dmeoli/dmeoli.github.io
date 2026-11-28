@@ -32,7 +32,8 @@ import * as OWN from './ownrun.js';
 
 const $ = id => document.getElementById(id);
 const GAME = document.body.dataset.game;
-const MAXLANES = 4;
+const MAXLANES = 4;      // most lanes one can choose at once
+const DEFLANES = 2;      // lanes shown by default (besides "You"), so the trees stay readable
 const STATE = { inst: '', lanes: [], align: 'event', speed: 1, pos: 0, playing: false };
 const BASE = `traces/games/${GAME}/`;
 // the games whose traces come from SMS++ on a CNF, whose model the page
@@ -46,8 +47,9 @@ const LISTED = GAME !== 'coloring';
 const SETBOARD = new Set(['grid', 'romania']);
 // the games with no strip of the frontier under the board
 const NOSTRIP = new Set(['grid', 'romania', 'planning']);
-// the lanes in this order, the first four shown by default
-const SOLVERS = ['cadical', 'aima-gac', 'aima-cdcl', 'aima-bt-mac', 'aima-minconf', 'aima-bt-fc', 'aima-ac3', 'aima-dpll', 'aima-walksat', 'highs'];
+// the lanes in this order, the first DEFLANES shown by default; aima-cdcl is
+// left out of the default order, since CaDiCaL already is the CDCL lane
+const SOLVERS = ['cadical', 'aima-gac', 'aima-bt-mac', 'aima-minconf', 'aima-bt-fc', 'aima-ac3', 'aima-dpll', 'aima-walksat', 'highs'];
 // a trace of the minimum sum colouring of an instance, and the name of a lane
 const MINSUM = file => /-minsum-/.test(file);
 const laneName = (file, name) => name + (MINSUM(file) ? t(', minimum sum', ', somma minima') : '');
@@ -744,7 +746,7 @@ function charts(real) {
 function chooseInstance(id = instId()) {
   STATE.inst = id;
   showInstControls();
-  STATE.lanes = tracesFor(STATE.inst).map(x => x.file).slice(0, MAXLANES);
+  STATE.lanes = tracesFor(STATE.inst).map(x => x.file).slice(0, DEFLANES);
   laneSelects(); writeHash(); model(STATE.inst); loadLanes();
 }
 function texts() {
@@ -778,7 +780,7 @@ async function main() {
     writeHash(); loadLanes();
   });
   showInstControls();
-  if (!STATE.lanes.length) STATE.lanes = tracesFor(STATE.inst).map(x => x.file).slice(0, MAXLANES);
+  if (!STATE.lanes.length) STATE.lanes = tracesFor(STATE.inst).map(x => x.file).slice(0, DEFLANES);
   laneSelects();
   $('inst').onchange = () => { if (!LISTED) $('planarbox').hidden = $('inst').value !== 'planar'; chooseInstance(); };
   if (!LISTED) $('level').onchange = $('seed').onchange = () => chooseInstance();

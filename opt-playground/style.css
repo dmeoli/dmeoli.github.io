@@ -167,6 +167,10 @@ main.single { grid-template-columns: 1fr; }
 /* the network scene, laid out as the TensorFlow Playground: data and features,
    the network with the controls of its layers above it, the output */
 body.wide { max-width: 1360px; }
+/* the solver arena (games-*.html, marked by data-game) spreads near the full
+   width so a few lanes stand side by side with their trees readable, with a
+   small gutter; the lede is capped at 72ch, so the prose does not stretch */
+body[data-game] { max-width: min(2000px, 100vw - 48px); }
 .nnlayout { grid-template-columns: 220px minmax(0, 1fr) 260px; grid-template-areas: "data net out"; align-items: start; margin-top: 18px; }
 .nndata { grid-area: data; } .nnmid { grid-area: net; } .nnout { grid-area: out; }
 @media (max-width: 1100px) { .nnlayout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "net net" "data out"; } }
