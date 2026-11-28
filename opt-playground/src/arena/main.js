@@ -201,12 +201,6 @@ function renderModel(m) {
       : t(`A Boolean variable <code>v_c</code> for each vertex v and color c. The edge clauses are written once from each end, so the ${c.by_kind.edge} of them are ${c.by_kind.edge / 2} distinct ones twice.`,
       `Una variabile booleana <code>v_c</code> per ogni vertice v e ogni colore c. Le clausole dei lati sono scritte una volta da ciascun estremo, quindi le ${c.by_kind.edge} sono ${c.by_kind.edge / 2} distinte, ognuna due volte.`)}</p>
     ${Object.keys(kinds).map(g => `<p class="kind">${kinds[g]} (${c.by_kind[g]})</p><ul class="cl">${list(g, s => s.text)}</ul>`).join('')}`;
-  $('mmilp').innerHTML = `<dl class="stats"><div><dt>${t('columns', 'colonne')}</dt><dd>${m.milp.columns}</dd></div>
-    <div><dt>${t('rows', 'righe')}</dt><dd>${m.milp.rows}</dd></div><div><dt>${t('nonzeros', 'non nulli')}</dt><dd>${m.milp.nonzeros}</dd></div></dl>
-    <p class="note">${t(`As SATBlock represents a CNF: a binary x per variable (${m.milp.x}), a binary r per clause (${m.milp.r}, fixed to 0 since every clause is hard), and the row \\(\\sum_{P} x_i - \\sum_{N} x_i + r_c \\ge 1 - |N|\\) per clause.`,
-      `Come SATBlock rappresenta una CNF: una x binaria per variabile (${m.milp.x}), una r binaria per clausola (${m.milp.r}, fissata a 0 perché ogni clausola è obbligatoria), e la riga \\(\\sum_{P} x_i - \\sum_{N} x_i + r_c \\ge 1 - |N|\\) per clausola.`)}</p>
-    ${Object.keys(kinds).map(g => `<ul class="cl">${list(g, s => s.row)}</ul>`).join('')}`;
-  if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([$('mmilp')]).catch(() => {});
 }
 
 // ---------------------------------------------------------------- the events in words

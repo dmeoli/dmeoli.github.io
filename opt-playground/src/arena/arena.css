@@ -96,7 +96,7 @@ svg.tview, svg.pg { display: block; max-width: none; }
 #laneselects { display: contents; }
 option:disabled { color: var(--ink-soft); }
 /* the model of map colouring: CSP, CNF and the rows of SATBlock */
-.model { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1.4fr); gap: 18px; margin-bottom: 18px; }
+.model { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 18px; margin-bottom: 18px; }
 @media (max-width: 860px) { .model { grid-template-columns: 1fr; } }
 .model .stats { flex-wrap: wrap; margin: 0; }
 .model .note { font-size: 14px; color: var(--ink-soft); margin: 6px 0; }
