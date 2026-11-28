@@ -1,216 +1,125 @@
 {
-  "game": "queens",
-  "traces": [
-    {
-      "file": "queens-12-aima-bt-fc.jsonl",
-      "instance": "queens-12",
-      "solver": {
-        "id": "aima-bt-fc",
-        "name": "aima Backtracking, MRV + forward checking",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-fc"
-      },
-      "sample": false
-    },
-    {
-      "file": "queens-12-aima-bt-mac.jsonl",
-      "instance": "queens-12",
-      "solver": {
-        "id": "aima-bt-mac",
-        "name": "aima Backtracking, MRV + MAC",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-mac"
-      },
-      "sample": false
-    },
-    {
-      "file": "queens-12-aima-dpll.jsonl",
-      "instance": "queens-12",
-      "solver": {
-        "id": "aima-dpll",
-        "name": "aima DPLL",
-        "block": "aima-python",
-        "paradigm": "sat",
-        "code": "aima-python 49ebbc3",
-        "config": "dpll"
-      },
-      "sample": false
-    },
-    {
-      "file": "queens-12-aima-minconf.jsonl",
-      "instance": "queens-12",
-      "solver": {
-        "id": "aima-minconf",
-        "name": "aima Min-conflicts",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "minconf"
-      },
-      "sample": false
-    },
-    {
-      "file": "queens-12-aima-walksat.jsonl",
-      "instance": "queens-12",
-      "solver": {
-        "id": "aima-walksat",
-        "name": "aima WalkSAT",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "walksat"
-      },
-      "sample": false
-    },
-    {
-      "file": "queens-12-cadical.jsonl",
-      "instance": "queens-12",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp tools 0.0.0",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "queens-20-aima-bt-fc.jsonl",
-      "instance": "queens-20",
-      "solver": {
-        "id": "aima-bt-fc",
-        "name": "aima Backtracking, MRV + forward checking",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-fc"
-      },
-      "sample": false
-    },
-    {
-      "file": "queens-20-aima-bt-mac.jsonl",
-      "instance": "queens-20",
-      "solver": {
-        "id": "aima-bt-mac",
-        "name": "aima Backtracking, MRV + MAC",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-mac"
-      },
-      "sample": false
-    },
-    {
-      "file": "queens-20-aima-minconf.jsonl",
-      "instance": "queens-20",
-      "solver": {
-        "id": "aima-minconf",
-        "name": "aima Min-conflicts",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "minconf"
-      },
-      "sample": false
-    },
-    {
-      "file": "queens-20-cadical.jsonl",
-      "instance": "queens-20",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp tools 0.0.0",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "queens-8-aima-bt-fc.jsonl",
-      "instance": "queens-8",
-      "solver": {
-        "id": "aima-bt-fc",
-        "name": "aima Backtracking, MRV + forward checking",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-fc"
-      },
-      "sample": false
-    },
-    {
-      "file": "queens-8-aima-bt-mac.jsonl",
-      "instance": "queens-8",
-      "solver": {
-        "id": "aima-bt-mac",
-        "name": "aima Backtracking, MRV + MAC",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-mac"
-      },
-      "sample": false
-    },
-    {
-      "file": "queens-8-aima-dpll.jsonl",
-      "instance": "queens-8",
-      "solver": {
-        "id": "aima-dpll",
-        "name": "aima DPLL",
-        "block": "aima-python",
-        "paradigm": "sat",
-        "code": "aima-python 49ebbc3",
-        "config": "dpll"
-      },
-      "sample": false
-    },
-    {
-      "file": "queens-8-aima-minconf.jsonl",
-      "instance": "queens-8",
-      "solver": {
-        "id": "aima-minconf",
-        "name": "aima Min-conflicts",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "minconf"
-      },
-      "sample": false
-    },
-    {
-      "file": "queens-8-aima-walksat.jsonl",
-      "instance": "queens-8",
-      "solver": {
-        "id": "aima-walksat",
-        "name": "aima WalkSAT",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "walksat"
-      },
-      "sample": false
-    },
-    {
-      "file": "queens-8-cadical.jsonl",
-      "instance": "queens-8",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp tools 0.0.0",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    }
-  ]
+ "game": "queens",
+ "traces": [
+  {
+   "file": "queens-12-aima-bt-mac.jsonl",
+   "instance": "queens-12",
+   "solver": {
+    "id": "aima-bt-mac",
+    "name": "aima Backtracking, MRV + MAC",
+    "block": "aima-python",
+    "paradigm": "csp",
+    "code": "aima-python 49ebbc3",
+    "config": "bt-mac"
+   },
+   "sample": false
+  },
+  {
+   "file": "queens-12-aima-minconf.jsonl",
+   "instance": "queens-12",
+   "solver": {
+    "id": "aima-minconf",
+    "name": "aima Min-conflicts",
+    "block": "aima-python",
+    "paradigm": "local search",
+    "code": "aima-python 49ebbc3",
+    "config": "minconf"
+   },
+   "sample": false
+  },
+  {
+   "file": "queens-12-cadical.jsonl",
+   "instance": "queens-12",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp tools 0.0.0",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "queens-20-aima-bt-mac.jsonl",
+   "instance": "queens-20",
+   "solver": {
+    "id": "aima-bt-mac",
+    "name": "aima Backtracking, MRV + MAC",
+    "block": "aima-python",
+    "paradigm": "csp",
+    "code": "aima-python 49ebbc3",
+    "config": "bt-mac"
+   },
+   "sample": false
+  },
+  {
+   "file": "queens-20-aima-minconf.jsonl",
+   "instance": "queens-20",
+   "solver": {
+    "id": "aima-minconf",
+    "name": "aima Min-conflicts",
+    "block": "aima-python",
+    "paradigm": "local search",
+    "code": "aima-python 49ebbc3",
+    "config": "minconf"
+   },
+   "sample": false
+  },
+  {
+   "file": "queens-20-cadical.jsonl",
+   "instance": "queens-20",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp tools 0.0.0",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "queens-8-aima-bt-mac.jsonl",
+   "instance": "queens-8",
+   "solver": {
+    "id": "aima-bt-mac",
+    "name": "aima Backtracking, MRV + MAC",
+    "block": "aima-python",
+    "paradigm": "csp",
+    "code": "aima-python 49ebbc3",
+    "config": "bt-mac"
+   },
+   "sample": false
+  },
+  {
+   "file": "queens-8-aima-minconf.jsonl",
+   "instance": "queens-8",
+   "solver": {
+    "id": "aima-minconf",
+    "name": "aima Min-conflicts",
+    "block": "aima-python",
+    "paradigm": "local search",
+    "code": "aima-python 49ebbc3",
+    "config": "minconf"
+   },
+   "sample": false
+  },
+  {
+   "file": "queens-8-cadical.jsonl",
+   "instance": "queens-8",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp tools 0.0.0",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  }
+ ]
 }

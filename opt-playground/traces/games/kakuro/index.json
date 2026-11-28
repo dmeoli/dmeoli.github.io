@@ -1,99 +1,86 @@
 {
-  "game": "kakuro",
-  "traces": [
-    {
-      "file": "kakuro-2-aima-dpll.jsonl",
-      "instance": "kakuro-2",
-      "solver": {
-        "id": "aima-dpll",
-        "name": "aima DPLL",
-        "block": "aima-python",
-        "paradigm": "sat",
-        "code": "aima-python 49ebbc3",
-        "config": "dpll"
-      },
-      "sample": false
-    },
-    {
-      "file": "kakuro-2-aima-gac.jsonl",
-      "instance": "kakuro-2",
-      "solver": {
-        "id": "aima-gac",
-        "name": "aima GAC with domain splitting",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "gac"
-      },
-      "sample": false
-    },
-    {
-      "file": "kakuro-2-cadical.jsonl",
-      "instance": "kakuro-2",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp tools 0.0.0",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "kakuro-3-aima-gac.jsonl",
-      "instance": "kakuro-3",
-      "solver": {
-        "id": "aima-gac",
-        "name": "aima GAC with domain splitting",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "gac"
-      },
-      "sample": false
-    },
-    {
-      "file": "kakuro-3-cadical.jsonl",
-      "instance": "kakuro-3",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp tools 0.0.0",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "kakuro-4-aima-gac.jsonl",
-      "instance": "kakuro-4",
-      "solver": {
-        "id": "aima-gac",
-        "name": "aima GAC with domain splitting",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "gac"
-      },
-      "sample": false
-    },
-    {
-      "file": "kakuro-4-cadical.jsonl",
-      "instance": "kakuro-4",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp tools 0.0.0",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    }
-  ]
+ "game": "kakuro",
+ "traces": [
+  {
+   "file": "kakuro-2-aima-gac.jsonl",
+   "instance": "kakuro-2",
+   "solver": {
+    "id": "aima-gac",
+    "name": "aima GAC with domain splitting",
+    "block": "aima-python",
+    "paradigm": "csp",
+    "code": "aima-python 49ebbc3",
+    "config": "gac"
+   },
+   "sample": false
+  },
+  {
+   "file": "kakuro-2-cadical.jsonl",
+   "instance": "kakuro-2",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp tools 0.0.0",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "kakuro-3-aima-gac.jsonl",
+   "instance": "kakuro-3",
+   "solver": {
+    "id": "aima-gac",
+    "name": "aima GAC with domain splitting",
+    "block": "aima-python",
+    "paradigm": "csp",
+    "code": "aima-python 49ebbc3",
+    "config": "gac"
+   },
+   "sample": false
+  },
+  {
+   "file": "kakuro-3-cadical.jsonl",
+   "instance": "kakuro-3",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp tools 0.0.0",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "kakuro-4-aima-gac.jsonl",
+   "instance": "kakuro-4",
+   "solver": {
+    "id": "aima-gac",
+    "name": "aima GAC with domain splitting",
+    "block": "aima-python",
+    "paradigm": "csp",
+    "code": "aima-python 49ebbc3",
+    "config": "gac"
+   },
+   "sample": false
+  },
+  {
+   "file": "kakuro-4-cadical.jsonl",
+   "instance": "kakuro-4",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp tools 0.0.0",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  }
+ ]
 }

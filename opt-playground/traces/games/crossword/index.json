@@ -1,32 +1,32 @@
 {
-  "game": "crossword",
-  "traces": [
-    {
-      "file": "crossword-1-aima-gac.jsonl",
-      "instance": "crossword-1",
-      "solver": {
-        "id": "aima-gac",
-        "name": "aima GAC with domain splitting",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "gac"
-      },
-      "sample": false
-    },
-    {
-      "file": "crossword-1-cadical.jsonl",
-      "instance": "crossword-1",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp tools 0.0.0",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    }
-  ]
+ "game": "crossword",
+ "traces": [
+  {
+   "file": "crossword-1-aima-gac.jsonl",
+   "instance": "crossword-1",
+   "solver": {
+    "id": "aima-gac",
+    "name": "aima GAC with domain splitting",
+    "block": "aima-python",
+    "paradigm": "csp",
+    "code": "aima-python 49ebbc3",
+    "config": "gac"
+   },
+   "sample": false
+  },
+  {
+   "file": "crossword-1-cadical.jsonl",
+   "instance": "crossword-1",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp tools 0.0.0",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  }
+ ]
 }

@@ -47,9 +47,12 @@ const LISTED = GAME !== 'coloring';
 const SETBOARD = new Set(['grid', 'romania']);
 // the games with no strip of the frontier under the board
 const NOSTRIP = new Set(['grid', 'romania', 'planning']);
-// the lanes in this order, the first DEFLANES shown by default; aima-cdcl is
-// left out of the default order, since CaDiCaL already is the CDCL lane
-const SOLVERS = ['cadical', 'aima-gac', 'aima-bt-mac', 'aima-minconf', 'aima-bt-fc', 'aima-ac3', 'aima-dpll', 'aima-walksat', 'highs'];
+// one lane per search family, in its best version and in this order, the first
+// DEFLANES shown by default: CaDiCaL (CDCL), the systematic CP search (GAC with
+// domain splitting where the constraints are n-ary, backtracking with MAC
+// otherwise) and min-conflicts (local search). The weaker variants of each
+// family (forward checking, DPLL, WalkSAT, AC-3 alone) are not offered
+const SOLVERS = ['cadical', 'aima-gac', 'aima-bt-mac', 'aima-minconf'];
 // a trace of the minimum sum colouring of an instance, and the name of a lane
 const MINSUM = file => /-minsum-/.test(file);
 const laneName = (file, name) => name + (MINSUM(file) ? t(', minimum sum', ', somma minima') : '');

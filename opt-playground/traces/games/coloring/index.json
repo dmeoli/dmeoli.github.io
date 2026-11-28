@@ -1,1225 +1,485 @@
 {
-  "game": "coloring",
-  "traces": [
-    {
-      "file": "australia-aima-bt-fc.jsonl",
-      "instance": "australia",
-      "solver": {
-        "id": "aima-bt-fc",
-        "name": "aima Backtracking, MRV + forward checking",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-fc"
-      },
-      "sample": false
-    },
-    {
-      "file": "australia-aima-bt-mac.jsonl",
-      "instance": "australia",
-      "solver": {
-        "id": "aima-bt-mac",
-        "name": "aima Backtracking, MRV + MAC",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-mac"
-      },
-      "sample": false
-    },
-    {
-      "file": "australia-aima-dpll.jsonl",
-      "instance": "australia",
-      "solver": {
-        "id": "aima-dpll",
-        "name": "aima DPLL",
-        "block": "aima-python",
-        "paradigm": "sat",
-        "code": "aima-python 49ebbc3",
-        "config": "dpll"
-      },
-      "sample": false
-    },
-    {
-      "file": "australia-aima-minconf.jsonl",
-      "instance": "australia",
-      "solver": {
-        "id": "aima-minconf",
-        "name": "aima Min-conflicts",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "minconf"
-      },
-      "sample": false
-    },
-    {
-      "file": "australia-aima-walksat.jsonl",
-      "instance": "australia",
-      "solver": {
-        "id": "aima-walksat",
-        "name": "aima WalkSAT",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "walksat"
-      },
-      "sample": false
-    },
-    {
-      "file": "australia-cadical.jsonl",
-      "instance": "australia",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "australia-minsum-cadical.jsonl",
-      "instance": "australia",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "france-aima-bt-fc.jsonl",
-      "instance": "france",
-      "solver": {
-        "id": "aima-bt-fc",
-        "name": "aima Backtracking, MRV + forward checking",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-fc"
-      },
-      "sample": false
-    },
-    {
-      "file": "france-aima-bt-mac.jsonl",
-      "instance": "france",
-      "solver": {
-        "id": "aima-bt-mac",
-        "name": "aima Backtracking, MRV + MAC",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-mac"
-      },
-      "sample": false
-    },
-    {
-      "file": "france-aima-dpll.jsonl",
-      "instance": "france",
-      "solver": {
-        "id": "aima-dpll",
-        "name": "aima DPLL",
-        "block": "aima-python",
-        "paradigm": "sat",
-        "code": "aima-python 49ebbc3",
-        "config": "dpll"
-      },
-      "sample": false
-    },
-    {
-      "file": "france-aima-minconf.jsonl",
-      "instance": "france",
-      "solver": {
-        "id": "aima-minconf",
-        "name": "aima Min-conflicts",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "minconf"
-      },
-      "sample": false
-    },
-    {
-      "file": "france-aima-walksat.jsonl",
-      "instance": "france",
-      "solver": {
-        "id": "aima-walksat",
-        "name": "aima WalkSAT",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "walksat"
-      },
-      "sample": false
-    },
-    {
-      "file": "france-cadical.jsonl",
-      "instance": "france",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "france-minsum-cadical.jsonl",
-      "instance": "france",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "france-minsum-highs.jsonl",
-      "instance": "france",
-      "solver": {
-        "id": "highs",
-        "name": "HiGHSMILPSolver",
-        "block": "SATBlock",
-        "paradigm": "milp",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "config": "ColBSCfg.txt#4"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-1-aima-bt-fc.jsonl",
-      "instance": "planar-easy-1",
-      "solver": {
-        "id": "aima-bt-fc",
-        "name": "aima Backtracking, MRV + forward checking",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-fc"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-1-aima-bt-mac.jsonl",
-      "instance": "planar-easy-1",
-      "solver": {
-        "id": "aima-bt-mac",
-        "name": "aima Backtracking, MRV + MAC",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-mac"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-1-aima-dpll.jsonl",
-      "instance": "planar-easy-1",
-      "solver": {
-        "id": "aima-dpll",
-        "name": "aima DPLL",
-        "block": "aima-python",
-        "paradigm": "sat",
-        "code": "aima-python 49ebbc3",
-        "config": "dpll"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-1-aima-minconf.jsonl",
-      "instance": "planar-easy-1",
-      "solver": {
-        "id": "aima-minconf",
-        "name": "aima Min-conflicts",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "minconf"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-1-aima-walksat.jsonl",
-      "instance": "planar-easy-1",
-      "solver": {
-        "id": "aima-walksat",
-        "name": "aima WalkSAT",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "walksat"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-1-cadical.jsonl",
-      "instance": "planar-easy-1",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-1-minsum-cadical.jsonl",
-      "instance": "planar-easy-1",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-1-minsum-highs.jsonl",
-      "instance": "planar-easy-1",
-      "solver": {
-        "id": "highs",
-        "name": "HiGHSMILPSolver",
-        "block": "SATBlock",
-        "paradigm": "milp",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "config": "ColBSCfg.txt#4"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-2-aima-bt-fc.jsonl",
-      "instance": "planar-easy-2",
-      "solver": {
-        "id": "aima-bt-fc",
-        "name": "aima Backtracking, MRV + forward checking",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-fc"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-2-aima-bt-mac.jsonl",
-      "instance": "planar-easy-2",
-      "solver": {
-        "id": "aima-bt-mac",
-        "name": "aima Backtracking, MRV + MAC",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-mac"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-2-aima-dpll.jsonl",
-      "instance": "planar-easy-2",
-      "solver": {
-        "id": "aima-dpll",
-        "name": "aima DPLL",
-        "block": "aima-python",
-        "paradigm": "sat",
-        "code": "aima-python 49ebbc3",
-        "config": "dpll"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-2-aima-minconf.jsonl",
-      "instance": "planar-easy-2",
-      "solver": {
-        "id": "aima-minconf",
-        "name": "aima Min-conflicts",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "minconf"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-2-aima-walksat.jsonl",
-      "instance": "planar-easy-2",
-      "solver": {
-        "id": "aima-walksat",
-        "name": "aima WalkSAT",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "walksat"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-2-cadical.jsonl",
-      "instance": "planar-easy-2",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-2-minsum-cadical.jsonl",
-      "instance": "planar-easy-2",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-3-aima-bt-fc.jsonl",
-      "instance": "planar-easy-3",
-      "solver": {
-        "id": "aima-bt-fc",
-        "name": "aima Backtracking, MRV + forward checking",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-fc"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-3-aima-bt-mac.jsonl",
-      "instance": "planar-easy-3",
-      "solver": {
-        "id": "aima-bt-mac",
-        "name": "aima Backtracking, MRV + MAC",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-mac"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-3-aima-dpll.jsonl",
-      "instance": "planar-easy-3",
-      "solver": {
-        "id": "aima-dpll",
-        "name": "aima DPLL",
-        "block": "aima-python",
-        "paradigm": "sat",
-        "code": "aima-python 49ebbc3",
-        "config": "dpll"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-3-aima-minconf.jsonl",
-      "instance": "planar-easy-3",
-      "solver": {
-        "id": "aima-minconf",
-        "name": "aima Min-conflicts",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "minconf"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-3-aima-walksat.jsonl",
-      "instance": "planar-easy-3",
-      "solver": {
-        "id": "aima-walksat",
-        "name": "aima WalkSAT",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "walksat"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-3-cadical.jsonl",
-      "instance": "planar-easy-3",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-3-minsum-cadical.jsonl",
-      "instance": "planar-easy-3",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-easy-3-minsum-highs.jsonl",
-      "instance": "planar-easy-3",
-      "solver": {
-        "id": "highs",
-        "name": "HiGHSMILPSolver",
-        "block": "SATBlock",
-        "paradigm": "milp",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "config": "ColBSCfg.txt#4"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-1-aima-bt-fc.jsonl",
-      "instance": "planar-hard-1",
-      "solver": {
-        "id": "aima-bt-fc",
-        "name": "aima Backtracking, MRV + forward checking",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-fc"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-1-aima-bt-mac.jsonl",
-      "instance": "planar-hard-1",
-      "solver": {
-        "id": "aima-bt-mac",
-        "name": "aima Backtracking, MRV + MAC",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-mac"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-1-aima-dpll.jsonl",
-      "instance": "planar-hard-1",
-      "solver": {
-        "id": "aima-dpll",
-        "name": "aima DPLL",
-        "block": "aima-python",
-        "paradigm": "sat",
-        "code": "aima-python 49ebbc3",
-        "config": "dpll"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-1-aima-minconf.jsonl",
-      "instance": "planar-hard-1",
-      "solver": {
-        "id": "aima-minconf",
-        "name": "aima Min-conflicts",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "minconf"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-1-aima-walksat.jsonl",
-      "instance": "planar-hard-1",
-      "solver": {
-        "id": "aima-walksat",
-        "name": "aima WalkSAT",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "walksat"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-1-cadical.jsonl",
-      "instance": "planar-hard-1",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-1-minsum-cadical.jsonl",
-      "instance": "planar-hard-1",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-1-minsum-highs.jsonl",
-      "instance": "planar-hard-1",
-      "solver": {
-        "id": "highs",
-        "name": "HiGHSMILPSolver",
-        "block": "SATBlock",
-        "paradigm": "milp",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "config": "ColBSCfg.txt#4"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-2-aima-bt-fc.jsonl",
-      "instance": "planar-hard-2",
-      "solver": {
-        "id": "aima-bt-fc",
-        "name": "aima Backtracking, MRV + forward checking",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-fc"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-2-aima-bt-mac.jsonl",
-      "instance": "planar-hard-2",
-      "solver": {
-        "id": "aima-bt-mac",
-        "name": "aima Backtracking, MRV + MAC",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-mac"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-2-aima-dpll.jsonl",
-      "instance": "planar-hard-2",
-      "solver": {
-        "id": "aima-dpll",
-        "name": "aima DPLL",
-        "block": "aima-python",
-        "paradigm": "sat",
-        "code": "aima-python 49ebbc3",
-        "config": "dpll"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-2-aima-minconf.jsonl",
-      "instance": "planar-hard-2",
-      "solver": {
-        "id": "aima-minconf",
-        "name": "aima Min-conflicts",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "minconf"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-2-aima-walksat.jsonl",
-      "instance": "planar-hard-2",
-      "solver": {
-        "id": "aima-walksat",
-        "name": "aima WalkSAT",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "walksat"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-2-cadical.jsonl",
-      "instance": "planar-hard-2",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-2-minsum-cadical.jsonl",
-      "instance": "planar-hard-2",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-3-aima-bt-fc.jsonl",
-      "instance": "planar-hard-3",
-      "solver": {
-        "id": "aima-bt-fc",
-        "name": "aima Backtracking, MRV + forward checking",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-fc"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-3-aima-bt-mac.jsonl",
-      "instance": "planar-hard-3",
-      "solver": {
-        "id": "aima-bt-mac",
-        "name": "aima Backtracking, MRV + MAC",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-mac"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-3-aima-dpll.jsonl",
-      "instance": "planar-hard-3",
-      "solver": {
-        "id": "aima-dpll",
-        "name": "aima DPLL",
-        "block": "aima-python",
-        "paradigm": "sat",
-        "code": "aima-python 49ebbc3",
-        "config": "dpll"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-3-aima-minconf.jsonl",
-      "instance": "planar-hard-3",
-      "solver": {
-        "id": "aima-minconf",
-        "name": "aima Min-conflicts",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "minconf"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-3-aima-walksat.jsonl",
-      "instance": "planar-hard-3",
-      "solver": {
-        "id": "aima-walksat",
-        "name": "aima WalkSAT",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "walksat"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-3-cadical.jsonl",
-      "instance": "planar-hard-3",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-hard-3-minsum-cadical.jsonl",
-      "instance": "planar-hard-3",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-1-aima-bt-fc.jsonl",
-      "instance": "planar-medium-1",
-      "solver": {
-        "id": "aima-bt-fc",
-        "name": "aima Backtracking, MRV + forward checking",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-fc"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-1-aima-bt-mac.jsonl",
-      "instance": "planar-medium-1",
-      "solver": {
-        "id": "aima-bt-mac",
-        "name": "aima Backtracking, MRV + MAC",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-mac"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-1-aima-dpll.jsonl",
-      "instance": "planar-medium-1",
-      "solver": {
-        "id": "aima-dpll",
-        "name": "aima DPLL",
-        "block": "aima-python",
-        "paradigm": "sat",
-        "code": "aima-python 49ebbc3",
-        "config": "dpll"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-1-aima-minconf.jsonl",
-      "instance": "planar-medium-1",
-      "solver": {
-        "id": "aima-minconf",
-        "name": "aima Min-conflicts",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "minconf"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-1-aima-walksat.jsonl",
-      "instance": "planar-medium-1",
-      "solver": {
-        "id": "aima-walksat",
-        "name": "aima WalkSAT",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "walksat"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-1-cadical.jsonl",
-      "instance": "planar-medium-1",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-1-minsum-cadical.jsonl",
-      "instance": "planar-medium-1",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-1-minsum-highs.jsonl",
-      "instance": "planar-medium-1",
-      "solver": {
-        "id": "highs",
-        "name": "HiGHSMILPSolver",
-        "block": "SATBlock",
-        "paradigm": "milp",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "config": "ColBSCfg.txt#4"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-2-aima-bt-fc.jsonl",
-      "instance": "planar-medium-2",
-      "solver": {
-        "id": "aima-bt-fc",
-        "name": "aima Backtracking, MRV + forward checking",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-fc"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-2-aima-bt-mac.jsonl",
-      "instance": "planar-medium-2",
-      "solver": {
-        "id": "aima-bt-mac",
-        "name": "aima Backtracking, MRV + MAC",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-mac"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-2-aima-dpll.jsonl",
-      "instance": "planar-medium-2",
-      "solver": {
-        "id": "aima-dpll",
-        "name": "aima DPLL",
-        "block": "aima-python",
-        "paradigm": "sat",
-        "code": "aima-python 49ebbc3",
-        "config": "dpll"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-2-aima-minconf.jsonl",
-      "instance": "planar-medium-2",
-      "solver": {
-        "id": "aima-minconf",
-        "name": "aima Min-conflicts",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "minconf"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-2-aima-walksat.jsonl",
-      "instance": "planar-medium-2",
-      "solver": {
-        "id": "aima-walksat",
-        "name": "aima WalkSAT",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "walksat"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-2-cadical.jsonl",
-      "instance": "planar-medium-2",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-2-minsum-cadical.jsonl",
-      "instance": "planar-medium-2",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-2-minsum-highs.jsonl",
-      "instance": "planar-medium-2",
-      "solver": {
-        "id": "highs",
-        "name": "HiGHSMILPSolver",
-        "block": "SATBlock",
-        "paradigm": "milp",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "config": "ColBSCfg.txt#4"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-3-aima-bt-fc.jsonl",
-      "instance": "planar-medium-3",
-      "solver": {
-        "id": "aima-bt-fc",
-        "name": "aima Backtracking, MRV + forward checking",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-fc"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-3-aima-bt-mac.jsonl",
-      "instance": "planar-medium-3",
-      "solver": {
-        "id": "aima-bt-mac",
-        "name": "aima Backtracking, MRV + MAC",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-mac"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-3-aima-dpll.jsonl",
-      "instance": "planar-medium-3",
-      "solver": {
-        "id": "aima-dpll",
-        "name": "aima DPLL",
-        "block": "aima-python",
-        "paradigm": "sat",
-        "code": "aima-python 49ebbc3",
-        "config": "dpll"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-3-aima-minconf.jsonl",
-      "instance": "planar-medium-3",
-      "solver": {
-        "id": "aima-minconf",
-        "name": "aima Min-conflicts",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "minconf"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-3-aima-walksat.jsonl",
-      "instance": "planar-medium-3",
-      "solver": {
-        "id": "aima-walksat",
-        "name": "aima WalkSAT",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "walksat"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-3-cadical.jsonl",
-      "instance": "planar-medium-3",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-3-minsum-cadical.jsonl",
-      "instance": "planar-medium-3",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "planar-medium-3-minsum-highs.jsonl",
-      "instance": "planar-medium-3",
-      "solver": {
-        "id": "highs",
-        "name": "HiGHSMILPSolver",
-        "block": "SATBlock",
-        "paradigm": "milp",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "config": "ColBSCfg.txt#4"
-      },
-      "sample": false
-    },
-    {
-      "file": "usa-aima-bt-fc.jsonl",
-      "instance": "usa",
-      "solver": {
-        "id": "aima-bt-fc",
-        "name": "aima Backtracking, MRV + forward checking",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-fc"
-      },
-      "sample": false
-    },
-    {
-      "file": "usa-aima-bt-mac.jsonl",
-      "instance": "usa",
-      "solver": {
-        "id": "aima-bt-mac",
-        "name": "aima Backtracking, MRV + MAC",
-        "block": "aima-python",
-        "paradigm": "csp",
-        "code": "aima-python 49ebbc3",
-        "config": "bt-mac"
-      },
-      "sample": false
-    },
-    {
-      "file": "usa-aima-dpll.jsonl",
-      "instance": "usa",
-      "solver": {
-        "id": "aima-dpll",
-        "name": "aima DPLL",
-        "block": "aima-python",
-        "paradigm": "sat",
-        "code": "aima-python 49ebbc3",
-        "config": "dpll"
-      },
-      "sample": false
-    },
-    {
-      "file": "usa-aima-minconf.jsonl",
-      "instance": "usa",
-      "solver": {
-        "id": "aima-minconf",
-        "name": "aima Min-conflicts",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "minconf"
-      },
-      "sample": false
-    },
-    {
-      "file": "usa-aima-walksat.jsonl",
-      "instance": "usa",
-      "solver": {
-        "id": "aima-walksat",
-        "name": "aima WalkSAT",
-        "block": "aima-python",
-        "paradigm": "local search",
-        "code": "aima-python 49ebbc3",
-        "config": "walksat"
-      },
-      "sample": false
-    },
-    {
-      "file": "usa-cadical.jsonl",
-      "instance": "usa",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "usa-minsum-cadical.jsonl",
-      "instance": "usa",
-      "solver": {
-        "id": "cadical",
-        "name": "CaDiCaLSATSolver",
-        "block": "SATBlock",
-        "paradigm": "sat",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "backend": "cadical-1.7.3",
-        "config": "ColBSCfg.txt#1"
-      },
-      "sample": false
-    },
-    {
-      "file": "usa-minsum-highs.jsonl",
-      "instance": "usa",
-      "solver": {
-        "id": "highs",
-        "name": "HiGHSMILPSolver",
-        "block": "SATBlock",
-        "paradigm": "milp",
-        "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
-        "config": "ColBSCfg.txt#4"
-      },
-      "sample": false
-    }
-  ]
+ "game": "coloring",
+ "traces": [
+  {
+   "file": "australia-aima-bt-mac.jsonl",
+   "instance": "australia",
+   "solver": {
+    "id": "aima-bt-mac",
+    "name": "aima Backtracking, MRV + MAC",
+    "block": "aima-python",
+    "paradigm": "csp",
+    "code": "aima-python 49ebbc3",
+    "config": "bt-mac"
+   },
+   "sample": false
+  },
+  {
+   "file": "australia-aima-minconf.jsonl",
+   "instance": "australia",
+   "solver": {
+    "id": "aima-minconf",
+    "name": "aima Min-conflicts",
+    "block": "aima-python",
+    "paradigm": "local search",
+    "code": "aima-python 49ebbc3",
+    "config": "minconf"
+   },
+   "sample": false
+  },
+  {
+   "file": "australia-cadical.jsonl",
+   "instance": "australia",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "france-aima-bt-mac.jsonl",
+   "instance": "france",
+   "solver": {
+    "id": "aima-bt-mac",
+    "name": "aima Backtracking, MRV + MAC",
+    "block": "aima-python",
+    "paradigm": "csp",
+    "code": "aima-python 49ebbc3",
+    "config": "bt-mac"
+   },
+   "sample": false
+  },
+  {
+   "file": "france-aima-minconf.jsonl",
+   "instance": "france",
+   "solver": {
+    "id": "aima-minconf",
+    "name": "aima Min-conflicts",
+    "block": "aima-python",
+    "paradigm": "local search",
+    "code": "aima-python 49ebbc3",
+    "config": "minconf"
+   },
+   "sample": false
+  },
+  {
+   "file": "france-cadical.jsonl",
+   "instance": "france",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-1-aima-bt-mac.jsonl",
+   "instance": "planar-easy-1",
+   "solver": {
+    "id": "aima-bt-mac",
+    "name": "aima Backtracking, MRV + MAC",
+    "block": "aima-python",
+    "paradigm": "csp",
+    "code": "aima-python 49ebbc3",
+    "config": "bt-mac"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-1-aima-minconf.jsonl",
+   "instance": "planar-easy-1",
+   "solver": {
+    "id": "aima-minconf",
+    "name": "aima Min-conflicts",
+    "block": "aima-python",
+    "paradigm": "local search",
+    "code": "aima-python 49ebbc3",
+    "config": "minconf"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-1-cadical.jsonl",
+   "instance": "planar-easy-1",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-2-aima-bt-mac.jsonl",
+   "instance": "planar-easy-2",
+   "solver": {
+    "id": "aima-bt-mac",
+    "name": "aima Backtracking, MRV + MAC",
+    "block": "aima-python",
+    "paradigm": "csp",
+    "code": "aima-python 49ebbc3",
+    "config": "bt-mac"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-2-aima-minconf.jsonl",
+   "instance": "planar-easy-2",
+   "solver": {
+    "id": "aima-minconf",
+    "name": "aima Min-conflicts",
+    "block": "aima-python",
+    "paradigm": "local search",
+    "code": "aima-python 49ebbc3",
+    "config": "minconf"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-2-cadical.jsonl",
+   "instance": "planar-easy-2",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-3-aima-bt-mac.jsonl",
+   "instance": "planar-easy-3",
+   "solver": {
+    "id": "aima-bt-mac",
+    "name": "aima Backtracking, MRV + MAC",
+    "block": "aima-python",
+    "paradigm": "csp",
+    "code": "aima-python 49ebbc3",
+    "config": "bt-mac"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-3-aima-minconf.jsonl",
+   "instance": "planar-easy-3",
+   "solver": {
+    "id": "aima-minconf",
+    "name": "aima Min-conflicts",
+    "block": "aima-python",
+    "paradigm": "local search",
+    "code": "aima-python 49ebbc3",
+    "config": "minconf"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-easy-3-cadical.jsonl",
+   "instance": "planar-easy-3",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-1-aima-bt-mac.jsonl",
+   "instance": "planar-hard-1",
+   "solver": {
+    "id": "aima-bt-mac",
+    "name": "aima Backtracking, MRV + MAC",
+    "block": "aima-python",
+    "paradigm": "csp",
+    "code": "aima-python 49ebbc3",
+    "config": "bt-mac"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-1-aima-minconf.jsonl",
+   "instance": "planar-hard-1",
+   "solver": {
+    "id": "aima-minconf",
+    "name": "aima Min-conflicts",
+    "block": "aima-python",
+    "paradigm": "local search",
+    "code": "aima-python 49ebbc3",
+    "config": "minconf"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-1-cadical.jsonl",
+   "instance": "planar-hard-1",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-2-aima-bt-mac.jsonl",
+   "instance": "planar-hard-2",
+   "solver": {
+    "id": "aima-bt-mac",
+    "name": "aima Backtracking, MRV + MAC",
+    "block": "aima-python",
+    "paradigm": "csp",
+    "code": "aima-python 49ebbc3",
+    "config": "bt-mac"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-2-aima-minconf.jsonl",
+   "instance": "planar-hard-2",
+   "solver": {
+    "id": "aima-minconf",
+    "name": "aima Min-conflicts",
+    "block": "aima-python",
+    "paradigm": "local search",
+    "code": "aima-python 49ebbc3",
+    "config": "minconf"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-2-cadical.jsonl",
+   "instance": "planar-hard-2",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-3-aima-bt-mac.jsonl",
+   "instance": "planar-hard-3",
+   "solver": {
+    "id": "aima-bt-mac",
+    "name": "aima Backtracking, MRV + MAC",
+    "block": "aima-python",
+    "paradigm": "csp",
+    "code": "aima-python 49ebbc3",
+    "config": "bt-mac"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-3-aima-minconf.jsonl",
+   "instance": "planar-hard-3",
+   "solver": {
+    "id": "aima-minconf",
+    "name": "aima Min-conflicts",
+    "block": "aima-python",
+    "paradigm": "local search",
+    "code": "aima-python 49ebbc3",
+    "config": "minconf"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-hard-3-cadical.jsonl",
+   "instance": "planar-hard-3",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-1-aima-bt-mac.jsonl",
+   "instance": "planar-medium-1",
+   "solver": {
+    "id": "aima-bt-mac",
+    "name": "aima Backtracking, MRV + MAC",
+    "block": "aima-python",
+    "paradigm": "csp",
+    "code": "aima-python 49ebbc3",
+    "config": "bt-mac"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-1-aima-minconf.jsonl",
+   "instance": "planar-medium-1",
+   "solver": {
+    "id": "aima-minconf",
+    "name": "aima Min-conflicts",
+    "block": "aima-python",
+    "paradigm": "local search",
+    "code": "aima-python 49ebbc3",
+    "config": "minconf"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-1-cadical.jsonl",
+   "instance": "planar-medium-1",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-2-aima-bt-mac.jsonl",
+   "instance": "planar-medium-2",
+   "solver": {
+    "id": "aima-bt-mac",
+    "name": "aima Backtracking, MRV + MAC",
+    "block": "aima-python",
+    "paradigm": "csp",
+    "code": "aima-python 49ebbc3",
+    "config": "bt-mac"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-2-aima-minconf.jsonl",
+   "instance": "planar-medium-2",
+   "solver": {
+    "id": "aima-minconf",
+    "name": "aima Min-conflicts",
+    "block": "aima-python",
+    "paradigm": "local search",
+    "code": "aima-python 49ebbc3",
+    "config": "minconf"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-2-cadical.jsonl",
+   "instance": "planar-medium-2",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-3-aima-bt-mac.jsonl",
+   "instance": "planar-medium-3",
+   "solver": {
+    "id": "aima-bt-mac",
+    "name": "aima Backtracking, MRV + MAC",
+    "block": "aima-python",
+    "paradigm": "csp",
+    "code": "aima-python 49ebbc3",
+    "config": "bt-mac"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-3-aima-minconf.jsonl",
+   "instance": "planar-medium-3",
+   "solver": {
+    "id": "aima-minconf",
+    "name": "aima Min-conflicts",
+    "block": "aima-python",
+    "paradigm": "local search",
+    "code": "aima-python 49ebbc3",
+    "config": "minconf"
+   },
+   "sample": false
+  },
+  {
+   "file": "planar-medium-3-cadical.jsonl",
+   "instance": "planar-medium-3",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  },
+  {
+   "file": "usa-aima-bt-mac.jsonl",
+   "instance": "usa",
+   "solver": {
+    "id": "aima-bt-mac",
+    "name": "aima Backtracking, MRV + MAC",
+    "block": "aima-python",
+    "paradigm": "csp",
+    "code": "aima-python 49ebbc3",
+    "config": "bt-mac"
+   },
+   "sample": false
+  },
+  {
+   "file": "usa-aima-minconf.jsonl",
+   "instance": "usa",
+   "solver": {
+    "id": "aima-minconf",
+    "name": "aima Min-conflicts",
+    "block": "aima-python",
+    "paradigm": "local search",
+    "code": "aima-python 49ebbc3",
+    "config": "minconf"
+   },
+   "sample": false
+  },
+  {
+   "file": "usa-cadical.jsonl",
+   "instance": "usa",
+   "solver": {
+    "id": "cadical",
+    "name": "CaDiCaLSATSolver",
+    "block": "SATBlock",
+    "paradigm": "sat",
+    "code": "smspp feature/trace-hooks (tools 3059066, SATBlock 7011d42, BranchAndXSolver bc62365, MILPSolver cb90207)",
+    "backend": "cadical-1.7.3",
+    "config": "ColBSCfg.txt#1"
+   },
+   "sample": false
+  }
+ ]
 }
