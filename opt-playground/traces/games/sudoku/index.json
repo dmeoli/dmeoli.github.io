@@ -1,110 +1,97 @@
 {
- "game": "sudoku",
- "traces": [
-  {
-   "file": "sudoku-easy1-aima-ac3.jsonl",
-   "instance": "sudoku-easy1",
-   "solver": {
-    "id": "aima-ac3",
-    "name": "aima AC-3",
-    "block": "aima-python",
-    "paradigm": "csp",
-    "code": "aima-python 49ebbc3",
-    "config": "ac3"
-   },
-   "sample": false
-  },
-  {
-   "file": "sudoku-easy1-aima-bt-fc.jsonl",
-   "instance": "sudoku-easy1",
-   "solver": {
-    "id": "aima-bt-fc",
-    "name": "aima Backtracking, MRV + forward checking",
-    "block": "aima-python",
-    "paradigm": "csp",
-    "code": "aima-python 49ebbc3",
-    "config": "bt-fc"
-   },
-   "sample": false
-  },
-  {
-   "file": "sudoku-easy1-aima-bt-mac.jsonl",
-   "instance": "sudoku-easy1",
-   "solver": {
-    "id": "aima-bt-mac",
-    "name": "aima Backtracking, MRV + MAC",
-    "block": "aima-python",
-    "paradigm": "csp",
-    "code": "aima-python 49ebbc3",
-    "config": "bt-mac"
-   },
-   "sample": false
-  },
-  {
-   "file": "sudoku-easy1-aima-cdcl.jsonl",
-   "instance": "sudoku-easy1",
-   "solver": {
-    "id": "aima-cdcl",
-    "name": "aima CDCL",
-    "block": "aima-python",
-    "paradigm": "sat",
-    "code": "aima-python 49ebbc3",
-    "config": "cdcl"
-   },
-   "sample": false
-  },
-  {
-   "file": "sudoku-harder1-aima-ac3.jsonl",
-   "instance": "sudoku-harder1",
-   "solver": {
-    "id": "aima-ac3",
-    "name": "aima AC-3",
-    "block": "aima-python",
-    "paradigm": "csp",
-    "code": "aima-python 49ebbc3",
-    "config": "ac3"
-   },
-   "sample": false
-  },
-  {
-   "file": "sudoku-harder1-aima-bt-fc.jsonl",
-   "instance": "sudoku-harder1",
-   "solver": {
-    "id": "aima-bt-fc",
-    "name": "aima Backtracking, MRV + forward checking",
-    "block": "aima-python",
-    "paradigm": "csp",
-    "code": "aima-python 49ebbc3",
-    "config": "bt-fc"
-   },
-   "sample": false
-  },
-  {
-   "file": "sudoku-harder1-aima-bt-mac.jsonl",
-   "instance": "sudoku-harder1",
-   "solver": {
-    "id": "aima-bt-mac",
-    "name": "aima Backtracking, MRV + MAC",
-    "block": "aima-python",
-    "paradigm": "csp",
-    "code": "aima-python 49ebbc3",
-    "config": "bt-mac"
-   },
-   "sample": false
-  },
-  {
-   "file": "sudoku-harder1-cadical.jsonl",
-   "instance": "sudoku-harder1",
-   "solver": {
-    "id": "cadical",
-    "name": "CaDiCaLSATSolver",
-    "block": "SATBlock",
-    "paradigm": "sat",
-    "code": "smspp tools 0.0.0",
-    "backend": "cadical-1.7.3",
-    "config": "ColBSCfg.txt#1"
-   },
-   "sample": false
-  }
- ]
+  "game": "sudoku",
+  "traces": [
+    {
+      "file": "sudoku-easy1-aima-ac3.jsonl",
+      "instance": "sudoku-easy1",
+      "solver": {
+        "id": "aima-ac3",
+        "name": "aima AC-3",
+        "block": "aima-python",
+        "paradigm": "csp",
+        "code": "aima-python 49ebbc3",
+        "config": "ac3"
+      },
+      "sample": false
+    },
+    {
+      "file": "sudoku-easy1-aima-bt-fc.jsonl",
+      "instance": "sudoku-easy1",
+      "solver": {
+        "id": "aima-bt-fc",
+        "name": "aima Backtracking, MRV + forward checking",
+        "block": "aima-python",
+        "paradigm": "csp",
+        "code": "aima-python 49ebbc3",
+        "config": "bt-fc"
+      },
+      "sample": false
+    },
+    {
+      "file": "sudoku-easy1-aima-bt-mac.jsonl",
+      "instance": "sudoku-easy1",
+      "solver": {
+        "id": "aima-bt-mac",
+        "name": "aima Backtracking, MRV + MAC",
+        "block": "aima-python",
+        "paradigm": "csp",
+        "code": "aima-python 49ebbc3",
+        "config": "bt-mac"
+      },
+      "sample": false
+    },
+    {
+      "file": "sudoku-harder1-aima-ac3.jsonl",
+      "instance": "sudoku-harder1",
+      "solver": {
+        "id": "aima-ac3",
+        "name": "aima AC-3",
+        "block": "aima-python",
+        "paradigm": "csp",
+        "code": "aima-python 49ebbc3",
+        "config": "ac3"
+      },
+      "sample": false
+    },
+    {
+      "file": "sudoku-harder1-aima-bt-fc.jsonl",
+      "instance": "sudoku-harder1",
+      "solver": {
+        "id": "aima-bt-fc",
+        "name": "aima Backtracking, MRV + forward checking",
+        "block": "aima-python",
+        "paradigm": "csp",
+        "code": "aima-python 49ebbc3",
+        "config": "bt-fc"
+      },
+      "sample": false
+    },
+    {
+      "file": "sudoku-harder1-aima-bt-mac.jsonl",
+      "instance": "sudoku-harder1",
+      "solver": {
+        "id": "aima-bt-mac",
+        "name": "aima Backtracking, MRV + MAC",
+        "block": "aima-python",
+        "paradigm": "csp",
+        "code": "aima-python 49ebbc3",
+        "config": "bt-mac"
+      },
+      "sample": false
+    },
+    {
+      "file": "sudoku-harder1-cadical.jsonl",
+      "instance": "sudoku-harder1",
+      "solver": {
+        "id": "cadical",
+        "name": "CaDiCaLSATSolver",
+        "block": "SATBlock",
+        "paradigm": "sat",
+        "code": "smspp tools 0.0.0",
+        "backend": "cadical-1.7.3",
+        "config": "ColBSCfg.txt#1"
+      },
+      "sample": false
+    }
+  ]
 }
